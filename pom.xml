@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.kite9</groupId>
+	<artifactId>k9-parent</artifactId>
+	<version>1.11-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<modules>
+		<!-- module>k9-model</module> -->
+		<module>k9-server</module>
+	</modules>
+
+	<developers>
+		<developer>
+			<id>robm</id>
+			<name>Rob Moffat</name>
+			<email>robm@kite9.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<organization>kite9.com</organization>
+			<timezone>0</timezone>
+		</developer>
+	</developers>
+
+	<issueManagement>
+		<system>Kite9.com Issues Page</system>
+		<url>https://github.com/kite9-org/k9/issues/</url>
+	</issueManagement>
+
+    <scm>
+		<connection>scm:git:git@github.com:kite9-org/k9.git</connection>
+		<developerConnection>scm:git:git@github.com:kite9-org/k9.git</developerConnection>
+		<url>https://github.com/kite9-org/k9.git</url>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<name>Kite9 Redux</name>
+	<url>http://www.kite9.com</url>
+	<description>This project is a a suite of tools, tutorials and api code for using the Kite9.com diagram rendering software.</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+</project>

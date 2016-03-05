@@ -1,5 +1,14 @@
 *.class
 
+# Eclipse
+*.project
+*.classpath
+target
+
+# Mac Nonsense
+*.DS_Store
+
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 

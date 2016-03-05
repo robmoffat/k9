@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.kite9.k9server</groupId>
-	<artifactId>kite9-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>com.kite9</groupId>
+	<artifactId>k9-server</artifactId>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>kite9-server</name>
+	<name>Kite9 Server</name>
 	<description>Kite9 Redux Server</description>
 
 	<parent>
