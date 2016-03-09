@@ -2,16 +2,31 @@ package com.kite9.k9server.domain;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Project extends AbstractJPAEntity {
+public class Project extends AbstractLongIdEntity {
 	
-	String title;
-	String description;
-    String stub;
-	String secret = createRandomString();
+	@Column(length=50,nullable=false)
+	private String title;
+	
+	@Column(length=200,nullable=true)
+	private String description;
+	
+	@Column(length=50,nullable=false, unique=true)
+	private String stub;
+		
+	@Column(length=32,nullable=false)
+	private String secret = createRandomString();
+	
+	@OneToMany(targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private List<Document> documents;
 	
 	public Project() {
 	}

@@ -12,11 +12,15 @@ import javax.persistence.MappedSuperclass;
  *
  */
 @MappedSuperclass
-public class AbstractJPAEntity {
+public class AbstractLongIdEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long id;
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getId() {
 		return id;
@@ -38,7 +42,7 @@ public class AbstractJPAEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractJPAEntity other = (AbstractJPAEntity) obj;
+		AbstractLongIdEntity other = (AbstractLongIdEntity) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
