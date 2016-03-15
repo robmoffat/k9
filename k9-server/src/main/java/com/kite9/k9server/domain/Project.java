@@ -25,7 +25,7 @@ public class Project extends AbstractLongIdEntity {
 	@Column(length=32,nullable=false)
 	private String secret = createRandomString();
 	
-	@OneToMany(targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Document> documents;
 	
 	public Project() {

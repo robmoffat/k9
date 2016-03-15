@@ -1,6 +1,8 @@
 package com.kite9.k9server.docker;
 
 
+import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,17 +17,24 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
 
-public class RestRoundTripIT {
+public class RestRoundTripIT extends AbsractDockerIT {
+	
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	static class DocList {
+		
+		private Collection<Document> documents;
+		
+	}
 	
 	ObjectMapper mapper = new ObjectMapper();
 	RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
 	
-	private String urlBase = "http://" + DockerInspector.getImageRunningContainerIPAddress("com.kite9/k9-server") + ":8080";
+	private String urlBase = "http://" + getDockerHostName()+ ":8080";
 	
 	@Test
 	public void testProject() {
@@ -43,11 +52,11 @@ public class RestRoundTripIT {
 	}
 	
 	@Test
-	public void testDocument() throws RestClientException, JsonProcessingException {
+	public void testDocument() throws RestClientException, IOException {
 		// create a project
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
 		ResponseEntity<Project> pOut = restTemplate.postForEntity(urlBase + "/api/projects", pIn, Project.class);
-		String url = pOut.getHeaders().getLocation().getPath();
+		String url = pOut.getHeaders().getLocation().toString();
 
 		// create a document on this project
 		Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -63,7 +72,11 @@ public class RestRoundTripIT {
 				Document.class);
 
 		// list the documents for a project
-		ResponseEntity<Document[]> docList = restTemplate.getForEntity(url + "/documents", Document[].class);
+		ResponseEntity<String> docList = restTemplate.getForEntity(url + "/documents", String.class);
+		
+	
+		
+		DocList list = mapper.readValue(docList.getBody(), DocList.class);
 
 		// should cascade the delete
 		restTemplate.delete(url);
