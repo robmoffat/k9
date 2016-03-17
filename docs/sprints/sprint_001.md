@@ -444,7 +444,7 @@ docker-machine -D create --driver amazonec2 --amazonec2-access-key XXX --amazone
 
 After much chuntering away, it finished.   If I go back into the management console, I can see my docker machine running on an amazon instance:
 
-[!images/001_1.png]
+![Docker Running On AWS](images/001_1.png)
 
 This is not *quite* what I had in mind - I was expecting it to come up on the Amazon ECS (Container Service), but never mind: this will do for now.
 
@@ -472,7 +472,7 @@ mvn install docker:build -DskipTests  < Should connect to the docker machine and
 
 This was pretty easy to do via RDS.  I just followed the Steps, chose MySQL, and hey presto:
 
-[!images/001_2.png]
+![MySQL Instance On AWS](images/001_2.png)
 
 So that I could connect to it from my command-line MySQl, I changed the Security group to include 'Default' as well as 'docker-machine', but obviously, in production, you probably wouldn't want to expose the SQL
 back-end like this.  Or, maybe you would.  I don't know.
@@ -499,7 +499,7 @@ In fact, security groups turn out to be the key to all of this:
  
 What I really need is to lose the second one, and add a rule saying "Incoming HTTP" traffic.  Let's try that:
 
-[!images/001_3.png]
+![Fixing the Security Groups](images/001_3.png)
 
 And it works!  I can successfully connect to my aws instance on port 8080!
 
