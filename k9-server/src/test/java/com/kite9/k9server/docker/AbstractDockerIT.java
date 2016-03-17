@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.kite9.k9server.Kite9ServerApplication;
 
-public class AbsractDockerIT {
+public class AbstractDockerIT {
 	
 	private static ApplicationContext ctx;
 

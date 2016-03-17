@@ -121,7 +121,7 @@
 								<labels>
 									<environment>local</environment>
 								</labels>
-								<envPropertyFile>src/docker/local.properties</envPropertyFile>
+								<envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.properties</envPropertyFile>
 								<extraHosts>
 									<host>mysql:Robs-MacBook.local</host>
 								</extraHosts>

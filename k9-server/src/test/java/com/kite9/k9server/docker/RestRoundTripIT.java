@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,14 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
 
-public class RestRoundTripIT extends AbsractDockerIT {
-	
-	@JsonIgnoreProperties(ignoreUnknown = true)
-	static class DocList {
-		
-		private Collection<Document> documents;
-		
-	}
+public class RestRoundTripIT extends AbstractDockerIT {
 	
 	ObjectMapper mapper = new ObjectMapper();
 	RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
@@ -72,11 +67,11 @@ public class RestRoundTripIT extends AbsractDockerIT {
 				Document.class);
 
 		// list the documents for a project
-		ResponseEntity<String> docList = restTemplate.getForEntity(url + "/documents", String.class);
+		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {
+		};
+		ResponseEntity<Resources<Document>> docList = restTemplate.exchange(url + "/documents", HttpMethod.GET, null, pt);
 		
 	
-		
-		DocList list = mapper.readValue(docList.getBody(), DocList.class);
 
 		// should cascade the delete
 		restTemplate.delete(url);
