@@ -20,7 +20,7 @@ But, it got stuck.  My original architecture got bogged down in a morass of tech
 
 ## Some Promises ##
 
-Ok, so that’s what I want to do.  But, there are a couple of other changes I want to instil along the way:
+Ok, so that’s what I want to do.  But, there are a couple of other changes I want to instill along the way:
 
 ### Releases Every Two Weeks ###
 
