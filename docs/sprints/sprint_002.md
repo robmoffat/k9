@@ -27,6 +27,8 @@ I already have the text from the last sprint, so it's not a million miles away i
 ./vision/unique_features.md
 ```
 
+A lot of this isn't fleshed out yet.  
+
 ## Help Documentation
 
 So, I am missing some 'help' documentation.  I still have this from the old Kite9.  It's on a Wordpress blog served at info.kite9.com, and I initially wrote it using Evernote.  (There is a great Wordpress/Evernote sync plugin for Wordpress that I am using).  
@@ -37,7 +39,15 @@ After looking for an Evernote export, and finding nothing, I am thinking the ans
 
 ## GitHub Pages
 
-Once I commit my changes, everything is visible on Github.  However, it's not as nice as GitHub pages would look, so the next job is to set that up.
+Once I commit my changes, everything is visible on Github.  However, it's not as nice as GitHub pages would look, so the next job is to set that up.  Github Pages essentially allows you to store your static HTML inside a Git repository, and use this as the source for serving up webpages.  In essence, this means that you 
+have *built HTML* checked into your project, on the gh-pages branch.  
+
+Yes, this sounds really weird:  it seems to make no sense to check in anything but the *source* into Git, but nevertheless, this is the model they're going for here.  It *would* make sense if we were hand-editing HTML, but really, who has time for that in this day and age?
+
+The answer appears to be Jekyll.  From there, I can add Markdown files to my project, and then build them onto my gh-pages bran
+
+
+
 
 ## Re-pointing the URL
 
