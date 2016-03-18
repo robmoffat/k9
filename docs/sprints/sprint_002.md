@@ -44,7 +44,28 @@ have *built HTML* checked into your project, on the gh-pages branch.
 
 Yes, this sounds really weird:  it seems to make no sense to check in anything but the *source* into Git, but nevertheless, this is the model they're going for here.  It *would* make sense if we were hand-editing HTML, but really, who has time for that in this day and age?
 
-The answer appears to be Jekyll.  From there, I can add Markdown files to my project, and then build them onto my gh-pages bran
+The answer appears to be Jekyll.  From there, I can add Markdown files to my project, and then I think the github pages get built automatically without me having to do anything.  
+
+### Install Jekyll
+
+```
+> gem install jekyll
+...
+> jekyll new jekyll
+New jekyll site installed in /Users/robmoffat/Documents/k9/jekyll. 
+> cd jekyll
+> jekyll build
+Configuration file: /Users/robmoffat/Documents/k9/jekyll/_config.yml
+            Source: /Users/robmoffat/Documents/k9/jekyll
+       Destination: /Users/robmoffat/Documents/k9/jekyll/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+                    done in 0.313 seconds.
+ Auto-regeneration: disabled. Use --watch to enable.
+```
+
+Now I can navigate to index.html in the _site directory, and see... something.  It just looks weird.  But ok, it works. 
+
 
 
 
