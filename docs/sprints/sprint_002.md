@@ -37,8 +37,11 @@ After looking for an Evernote exporter, and finding nothing, I am thinking the a
 
 I tried the "Export To Jekyll" plugin first, but actually this didn't really work all that well:  images didn't get exported, and, while the format of the export was good, a lot of the tags didn't get converted to markdown.  So, meh.
 
-How about exporting from Evernote as HTML, and then converting the HTML to Markdown?
+How about exporting from Evernote as HTML, and then converting the HTML to Markdown?  This was a good way to go.  Evernote has an export option, and then I was able to use pandoc as follows:
 
+```
+ls *.html | awk '{print "pandoc --from=html --to=markdown_strict \"" $0 "\" > \"" $0 ".md\""}' | sh
+```
 
 
 ## GitHub Pages
@@ -48,62 +51,22 @@ have *built HTML* checked into your project, on the gh-pages branch.
 
 Yes, this sounds really weird:  it seems to make no sense to check in anything but the *source* into Git, but nevertheless, this is the model they're going for here.  It *would* make sense if we were hand-editing HTML, but really, who has time for that in this day and age?
 
+
+### Jekyll
+
 The answer appears to be Jekyll.  From there, I can add Markdown files to my project, and then I think the github pages get built automatically without me having to do anything.  
 
-### Install Jekyll
+By putting an instance of Jekyll in my `gh-pages` branch, github will *compile my markdown files* and show them as HTML at my Github pages site.   This is pretty cool, but seems like overkill.  
 
-```
-> gem install jekyll
-...
-> jekyll new jekyll
-New jekyll site installed in /Users/robmoffat/Documents/k9/jekyll. 
-> cd jekyll
-> jekyll build
-Configuration file: /Users/robmoffat/Documents/k9/jekyll/_config.yml
-            Source: /Users/robmoffat/Documents/k9/jekyll
-       Destination: /Users/robmoffat/Documents/k9/jekyll/_site
- Incremental build: disabled. Enable with --incremental
-      Generating... 
-                    done in 0.313 seconds.
- Auto-regeneration: disabled. Use --watch to enable.
-```
+Also, it was *really hard* to figure out theming:  it's best to download something like [lanyan](http://lanyon.getpoole.com) and use this as a base for your `gh-pages` branch, adding your content on top.
 
-Now I can navigate to index.html in the _site directory, and see... something.  It just looks weird.  But ok, it works. 
+### Straight Markdown
 
-### Theming
+However, after a lot of messing with this, I don't really see the advantage over straightforwardly keeping all the docs in markdown in github, and linking to them from the README.md file.  
 
-It doesn't seem like Jekyll supports modular theming (as on Wordpress), so to save time I'm just going to pull in
-[minimal](https://github.com/orderedlist/minimal.git) theme components.
-
-### Jekyll Bootstrap / Poole
-
-I briefly toyed with Jekyll Bootstrap, but this doesn't really seem to be supported anymore.
-
-Then, I downloaded Poole (something to help build Jekyll sites, apparently).  
-
-```
-git clone https://github.com/poole/poole.git
-```
-
-I got error messages before I could run it, saying I needed `jekyll-gist` and `jekyll-paginate` installed.   
-I could easily solve these with:
-
-```
-gem install jekyll-gist
-gem install jekyll-paginate
-jekyll s  -- starts jekyll
-```
-
-Poole, (and it's sub-theme, Lanyon, specifically) seems really well done.  This is exactly what I need for the 
-static Kite9 site.
+This seems perfectly adequate for now - all I need is a few index pages.
 
 
-
-
-
-## Re-pointing the URL
-
-I need to move across info.kite9.com to it's new, GitHub Pages location.  
 
 ## Vision Documentation
 
