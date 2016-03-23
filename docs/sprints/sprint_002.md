@@ -33,7 +33,11 @@ A lot of this isn't fleshed out yet.
 
 So, I am missing some 'help' documentation.  I still have this from the old Kite9.  It's on a Wordpress blog served at info.kite9.com, and I initially wrote it using Evernote.  (There is a great Wordpress/Evernote sync plugin for Wordpress that I am using).  
 
-After looking for an Evernote export, and finding nothing, I am thinking the answer might be exporting it from Wordpress.
+After looking for an Evernote exporter, and finding nothing, I am thinking the answer might be exporting it from Wordpress.
+
+I tried the "Export To Jekyll" plugin first, but actually this didn't really work all that well:  images didn't get exported, and, while the format of the export was good, a lot of the tags didn't get converted to markdown.  So, meh.
+
+How about exporting from Evernote as HTML, and then converting the HTML to Markdown?
 
 
 
@@ -65,6 +69,33 @@ Configuration file: /Users/robmoffat/Documents/k9/jekyll/_config.yml
 ```
 
 Now I can navigate to index.html in the _site directory, and see... something.  It just looks weird.  But ok, it works. 
+
+### Theming
+
+It doesn't seem like Jekyll supports modular theming (as on Wordpress), so to save time I'm just going to pull in
+[minimal](https://github.com/orderedlist/minimal.git) theme components.
+
+### Jekyll Bootstrap / Poole
+
+I briefly toyed with Jekyll Bootstrap, but this doesn't really seem to be supported anymore.
+
+Then, I downloaded Poole (something to help build Jekyll sites, apparently).  
+
+```
+git clone https://github.com/poole/poole.git
+```
+
+I got error messages before I could run it, saying I needed `jekyll-gist` and `jekyll-paginate` installed.   
+I could easily solve these with:
+
+```
+gem install jekyll-gist
+gem install jekyll-paginate
+jekyll s  -- starts jekyll
+```
+
+Poole, (and it's sub-theme, Lanyon, specifically) seems really well done.  This is exactly what I need for the 
+static Kite9 site.
 
 
 

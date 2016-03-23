@@ -27,7 +27,9 @@ There are 3 problems that Kite9 is trying to address:
 #### Object Orientation
 
 
-#### 
+#### "The Muddle Of UML"
+
+7 items I talked about before:  impedance mismatch, tool mismatch, layout difficulties, reverse engineering
 
 
 ### 3.  Diagramming vs. Collaboration
