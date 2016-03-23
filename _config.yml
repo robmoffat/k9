@@ -3,6 +3,7 @@
 # Use of `relative_permalinks` ensures post links from the index work properly.
 permalink:           pretty
 relative_permalinks: false
+baseurl:             http://kite9-org.github.io/k9/
 
 # Setup
 title:               Lanyon
