@@ -9,7 +9,7 @@ title:               Kite9
 tagline:             'Beautiful Diagrams'
 description:         'Diagrams laid out sensibly, crisply and properly the way you want them.'
 url:                 http://info.kite9.com
-baseurl:             /
+baseurl:             ''
 paginate:            5
 
 # About/contact
