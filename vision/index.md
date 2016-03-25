@@ -28,7 +28,7 @@ Read more about the [use cases here](use_cases).
 
 Kite9 already exists in [beta](http://kite9.com).  Many of the key elements have been written in at least first-draft form.  The hardest element ([automatic diagram layout](design/layout)) is now proven technology.
 
-**You can log in and try it right now, for free.**  But, expect that functionality will change *a lot*, according to our road-map.
+**You can log in and try it right now, for free.**  But, expect that functionality will change *a lot*, according to our [road-map](https://github.com/kite9-org/k9/blob/master/docs/sprints/plan.md).
 
 In order to turn Kite9 into a complete diagramming solution, it must be fleshed out with features already present in other diagramming tools.
 
