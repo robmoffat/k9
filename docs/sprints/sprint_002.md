@@ -117,6 +117,14 @@ info.kite9.org
 
 And now, github expects to host the repo when it's webserver sees this URL coming in.  I just need to change my DNS entries now so that info.kite9.com points to github (this is a CNAME).
 
+To make this work properly, I needed to change my `_config.yml` file so that it expected the baseurl to be `/`.
+
+This is basically saying which directory your files will be served from: on github, it was `/k9`. 
+
+```
+url:                 http://info.kite9.com
+baseurl:             /
+```
 
 ### Creating A SaaS Front Page
 
