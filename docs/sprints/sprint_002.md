@@ -6,6 +6,7 @@ sprint documentation, it's got somewhere to live.
  - Sprint Articles on Github Pages
  - Some Kite9 website should point to the documentation.
  - Some vision documents
+ - Marketing (SaaS) front-matter (at least a place-holder).  This was suggested by Andrew, adding it in to this sprint. 
  - Decomissioning info.kite9.com, and moving all the help articles off there.
  
 
@@ -43,14 +44,12 @@ How about exporting from Evernote as HTML, and then converting the HTML to Markd
 ls *.html | awk '{print "pandoc --from=html --to=markdown_strict \"" $0 "\" > \"" $0 ".md\""}' | sh
 ```
 
-
 ## GitHub Pages
 
 Once I commit my changes, everything is visible on Github.  However, it's not as nice as GitHub pages would look, so the next job is to set that up.  Github Pages essentially allows you to store your static HTML inside a Git repository, and use this as the source for serving up webpages.  In essence, this means that you 
 have *built HTML* checked into your project, on the gh-pages branch.  
 
 Yes, this sounds really weird:  it seems to make no sense to check in anything but the *source* into Git, but nevertheless, this is the model they're going for here.  It *would* make sense if we were hand-editing HTML, but really, who has time for that in this day and age?
-
 
 ### Jekyll
 
@@ -60,20 +59,12 @@ By putting an instance of Jekyll in my `gh-pages` branch, github will *compile m
 
 Also, it was *really hard* to figure out theming:  it's best to download something like [lanyan](http://lanyon.getpoole.com) and use this as a base for your `gh-pages` branch, adding your content on top.
 
-### Straight Markdown
-
-However, after a lot of messing with this, I don't really see the advantage over straightforwardly keeping all the docs in markdown in github, and linking to them from the README.md file.  
-
-This seems perfectly adequate for now - all I need is a few index pages.
-
-
-
 ## Vision Documentation
 
 A lot of the material about Kite9 is looking kind of old, and actually, I don't really want to keep it.  What I need is to clearly explain:
 
-1.  The Shortcomings of existing tools
-2.  Why Kite9 addresses these shortcomings.
+1.  The Shortcomings of existing tools   DONE
+2.  Why Kite9 addresses these shortcomings.  DONE
 3.  Why this is credible.
 4.  What these tools empower, in terms of further functionality.
 5.  Why this has a strong business case.
