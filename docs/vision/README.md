@@ -2,6 +2,8 @@
 
 ## Introduction ##
 
+[Kite9 in 5 Minutes](market/5_minutes.md)
+
 Kite9 is a tool for drawing diagrams.  Specifically, diagrams showing how systems connect and work.  
 
 Kite9 is designed to address multiple [problems](problems/README.md) that exist in the world of software diagramming, by taking a different approach:   it *enforces* an automatic layout for each diagram in the system.
