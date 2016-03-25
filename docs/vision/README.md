@@ -20,10 +20,11 @@ Read more about the [use cases here](use_cases.md).
 
 ## Development Status ##
 
-Kite9 already exists as a demo.  Many of the key elements have been written in at least first-draft form.  The hardest element ([automatic diagram layout](design/layout.md)) is now proven technology.
+Kite9 already exists in [beta](http://kite9.com).  Many of the key elements have been written in at least first-draft form.  The hardest element ([automatic diagram layout](design/layout.md)) is now proven technology.
 
-In order to turn Kite9 into a viable diagramming solution, it must be fleshed out with features already present in
-other diagramming tools.
+**You can log in and try it right now, for free.**  But, expect that functionality will change *a lot*, according to our road-map.
+
+In order to turn Kite9 into a complete diagramming solution, it must be fleshed out with features already present in other diagramming tools.
 
 You can see the existing Kite9 working [here](http://kite9.com).
 
@@ -32,7 +33,3 @@ Read about the design of Kite9 [here](design/README.md).
 ## Market
 
 There are lots of diagramming tools on the market, but Kite9 tries to do something different.  Read about the difference [here](market/README.md).
-
-
-
-
