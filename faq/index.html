@@ -1,0 +1,12 @@
+---
+layout: page
+title: FAQs
+---
+
+<ul>
+  {% for page in site.pages %}
+        {% if page.layout == 'faq' %}
+          <li><a href="{{site.baseurl}}/{{ page.url }}">{{ page.title }}</a></li>
+        {% endif %}   <!-- cat-match-p -->
+  {% endfor %}  <!-- page -->
+</ul>
