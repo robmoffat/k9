@@ -20,7 +20,7 @@ Because Kite9 automatically lays out diagrams, the developer can concentrate on 
 
 Within a development team, it's often hard to know where to start, or what the overall architecture of the system is.  By tying the diagrams to the code, Kite9 is an always-up-to-date model of exactly what is checked into the codebase *now*.
 
-## 4.  Central Architecture
+## 4.  Organisational Architecture
 
 Because Kite9 supports *composition* and multiple teams, it's possible that the whole organisation can work together to contribute diagrams to the project.  An architect can work then on composing the individual diagrams into views of the entire organisation.
 
