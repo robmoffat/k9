@@ -3,11 +3,11 @@
 For this sprint, I want to get the documentation in order for Kite9, so that each time I *do* some 
 sprint documentation, it's got somewhere to live.
 
- - Sprint Articles on Github Pages
- - Some Kite9 website should point to the documentation.
- - Some vision documents
+ - Sprint Articles on Github Pages   DONE
+ - Some Kite9 website should point to the documentation.   DONE
+ - Some vision documents   DONE
+ - Decomissioning info.kite9.com, and moving all the help articles off there.  DONE 
  - Marketing (SaaS) front-matter (at least a place-holder).  This was suggested by Andrew, adding it in to this sprint. 
- - Decomissioning info.kite9.com, and moving all the help articles off there.
  
 
 ## Step 1:  Placeholders 
@@ -123,7 +123,7 @@ This is basically saying which directory your files will be served from: on gith
 
 ```
 url:                 http://info.kite9.com
-baseurl:             /
+baseurl:             ''
 ```
 
 ### Creating A SaaS Front Page
@@ -136,5 +136,10 @@ baseurl:             /
 
  
  
+### Videos
+
+
+### Example Images
+
 
  
