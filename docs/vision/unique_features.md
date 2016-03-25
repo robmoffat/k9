@@ -2,7 +2,7 @@
 
 Kite9 is designed around an algorithm which can intelligently lay out a diagram as well as you can.
 
-This gives rise to several unique possibilities:
+This gives rise to several unique possibilities, most of which *simply can't be done in other diagramming software*, because they lack the layout algorithm:
 
 ## Collaboration
 

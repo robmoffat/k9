@@ -18,8 +18,7 @@ Because Kite9 automatically lays out diagrams, the developer can concentrate on 
 
 ## 3.  A Development Team
 
-Within a development team, it's often hard to know where to start, or what the overall architecture of the system is.  By tying the diagrams to the code, Kite9 
-
+Within a development team, it's often hard to know where to start, or what the overall architecture of the system is.  By tying the diagrams to the code, Kite9 is an always-up-to-date model of exactly what is checked into the codebase *now*.
 
 ## 4.  Central Architecture
 
