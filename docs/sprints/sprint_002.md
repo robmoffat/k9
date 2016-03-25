@@ -59,19 +59,72 @@ By putting an instance of Jekyll in my `gh-pages` branch, github will *compile m
 
 Also, it was *really hard* to figure out theming:  it's best to download something like [lanyan](http://lanyon.getpoole.com) and use this as a base for your `gh-pages` branch, adding your content on top.
 
-## Vision Documentation
+### Vision Documentation
 
 A lot of the material about Kite9 is looking kind of old, and actually, I don't really want to keep it.  What I need is to clearly explain:
 
 1.  The Shortcomings of existing tools   DONE
 2.  Why Kite9 addresses these shortcomings.  DONE
-3.  Why this is credible.
+3.  Why this is credible. 
 4.  What these tools empower, in terms of further functionality.
 5.  Why this has a strong business case.
 6.  The architecture of the new Kite9, and what that enables.
 
+Ok, so I've added all of this.  The trick with Jekyll is *always remember the front-matter* and then it will generate something for you.  
+
+### Index Page In Jekyll
+
+It's possible to use the Liquid templates in Jekyll to index for you.  This is faq/index.html:
+
+```
+---
+layout: page
+title: FAQs
+---
+
+<ul>
+  {% for page in site.pages %}
+        {% if page.layout == 'faq' %}
+          <li><a href="{{site.baseurl}}/{{ page.url }}">{{ page.title }}</a></li>
+        {% endif %}   
+  {% endfor %}  
+</ul>
+```
+
+It simply scans through the list of pages and produces a set of links.  
+
+### Nice Images
+
+I added a bit of CSS to improve the look of images:
+
+```css
+.page img {
+	width: 30rem;
+	margin: auto;
+	box-shadow: 3px 3px 14px #aaa;
+}
+```
+
+This gives the images a drop-shadow, and just separates them from the body-text sufficiently to make them *definitely images*:  otherwise it's sometimes hard to tell what's an image and what isn't.
+
+### Deploying to info.kite9.com
+
+I added a CNAME file into the gh-pages root, containing
+
+```
+info.kite9.org
+```
+
+And now, github expects to host the repo when it's webserver sees this URL coming in.  I just need to change my DNS entries now so that info.kite9.com points to github (this is a CNAME).
 
 
+### Creating A SaaS Front Page
+
+
+
+
+
+### Adding Tracking
 
  
  
