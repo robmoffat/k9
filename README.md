@@ -32,6 +32,8 @@ Each Sprint is going to get a release into "production", and each will have rele
 
 There was a good reason why this didn't happen before:  the first version of Kite9 was really an experiment:  Could I develop a really sound layout algorithm?  And then, could I make a usable editor based on this?  Since we are not in "experiment mode" now, but in "build some really decent software" mode, I think this changes matters, hence the blog posts.
 
+[Review Progress Here](docs/sprints)
+
 ### Build Kite9 In Kite9 ###
 
 I'd like Kite9 to "bootstrap" itself to a certain extent:  the user-interface that we build will as far as possible will be written using Kite9 itself.  Ideally, Kite9 could be used to build other user interfaces.  This is certainly an idea I've had before.  Let's see if we can make this work.
