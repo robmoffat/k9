@@ -1,0 +1,12 @@
+.section-boxed {
+	max-width: 1032px;
+	margin: 0 auto;
+	padding: 0 3%;
+	position: relative;
+}
+
+.mountains {
+	background-image: url(/saas/mountains.jpg);
+	opacity: 0.3;
+	
+}

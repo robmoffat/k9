@@ -1,0 +1,62 @@
+a.navbar-brand {
+	padding: 5px 13px;
+	float: right;
+}
+
+@CHARSET "UTF-8";
+/* TOOLBAR */
+
+
+.toolbar {
+	display: inline-block;
+}
+
+.ui-widget-header .ui-state-hover {
+	border: 1px solid #cdd5da;
+	background: #6688bb;
+	font-weight: normal;
+	color: #004276;
+}
+
+.ui-widget-header .ui-state-active {
+	border: 1px solid #cdd5da;
+	background: #f6f6f6 url(images/ui-bg_highlight-hard_100_f6f6f6_1x100.png) 50% 50% repeat-x;
+	font-weight: normal;
+	color: #004276;
+}
+
+.logo {
+	position: absolute;
+	right: 10px;
+	border: 0;
+}
+
+.header-bar {
+	background:rgba(240,240,240,0.6);
+	position: fixed;
+	top: 0;
+	left: 0;	
+	overflow-x: auto;
+	width: 100%;
+	overflow: hidden;
+	height: 40px;
+	z-index: 10;
+	min-width: 728px;
+	border: none;
+	border-bottom: 1px solid #eee;
+}
+
+.header-bar .ui-button.dashboard {
+	margin-top: 2px;
+	height: 36px;
+}
+
+.row1 {
+	padding-bottom: 0px;
+	height: 28px;	
+}
+
+.header-bar .ui-button {
+	padding: 3px;
+}
+
