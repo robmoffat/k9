@@ -58,3 +58,6 @@ body {
   height: 40px;
 }
 
+.container.content {
+	margin-top: 5rem;
+}
