@@ -27,8 +27,20 @@ html {
 	font-size: 1.5em;
 }
 
-html {
+body {
 	font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 21px;
 	font-weight: normal;
+}
+
+.header {
+	height: 650px;
+}
+
+
+/* From Poole */
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;	
+	box-sizing: border-box;
 }

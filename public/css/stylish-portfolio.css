@@ -81,6 +81,10 @@ hr.small {
     transition: all 0.4s ease 0s;
 }
 
+/*
+
+Sidebar styles commented by Rob
+
 .sidebar-nav {
     position: absolute;
     top: 0;
@@ -126,6 +130,8 @@ hr.small {
     color: #fff;
     background: none;
 }
+
+*/
 
 #menu-toggle {
     z-index: 1;
