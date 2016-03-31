@@ -29,7 +29,7 @@ html {
 
 body {
 	font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 21px;
+	font-size: 18px;
 	font-weight: normal;
 }
 
@@ -43,4 +43,29 @@ body {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;	
 	box-sizing: border-box;
+}
+
+/* Kite9 Logo */
+.kite9-logo {
+  position: fixed;
+  top:  .8rem;
+  right: 1rem;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  width: 88px;
+  height: 40px;
+}
+
+/* Kite9 Blue */
+.theme-base-k9 .sidebar,
+.theme-base-k9 .sidebar-toggle:active,
+.theme-base-k9 #sidebar-checkbox:checked ~ .sidebar-toggle {
+  background-color: #6a9fb5;
+}
+
+.theme-base-k9 .container a,
+.theme-base-k9 .sidebar-toggle,
+.theme-base-k9 .related-posts li a:hover {
+  color: #6a9fb5;
 }
