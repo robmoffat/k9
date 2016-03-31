@@ -35,6 +35,7 @@ body {
 
 .header {
 	height: 650px;
+	color: white;
 }
 
 
@@ -55,17 +56,4 @@ body {
   background-color: transparent;
   width: 88px;
   height: 40px;
-}
-
-/* Kite9 Blue */
-.theme-base-k9 .sidebar,
-.theme-base-k9 .sidebar-toggle:active,
-.theme-base-k9 #sidebar-checkbox:checked ~ .sidebar-toggle {
-  background-color: #6a9fb5;
-}
-
-.theme-base-k9 .container a,
-.theme-base-k9 .sidebar-toggle,
-.theme-base-k9 .related-posts li a:hover {
-  color: #6a9fb5;
 }
