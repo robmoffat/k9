@@ -1,9 +1,9 @@
 ---
 layout: vision
-title: s
+title: Vision
 ---
 
-# Kite9: The Vision #
+# Kite9: Vision #
 
 
 ## Introduction ##

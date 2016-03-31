@@ -10,3 +10,25 @@ html {
   font-size: 20px;
   line-height: 1.5;
 }
+
+.video {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.video h1 {
+	margin: 0;
+	padding: 30px;
+	font-size: 4.5em;
+	font-weight: 700;
+}
+
+.vision-items {
+	font-size: 1.5em;
+}
+
+html {
+	font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 21px;
+	font-weight: normal;
+}
