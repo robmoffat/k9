@@ -1,4 +1,4 @@
-# Kite9 Epic Plan
+# Kite9 Delivery Plan
 
 Rather than a grand “ta-da”, is there any way I can split this out and do it in bits?
 
@@ -9,7 +9,7 @@ An alternative might be to “rebuild” Kite9 from scratch in a new project.   
 It would be nice to do this so that we have something to see as we go along.
 Each release would be to “production”, which would be an amazon EC2 instance, with load-balancer and MySql database at the back end.
 
-## Epic Goals
+## General Sprint Goals
 
 1.  Release instantly.  i.e. full automated tests.  I don’t know yet what this means for Javascript, but I’ll figure it out.
 2.  Proper load-balancing etc.
@@ -22,7 +22,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 ## The Sprints
 
-### 1.  Set up a new container-based server.
+### Set up a new container-based server.
 
 - With the same entities in it as Grails. 
 - It should be possible to query the model against the original database via REST and it still works.    DONE
@@ -32,7 +32,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_001.md)
 
-### 1b.  Documentation / Check in.  
+### Documentation / Check in.  
 
 - Move to github / markup and lose everything that no longer makes sense.  I.e. complete clear-out.  Just keep stuff that makes sense as we go along.
 - Some Kite9 website should point to the documentation.
@@ -40,18 +40,40 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Some vision documents
 - Published via github.
 
-### 1c.  Setting Up Travis
+[Sprint Notes](sprint_002.md)
 
-- Continuous build of master, releasing to Amazon.  
+### Port To Grails 3 in the new project.
 
-### 2.  Wire it up to the visualisation engine
+*(sprint added 20/3/2016)*
 
-- get it to render PDF and PNG files using REST POSTs.  (no security needed yet).
+- Upgrade the original Kite9 to Grails 3.
+- We can keep our existing Kite9 infrastructure working by moving to Grails 3, which is based on Spring Boot.
+- This probably means moving to gradle builds too, and therefore a gradle fabric8 plugin.
+- I think ideally we should stick to the spring/jpa-based persistence because it's more future proof, so we need to move the rest of those entites and add tests for them.
+- This means that Kite9 should be completely ported to AWS.
+- Add a table for the diagram contents, unrendered and rendered
+- Need to check email works
+
+[Sprint Notes](sprint_003.md)
+
+### Setting Up Travis + AWS
+
+- Continuous build of master, (releasing to Amazon automatically? )
+- Turn off Linode?
+- Sort out DNS
+- Scaling ?
+
+### Visualisation Engine refactoring
+
+- currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
+- Use REST, use the user token to validate requests.
+- get it to render PDF, PNG, XML files using REST POSTs. 
 - If we’ve been refactoring carefully, this should also still work.
-- We should be able to also get back rendered versions of the revisions in the database.  Using content negotiation.
 - Write some tests for this.
+- Store results in the content table.
+- hard-code the stylesheets for now.
 
-### 3.  Time to overhaul the object model.
+### Time to overhaul the object model.
 
 - everything should be parts and containers.  Links should be reformatted.   Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml and it comes back in the new format.
 - Containers
@@ -62,32 +84,35 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Ports
 - Links as “straight” rather than LEFT, RIGHT etc.
 - Aligns
+- Stylesheet to use 
 - After we’ve done this, Visualisation is pretty much unrecognisable from it’s original form, but we need for the tests to still pass.
 
-### 4.  We need to send our new object model to JSON.
+*This would seriously break my existing GUI.  How to solve this problem?  I really don't want to refactor the GUI at this point.  Nore do I want to waste time on converting the XML back to the old format.  So, at this point, we would be really screwed.*
+
+### We need to send our new object model to JSON.
 
 - This is going to be a lot of JSON.
 - It should be about creating groupings, setting paths and setting styles + classes.
 - Everything that was in the original object model, plus layout information.
 
-### 5.  React To Load JSON
+### React To Load JSON
 
 - We should be able to render the JSON returned by passing it through a simple react component which turns it into SVG.
 - Every item from the object model will be a group, which will potentially have some svg elements associated with it.
 - Using D3 + React to display on the screen.
 
-### 6.  Styling
+### Styling
 
 - React should pass through the style tag to the JSON elements for inclusion on the diagram.
 - Write a test to make sure this happens.
 
-### 7.  CSS
+### CSS
 
 - Write a Kite9 CSS file, which will be also loaded up by the react component.
 - Turn off the style element coming from Kite9:  can we replace this with CSS class?
 - FUN
 
-### 8.  Server-side CSS
+### Server-side CSS
 
 - Get the CSS loaded up on the server side by Batik.
 - Remove style information from the java Stylesheet
