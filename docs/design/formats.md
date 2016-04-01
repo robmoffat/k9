@@ -46,7 +46,7 @@ So, when we pull in something, we need to say what we are going to show:
  - **Relevant Links**:  if it links to other elements (which are on our diagram already), include these.  
  - **All the Links**:  include any referenced elements, irrespective of whether they are currently on this diagram.
  
-For each of these broad inclusion mechanisms, you may want to have some kind of filter, to reduce the amount of attributes/contained elements/links.  Not sure how this would work... likely we need some way of using tags or something.   
+For each of these broad inclusion mechanisms, you may want to have some kind of filter, to reduce the amount of attributes/contained elements/links.  Not sure how this would work... likely we need some way of using tags or something.   *Obviously, XPath provides exactly the functionality we need here*.
 
 ## Open Structure
 
