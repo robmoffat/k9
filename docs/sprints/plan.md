@@ -117,49 +117,49 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Get the CSS loaded up on the server side by Batik.
 - Remove style information from the java Stylesheet
 
-### 9.  Client-Side CSS
+### Client-Side CSS
 
 - Get React to render the client using the same css file.
 - Write some tests for this somehow to check it’s correct.
 
-### 10.  Layout
+### Layout
 
 - extract this so that there’s a separate class for each different layout.
 - Just keep existing tests working.
 
-### 11.  Extend CSS
+### Extend CSS
 
 - Add my own elements to the CSS so that I can see these being inherited by various elements.  I want to get to the stage where part layout has some CSS properties associated with it.
 - Need to decide what these CSS elements are, but obviously they should be about layouts.
 
-### 12. Glyph Using Grid Layout
+### Glyph Using Grid Layout
 
 - Write a few simple tests to do a grid layout.   We have 3 basic glyph-types that can use this.
 
-13. Symbols Using Grid Layout
+### Symbols Using Grid Layout
 
 - Write a test that shows some symbols, each having a class, inheriting their outline shape, colour etc.  and being rendered correctly.
 
-14. Grid-Layout Context
+### Grid-Layout Context
 
 - Contexts should have the capacity now to store multiple grids.  There will need to be some clever interpretation here (i.e. we need to construct the grid on-the-fly) but it’s ok.
 - This should be a nice example, with a test.
 
-15. BPML:  Write a stylesheet for this in CSS
+### BPML:  Write a stylesheet for this in CSS
 
 - Include most of the basic entities, render a diagram using it.
 
-16.  Container exit-sides CSS directive
+### Container exit-sides CSS directive
 
 - So we can dictate in the stylesheet where things can leave.
 
-17.  Project CSS/JS Repository
+### Project CSS/JS Repository
 
 - At this stage, we pretty much have CSS done, so we need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
 - Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
 - So, handle this caching.
 
-18.  Command Pattern
+### Command Pattern
 
 - Insert element (id, id-less xml bits)
 - Modify element (id, what it looks like after, before)
@@ -169,18 +169,18 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - After posting the command, it should return the new JSON (for react), or an error message should pop up. redux can handle that.
 - Commands should attempt to apply to the active diagram.
 
-19.  Porting Javascript
+### Porting Javascript
 
 - We’re going to need a lot of the original app now.  So, we need to structure this a bit better, and use webpack / npm stuff.
 - Add in a javascript testing framework.
 
-20. Undo / Redo Commands
+### Undo / Redo Commands
 
 - These are going to simply take you back and forth through the diagram history and choose the “active” diagram.  Revisions will still be in numbered / timestamped order, but when you undo, you undo for everyone.  But nothing is lost.  NAILED IT.
 - You should be able to head back to any previous version in the diagram history and say, “this is the active version”.  We should have some marker record somewhere to do this.  i.e in Document.
 - All other commands end up creating a new revision, and setting the active document to that.
 
-21.  Select Behaviour
+### Select Behaviour
 
 - Some stylesheet should define the GUI behaviours.
 - React has some callback that can modify the SVG as it’s being rendered, and add behaviours (this is how we plug in)
@@ -191,56 +191,56 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - JSON should already contain selection outline and line details.
 - Somehow, select should extend the react layout to include the shapes needed to make select work… (not sure we will need these anymore though?)
 
-22.  Context Menu
+### Context Menu
 
 - Define the context menu plugin.   This should come up when people select stuff.  Once you select stuff, the menu should pop up.  What does it contain?   Nothing yet.  Just needs to come up in the right place.
 - Add a couple of placeholder options.
 - Options can appear and be greyed out.
 - Write a test.
 
-23.  Modal Plugin
+### Modal Plugin
 
 - We want a javascript function that opens up a modal dialog.
 - It should take an array of fields, and callbacks for validation, and possibly callbacks for options, if it’s going to be populated with some.
 
-24.  Menu Plugins
+### Menu Plugins
 
 - Add things like “edit text”, “delete”, “surround with container".   Edit text will need to use the modal dialog.  Plug these into the context menu.
 
-25.  The Palette, part 1.
+### The Palette, part 1.
 
 - First, a palette needs to pop up, with appropriate elements in it.  To do this, we need to look at palettes defined by the stylesheets, and also look at the context of where we are putting the element.   I think this is a call to the server for some JSON which can be rendered containing the palettes in question.
 - Write a test that this comes up in the modal plugin.
 
-26.  The Palette, part 2
+### The Palette, part 2
 
 - When you click an element, the palette should close, and you are dragging around the element that you want to place.
 - What would be the command for this?  It could be a fairly complex piece of XML.   So, we need to create a command that adds XML.
 - Extend the test to do this.
 
-27:  The Palette, part 3
+### The Palette, part 3
 
 - We need to grey out elements that are not allowed.
 - So, this is some kind of plugin to the react component again.  (We are going to need some general way of adding callbacks to react).
 - We also need a way to say which elements a container can accept.  (or alternatively, which elements can go in container x).   Which way round makes more sense?  Either a container can accept anything, or it can accept only certain kinds of element.
 
-28.  Top-Level Menu
+### Top-Level Menu
 
 - Again, this should be pluggable.
 - We want to add the zoom controls, as well as undo/redo.
 - Undo and redo are actually going to post commands to the server now.
 - Write some javascript tests for the existence of these and that you can press them and the correct actions occur.
 
-29.  Link
+### Link
 
 - So, the basic thing is, you click on an element, and you can select draw link.  And, then it draws a link to another element.
 
-30.  Link to New
+### Link to New
 
 - Draws a link, but puts a new element down again (the last one from the palette).  So again, we need to create some kind of event that draws to the mouse pointer, recognises the container we’re under, etc.  And then adds an element to the container.   This is a combination of the palette-drop plus link functionality.
 - Must add a test.  Redux must be able to have the state of what is going on, what is being dragged, etc.
 
-31.  Fix aligns.
+### Fix aligns.
 
 - We want to be able to create these from the gui too by selecting a bunch of align-able elements.
 - You need to fix the compaction process to respect these too.
@@ -248,28 +248,28 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Generally, the code we already have for the javascript is good.
 - An align should have layout - it should just be a long line on the diagram in the end (if show layouts mode is on)
 
-32.  Layouts
+### Layouts
 
 - Layouts need some kind of background image so that we can see how they are set up.  You can do this ridiculously easily with patterns, where you can define a pattern in SVG, and use it as a fill for another SVG element.  awesome.
 - Use CSS to turn on layout information at the global level.
 - Write a test to test what the screen looks like with layout info on or off.  Problem is, this is more global state, and we wanted to avoid global state (especially invisible global state)
 
-33.  Hierarchical Layout
+### Hierarchical Layout
 
 - Allow this as an option.  There is the secondary option of left, mid and right-aligned hierarchies.
 
-34.  Reverse Link
+### Reverse Link
 
 - Swaps the ends of the link around… the Ends point at the opposite elements.
 - Test
 
-35.  Max-Size Algorithm
+### Max-Size Algorithm
 
-36.  Collapse Container
+### Collapse Container
 
 - Containers should have a smallest-size option.
 
-37. Security
+### Security
 
 - Log-in Screen.
 - Limiting the projects you can look up, based on who you are.
