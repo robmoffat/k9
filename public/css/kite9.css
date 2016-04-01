@@ -38,6 +38,11 @@ body {
 	color: white;
 }
 
+.header h1 {
+	text-stroke: 1px black;
+	-webkit-text-stroke: 1px black;
+}
+
 
 /* From Poole */
 * {
