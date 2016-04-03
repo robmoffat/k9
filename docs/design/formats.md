@@ -62,7 +62,26 @@ I suppose you could have a macro that pulls out that entity and places it in it'
 
 From a java point of view, this would be better too.   Again, this brings us back to the issue of having global IDs for Java elements, and needing to be able to express those in the diagram.  So... we're back here again.
 
+# Kite9 - Using XML
 
+### Kite9 As A Namespace
+
+I think really this might be the way forward:  if we define a namespace for things like stylesheets to use, and a namespace for the include functionality, then
+any XML document can reasonably be augmented the Kite9 way.
+
+Alternatively, you could have a prolog that says what stylesheets you're using, or separately apply them to the diagram.   It seems completely reasonable that ADL should be just an input format that we can use. (And, we have a schema for this already)
+
+### Kite9 Parser
+
+We are going to need some way of parsing an XML document, and turning into a Kite9 object model.  This is going to need CSS stylesheets to do (i.e. to explain how to turn the various elements into Kite9 elements).
+
+### Problem
+
+If we *divorce* the structure of the XML from the structure of the diagram, how are we going to be able to change the XML structure?  It will be impossible, unless we somehow rig the command system to understand this.
+
+Any command we apply needs to make changes to XML (on the server side).  This means that diagram elements by and large are still going to be related to XML elements.  For now, this means that if we evolve our diagram model, we need to also evolve the XML to match it.
+
+Is this always going to be the case?  
 
 
  

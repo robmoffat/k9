@@ -42,6 +42,29 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_002.md)
 
+### Security
+
+- User entity, creatable, queryable via rest.
+- Sign Up Screen:  *Name*, *Email Address*, *Password*.  This would send an email out to *confirm* the email address.  
+- A special URL would confirm the email, being a hash of some secret salt and their details.
+- Edit screen:  user is allowed to go onto their page and change the email, but that invalidates it again (meaning we don't send to it).
+- Log-in Screen (steal these from the existing grails app for now)
+- Limiting the projects you can look up, based on who you are.
+- Need to check email works
+
+[Sprint Notes](sprint_004.md)
+
+### Visualisation Engine refactoring
+
+- some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
+- currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
+- Use REST, use the user token to validate requests.
+- get it to render PDF, PNG, XML files using REST POSTs. 
+- If we’ve been refactoring carefully, this should also still work.
+- Write some tests for this.
+- Store results in the content table.
+- hard-code the stylesheets for now.
+
 ### Port To Grails 3 in the new project.
 
 *(sprint added 20/3/2016)*
@@ -51,8 +74,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - This probably means moving to gradle builds too, and therefore a gradle fabric8 plugin.
 - I think ideally we should stick to the spring/jpa-based persistence because it's more future proof, so we need to move the rest of those entites and add tests for them.
 - This means that Kite9 should be completely ported to AWS.
-- Add a table for the diagram contents, unrendered and rendered
-- Need to check email works
+- Revisions, Documents, etc.  From Grails app.  With Test.  
 
 [Sprint Notes](sprint_003.md)
 
@@ -63,33 +85,9 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Sort out DNS
 - Scaling ?
 
-### Visualisation Engine refactoring
 
-- currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
-- Use REST, use the user token to validate requests.
-- get it to render PDF, PNG, XML files using REST POSTs. 
-- If we’ve been refactoring carefully, this should also still work.
-- Write some tests for this.
-- Store results in the content table.
-- hard-code the stylesheets for now.
 
-### Time to overhaul the object model.
-
-- everything should be parts and containers.  Links should be reformatted.   Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml and it comes back in the new format.
-- Containers
-- Parts (with type = glyph-simple, glyph-with-stereo etc.)
-- Classes
-- Text Areas
-- Links broken down into Ends (which can have labels?)
-- Ports
-- Links as “straight” rather than LEFT, RIGHT etc.
-- Aligns
-- Stylesheet to use 
-- After we’ve done this, Visualisation is pretty much unrecognisable from it’s original form, but we need for the tests to still pass.
-
-*This would seriously break my existing GUI.  How to solve this problem?  I really don't want to refactor the GUI at this point.  Nore do I want to waste time on converting the XML back to the old format.  So, at this point, we would be really screwed.*
-
-### We need to send our new object model to JSON.
+### We need to send our object model to JSON.
 
 - This is going to be a lot of JSON.
 - It should be about creating groupings, setting paths and setting styles + classes.
@@ -100,6 +98,13 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - We should be able to render the JSON returned by passing it through a simple react component which turns it into SVG.
 - Every item from the object model will be a group, which will potentially have some svg elements associated with it.
 - Using D3 + React to display on the screen.
+
+### Project CSS/JS/SVG Icon Repository
+
+- We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
+- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
+- So, handle this caching.
+- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
 
 ### Styling
 
@@ -121,6 +126,22 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Get React to render the client using the same css file.
 - Write some tests for this somehow to check it’s correct.
+
+### Time to overhaul the object model.
+
+- everything should be parts and containers.  Links should be reformatted.   Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml and it comes back in the new format.  (this means objects like Glyph still work...)
+- Containers
+- Parts (with type = glyph-simple, glyph-with-stereo etc.)
+- Classes
+- Text Areas
+- Links broken down into Ends (which can have labels?)
+- Ports
+- Links as “straight” rather than LEFT, RIGHT etc.
+- Aligns
+- Stylesheet to use 
+- After we’ve done this, Visualisation is pretty much unrecognisable from it’s original form, but we need for the tests to still pass.
+
+*This would seriously break my existing GUI.  How to solve this problem?  I really don't want to refactor the GUI at this point.  Nore do I want to waste time on converting the XML back to the old format.  So, at this point, we would be really screwed.*
 
 ### Layout
 
@@ -152,12 +173,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 ### Container exit-sides CSS directive
 
 - So we can dictate in the stylesheet where things can leave.
-
-### Project CSS/JS Repository
-
-- At this stage, we pretty much have CSS done, so we need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
-- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
-- So, handle this caching.
 
 ### Command Pattern
 
@@ -269,12 +284,10 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Containers should have a smallest-size option.
 
-### Security
 
-- Log-in Screen.
-- Limiting the projects you can look up, based on who you are.
+## Other Stuff
+
 
 - Ports: should also be configured in stylesheet.  At the moment, we default these to the middle of each side.  That should change
 - Line-lengths: we should be able to set these.
 
-- We should be able to pull back JSON for the publications, too.  Again, we should take all this over into the new Spring world.
