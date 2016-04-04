@@ -1,7 +1,7 @@
 package com.kite9.k9server.repos;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.User;
@@ -14,7 +14,8 @@ import com.kite9.k9server.domain.User;
  *
  */
 @Component
-@RestResource(exported=false)
-public interface UserRepository extends CrudRepository<User, String> {
+@RepositoryRestResource(exported=false)
+public interface UserRepository extends CrudRepository<User, Long> {
 
+	public User findByEmail(String email);
 }

@@ -1,4 +1,4 @@
-# Sprint 2:  Markdown and  GitHub Pages #
+# 19th March 2016: Sprint 2:  Markdown and  GitHub Pages #
 
 For this sprint, I want to get the documentation in order for Kite9, so that each time I *do* some 
 sprint documentation, it's got somewhere to live.

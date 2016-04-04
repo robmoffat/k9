@@ -1,4 +1,4 @@
-3# Sprint 3: Grails 3
+# 31st March 2016: Sprint 3: Grails 3 *
 
 ## Goals
 
@@ -13,8 +13,6 @@
 ## Problem
 
 The problem with even doing this sprint is that it's a backward step:  we're not going to be able to get this UI working correctly anyway.  At what stage will we have a converted Kite9?
-
-
 
 ## Background
 
@@ -39,6 +37,6 @@ to take a *loong* time.
 
 - We could simply rewrite the GORM code as JPA, and then drop this in as a replacement for 
 
-
+** Pausing This Sprint:  Going To Work on Sprint 4+5 first.  **
 
 

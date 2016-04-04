@@ -2,7 +2,6 @@ package com.kite9.k9server.docker;
 
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,21 +14,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
 
-public class RestRoundTripIT extends AbstractDockerIT {
-	
-	ObjectMapper mapper = new ObjectMapper();
-	RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
-	
-	private String urlBase = "http://" + getDockerHostName()+ ":8080";
+public class RestRoundTripIT extends AbstractRestIT {
 	
 	@Test
 	public void testProject() {
@@ -70,8 +60,6 @@ public class RestRoundTripIT extends AbstractDockerIT {
 		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {
 		};
 		ResponseEntity<Resources<Document>> docList = restTemplate.exchange(url + "/documents", HttpMethod.GET, null, pt);
-		
-	
 
 		// should cascade the delete
 		restTemplate.delete(url);

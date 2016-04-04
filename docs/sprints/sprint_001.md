@@ -1,4 +1,4 @@
-# 5th March 2016:  Sprint One: Spring Boot, Docker, Amazon ECS #
+# 5th March 2016:  Sprint 1: Spring Boot, Docker, Amazon ECS #
 
 The goals of this sprint are:
 

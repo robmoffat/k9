@@ -2,22 +2,35 @@ package com.kite9.k9server.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 @Entity
-public class User {
+public class User extends AbstractLongIdEntity {
 
-	@Id
-	@Column(unique=true, length=20, nullable=false)
+	/**
+	 * Users can call themselves anything.  We'll use email address to log in.
+	 */
 	private String username;
 
+	@JsonIgnore
 	private String password;
+	
+	/**
+	 * Users have to provide a unique email address.  But, we will validate that it belongs to them 
+	 * as well.
+	 */
+	@JsonIgnore
+	@Column(unique=true, length=70, nullable=false)
 	private String email;
 
+	/**
+	 * This will be used as an API key, when calling the REST services.
+	 */
 	@Column(length=32, nullable=false)
-	private String secret;
+	private String api;
 	
-	private boolean enabled = true;
 	private boolean accountExpired = false;
 	private boolean accountLocked = false;
 	private boolean passwordExpired = false;
@@ -32,7 +45,7 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		this.secret = Project.createRandomString();
+		this.api = Project.createRandomString();
 	}
 
 
@@ -86,22 +99,6 @@ public class User {
 		this.email = email;
 	}
 
-	public String getSecret() {
-		return secret;
-	}
-
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public boolean isAccountExpired() {
 		return accountExpired;
 	}
@@ -140,6 +137,14 @@ public class User {
 
 	public void setEmailVerified(boolean emailVerified) {
 		this.emailVerified = emailVerified;
+	}
+
+	public String getApi() {
+		return api;
+	}
+
+	public void setApi(String api) {
+		this.api = api;
 	}
 	
 	
