@@ -26,8 +26,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 	@Autowired
 	DocumentRepository documentRepository;
 	
-//	@Autowired
-//	UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 	
 	
 	@Override
@@ -49,8 +49,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 		documentRepository.save(document3);
 		
 		// add some users
-//		User u1 = new User("test1", "blah", "test1@kite9.com");
-//		userRepository.save(u1);
+		User u1 = new User("test1", "blah", "test1@kite9.com");
+		userRepository.save(u1);
 		
 	}
 

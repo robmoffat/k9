@@ -215,4 +215,33 @@ Following the pattern of the existing REST tests, I added this:
 
 ### Encrypting The Password
 
+It's a bad idea to store passwords as plaintext in the database, so I am going to hash them with SHA-1 and store that.  
+
+My code to do this looks like this:
+
+```
+	 * Generates the SHA-1 hash of the document.
+	 */
+	public String generateHash(String document) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			byte[] data = document.getBytes();
+			byte[] out = md.digest(data);
+
+			// convert the byte to hex format method 1
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < out.length; i++) {
+				sb.append(Integer.toString((out[i] & 0xff) + 0x100, 16).substring(1));
+			}
+
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("Algorithm doesn't exist!", e);
+		}
+	}
+```
+
+Is SHA-1 the right algorithm?  Not sure.  Probably it should be something else, I will look at this.
+
+
 

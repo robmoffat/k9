@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.domain.User;
+import com.kite9.k9server.security.Hash;
 
 @BasePathAwareController
 public class UserController {
@@ -32,7 +33,9 @@ public class UserController {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
 		}
 		
-		User u = new User(username, password, email);
+		String passwordHash = Hash.generatePasswordHash(password);
+		
+		User u = new User(username, passwordHash, email);
 		userRepository.save(u);
 		return ResponseEntity.ok(u);
 	}

@@ -15,6 +15,7 @@ public class User extends AbstractLongIdEntity {
 	private String username;
 
 	@JsonIgnore
+	@Column(length=40)
 	private String password;
 	
 	/**
