@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 @Entity
 public class User extends AbstractLongIdEntity {
@@ -15,7 +14,7 @@ public class User extends AbstractLongIdEntity {
 	private String username;
 
 	@JsonIgnore
-	@Column(length=40)
+	@Column(length=60)			// long enough for BCrypted password
 	private String password;
 	
 	/**

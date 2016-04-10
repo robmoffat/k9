@@ -25,22 +25,22 @@ public class RestRoundTripIT extends AbstractRestIT {
 	public void testProject() {
 		String url = urlBase + "/api/projects";
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
-		ResponseEntity<Project> pOut = restTemplate.postForEntity(url, pIn, Project.class);
+		ResponseEntity<Project> pOut = getRestTemplate().postForEntity(url, pIn, Project.class);
 		checkEquals(pIn, pOut.getBody());
 
 		// retrieve it again
-		Project pGet = restTemplate.getForObject(pOut.getHeaders().getLocation(), Project.class);
+		Project pGet = getRestTemplate().getForObject(pOut.getHeaders().getLocation(), Project.class);
 		checkEquals(pIn, pGet);
 		
 		// delete it
-		restTemplate.delete(pOut.getHeaders().getLocation());
+		getRestTemplate().delete(pOut.getHeaders().getLocation());
 	}
 	
 	@Test
 	public void testDocument() throws RestClientException, IOException {
 		// create a project
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
-		ResponseEntity<Project> pOut = restTemplate.postForEntity(urlBase + "/api/projects", pIn, Project.class);
+		ResponseEntity<Project> pOut = getRestTemplate().postForEntity(urlBase + "/api/projects", pIn, Project.class);
 		String url = pOut.getHeaders().getLocation().toString();
 
 		// create a document on this project
@@ -52,17 +52,17 @@ public class RestRoundTripIT extends AbstractRestIT {
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-		ResponseEntity<Document> dOut = restTemplate.exchange(urlBase + "/api/documents", HttpMethod.POST, 
+		ResponseEntity<Document> dOut = getRestTemplate().exchange(urlBase + "/api/documents", HttpMethod.POST, 
 				new HttpEntity<String>(mapper.writeValueAsString(requestBody), requestHeaders),
 				Document.class);
 
 		// list the documents for a project
 		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {
 		};
-		ResponseEntity<Resources<Document>> docList = restTemplate.exchange(url + "/documents", HttpMethod.GET, null, pt);
+		ResponseEntity<Resources<Document>> docList = getRestTemplate().exchange(url + "/documents", HttpMethod.GET, null, pt);
 
 		// should cascade the delete
-		restTemplate.delete(url);
+		getRestTemplate().delete(url);
 	}
 	
 	public void checkEquals(Project expected, Project actual) {

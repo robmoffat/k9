@@ -8,11 +8,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AbstractRestIT extends AbstractDockerIT {
 
 	protected ObjectMapper mapper = new ObjectMapper();
-	protected RestTemplate restTemplate = new RestTemplate(new SimpleClientHttpRequestFactory());
 	protected String urlBase = "http://" + getDockerHostName()+ ":8080";
 
 	public AbstractRestIT() {
 		super();
+	}
+	
+	protected RestTemplate getRestTemplate() {
+		return new RestTemplate(new SimpleClientHttpRequestFactory());
 	}
 
 }

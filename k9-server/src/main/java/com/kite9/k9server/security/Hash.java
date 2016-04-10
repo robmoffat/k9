@@ -3,8 +3,13 @@ package com.kite9.k9server.security;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class Hash {
 
+	private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+	
 	/**
 	 * Generates the SHA-1 hash of the document.
 	 */
@@ -27,7 +32,11 @@ public class Hash {
 	}
 	
 	public static String generatePasswordHash(String password) {
-		return generateHash("sdkfhsdkjfsdj324329ibas"+password);
+		return encoder.encode(password);
+	}
+	
+	public static boolean checkPassword(String rawPassword, String encodedPassword) {
+		return encoder.matches(rawPassword, encodedPassword);
 		
 	}
 }

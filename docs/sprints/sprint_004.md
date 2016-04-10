@@ -9,6 +9,7 @@
 - Log-in Screen (steal these from the existing grails app for now)
 - Limiting the projects you can look up, based on who you are.
 - Need to check email works
+- Secure the application.
 
 ## Step 1: User Entity.
 
@@ -87,13 +88,21 @@ So, if I query the endpoint /users, I get back:
 
 Really, we *never* want people to query users via the REST URL in this way.  What are the operations we actually do want?
 
-- **Create User**:  it should be possible to post in a new user, with an email, username and password.
-- **Get API Key**:  returns the API key, when you give the email address and password (i.e. log in).   Can only log in if account not locked, expired, and password not expired.
-- **Update User**:  change the username, email, password etc, using the api key as verification it's you.
-- **Validate Email**: you provide some proof-of-address.
-- **Password Reset Request**: you provide an email, and it sends a password reset email, and sets "passwordExpired" to true.  It also changes the password to something random.   
-- **Update Password**: you provide a new password, and a proof-of-address.
+- Unsecured: 
+ - **Create User**:  it should be possible to post in a new user, with an email, username and password.
+ - Probably some static pages, error pages etc.
 
+- Password Secured (i.e. Form-Based):
+ - **Get API Key**:  returns the API key, when you give the email address and password (i.e. log in).   Can only log in if account not locked, expired, and password not expired.
+
+- Api Key Secured:
+ - **Update User**:  change the username, email, password etc, using the api key as verification it's you.
+ - **Validate Email-Send**: Sends you an email with a link to validate your email address.
+ - **Validate Email**: you provide some proof-of-address.
+ - **Password Reset Request**: you provide an email, and it sends a password reset email, and sets "passwordExpired" to true.  It also changes the password to something random.   
+ - **Update Password**: you provide a new password, and a proof-of-address.
+ - and pretty much the entire rest of the application. 
+ 
 ## Proof-Of-Address
 
 This is emailed to you.  It consists of a hash of username, password, email address and api key.  
@@ -196,7 +205,7 @@ and the same on email, gives:
 Following the pattern of the existing REST tests, I added this:
 
 ```
-@Test
+	@Test
 	public void testCreateUser() {
 		Map<String, String> vars = new HashMap<>();
 		String username = "Joe Bloggs";
@@ -215,33 +224,127 @@ Following the pattern of the existing REST tests, I added this:
 
 ### Encrypting The Password
 
-It's a bad idea to store passwords as plaintext in the database, so I am going to hash them with SHA-1 and store that.  
+It's a bad idea to store passwords as plaintext in the database, so I am going to hash them and store that.  
 
 My code to do this looks like this:
 
 ```
-	 * Generates the SHA-1 hash of the document.
-	 */
-	public String generateHash(String document) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			byte[] data = document.getBytes();
-			byte[] out = md.digest(data);
-
-			// convert the byte to hex format method 1
-			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < out.length; i++) {
-				sb.append(Integer.toString((out[i] & 0xff) + 0x100, 16).substring(1));
-			}
-
-			return sb.toString();
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("Algorithm doesn't exist!", e);
-		}
+	public static String generatePasswordHash(String password) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		return encoder.encode(password);
 	}
 ```
 
-Is SHA-1 the right algorithm?  Not sure.  Probably it should be something else, I will look at this.
+This uses the standard Spring BCrypt encoder, which is designed for passwords.
+
+## Coding **Validate Email-Send**
+
+This is where it gets interesting.  We only want users who are logged in to be able to call this service.  So, that means that we need to pass the authentication information 
+through.  Since REST is supposed  to be stateless, to do this, we are going to pass the API key through as a header parameter (Authorization).  This seems to me to be a 
+good approach to the [problems described here](http://stackoverflow.com/questions/319530/restful-authentication).
+
+The one drawback of this approach is that someone could re-use your cookie elsewhere if they wanted to.  This isn't really regarded as a problem generally for web services, 
+and I don't think it really should be here, either.  We can always add a "Log Out" feature which invalidates their API key, if needed.
+
+### How Does It Work?  Using cURL
+
+Trying this:
+
+```
+curl -v -H  "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" http://localhost:8080/api/projects
+```
+
+Means that I get an object back in Spring like this:
+
+```
+authentication	UsernamePasswordAuthenticationToken  (id=9357)	
+	authenticated	false	
+	authorities		Collections$EmptyList<E>  (id=9359)	
+	credentials		"open sesame" (id=9360)	
+	details			WebAuthenticationDetails  (id=9361)	
+	principal		"Aladdin" (id=9362)	
+```
+
+So, that's BASIC auth going on, and it's using a class called `BasicAuthenticationFilter`.  I am now going to create my own.
+
+### Kite9ApiBasedAuthenticationFilter
+
+This is a filter I have designed, to cope with situations where the `Authorization` http header field is set with a value starting with 'KITE9' (and then the API key... for now.  Possibly we will
+encode this in some way later.)
+
+This has some code like this: 
+
+```java
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException { (1)
+		String header = request.getHeader("Authorization");
+
+		if (header != null && header.startsWith(KITE9_AUTH_PREFIX)) {
+			String apiKey = header.substring(KITE9_AUTH_PREFIX.length());  (2)
+	
+			try {
+	
+				if (authenticationIsRequired(apiKey)) {
+					ApiKeyAuthentication authRequest = new ApiKeyAuthentication(apiKey);
+					authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+					Authentication authResult = authenticationManager.authenticate(authRequest);
+					SecurityContextHolder.getContext().setAuthentication(authResult);
+				}
+	
+			} catch (AuthenticationException failed) {
+				SecurityContextHolder.clearContext();
+				authenticationEntryPoint.commence(request, response, failed);
+				return;
+			}
+		}
+
+		filterChain.doFilter(request, response);  (3)
+	}
+```
+
+1. Because it extends `OncePerRequestFilter`, this is the only method that needs to be implemented.  
+2. It looks for the apiKey, and if one exists, it creates an `ApiKeyAuthentiation' object.  This is just a simple implementation of Spring's `Authentication` interface, and that's used by an `AuthenticationProvider`.
+3. This continues on the request chain, for the main processing of the servlets.
+
+### Configuring URL Pipeline
+
+To configure this in the servlet filter pipeline, I need to change my `WebSecurityConfig` configuration.
+
+I need to be able to:
+
+ - Have the new authentication filter
+ - Allow access to 'public' urls, without the filter, but 
+ - only allow accesss to api methods behind the authenticated role.
+
+```java
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	protected void configure(HttpSecurity http) throws Exception {
+		LoginUrlAuthenticationEntryPoint entryPoint = new LoginUrlAuthenticationEntryPoint("/login");   (1)
+		Kite9ApiKeyBasedAuthenticationFilter kite9ApiFilter = 
+				new Kite9ApiKeyBasedAuthenticationFilter(authenticationManager(), entryPoint);       
+		
+		http.addFilterAfter(kite9ApiFilter, BasicAuthenticationFilter.class);	//  API-key approach (2)
+		http.csrf().disable();
+		http.formLogin();  (3)
+		http.authorizeRequests()   (4)
+			.antMatchers("/api/public/**").permitAll()
+			.antMatchers("/**").authenticated();
+	}
+```
+
+1.  In the case of login failures, this is where the kite9ApiFilter will send you.
+2.  Configuring the Kite9 login filter as part of the servlet chain.
+3.  Also allowing form login - although this will need more configuration later.
+4.  This says:  allow any public api URLs for anyone, anything else needs authentication.  Again, more work will be needed here.
+
+
+
+
+
+
 
 
 

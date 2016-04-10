@@ -18,4 +18,7 @@ import com.kite9.k9server.domain.User;
 public interface UserRepository extends CrudRepository<User, Long> {
 
 	public User findByEmail(String email);
+	
+	public User findByApi(String api);
+
 }
