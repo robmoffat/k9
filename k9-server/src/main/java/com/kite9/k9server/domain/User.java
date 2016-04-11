@@ -48,8 +48,6 @@ public class User extends AbstractLongIdEntity {
 		this.api = Project.createRandomString();
 	}
 
-
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -19,6 +19,12 @@ import com.kite9.k9server.domain.User;
 @Component
 @Profile("populate")
 public class PopulateDomainModel implements CommandLineRunner {
+	
+	public static final User TEST_USER = new User("test1", "blah", "test1@kite9.com");
+	
+	static {
+		TEST_USER.setApi("test-user-api-key");
+	}
 
 	@Autowired
 	ProjectRepository projectRepository;
@@ -48,10 +54,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 		documentRepository.save(document2);
 		documentRepository.save(document3);
 		
-		// add some users
-		User u1 = new User("test1", "blah", "test1@kite9.com");
-		userRepository.save(u1);
-		
+		// add the test user
+		userRepository.save(TEST_USER);
 	}
 
 }

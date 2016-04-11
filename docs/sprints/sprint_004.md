@@ -9,7 +9,8 @@
 - Log-in Screen (steal these from the existing grails app for now)
 - Limiting the projects you can look up, based on who you are.
 - Need to check email works
-- Secure the application.
+- Secure the application, with at least one secure page.
+
 
 ## Step 1: User Entity.
 

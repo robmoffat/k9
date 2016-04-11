@@ -1,4 +1,4 @@
-package com.kite9.k9server.repos;
+package com.kite9.k9server.security;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.io.Resources;
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.security.Hash;
-import com.kite9.k9server.security.WebSecurityConfig;
+import com.kite9.k9server.repos.UserRepository;
 
 @BasePathAwareController
 public class UserController {
@@ -35,6 +34,9 @@ public class UserController {
 	private final String validationRequestTemplate;
 	
 	private static final Log LOG = LogFactory.getLog(UserController.class);
+	public static final String EMAIL_VALIDATION_RESPONSE_URL = "/public/users/email-validation-response";
+	public static final String EMAIL_VALIDATION_REQUEST_URL = "/users/email-validation-request";
+	
 	
 	@Autowired
 	public UserController(UserRepository ur) throws IOException {
@@ -43,7 +45,9 @@ public class UserController {
 	}
 	
 	/**
-	 * Public API - doesn't need security
+	 * Public API - doesn't need security.
+	 * Needs to be REST-ified, but it's easier to use GET requests using Curl, right?
+	 * 
 	 */
 	@RequestMapping(path = "/public/users/create", method=RequestMethod.GET) 
     public @ResponseBody ResponseEntity<User> createUser(
@@ -77,12 +81,13 @@ public class UserController {
     private JavaMailSender mailSender;
 	
 	
-	private String generateValidationCode(User principal) {
+	public static String generateValidationCode(User principal) {
 		String email = principal.getEmail();
 		String api = principal.getApi();
 		String salt = ""+principal.getUsername().hashCode()+"|sk&HFSJNA";
-		
-		String code = Hash.generateHash(email+"|"+api+"|"+salt);
+		String source = email+"|"+api+"|"+salt;
+		LOG.info("Hashing: "+source);
+		String code = Hash.generateHash(source);
 		return code;
 	}
 	
@@ -90,19 +95,20 @@ public class UserController {
 		String serverName = request.getServerName();
 		int port = request.getServerPort();
 		String scheme = request.getScheme();
-		Long id = principal.getId();
+		String email = principal.getEmail();
 		String code = generateValidationCode(principal);
-		return scheme+"://"+serverName+":"+port+"/public/users/email-validation-response?id="+id+"&code="+code;
+		return scheme+"://"+serverName+":"+port+EMAIL_VALIDATION_RESPONSE_URL+"?email="+email+"&code="+code;
 	}
 	
 	/**
 	 * Sends a validation request, but only to users who are logged in.
 	 */
-	@RequestMapping(path = "/users/email-validation-request", method=RequestMethod.GET) 
+	@RequestMapping(path = EMAIL_VALIDATION_REQUEST_URL, method=RequestMethod.GET) 
 	public @ResponseBody ResponseEntity<String> emailValidationRequest(Principal authentication, HttpServletRequest request) throws IOException {
 		
 		if (authentication instanceof Authentication) {
 			User u = (User) ((Authentication)authentication).getPrincipal();
+            String responseUrl = createResponseURL(u, request);
 			WebSecurityConfig.checkUser(u);
 			MimeMessagePreparator preparator = new MimeMessagePreparator() {
 
@@ -110,13 +116,13 @@ public class UserController {
 	                mimeMessage.setRecipient(RecipientType.TO, new InternetAddress(u.getEmail()));
 	                mimeMessage.setFrom(new InternetAddress("support@kite9.com"));
 	                mimeMessage.setSubject("Kite9 - Email Validation Request");
-	                mimeMessage.setText(validationRequestTemplate.replace("{username}", u.getUsername()) + createResponseURL(u, request));
+					mimeMessage.setText(validationRequestTemplate.replace("{username}", u.getUsername()) + responseUrl);
 	            }
 	        };
 	        
 	        mailSender.send(preparator);
 	        
-	        LOG.info("Emailed "+u.getEmail()+" with email validation request");
+	        LOG.info("Emailed "+u.getEmail()+" with email validation response url: "+responseUrl);
 		
 			return ResponseEntity.ok("Please check your email for a message from Kite9 Support.");
 			
@@ -126,9 +132,9 @@ public class UserController {
 		
 	}
 	
-	@RequestMapping(path = "/public/users/email-validation-response", method=RequestMethod.GET) 
-	public @ResponseBody ResponseEntity<String> emailValidationResponse(@RequestParam("code") String code, @RequestParam("id") Long id) throws IOException {
-		User u = userRepository.findOne(id);
+	@RequestMapping(path = EMAIL_VALIDATION_RESPONSE_URL, method=RequestMethod.GET) 
+	public @ResponseBody ResponseEntity<String> emailValidationResponse(@RequestParam("code") String code, @RequestParam("email") String email) throws IOException {
+		User u = userRepository.findByEmail(email);
 		WebSecurityConfig.checkUser(u);
 		
 		String expectedCode = generateValidationCode(u);

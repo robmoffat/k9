@@ -1,76 +1,16 @@
 package com.kite9.k9server.docker;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.security.crypto.codec.Base64;
-import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.domain.User;
+import com.kite9.k9server.security.UserController;
 
 public class RestUserAndSecurityIT extends AbstractRestIT {
 
-	private final class SilentErrorHandler implements ResponseErrorHandler {
-		
-		@Override
-		public boolean hasError(ClientHttpResponse response) throws IOException {
-			return false;
-		}
-
-		@Override
-		public void handleError(ClientHttpResponse response) throws IOException {
-		}
-	}
-	
-	private ResponseEntity<User> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) {
-		String url = urlBase + "/api/users/retrieve?password="+password+"&email="+email;
-		HttpEntity<String> entity = createBasicAuthHeaders(email, password);
-		ResponseEntity<User> uOut = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
-		return uOut;
-	}
-	
-	private ResponseEntity<User> createUser(RestTemplate restTemplate, String username, String password, String email) {
-		String url = urlBase + "/api/public/users/create?username="+username+"&password="+password+"&email="+email;
-		ResponseEntity<User> uOut = restTemplate.getForEntity(url, User.class);
-		return uOut;
-	}
-	
-	private ResponseEntity<String> emailValidateRequest(RestTemplate restTemplate, String apiKey) {
-		String url = urlBase + "/api/users/email-validation-request";
-		HttpEntity<String> entity = createKite9AuthHeaders(apiKey);
-		ResponseEntity<String> sOut = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-		return sOut;
-	}
-	
-	private HttpEntity<String> createBasicAuthHeaders(String username, String password) {
-		HttpHeaders headers = new HttpHeaders();
-		String auth = username + ":" + password;
-		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset.forName("US-ASCII")));
-		String authHeader = "Basic " + new String( encodedAuth );
-		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		return entity;
-	}
-
-	private HttpEntity<String> createKite9AuthHeaders(String apiKey) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		return entity;
-	}
 
 	@Test
 	public void testCreateUserRestAPI() {
@@ -115,9 +55,11 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		restTemplate.setErrorHandler(new SilentErrorHandler());
 
 		String email = "mn@example.com";
-		ResponseEntity<User> uOut = createUser(restTemplate, "MightyNew", "1234", email);
+		String password = "1234";
+		ResponseEntity<User> uOut = createUser(restTemplate, "MightyNew", password, email);
 		User u = uOut.getBody();
 		String apiKey = u.getApi();
+		Assert.assertFalse(u.isEmailVerified());
 		
 		// make sure that the api can be called to email them
 		ResponseEntity<String> resp = emailValidateRequest(restTemplate, apiKey);
@@ -126,6 +68,21 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		// ensure that a wrong api key will fail the call
 		resp = emailValidateRequest(restTemplate, "blardyblar");
 		Assert.assertEquals(HttpStatus.UNAUTHORIZED, resp.getStatusCode());
+		
+		// next, simulate the approval process
+		u.setEmail(email);
+		String code = UserController.generateValidationCode(u);
+		String url = urlBase+"/api"+UserController.EMAIL_VALIDATION_RESPONSE_URL+"?email="+email+"&code="+code;
+		resp = restTemplate.getForEntity(url, String.class);
+		Assert.assertEquals(HttpStatus.OK, resp.getStatusCode());
+		Assert.assertEquals("\"Email validated\"", resp.getBody());
+
+		// check validation flag now set
+		uOut = retrieveUserViaBasicAuth(restTemplate, password, email);
+		u = uOut.getBody();
+		Assert.assertTrue(u.isEmailVerified());
+
+		
 	}
 
 }

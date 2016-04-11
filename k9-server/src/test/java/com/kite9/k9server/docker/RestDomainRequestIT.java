@@ -15,11 +15,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
+import com.kite9.k9server.domain.User;
 
-public class RestRoundTripIT extends AbstractRestIT {
+public class RestDomainRequestIT extends AbstractRestIT {
 	
 	@Test
 	public void testProject() {
@@ -39,8 +41,14 @@ public class RestRoundTripIT extends AbstractRestIT {
 	@Test
 	public void testDocument() throws RestClientException, IOException {
 		// create a project
+		RestTemplate restTemplate = getRestTemplate();
+		restTemplate.setErrorHandler(new SilentErrorHandler());
+		
+		// create a user
+		User u = createUser(restTemplate, "abc123", "facts", "thing@example.com").getBody();
+		
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
-		ResponseEntity<Project> pOut = getRestTemplate().postForEntity(urlBase + "/api/projects", pIn, Project.class);
+		ResponseEntity<Project> pOut = postAsTestUser(restTemplate, pIn, Project.class, urlBase + "/api/projects", u);
 		String url = pOut.getHeaders().getLocation().toString();
 
 		// create a document on this project
@@ -51,14 +59,14 @@ public class RestRoundTripIT extends AbstractRestIT {
 
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		requestHeaders.add(HttpHeaders.AUTHORIZATION, "KITE9 "+u.getApi());
 
 		ResponseEntity<Document> dOut = getRestTemplate().exchange(urlBase + "/api/documents", HttpMethod.POST, 
 				new HttpEntity<String>(mapper.writeValueAsString(requestBody), requestHeaders),
 				Document.class);
 
 		// list the documents for a project
-		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {
-		};
+		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {};
 		ResponseEntity<Resources<Document>> docList = getRestTemplate().exchange(url + "/documents", HttpMethod.GET, null, pt);
 
 		// should cascade the delete
@@ -70,6 +78,4 @@ public class RestRoundTripIT extends AbstractRestIT {
 		Assert.assertEquals(expected.getDescription(), actual.getDescription());
 		Assert.assertEquals(expected.getStub(), actual.getStub());
 	}
-
-
 }
