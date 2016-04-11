@@ -35,7 +35,7 @@ public class AbstractRestIT extends AbstractDockerIT {
 
 	
 	protected ResponseEntity<User> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) {
-		String url = urlBase + "/api/users/retrieve?password="+password+"&email="+email;
+		String url = urlBase + "/api/users";
 		HttpEntity<String> entity = createBasicAuthHeaders(email, password);
 		ResponseEntity<User> uOut = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
 		return uOut;

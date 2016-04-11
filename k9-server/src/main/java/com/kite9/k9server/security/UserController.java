@@ -68,7 +68,7 @@ public class UserController {
 		return ResponseEntity.ok(u);
 	}
 	
-	@RequestMapping(path = "/users/retrieve", method=RequestMethod.GET) 
+	@RequestMapping(path = "/users", method=RequestMethod.GET) 
     public @ResponseBody ResponseEntity<User> retrieveUser(Principal p) {
 		if (p instanceof Authentication) {
 			User u = (User) ((Authentication) p).getPrincipal();
