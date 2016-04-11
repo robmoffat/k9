@@ -3,6 +3,8 @@ package com.kite9.k9server.docker;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,8 +48,12 @@ public class AbstractRestIT extends AbstractDockerIT {
 	}
 	
 	protected ResponseEntity<User> createUser(RestTemplate restTemplate, String username, String password, String email) {
-		String url = urlBase + "/api/public/users/create?username="+username+"&password="+password+"&email="+email;
-		ResponseEntity<User> uOut = restTemplate.getForEntity(url, User.class);
+		String url = urlBase + "/api/public/users";
+		Map<String, String> user = new HashMap<>();
+		user.put("username", username);
+		user.put("password", password);
+		user.put("email", email);
+		ResponseEntity<User> uOut = restTemplate.postForEntity(url, user, User.class);
 		return uOut;
 	}
 	

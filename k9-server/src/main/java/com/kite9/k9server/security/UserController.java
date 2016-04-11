@@ -3,6 +3,7 @@ package com.kite9.k9server.security;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.Principal;
+import java.util.Map;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,12 +51,11 @@ public class UserController {
 	 * Needs to be REST-ified, but it's easier to use GET requests using Curl, right?
 	 * 
 	 */
-	@RequestMapping(path = "/public/users/create", method=RequestMethod.GET) 
-    public @ResponseBody ResponseEntity<User> createUser(
-    		@RequestParam(name="username") String username, 
-    		@RequestParam(name="password") String password, 
-    		@RequestParam(name="email") String email) {
-		
+	@RequestMapping(path = "/public/users", method=RequestMethod.POST) 
+    public @ResponseBody ResponseEntity<User> createUser(@RequestBody Map<String, String> newUser) {
+		String email = newUser.get("email");
+		String password = newUser.get("password");
+		String username = newUser.get("username");
 		User existing = userRepository.findByEmail(email);
 		if (existing != null) {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);
