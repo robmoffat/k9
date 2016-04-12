@@ -48,14 +48,16 @@ public class UserController {
 	
 	/**
 	 * Public API - doesn't need security.
-	 * Needs to be REST-ified, but it's easier to use GET requests using Curl, right?
-	 * 
+	 * You can call this with curl like:
+	 * <pre>
+	 * curl -v -H "Content-Type: application/json" -d '{ "username" : "bob", "password": "pass", "email" : "rob@kite9.com" }' http://localhost:8080/api/public/users
+	 * </pre>
 	 */
 	@RequestMapping(path = "/public/users", method=RequestMethod.POST) 
-    public @ResponseBody ResponseEntity<User> createUser(@RequestBody Map<String, String> newUser) {
-		String email = newUser.get("email");
-		String password = newUser.get("password");
-		String username = newUser.get("username");
+    public @ResponseBody ResponseEntity<User> createUser(@RequestBody User newUser) {
+		String email = newUser.getEmail();
+		String password = newUser.getPassword();
+		String username = newUser.getUsername();
 		User existing = userRepository.findByEmail(email);
 		if (existing != null) {
 			return new ResponseEntity<User>(HttpStatus.CONFLICT);

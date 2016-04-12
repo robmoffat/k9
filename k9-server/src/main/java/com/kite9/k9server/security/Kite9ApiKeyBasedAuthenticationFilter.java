@@ -53,6 +53,7 @@ public class Kite9ApiKeyBasedAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);
+		return;
 	}
 
 	

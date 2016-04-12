@@ -30,5 +30,7 @@ public class AbstractDockerIT {
 	public static void dispose() {
 		if (ctx != null)
 			SpringApplication.exit(ctx);
+		
+		ctx = null;
 	}
 }

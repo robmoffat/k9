@@ -57,6 +57,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		ApiKeyAuthentication apiKeyAuthentication = (ApiKeyAuthentication) authentication;
 		User u = userRepository.findByApi((String) apiKeyAuthentication.getCredentials());
 		WebSecurityConfig.checkUser(u);
-		return new ApiKeyAuthentication((String) apiKeyAuthentication.getCredentials(), u);
+		return new ApiKeyAuthentication((String) apiKeyAuthentication.getCredentials(), u, Collections.singletonList(WebSecurityConfig.KITE9_USER));
 	}
 }

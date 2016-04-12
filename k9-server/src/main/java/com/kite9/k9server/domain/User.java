@@ -13,15 +13,17 @@ public class User extends AbstractLongIdEntity {
 	 */
 	private String username;
 
-	@JsonIgnore
-	@Column(length=60)			// long enough for BCrypted password
+	/**
+	 * In the database, this just stores the hash of the password, using bcrypt.
+	 * However, the client sends the password in this field when creating a user.
+	 */
+	@Column(length=60)			
 	private String password;
 	
 	/**
 	 * Users have to provide a unique email address.  But, we will validate that it belongs to them 
 	 * as well.
 	 */
-	@JsonIgnore
 	@Column(unique=true, length=70, nullable=false)
 	private String email;
 

@@ -1,3 +1,5 @@
+# NB: Not used at this moment in time, waiting for fabric8 plugin to support compose format.
+
 version: '2'
    
 services:

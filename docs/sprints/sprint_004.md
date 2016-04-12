@@ -2,9 +2,9 @@
 
 ## Goals of the Sprint: 
 
-- User entity, creatable, queryable via rest, tested.
-- Sign Up Screen:  *Name*, *Email Address*, *Password*.  This would send an email out to *confirm* the email address.  
-- A special URL would confirm the email, being a hash of some secret salt and their details.
+- User entity, creatable, queryable via rest, tested.  DONE
+- Sign Up Screen:  *Name*, *Email Address*, *Password*.  This would send an email out to *confirm* the email address.  DONE
+- A special URL would confirm the email, being a hash of some secret salt and their details.  DONE
 - Edit screen:  user is allowed to go onto their page and change the email, but that invalidates it again (meaning we don't send to it).
 - Log-in Screen (steal these from the existing grails app for now)
 - Limiting the projects you can look up, based on who you are.
@@ -341,7 +341,57 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 3.  Also allowing form login - although this will need more configuration later.
 4.  This says:  allow any public api URLs for anyone, anything else needs authentication.  Again, more work will be needed here.
 
+### UserAuthenticationProvider
 
+This provides the linkage between our `User` class and Spring Security.  Since we have `ApiKeyAuthentication`, and we want to 
+support form-based and basic authentication, we need to support `UsernamePasswordAuthenticationToken` too:
+
+```java
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return authentication.equals(ApiKeyAuthentication.class) || authentication.equals(UsernamePasswordAuthenticationToken.class);
+	}
+
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		if (authentication instanceof ApiKeyAuthentication) {
+			return handleApiKeyAuthentication(authentication);
+		} else if (authentication instanceof UsernamePasswordAuthenticationToken) {
+			return handleFormBasedAuthentication(authentication);
+		}
+		
+		return null;
+	}
+```
+
+API-Based auth looks like this:
+
+```java
+
+	private Authentication handleFormBasedAuthentication(Authentication authentication) {
+		User u = userRepository.findByEmail(authentication.getName());
+		WebSecurityConfig.checkUser(u);
+		String givenPassword = (String) authentication.getCredentials();
+		if (Hash.checkPassword(givenPassword, u.getPassword())) {
+			return new UsernamePasswordAuthenticationToken(u, authentication.getCredentials(), Collections.singletonList(WebSecurityConfig.KITE9_USER));
+		} else {
+			throw new BadCredentialsException("Bad Login Credentials");
+		}
+	}
+```
+
+It finds the user by email, and then checks the Bcrypted passwords match. 
+
+## Form-Based Login
+
+This is slightly more complex, since we need to have put together some forms.  However, Spring seems to contain most of this
+stuff automatically due to the `http.formLogin();  ` in the web configuration, and if I try to access a protected resource, I get this:
+
+![Spring Default Login Screen](images/004_1.png)
+
+When I log in using this, I get access to my protected page.  So, form-based login is already working and I just need a test.
+
+### A Test For Form-Based Login
 
 
 

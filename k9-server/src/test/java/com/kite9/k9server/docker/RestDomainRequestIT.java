@@ -8,10 +8,13 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -25,52 +28,64 @@ public class RestDomainRequestIT extends AbstractRestIT {
 	
 	@Test
 	public void testProject() {
+		// setup the template
+		RestTemplate restTemplate = getRestTemplate();
+		restTemplate.setErrorHandler(new SilentErrorHandler());
+
+		// create a user
+		User u = createUser(restTemplate, "abc1234", "facts", "thing2@example.com").getBody();
+
+		// create a first project
 		String url = urlBase + "/api/projects";
-		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
-		ResponseEntity<Project> pOut = getRestTemplate().postForEntity(url, pIn, Project.class);
+		Project pIn = new Project("Test Project 2", "Lorem Ipsum 1", "tp2");
+		ResponseEntity<Project> pOut = postAsTestUser(restTemplate, pIn, Project.class, url, u);
 		checkEquals(pIn, pOut.getBody());
 
 		// retrieve it again
-		Project pGet = getRestTemplate().getForObject(pOut.getHeaders().getLocation(), Project.class);
-		checkEquals(pIn, pGet);
+		ResponseEntity<Project> pGet = retrieveObjectViaApiAuth(restTemplate, u, pOut.getHeaders().getLocation().toString(), Project.class);
+		checkEquals(pIn, pGet.getBody());
 		
 		// delete it
-		getRestTemplate().delete(pOut.getHeaders().getLocation());
+		deleteViaApiAuth(restTemplate, pOut.getHeaders().getLocation().toString(), u);
+		
+		// make sure it got deleted
+		pGet = retrieveObjectViaApiAuth(restTemplate, u, pOut.getHeaders().getLocation().toString(), Project.class);
+		Assert.assertEquals(HttpStatus.NOT_FOUND, pGet.getStatusCode());
+		
 	}
-	
+
 	@Test
 	public void testDocument() throws RestClientException, IOException {
-		// create a project
+		// setup the template
 		RestTemplate restTemplate = getRestTemplate();
 		restTemplate.setErrorHandler(new SilentErrorHandler());
 		
 		// create a user
 		User u = createUser(restTemplate, "abc123", "facts", "thing@example.com").getBody();
 		
+		// create a project
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
 		ResponseEntity<Project> pOut = postAsTestUser(restTemplate, pIn, Project.class, urlBase + "/api/projects", u);
-		String url = pOut.getHeaders().getLocation().toString();
+		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());
+		
 
 		// create a document on this project
+		String url = pOut.getHeaders().getLocation().toString();
 		Map<String, Object> requestBody = new HashMap<String, Object>();
 		requestBody.put("title", "Doc Test");
 		requestBody.put("description", "Blah");
 		requestBody.put("project", url);
+		HttpEntity<String> in = createKite9AuthHeaders(u.getApi(), mapper.writeValueAsString(requestBody));
+		ResponseEntity<Document> dOut = restTemplate.exchange(urlBase + "/api/documents", HttpMethod.POST, 
+				in, Document.class);
+		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
 
-		HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-		requestHeaders.add(HttpHeaders.AUTHORIZATION, "KITE9 "+u.getApi());
-
-		ResponseEntity<Document> dOut = getRestTemplate().exchange(urlBase + "/api/documents", HttpMethod.POST, 
-				new HttpEntity<String>(mapper.writeValueAsString(requestBody), requestHeaders),
-				Document.class);
-
-		// list the documents for a project
-		ParameterizedTypeReference<Resources<Document>> pt = new ParameterizedTypeReference<Resources<Document>>() {};
-		ResponseEntity<Resources<Document>> docList = getRestTemplate().exchange(url + "/documents", HttpMethod.GET, null, pt);
-
+		// check the document belongs to the project
+		ResponseEntity<String> stringList = retrieveObjectViaApiAuth(restTemplate, u, url+"/documents", String.class);
+		Assert.assertTrue(stringList.getBody().contains("\"title\" : \"Doc Test\""));
+				
 		// should cascade the delete
-		getRestTemplate().delete(url);
+		restTemplate.delete(url);
 	}
 	
 	public void checkEquals(Project expected, Project actual) {

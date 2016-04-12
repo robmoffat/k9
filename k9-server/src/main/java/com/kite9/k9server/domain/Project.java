@@ -27,7 +27,7 @@ public class Project extends AbstractLongIdEntity {
 	
 	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<Document> documents;
-	
+
 	public Project() {
 	}
     
@@ -79,5 +79,10 @@ public class Project extends AbstractLongIdEntity {
 	public void setSecret(String secret) {
 		this.secret = secret;
 	}
+	
+	public List<Document> getDocuments() {
+		return documents;
+	}
+
 	
 }

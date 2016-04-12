@@ -124,6 +124,7 @@
 								<envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.properties</envPropertyFile>
 								<extraHosts>
 									<host>mysql:Robs-MacBook.local</host>
+									<host>mail:Robs-MacBook.local</host>
 								</extraHosts>
 								<ports>
 									<port>8080:8080</port>
