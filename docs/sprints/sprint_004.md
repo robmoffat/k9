@@ -3,13 +3,13 @@
 ## Goals of the Sprint: 
 
 - User entity, creatable, queryable via rest, tested.  DONE
-- Sign Up Screen:  *Name*, *Email Address*, *Password*.  This would send an email out to *confirm* the email address.  DONE
+- Sign Up API:  *Name*, *Email Address*, *Password*.  This would send an email out to *confirm* the email address.  DONE
 - A special URL would confirm the email, being a hash of some secret salt and their details.  DONE
-- Edit screen:  user is allowed to go onto their page and change the email, but that invalidates it again (meaning we don't send to it).
-- Log-in Screen (steal these from the existing grails app for now)
+- Secure the application, with at least one secure page. DONE
+- Log-in Form (don't bother styling it just yet) DONE
+- Need to check email works 
+- Password reset
 - Limiting the projects you can look up, based on who you are.
-- Need to check email works
-- Secure the application, with at least one secure page.
 
 
 ## Step 1: User Entity.
@@ -171,28 +171,6 @@ You get back something like:
   "password" : "bob",
   "email" : "ttt",
   "api" : "4ecp09bvdqege20d4qg4j9i7j7",
-  "accountExpired" : false,
-  "accountLocked" : false,
-  "passwordExpired" : false,
-  "emailable" : true,
-  "emailVerified" : false
-}
-```
-
-Which is *still* not great:  we definitely don't want email address or password *ever* shown.  Let's deal with this now.
-
-```java
-	@JsonIgnore
-	private String password;
-```
-
-and the same on email, gives:
-
-```
-{
-  "id" : 1,
-  "username" : "rob",
-  "api" : "qekffvemipgt46dui2mn1m2fdj",
   "accountExpired" : false,
   "accountLocked" : false,
   "passwordExpired" : false,
@@ -389,9 +367,118 @@ stuff automatically due to the `http.formLogin();  ` in the web configuration, a
 
 ![Spring Default Login Screen](images/004_1.png)
 
-When I log in using this, I get access to my protected page.  So, form-based login is already working and I just need a test.
+When I log in using this, I get access to my protected page.  So, form-based login is already working and I just need a test.   So, the tricky part of form-based login is that it uses a cookie.  
 
-### A Test For Form-Based Login
+```java
+
+@Test
+	protected ResponseEntity<String> formLogin(RestTemplate restTemplate, String user, String password) {
+		List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters(); (1)
+		converters.add(new FormHttpMessageConverter());
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>(); (2)
+		map.add("username", user);
+		map.add("password", password);
+		map.add("submit", "Login");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED); (3)
+		HttpEntity<MultiValueMap<String, String>> in = new HttpEntity<MultiValueMap<String,String>>(map, headers);
+		ResponseEntity<String> s = restTemplate.postForEntity(urlBase+"/login", in, String.class); (4)
+		return s;
+	}
+
+
+	public void testFormBasedLogin() {
+	...
+		pOut = formLogin(restTemplate, email, password);   (5)
+		Assert.assertEquals(HttpStatus.FOUND, pOut.getStatusCode());
+		Assert.assertEquals(urlBase+"/", pOut.getHeaders().getLocation().toString());
+		List<String> cookie = pOut.getHeaders().get("Set-Cookie");
+		Assert.assertNotNull(cookie);      (6)
+		
+		// try to create a project with this cookie
+		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp2");
+		ResponseEntity<Project> projOut = exchangeUsingCookie(restTemplate, urlBase+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, Project.class);  (7)
+		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
+	...
+	}
+```
+
+1.  This method posts a form login using a username and password.  We need to add the `FormHttpMessageConverter` to the `RestTemplate` instance, since it doesn't come baked-in (I guess you don't expect form data with REST).
+2.  The fields of the form start off as a map...
+3.  Here we are adding a HTTP header to say that it's URL-encoded form-data (which is managed by the `FormHttpMessageConverter`)
+4.  ... and the map is converted and sent using the rest template.
+5.  In the main part of the test, we perform the form login..
+6.  And pull out the `Set-Cookie` header, which identifies our session.
+7.  Here we are adding the cookie in the session header.  `exchangeUsingCookie` is shown below, it's a straightforward `RestTemplate.exchange` but with the `COOKIE` header set.
+
+```
+	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.COOKIE, cookie);
+		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
+		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
+		return pOut;
+	}
+```
+
+### Sending the Email
+
+Sending the email in Spring boot is easy, so long as you configure a mail host.  This is the code:
+
+
+```java
+	@Autowired
+    private JavaMailSender mailSender; (1)
+
+	/**
+	 * Sends a validation request, but only to users who are logged in.
+	 */
+	@RequestMapping(path = EMAIL_VALIDATION_REQUEST_URL, method=RequestMethod.GET) 
+	public @ResponseBody ResponseEntity<String> emailValidationRequest(Principal authentication, HttpServletRequest request) throws IOException { (2)
+		
+		if (authentication instanceof Authentication) {
+			User u = (User) ((Authentication)authentication).getPrincipal();
+            String responseUrl = createResponseURL(u, request); (3)
+			WebSecurityConfig.checkUser(u);
+			MimeMessagePreparator preparator = new MimeMessagePreparator() { (4)
+
+	            public void prepare(MimeMessage mimeMessage) throws Exception {
+	                mimeMessage.setRecipient(RecipientType.TO, new InternetAddress(u.getEmail()));
+	                mimeMessage.setFrom(new InternetAddress("support@kite9.com"));
+	                mimeMessage.setSubject("Kite9 - Email Validation Request");
+					mimeMessage.setText(validationRequestTemplate.replace("{username}", u.getUsername()) + responseUrl);
+	            }
+	        };
+	        
+	        mailSender.send(preparator);   (5)
+	        
+	        LOG.info("Emailed "+u.getEmail()+" with email validation response url: "+responseUrl);
+		
+			return ResponseEntity.ok("Please check your email for a message from Kite9 Support.");
+			
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		
+	}
+	
+Here are some notes on the above:
+
+1.  Adding this is all the code you need, but to configure mail support in Spring Boot, but you also need `spring.mail.host=localhost` or similar in your application properties (this is in `application-dev.properties`).
+2.  Note the passing through of the `Principal` class:  this is automatically provided by Spring when it is an argument on the method.
+3.  We have another method to create the URL for the response, see below.
+4.  `MimeMessagePreparator` is a template for email messages.   
+5.  This bit sends the message.	
+
+### Creating the r
+	
+
+
+### Web Pages
+
+The Spring login page is very bare-bones.  It'd be nice to spruce this up, along with the other pages in the application, so it reflects the same Kite9 design as the 
+[Jekyll site](sprint_002.md).
+
 
 
 

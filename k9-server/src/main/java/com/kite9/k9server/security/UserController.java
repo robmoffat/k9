@@ -3,7 +3,6 @@ package com.kite9.k9server.security;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.Principal;
-import java.util.Map;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
@@ -70,6 +69,9 @@ public class UserController {
 		return ResponseEntity.ok(u);
 	}
 	
+	/** 
+	 * Returns just your logged-in user.  
+	 */
 	@RequestMapping(path = "/users", method=RequestMethod.GET) 
     public @ResponseBody ResponseEntity<User> retrieveUser(Principal p) {
 		if (p instanceof Authentication) {
@@ -80,10 +82,10 @@ public class UserController {
 		return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 	}
 	
-	@Autowired
-    private JavaMailSender mailSender;
-	
-	
+	/**
+	 * If a party knows the user's details (including their private API key) then they can
+	 * validate an email address this way.   Is this something we want?
+	 */
 	public static String generateValidationCode(User principal) {
 		String email = principal.getEmail();
 		String api = principal.getApi();
@@ -94,7 +96,10 @@ public class UserController {
 		return code;
 	}
 	
-	private String createResponseURL(User principal, HttpServletRequest request) {
+	/**
+	 * Returns the URL required to validate the email is correct
+	 */
+	private String createEmailValidationResponseURL(User principal, HttpServletRequest request) {
 		String serverName = request.getServerName();
 		int port = request.getServerPort();
 		String scheme = request.getScheme();
@@ -103,6 +108,9 @@ public class UserController {
 		return scheme+"://"+serverName+":"+port+EMAIL_VALIDATION_RESPONSE_URL+"?email="+email+"&code="+code;
 	}
 	
+	@Autowired
+    private JavaMailSender mailSender;
+
 	/**
 	 * Sends a validation request, but only to users who are logged in.
 	 */
@@ -111,7 +119,7 @@ public class UserController {
 		
 		if (authentication instanceof Authentication) {
 			User u = (User) ((Authentication)authentication).getPrincipal();
-            String responseUrl = createResponseURL(u, request);
+            String responseUrl = createEmailValidationResponseURL(u, request);
 			WebSecurityConfig.checkUser(u);
 			MimeMessagePreparator preparator = new MimeMessagePreparator() {
 

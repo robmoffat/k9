@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.addFilterAfter(kite9ApiFilter, BasicAuthenticationFilter.class);	//  API-key approach
 		http.csrf().disable();
-		http.formLogin();
+		http.formLogin().loginPage("/loginPage");
 		http.httpBasic();
 		http.authorizeRequests()
 			.antMatchers("/api/public/**").permitAll()

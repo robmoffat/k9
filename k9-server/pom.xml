@@ -96,6 +96,25 @@
 				<configuration>
 					<images>
 						<image>
+							<name>com.kite9/k9-mailer</name>
+							<alias>k9-mailer</alias>
+							<build>
+								<from>alterrebe/postfix-relay</from>
+							</build>
+							
+							<run>
+								<envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.mail.properties</envPropertyFile>
+								<log />
+								<ports>
+									<port>25:25</port>
+								</ports>
+								<wait>
+									<log>success: postfix entered RUNNING state</log>
+									<time>30000</time>							
+								</wait>
+							</run>
+						</image>
+						<image>
 							<name>com.kite9/k9-server</name>
 							<alias>k9-server</alias>
 							<build>
@@ -124,11 +143,13 @@
 								<envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.properties</envPropertyFile>
 								<extraHosts>
 									<host>mysql:Robs-MacBook.local</host>
-									<host>mail:Robs-MacBook.local</host>
 								</extraHosts>
 								<ports>
 									<port>8080:8080</port>
 								</ports>
+								<links>
+								  <link>k9-mailer</link>
+								</links>
 								<wait>
 									<log>Started Kite9ServerApplication</log>
 									<time>30000</time>
