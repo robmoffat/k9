@@ -33,6 +33,13 @@ public class User extends AbstractLongIdEntity {
 	@Column(length=32, nullable=false)
 	private String api;
 	
+	/**
+	 * Used as a salt for generating password / email reset codes and so on.  
+	 * Changed each time we generate a reset code so that codes can't be reused.
+	 */
+	@Column(length=10, nullable=false)
+	private String salt;
+	
 	private boolean accountExpired = false;
 	private boolean accountLocked = false;
 	private boolean passwordExpired = false;
@@ -48,6 +55,11 @@ public class User extends AbstractLongIdEntity {
 		this.password = password;
 		this.email = email;
 		this.api = Project.createRandomString();
+		this.salt = createNewSalt();
+	}
+
+	public static String createNewSalt() {
+		return Project.createRandomString().substring(0, 10);
 	}
 
 	@Override
@@ -145,6 +157,14 @@ public class User extends AbstractLongIdEntity {
 
 	public void setApi(String api) {
 		this.api = api;
+	}
+	
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 	
 	

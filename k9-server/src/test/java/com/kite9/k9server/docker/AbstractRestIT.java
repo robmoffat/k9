@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.User;
+import com.kite9.k9server.security.UserController;
 
 import org.junit.Assert;
 
@@ -95,10 +96,9 @@ public class AbstractRestIT extends AbstractDockerIT {
 		return uOut;
 	}
 	
-	protected ResponseEntity<String> emailValidateRequest(RestTemplate restTemplate, String apiKey) {
-		String url = urlBase + "/api/users/email-validation-request";
-		HttpEntity<String> entity = createKite9AuthHeaders(apiKey, "parameters");
-		ResponseEntity<String> sOut = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+	protected ResponseEntity<String> emailValidateRequest(RestTemplate restTemplate, String email) {
+		String url = urlBase + "/api"+UserController.EMAIL_VALIDATION_REQUEST_URL+"?email="+email;
+		ResponseEntity<String> sOut = restTemplate.getForEntity(url, String.class);
 		return sOut;
 	}
 	

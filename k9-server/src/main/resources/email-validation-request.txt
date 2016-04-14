@@ -4,6 +4,8 @@ This is an automated email from Kite9.
 
 We'd like you to confirm your email address (in the to: field) by clicking the link below.
 
+This is important because, if you don't do this, and you lose your password, you won't be able to recover your Kite9 account.
+
 thanks,
 
 The Kite9 Team.
