@@ -624,6 +624,7 @@ Sending the email in Spring boot is easy, so long as you configure a mail host. 
 	
 		return new NotificationResource("Please check your email for a message from Kite9 Support.");
 	}
+```
 		
 Here are some notes on the above:
 
