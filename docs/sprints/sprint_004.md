@@ -357,7 +357,7 @@ It's a bad idea to store passwords as plaintext in the database, so I am going t
 
 My code to do this looks like this:
 
-```
+```java
 	public static String generatePasswordHash(String password) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder.encode(password);
@@ -368,7 +368,7 @@ This uses the standard Spring BCrypt encoder, which is designed for passwords.
 
 This is done in our `UserRepositoryImpl` method each time we save the user:
 
-```
+```java
 	@SuppressWarnings("unchecked")
 	@Override
 	public User save(User newUser) {
@@ -523,7 +523,7 @@ And I can use this in a test now:
 
 Form-based authentication is like this:
 
-```
+```java
 	private Authentication handleFormBasedAuthentication(Authentication authentication) {
 		User u = userRepository.findByEmail(authentication.getName());
 		WebSecurityConfig.checkUser(u, true);
@@ -549,6 +549,7 @@ And in a test I can do:
 		Assert.assertEquals(urlBase+"/", pOut.getHeaders().getLocation().toString());  (3)
 		List<String> cookie = pOut.getHeaders().get("Set-Cookie"); (4)
 		Assert.assertNotNull(cookie);
+```
 
 1. Does a HTTP Form-Post, of the username and password (see below)  
 2. From the response, we can check the HTTP-Status.
@@ -585,75 +586,6 @@ When I log in using this, I get access to my protected page.  The test uses the 
 2.  The fields of the form start off as a map...
 3.  Here we are adding a HTTP header to say that it's URL-encoded form-data (which is managed by the `FormHttpMessageConverter`)
 4.  ... and the map is converted and sent using the rest template.
-
-
-## Step 3: Coding **Validate Email-Send**
-
-This is where it gets interesting.  We only want users who are logged in to be able to call this service.  So, that means that we need to pass the authentication information 
-through.  Since REST is supposed  to be stateless, to do this, we are going to pass the API key through as a header parameter (Authorization).  This seems to me to be a 
-good approach to the [problems described here](http://stackoverflow.com/questions/319530/restful-authentication).
-
-The one drawback of this approach is that someone could re-use your cookie elsewhere if they wanted to.  This isn't really regarded as a problem generally for web services, 
-and I don't think it really should be here, either.  We can always add a "Log Out" feature which invalidates their API key, if needed.
-
-### How Does It Work?  Using cURL
-
-Trying this:
-
-```
-curl -v -H  "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==" http://localhost:8080/api/projects
-```
-
-Means that I get an object back in Spring like this:
-
-```
-authentication	UsernamePasswordAuthenticationToken  (id=9357)	
-	authenticated	false	
-	authorities		Collections$EmptyList<E>  (id=9359)	
-	credentials		"open sesame" (id=9360)	
-	details			WebAuthenticationDetails  (id=9361)	
-	principal		"Aladdin" (id=9362)	
-```
-
-So, that's BASIC auth going on, and it's using a class called `BasicAuthenticationFilter`.  I am now going to create my own.
-
-### Kite9ApiBasedAuthenticationFilter
-
-
-
-
-It finds the user by email, and then checks the Bcrypted passwords match. 
-
-
-	public void testFormBasedLogin() {
-	...
-		pOut = formLogin(restTemplate, email, password);   (5)
-		Assert.assertEquals(HttpStatus.FOUND, pOut.getStatusCode());
-		Assert.assertEquals(urlBase+"/", pOut.getHeaders().getLocation().toString());
-		List<String> cookie = pOut.getHeaders().get("Set-Cookie");
-		Assert.assertNotNull(cookie);      (6)
-		
-		// try to create a project with this cookie
-		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp2");
-		ResponseEntity<Project> projOut = exchangeUsingCookie(restTemplate, urlBase+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, Project.class);  (7)
-		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
-	...
-	}
-```
-
-5.  In the main part of the test, we perform the form login..
-6.  And pull out the `Set-Cookie` header, which identifies our session.
-7.  Here we are adding the cookie in the session header.  `exchangeUsingCookie` is shown below, it's a straightforward `RestTemplate.exchange` but with the `COOKIE` header set.
-
-```
-	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.COOKIE, cookie);
-		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
-		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
-		return pOut;
-	}
-```
 
 ## Step 5: Validation Emails
 
@@ -789,6 +721,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	
 To follow the HATEOAS model, these are proper HAL / REST endpoints, which return a `NotificationResource`:
 
+```java
 public class NotificationResource extends ResourceSupport {
 
 	private String message;
@@ -796,6 +729,7 @@ public class NotificationResource extends ResourceSupport {
 	...
 		
 }
+```
 	
 When Spring WebMVC encounters the `@ResponseBody` annotation, it knows that the return value from the method needs to be sent back 
 as the HTTP response.  Because we have Spring-HATEOAS on the command line, and because `NotificationResource` extends `ResourceSupport`,
@@ -899,6 +833,7 @@ control over the marshalling process to turn the user into JSON:
 		
 		return resource;
 	}
+```
   
 1.  This constructs a link within the application.  Spring HATEOAS comes with something called `EntityLinks`, but I found that actually it was a bit unweildy, 
 since I couldn't exclude the codes when needed.  Also they relied heavily on proxying and reflection, so just creating a single link involved lots of class construction!
@@ -966,6 +901,7 @@ This is going to follow pretty much the same pattern as the email validation tho
 	public @ResponseBody ResponseEntity<String> passwordResetResponse(@RequestParam("code") String code, @RequestParam("email") String email, @RequestParam("password") String newPassword) throws IOException {
 		...
 	}
+```
 	
 However, there is also a form to fill in with the new password.  This looks like this:
 
