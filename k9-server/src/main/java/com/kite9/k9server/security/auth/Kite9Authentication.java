@@ -1,4 +1,4 @@
-package com.kite9.k9server.security;
+package com.kite9.k9server.security.auth;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,29 +8,33 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.kite9.k9server.domain.User;
 
-public class ApiKeyAuthentication extends AbstractAuthenticationToken {
+public class Kite9Authentication extends AbstractAuthenticationToken {
 
 	private final String apiKey;
 	private final User u;
-	private final String name;
+	private final String email;
 	
-	public ApiKeyAuthentication(String apiKey) {
+	public Kite9Authentication(String apiKey) {
 		super(Collections.emptyList());
 		this.apiKey = apiKey;
 		this.u = null;
-		this.name = null;
+		this.email = null;
 	}
 	
-	public ApiKeyAuthentication(String apiKey, User u, List<? extends GrantedAuthority> list) {
+	public Kite9Authentication(User u, List<? extends GrantedAuthority> list) {
 		super(list);
-		this.apiKey = apiKey;
+		this.apiKey = u.getApi();
 		this.u = u;
-		this.name = u.getEmail();
+		this.email = u.getEmail();
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return email;
+	}
+	
+	public String getEmail() {
+		return email;
 	}
 
 	@Override
@@ -40,7 +44,7 @@ public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
 	@Override
 	public Object getPrincipal() {
-		return u;
+		return email;
 	}
 	
 	@Override

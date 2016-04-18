@@ -1,4 +1,4 @@
-package com.kite9.k9server.security;
+package com.kite9.k9server.security.auth;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class Kite9ApiKeyBasedAuthenticationFilter extends OncePerRequestFilter {
 			try {
 	
 				if (authenticationIsRequired(apiKey)) {
-					ApiKeyAuthentication authRequest = new ApiKeyAuthentication(apiKey);
+					Kite9Authentication authRequest = new Kite9Authentication(apiKey);
 					authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 					Authentication authResult = authenticationManager.authenticate(authRequest);
 					SecurityContextHolder.getContext().setAuthentication(authResult);
@@ -64,7 +64,7 @@ public class Kite9ApiKeyBasedAuthenticationFilter extends OncePerRequestFilter {
 			return true;
 		}
 
-		if (existingAuth instanceof ApiKeyAuthentication
+		if (existingAuth instanceof Kite9Authentication
 				&& !existingAuth.getName().equals(apiKey)) {
 			return true;
 		}

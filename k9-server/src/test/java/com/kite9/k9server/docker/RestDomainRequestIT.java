@@ -7,15 +7,9 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -30,7 +24,6 @@ public class RestDomainRequestIT extends AbstractRestIT {
 	public void testProject() {
 		// setup the template
 		RestTemplate restTemplate = getRestTemplate();
-		restTemplate.setErrorHandler(new SilentErrorHandler());
 
 		// create a user
 		User u = createUser(restTemplate, "abc1234", "facts", "thing2@example.com").getBody();
@@ -58,7 +51,6 @@ public class RestDomainRequestIT extends AbstractRestIT {
 	public void testDocument() throws RestClientException, IOException {
 		// setup the template
 		RestTemplate restTemplate = getRestTemplate();
-		restTemplate.setErrorHandler(new SilentErrorHandler());
 		
 		// create a user
 		User u = createUser(restTemplate, "abc123", "facts", "thing@example.com").getBody();

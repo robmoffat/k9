@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
 import com.kite9.k9server.domain.User;
+import com.kite9.k9server.security.user_repo.UserRepository;
 
 /**
  * Populates the in-memory database with some test details.  

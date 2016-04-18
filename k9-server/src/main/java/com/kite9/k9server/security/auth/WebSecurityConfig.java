@@ -1,6 +1,7 @@
-package com.kite9.k9server.security;
+package com.kite9.k9server.security.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AccountStatusException;
@@ -12,10 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.repos.UserRepository;
+import com.kite9.k9server.security.user_repo.UserRepository;
 
 /**
  * Configuration of security protocols and the url patterns to match them.
@@ -53,8 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin();
 		http.httpBasic();
 		http.authorizeRequests()
-			.antMatchers("/public/**").permitAll()
-			.antMatchers("/api/public/**").permitAll()
+			.antMatchers("/api/users/**").permitAll()
+			.antMatchers("/api/profile/**").permitAll()
+			.antMatchers("/api").permitAll()
 			.antMatchers("/**").authenticated();
 	}
 
@@ -63,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(userAuthenticationProvider);
 	}
 	
-	public static void checkUser(User u) throws AccountStatusException {
+	public static void checkUser(User u, boolean checkPassword) throws AccountStatusException {
 		if (u == null) {
 			throw new UsernameNotFoundException("Unknown User");
 		}
@@ -73,8 +76,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (u.isAccountLocked()) {
 			throw new LockedException("Account Locked");
 		}
-		if (u.isPasswordExpired()) {
+		if (u.isPasswordExpired() && checkPassword) {
 			throw new CredentialsExpiredException("Password Expired");
 		}
+	}
+	
+	@Bean
+	public SecurityEvaluationContextExtension usePrincipalInQueries() {
+		return new SecurityEvaluationContextExtension();
 	}
 }

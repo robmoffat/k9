@@ -1,47 +1,79 @@
 package com.kite9.k9server.docker;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Assert;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.security.UserController;
-
-import org.junit.Assert;
 
 public class AbstractRestIT extends AbstractDockerIT {
 
-	protected ObjectMapper mapper = new ObjectMapper();
+//	protected ObjectMapper mapper = new ObjectMapper();
 	protected String urlBase = "http://" + getDockerHostName()+ ":8080";
+	public static TypeReferences.ResourceType<User> USER_RESOURCE_TYPE = new TypeReferences.ResourceType<User>() {};
+	public static TypeReferences.ResourcesType<User> USER_RESOURCES_TYPE = new TypeReferences.ResourcesType<User>() {};
 
 	public AbstractRestIT() {
 		super();
 	}
 	
+	private MappingJackson2HttpMessageConverter getJacksonConverter(RestTemplate rt) {
+		for (HttpMessageConverter<?> c : rt.getMessageConverters()) {
+			if (c instanceof MappingJackson2HttpMessageConverter) {
+				return (MappingJackson2HttpMessageConverter) c;
+			}
+		}
+		
+		throw new RuntimeException("Couldn't find Jackson converter!");
+	}
+	
+	/**
+	 * Provides a REST Template that supports HAL, and also doesn't throw exceptions as errors (instead, analyse the 
+	 * HTTP Status returned.
+	 * @return
+	 */
 	protected RestTemplate getRestTemplate() {
-		return new RestTemplate(new SimpleClientHttpRequestFactory());
+		RestTemplate template = new RestTemplate(new SimpleClientHttpRequestFactory());
+		MappingJackson2HttpMessageConverter converter = getJacksonConverter(template);
+		
+		ObjectMapper mapper = converter.getObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.registerModule(new Jackson2HalModule());
+		
+		template.setErrorHandler(new SilentErrorHandler());
+		return template;
 	}
 	
 	protected <X> ResponseEntity<X> retrieveObjectViaApiAuth(RestTemplate restTemplate, User u, String url, Class<X> outClass) {
-		HttpEntity<String> in = createKite9AuthHeaders(u.getApi(), "");
+		HttpEntity<Void> in = createKite9AuthHeaders(u.getApi(), null);
 		ResponseEntity<X> out = restTemplate.exchange(url, HttpMethod.GET, in, outClass);
 		return out;
 	}
@@ -52,11 +84,16 @@ public class AbstractRestIT extends AbstractDockerIT {
 		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
 	}
 	
-	protected ResponseEntity<User> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) {
+	protected ResponseEntity<Resources<User>> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) throws URISyntaxException {
 		String url = urlBase + "/api/users";
-		HttpEntity<String> entity = createBasicAuthHeaders(email, password);
-		ResponseEntity<User> uOut = restTemplate.exchange(url, HttpMethod.GET, entity, User.class);
-		return uOut;
+		HttpHeaders headers = new HttpHeaders();
+		String auth = email + ":" + password;
+		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset.forName("US-ASCII")));
+		String authHeader = "Basic " + new String( encodedAuth );
+		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
+		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
+		ResponseEntity<Resources<User>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
+		return uOut; 
 	}
 	
 	protected <X> ResponseEntity<X> postAsTestUser(RestTemplate restTemplate, X object, Class<X> theClass, String url, User u) {
@@ -89,28 +126,14 @@ public class AbstractRestIT extends AbstractDockerIT {
 	}
 	
 	
-	protected ResponseEntity<User> createUser(RestTemplate restTemplate, String username, String password, String email) {
-		String url = urlBase + "/api/public/users";
+	protected ResponseEntity<Resource<User>> createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
+		String url = urlBase + "/api/users";
 		User u = new User(username, password, email);
-		ResponseEntity<User> uOut = restTemplate.postForEntity(url, u, User.class);
+		RequestEntity<User> re = new RequestEntity<User>(u, HttpMethod.POST, new URI(url));
+		ResponseEntity<Resource<User>> uOut = restTemplate.exchange(re, USER_RESOURCE_TYPE);
 		return uOut;
 	}
-	
-	protected ResponseEntity<String> emailValidateRequest(RestTemplate restTemplate, String email) {
-		String url = urlBase + "/api"+UserController.EMAIL_VALIDATION_REQUEST_URL+"?email="+email;
-		ResponseEntity<String> sOut = restTemplate.getForEntity(url, String.class);
-		return sOut;
-	}
-	
-	protected HttpEntity<String> createBasicAuthHeaders(String username, String password) {
-		HttpHeaders headers = new HttpHeaders();
-		String auth = username + ":" + password;
-		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset.forName("US-ASCII")));
-		String authHeader = "Basic " + new String( encodedAuth );
-		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
-		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		return entity;
-	}
+
 
 	protected <X> HttpEntity<X> createKite9AuthHeaders(String apiKey, X body) {
 		HttpHeaders headers = new HttpHeaders();
@@ -119,6 +142,12 @@ public class AbstractRestIT extends AbstractDockerIT {
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
 		HttpEntity<X> entity = new HttpEntity<X>(body, headers);
 		return entity;
+	}
+	
+	public void delete(RestTemplate restTemplate, String url, User u) {
+		HttpEntity<Void> ent = createKite9AuthHeaders(u.getApi(), null);
+		ResponseEntity<Void> out = restTemplate.exchange(url, HttpMethod.DELETE, ent, Void.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
 	}
 	
 	protected final class SilentErrorHandler implements ResponseErrorHandler {

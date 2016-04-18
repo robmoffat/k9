@@ -3,7 +3,7 @@ package com.kite9.k9server.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kite9.k9server.security.Hash;
 
 @Entity
 public class User extends AbstractLongIdEntity {
@@ -31,17 +31,29 @@ public class User extends AbstractLongIdEntity {
 	 * This will be used as an API key, when calling the REST services.
 	 */
 	@Column(length=32, nullable=false)
-	private String api;
+	private String api = Project.createRandomString();
 	
 	/**
 	 * Used as a salt for generating password / email reset codes and so on.  
 	 * Changed each time we generate a reset code so that codes can't be reused.
+	 * This cannot be set externally.
 	 */
 	@Column(length=10, nullable=false)
-	private String salt;
+	private String salt = User.createNewSalt();
 	
+	/**
+	 * Can be set to expired if the user is deleted, but still has foreign-key references remaining.
+	 */
 	private boolean accountExpired = false;
+	
+	/**
+	 * Not currently externally controllable.
+	 */
 	private boolean accountLocked = false;
+	
+	/**
+	 * Would need to be set externally too: means that the user should get an email telling them their password has expired.
+	 */
 	private boolean passwordExpired = false;
 	private boolean emailable = true;
 	private boolean emailVerified=false;
@@ -54,8 +66,6 @@ public class User extends AbstractLongIdEntity {
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		this.api = Project.createRandomString();
-		this.salt = createNewSalt();
 	}
 
 	public static String createNewSalt() {
@@ -166,6 +176,22 @@ public class User extends AbstractLongIdEntity {
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
-	
-	
+
+	public void update(User newUser) {
+		this.emailable = newUser.emailable;
+		this.emailVerified = email.equals(newUser.getEmail());
+		this.email = newUser.getEmail();
+		
+		if ((newUser.getPassword() != null) && (!newUser.getPassword().equals(password))) {
+			this.password = Hash.generatePasswordHash(newUser.getPassword());
+			this.passwordExpired = false;
+		}
+		
+		this.api = checkNotNull(newUser.getApi(), this.api);
+		this.username = checkNotNull(newUser.getUsername(), this.username);
+	}
+
+	private <X> X checkNotNull(X possiblyNull, X original) {
+		return possiblyNull == null ? original : possiblyNull;
+	}
 }

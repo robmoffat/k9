@@ -1,4 +1,4 @@
-package com.kite9.k9server.security;
+package com.kite9.k9server.security.auth;
 
 import java.util.Collections;
 
@@ -11,7 +11,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.repos.UserRepository;
+import com.kite9.k9server.security.Hash;
+import com.kite9.k9server.security.user_repo.UserRepository;
 
 /**
  * Provides all authentication against our own internal UserRepository.
@@ -28,12 +29,12 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(ApiKeyAuthentication.class) || authentication.equals(UsernamePasswordAuthenticationToken.class);
+		return authentication.equals(Kite9Authentication.class) || authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		if (authentication instanceof ApiKeyAuthentication) {
+		if (authentication instanceof Kite9Authentication) {
 			return handleApiKeyAuthentication(authentication);
 		} else if (authentication instanceof UsernamePasswordAuthenticationToken) {
 			return handleFormBasedAuthentication(authentication);
@@ -44,19 +45,19 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
 	private Authentication handleFormBasedAuthentication(Authentication authentication) {
 		User u = userRepository.findByEmail(authentication.getName());
-		WebSecurityConfig.checkUser(u);
+		WebSecurityConfig.checkUser(u, true);
 		String givenPassword = (String) authentication.getCredentials();
 		if (Hash.checkPassword(givenPassword, u.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(u, authentication.getCredentials(), Collections.singletonList(WebSecurityConfig.KITE9_USER));
+			return new Kite9Authentication(u, Collections.singletonList(WebSecurityConfig.KITE9_USER));
 		} else {
 			throw new BadCredentialsException("Bad Login Credentials");
 		}
 	}
 
 	private Authentication handleApiKeyAuthentication(Authentication authentication) {
-		ApiKeyAuthentication apiKeyAuthentication = (ApiKeyAuthentication) authentication;
+		Kite9Authentication apiKeyAuthentication = (Kite9Authentication) authentication;
 		User u = userRepository.findByApi((String) apiKeyAuthentication.getCredentials());
-		WebSecurityConfig.checkUser(u);
-		return new ApiKeyAuthentication((String) apiKeyAuthentication.getCredentials(), u, Collections.singletonList(WebSecurityConfig.KITE9_USER));
+		WebSecurityConfig.checkUser(u, true);
+		return new Kite9Authentication(u, Collections.singletonList(WebSecurityConfig.KITE9_USER));
 	}
 }
