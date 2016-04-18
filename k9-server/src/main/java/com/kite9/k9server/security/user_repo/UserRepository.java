@@ -33,7 +33,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	 * Not to be exported, as it is not secure.
 	 */
 	@RestResource(exported=false)
-	public User findByEmail(@Param("email") String email);
+	public User findByEmail(String email);
 	
 	/**
 	 * Re-declaration of the method from {@link UserRepositoryCustom}, to hook it up.

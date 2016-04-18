@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.hal.Jackson2HalModule;
@@ -89,12 +90,6 @@ public class AbstractRestIT extends AbstractDockerIT {
 		return uOut; 
 	}
 	
-	protected <X> ResponseEntity<X> postAsTestUser(RestTemplate restTemplate, X object, Class<X> theClass, String url, User u) {
-		HttpEntity<X> entity = new HttpEntity<X>(object, createKite9AuthHeaders(u.getApi()));
-		ResponseEntity<X> pOut = getRestTemplate().exchange(url, HttpMethod.POST, entity, theClass);
-		return pOut;
-	}
-	
 	protected ResponseEntity<String> formLogin(RestTemplate restTemplate, String user, String password) {
 		List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
 		converters.add(new FormHttpMessageConverter());
@@ -131,12 +126,12 @@ public class AbstractRestIT extends AbstractDockerIT {
 	protected HttpHeaders createKite9AuthHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.ALL));
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setContentType(MediaTypes.HAL_JSON);
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
 		return headers;
 	}
 	
-	public void delete(RestTemplate restTemplate, String url, User u) throws URISyntaxException {
+	protected void delete(RestTemplate restTemplate, String url, User u) throws URISyntaxException {
 		HttpHeaders h = createKite9AuthHeaders(u.getApi());
 		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);

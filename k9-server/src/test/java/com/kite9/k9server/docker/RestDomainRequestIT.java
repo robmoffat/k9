@@ -17,13 +17,13 @@ import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
@@ -81,20 +81,22 @@ public class RestDomainRequestIT extends AbstractRestIT {
 		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());
 		return pOut;
 	}
-
-	@Test
-	public void testDocument() throws RestClientException, IOException, URISyntaxException {
-		// create a project
-		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
-		ResponseEntity<Resource<Project>> pOut = createAProject(pIn);
-
-		// create a document on this project
-		String url = pOut.getHeaders().getLocation().toString();
+	
+	private ResponseEntity<Document> createDocumentUntested(Resource<Project> p, String title) throws URISyntaxException {
+		Document d = new Document(title, "Blah", null);
+		Resource<Document> rd = new Resource<Document>(d, new Link(p.getLink(Link.REL_SELF).getHref(), "project"));
+		HttpHeaders auth = createKite9AuthHeaders(u.getApi());
+		RequestEntity<Resource<Document>> in = new RequestEntity<Resource<Document>>(rd, auth, HttpMethod.POST, new URI(documentsUrl));
+		ResponseEntity<Document> dOut = restTemplate.exchange(in, Document.class);
+		return dOut;
+	}
+	
+	private ResponseEntity<Document> createDocumentOld(Resource<Project> p, String title) throws JsonProcessingException, URISyntaxException { 
+		String url = p.getLink(Link.REL_SELF).getHref();
 		Map<String, Object> requestBody = new HashMap<String, Object>();
-		requestBody.put("title", "Doc Test");
+		requestBody.put("title", title);
 		requestBody.put("description", "Blah");
 		requestBody.put("project", url);
-		
 		ObjectMapper mapper = new ObjectMapper();
 		
 		HttpHeaders auth = createKite9AuthHeaders(u.getApi());
@@ -105,6 +107,19 @@ public class RestDomainRequestIT extends AbstractRestIT {
 				new URI(documentsUrl));
 		
 		ResponseEntity<Document> dOut = restTemplate.exchange(in, Document.class);
+		return dOut;
+	}
+	
+	
+	@Test
+	public void testDocument() throws RestClientException, IOException, URISyntaxException {
+		HttpHeaders auth = createKite9AuthHeaders(u.getApi());
+		
+		// create a project
+		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp1");
+		String docTitle = "Doc Test";
+		ResponseEntity<Resource<Project>> pOut = createAProject(pIn);				
+		ResponseEntity<Document> dOut = createDocumentOld(pOut.getBody(), docTitle);
 		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
 
 		// check the document belongs to the project
@@ -116,6 +131,8 @@ public class RestDomainRequestIT extends AbstractRestIT {
 		Assert.assertEquals("Doc Test", first.getContent().getTitle());
 
 		// check that the project belongs to the document
+		String url = pOut.getBody().getLink(Link.REL_SELF).getHref();
+
 		RequestEntity<Void> pIn2 = new RequestEntity<Void>(auth, HttpMethod.GET, new URI(first.getLink("project").getHref()));
 		ResponseEntity<Resource<Project>> pOut2 = restTemplate.exchange(pIn2, PROJECT_RESOURCE_TYPE);
  		Assert.assertEquals(url, pOut2.getBody().getLink(Link.REL_SELF).getHref());

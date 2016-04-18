@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import com.kite9.k9server.repos.RestDataConfig;
 
-
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
@@ -28,21 +27,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 		exceptionResolvers.add(new HandlerExceptionResolver() {
-			
+
 			@Override
 			public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-				if (request.getServletPath().startsWith(RestDataConfig.REST_API_BASE)) {
-					if (ex instanceof HttpException) {
-						try {
-							response.sendError(((HttpException) ex).getStatus().value(), ex.getMessage());
-						} catch (IOException e) {
-							LOG.error("Failed to process HttpException", e);
-						}
-						
-						return new ModelAndView();
+				if (ex instanceof HttpException) {
+					try {
+						response.sendError(((HttpException) ex).getStatus().value(), ex.getMessage());
+					} catch (IOException e) {
+						LOG.error("Failed to process HttpException", e);
 					}
+
+					return new ModelAndView();
 				}
-				
+
 				return null;
 			}
 		});

@@ -195,9 +195,6 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 		return new NotificationResource("Please check your email for a message from Kite9 Support.");
 	}
 	
-	@Autowired
-	EntityLinks entityLinks;
-
 	@Override
 	public PersistentEntityResource process(PersistentEntityResource resource) {
 		if (resource.getContent() instanceof User) {
