@@ -719,6 +719,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	public @ResponseBody NotificationResource emailValidationResponse(@RequestParam("code") String code, @PathVariable("email") String email) {
 	  	...
 	}
+```
 	
 To follow the HATEOAS model, these are proper HAL / REST endpoints, which return a `NotificationResource`:
 
