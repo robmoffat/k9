@@ -54,6 +54,22 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_004.md)
 
+### Setting Up Travis + AWS
+
+- Continuous build of master, (releasing to Amazon automatically? )
+- Turn off Linode?
+- Sort out DNS
+- Scaling ?
+- mail gateway
+
+### D3 To Load XML
+
+- We should be able to render the XML returned by passing it through a simple d3 component which turns it into SVG.
+- Every item from the object model will be a group, which will potentially have some svg elements associated with it.
+- Using D3 to display on the screen.
+- This should be a simple drop-in replacement to Raphael, and clear out this tech debt.
+- Tests should look like "here's some rendering information, handle it".
+
 ### Visualisation Engine refactoring
 
 - some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
@@ -78,26 +94,13 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_003.md)
 
-### Setting Up Travis + AWS
-
-- Continuous build of master, (releasing to Amazon automatically? )
-- Turn off Linode?
-- Sort out DNS
-- Scaling ?
-
-
-
+<del>
 ### We need to send our object model to JSON.
 
 - This is going to be a lot of JSON.
 - It should be about creating groupings, setting paths and setting styles + classes.
-- Everything that was in the original object model, plus layout information.
-
-### React To Load JSON
-
-- We should be able to render the JSON returned by passing it through a simple react component which turns it into SVG.
-- Every item from the object model will be a group, which will potentially have some svg elements associated with it.
-- Using D3 + React to display on the screen.
+- Everything that was in the original object model, plus layout information.</del>  
+*(Removed 13/4/2016)*
 
 ### Project CSS/JS/SVG Icon Repository
 
