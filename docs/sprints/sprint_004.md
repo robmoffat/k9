@@ -37,7 +37,7 @@ Knowing this up-front would have saved *a lot* of trouble.
 Because `RestTemplate` is part of WebMVC, it needs to be taught about Spring HATEOAS when you start it up, and that's 
 done using the `Jackson2HalModule`, and setting up the media types, like so:
 
-```
+```java
 	protected RestTemplate getRestTemplate() {
 		RestTemplate template = new RestTemplate(new SimpleClientHttpRequestFactory());
 		MappingJackson2HttpMessageConverter converter = getJacksonConverter(template);
@@ -105,7 +105,7 @@ public class User extends AbstractLongIdEntity {
 	private boolean emailVerified=false;
 ```
 
-We're going to need a slightly different REST api,  We could go crazy, and implement an `@Controller` from scratch, but Spring also has `@RestController`, which might be a better fit, or this [answer](http://stackoverflow.com/questions/22824840/when-to-use-restcontroller-vs-repositoryrestresource) implies 
+We're going to need a slightly different REST api, but for now, let's just use a `CrudRepository` subclass.  
 
 So, if I query the endpoint /users, I get back:
 
@@ -160,7 +160,7 @@ Really, we *never* want people to query users via the REST URL in this way.  Wha
  - **Update Password**: you provide a new password, and a proof-of-address.
  - and pretty much the entire rest of the application. 
 
-## Step 2: Implementing A Controller
+## Step 2: Implementing Sign-Up etc.
 
 [Spring-Data-Rest](http://projects.spring.io/spring-data-rest/) project allows you to define a `Repository` interface, and then it will map this to some HTTP end-points 
 using a special dynamic controller.
@@ -217,6 +217,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	Iterable<User> save(Iterable<User> entities); (5)
 	
 }
+```
 
 1.  Note I am extending UserRepositoryCustom.  This allows me to add my own implementations to some methods, which I'll come to later.
 2.  Methods marked (2) are automatically exposed as REST endpoints.  I am implementing custom versions of these (see below).
@@ -331,6 +332,22 @@ So, we can create new users with the following piece of code:
 and we get back a `ResponseEntity<Resource<User>>`, which is unmarshalled from the HTTP Response, which will contain response headers, and a HAL+JSON
 response body containing a serialized version of our `User` object.
   
+### Use Principal In Queries
+
+This is jumping ahead, but let's get it out of the way:  In the Repository API, I can define an `@Query` like:
+
+```java
+@Query("select u from User u where u.email = ?#{ principal }")
+```
+
+This bit `?#{ }` means *use a SpEL expression*.  And in order to be able to access `principal` from a SpEL expression, we need this, which comes built into spring:
+
+```java
+	@Bean
+	public SecurityEvaluationContextExtension usePrincipalInQueries() {
+		return new SecurityEvaluationContextExtension();
+	}  
+```
   
 ## Step 3:  Securing the Application
 
