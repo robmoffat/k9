@@ -36,7 +36,6 @@ import com.kite9.k9server.domain.User;
 
 public class AbstractRestIT extends AbstractDockerIT {
 
-//	protected ObjectMapper mapper = new ObjectMapper();
 	protected String urlBase = "http://" + getDockerHostName()+ ":8080";
 	public static TypeReferences.ResourceType<User> USER_RESOURCE_TYPE = new TypeReferences.ResourceType<User>() {};
 	public static TypeReferences.ResourcesType<User> USER_RESOURCES_TYPE = new TypeReferences.ResourcesType<User>() {};
@@ -72,16 +71,10 @@ public class AbstractRestIT extends AbstractDockerIT {
 		return template;
 	}
 	
-	protected <X> ResponseEntity<X> retrieveObjectViaApiAuth(RestTemplate restTemplate, User u, String url, Class<X> outClass) {
-		HttpEntity<Void> in = createKite9AuthHeaders(u.getApi(), null);
-		ResponseEntity<X> out = restTemplate.exchange(url, HttpMethod.GET, in, outClass);
+	protected <X> ResponseEntity<X> retrieveObjectViaApiAuth(RestTemplate restTemplate, User u, String url, Class<X> outClass) throws URISyntaxException {
+		RequestEntity<Void> in = new RequestEntity<Void>(createKite9AuthHeaders(u.getApi()), HttpMethod.GET, new URI(url));
+		ResponseEntity<X> out = restTemplate.exchange(in, outClass);
 		return out;
-	}
-
-	protected void deleteViaApiAuth(RestTemplate restTemplate, String url, User u) {
-		HttpEntity<String> in = createKite9AuthHeaders(u.getApi(), "");
-		ResponseEntity<String> out = restTemplate.exchange(url, HttpMethod.DELETE, in, String.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
 	}
 	
 	protected ResponseEntity<Resources<User>> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) throws URISyntaxException {
@@ -97,7 +90,7 @@ public class AbstractRestIT extends AbstractDockerIT {
 	}
 	
 	protected <X> ResponseEntity<X> postAsTestUser(RestTemplate restTemplate, X object, Class<X> theClass, String url, User u) {
-		HttpEntity<X> entity = createKite9AuthHeaders(u.getApi(), object);
+		HttpEntity<X> entity = new HttpEntity<X>(object, createKite9AuthHeaders(u.getApi()));
 		ResponseEntity<X> pOut = getRestTemplate().exchange(url, HttpMethod.POST, entity, theClass);
 		return pOut;
 	}
@@ -135,18 +128,18 @@ public class AbstractRestIT extends AbstractDockerIT {
 	}
 
 
-	protected <X> HttpEntity<X> createKite9AuthHeaders(String apiKey, X body) {
+	protected HttpHeaders createKite9AuthHeaders(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.ALL));
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
-		HttpEntity<X> entity = new HttpEntity<X>(body, headers);
-		return entity;
+		return headers;
 	}
 	
-	public void delete(RestTemplate restTemplate, String url, User u) {
-		HttpEntity<Void> ent = createKite9AuthHeaders(u.getApi(), null);
-		ResponseEntity<Void> out = restTemplate.exchange(url, HttpMethod.DELETE, ent, Void.class);
+	public void delete(RestTemplate restTemplate, String url, User u) throws URISyntaxException {
+		HttpHeaders h = createKite9AuthHeaders(u.getApi());
+		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
 	}
 	
