@@ -1,15 +1,12 @@
 package com.kite9.k9server.docker;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
@@ -21,38 +18,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Project;
-import com.kite9.k9server.domain.User;
 
-public class RestDomainRequestIT extends AbstractRestIT {
+public class RestDomainRequestIT extends AbstractAuthenticatedIT {
 	
 	public static TypeReferences.ResourceType<Project> PROJECT_RESOURCE_TYPE = new TypeReferences.ResourceType<Project>() {};
 	public static TypeReferences.ResourcesType<Resource<Document>> DOCUMENT_RESOURCES_TYPE = new TypeReferences.ResourcesType<Resource<Document>>() {};
 
 	String projectUrl = urlBase + "/api/projects";
 	String documentsUrl = urlBase + "/api/documents";
-
-	RestTemplate restTemplate = getRestTemplate();
-	User u;
-	String userUrl;
-	
-	@Before
-	public void withUser() throws URISyntaxException {
-		ResponseEntity<Resource<User>> userEntity = createUser(restTemplate, "abc1234", "facts", "thing2@example.com");
-		u = userEntity.getBody().getContent();
-		userUrl = userEntity.getHeaders().getLocation().toString();
-	}
-	
-	@After
-	public void removeUser() throws URISyntaxException {
-		delete(restTemplate, userUrl, u);
-	}
-		
 	
 	@Test
 	public void testProject() throws URISyntaxException {

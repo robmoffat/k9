@@ -24,6 +24,19 @@
 	</properties>
 
 	<dependencies>
+		<!-- Kite9 -->
+		<dependency>
+			<groupId>org.kite9</groupId>
+			<artifactId>kite9-diagram-visualization</artifactId>
+			<version>1.0.RC1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+		
+		<!-- Spring Infrastructure -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>

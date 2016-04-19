@@ -60,8 +60,8 @@ public class AbstractRestIT extends AbstractDockerIT {
 	 * HTTP Status returned.
 	 * @return
 	 */
-	protected RestTemplate getRestTemplate() {
-		RestTemplate template = new RestTemplate(new SimpleClientHttpRequestFactory());
+	protected MediaHandlingRestTemplate getRestTemplate() {
+		MediaHandlingRestTemplate template = new MediaHandlingRestTemplate(new SimpleClientHttpRequestFactory());
 		MappingJackson2HttpMessageConverter converter = getJacksonConverter(template);
 		
 		ObjectMapper mapper = converter.getObjectMapper();
@@ -127,6 +127,14 @@ public class AbstractRestIT extends AbstractDockerIT {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.ALL));
 		headers.setContentType(MediaTypes.HAL_JSON);
+		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
+		return headers;
+	}
+	
+	protected HttpHeaders createKite9AuthHeaders(String apiKey, MediaType in, MediaType... accept) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(accept));
+		headers.setContentType(in);
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
 		return headers;
 	}

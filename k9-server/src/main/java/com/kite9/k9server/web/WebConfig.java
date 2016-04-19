@@ -8,12 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.kite9.k9server.repos.RestDataConfig;
+import com.kite9.k9server.adl.ADLMessageConverter;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
@@ -44,4 +46,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			}
 		});
 	}
+
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		super.configureMessageConverters(converters);
+		converters.add(adlMessageConverter());
+	}
+
+	@Bean
+	public HttpMessageConverter<?> adlMessageConverter() {
+		return new ADLMessageConverter();
+	}
+	
+	
 }
