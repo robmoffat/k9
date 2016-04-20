@@ -1,5 +1,6 @@
 package com.kite9.k9server.docker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -28,11 +30,15 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.domain.User;
 
 public class AbstractRestIT extends AbstractDockerIT {
@@ -157,4 +163,30 @@ public class AbstractRestIT extends AbstractDockerIT {
 		public void handleError(ClientHttpResponse response) throws IOException {
 		}
 	}
+	
+	public class MediaHandlingRestTemplate extends RestTemplate {
+
+		public MediaHandlingRestTemplate(ClientHttpRequestFactory requestFactory) {
+			super(requestFactory);
+		}
+		
+		public byte[] exchange(RequestEntity<?> requestEntity) throws RestClientException {
+
+			org.springframework.util.Assert.notNull(requestEntity, "'requestEntity' must not be null");
+
+			RequestCallback requestCallback = httpEntityCallback(requestEntity, null);
+			return execute(requestEntity.getUrl(), requestEntity.getMethod(), requestCallback, new ResponseExtractor<byte[]>() {
+
+				@Override
+				public byte[] extractData(ClientHttpResponse response) throws IOException {
+					int contentLength = (int) response.getHeaders().getContentLength();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(Math.max(contentLength, 6000));
+					StreamHelp.streamCopy(response.getBody(), baos, true);
+					return baos.toByteArray();
+				}
+			});
+		}
+
+	}
+
 }

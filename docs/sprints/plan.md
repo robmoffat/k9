@@ -54,14 +54,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_004.md)
 
-### Setting Up Travis + AWS
-
-- Continuous build of master, (releasing to Amazon automatically? )
-- Turn off Linode?
-- Sort out DNS
-- Scaling ?
-- mail gateway
-
 ### D3 To Load XML
 
 - We should be able to render the XML returned by passing it through a simple d3 component which turns it into SVG.
@@ -69,6 +61,17 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Using D3 to display on the screen.
 - This should be a simple drop-in replacement to Raphael, and clear out this tech debt.
 - Tests should look like "here's some rendering information, handle it".
+
+[Sprint Notes](sprint_005.md)
+
+
+### Setting Up Travis + AWS
+
+- Continuous build of master, (releasing to Amazon automatically? )
+- Turn off Linode?
+- Sort out DNS
+- Scaling ?
+- mail gateway
 
 ### Visualisation Engine refactoring
 

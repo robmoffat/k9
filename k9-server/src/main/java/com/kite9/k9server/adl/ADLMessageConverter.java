@@ -6,7 +6,6 @@ import java.nio.charset.Charset;
 
 import org.kite9.diagram.adl.Diagram;
 import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
-import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -20,6 +19,8 @@ import com.kite9.k9server.adl.arranger.DiagramArranger;
 import com.kite9.k9server.adl.format.Format;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.MediaTypes;
+import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.ADLImpl; 
 
 @Component
 public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
@@ -59,32 +60,35 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
 		StreamHelp.streamCopy(inputMessage.getBody(), baos, true);
 		String s = baos.toString(charset.name());
-		return new ADL(s, mt);
-		
+		return new ADLImpl(s, mt);
 	}
 
 	@Override
 	protected void writeInternal(ADL t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-		Diagram d;
-		Format f;
-		Stylesheet ss;
+		MediaType contentType = outputMessage.getHeaders().getContentType();
+		Charset charset = contentType.getCharSet() == null ? Charset.forName("UTF-8") : contentType.getCharSet();
+		String stylesheet = StylesheetProvider.DEFAULT;
 		
+		if (MediaTypes.ADL_XML.isCompatibleWith(contentType)) {
+			outputMessage.getBody().write(t.getAsXMLString().getBytes(charset));
+			return;
+		}
+			
 		try {
-			d = (Diagram) new XMLHelper().fromXML(t.getContent());
-			String stylesheet = StylesheetProvider.DEFAULT;
-			if (t.getMediaType() != MediaTypes.ADL_XML) {
+			Diagram d = t.getAsDiagram();
+			if (MediaTypes.ADL_XML.isCompatibleWith(t.getMediaType())) {
+				// unrendered, so render.
 				d = arranger.arrangeDiagram(d, stylesheet);
 			}
+
+			Format f = formatSupplier.getFormatFor(contentType);
+			Stylesheet ss = StylesheetProvider.getStylesheet(stylesheet);
 			
-			MediaType mt = outputMessage.getHeaders().getContentType();
-			f = formatSupplier.getFormatFor(mt);
-			ss = StylesheetProvider.getStylesheet(stylesheet);
-			
+			f.handleWrite(d, outputMessage.getBody(), ss, true, null, null);
 		} catch (Exception e) {
 			throw new HttpMessageNotReadableException("Caused by: "+e.getMessage(), e);
 		}
 		
-		f.handleWrite(d, outputMessage.getBody(), ss, true, null, null);
 	}
 	
 }

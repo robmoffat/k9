@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kite9.k9server.adl.holder.ADL;
+
 /**
  * Handles rendering of Kite9 ADL content.
  * 
