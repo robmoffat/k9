@@ -191,3 +191,59 @@ of already-built Kite9 code that can render diagrams into the different formats.
 3.  Arranges the diagram.  This adds `RenderingInformation` objects to each element, telling them where they need to be placed.
 4.  We choose the `Format` instance based on the requested Content-Type.
 5.  Writes to the stream using the chosen `Format` instance.
+
+### The Controller
+
+Is ridiculously simple:  we are receiving POSTed XML in the HTTP Request, and then outputting it again in another format:
+
+```java
+@Controller
+public class RenderingController {
+
+	@RequestMapping(path="/api/renderer")
+	public @ResponseBody ADL echo(@RequestBody ADL input, @RequestHeader HttpHeaders headers) {
+		return input;
+	}
+}
+```
+
+Obviously, this will change in the future, and we will do caching, etc.
+
+### Testing
+
+I just wrote a simple test which creates a `Diagram` object, and then POSTs it.  The response is examined to check that
+actually it's in the right format, and is passably likely to contain what I asked for. For example:
+
+```java
+public class RestRenderingIT extends AbstractAuthenticatedIT {
+	
+	private static final int EXPECTED_HEIGHT = 204;
+	public static final int EXPECTED_WIDTH = 264;
+
+	protected byte[] withBytesInFormat(MediaType output) throws URISyntaxException {
+		String xml = createDiagramXML();
+		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_XML, output);
+		RequestEntity<String> data = new RequestEntity<String>(xml, headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
+		byte[] back = getRestTemplate().exchange(data);
+		return back;
+	}
+
+	@Test
+	public void testPNGRender() throws URISyntaxException, IOException {
+		byte[] back = withBytesInFormat(MediaType.IMAGE_PNG);
+		BufferedImage bi = ImageIO.read(new ByteArrayInputStream(back));
+		Assert.assertEquals(EXPECTED_WIDTH, bi.getWidth());
+		Assert.assertEquals(EXPECTED_HEIGHT, bi.getHeight());
+	}
+	
+```
+
+## Step 2:  A Web Page
+
+Now that we have plumbed in the original Kite9 Visualization, and got it working, we need to produce a page
+containing our diagram, rendered as SVG.  
+
+To do this, I am going to use a React.js component, which will draw on the screen, and then render the D3 contained
+within it.
+
+
