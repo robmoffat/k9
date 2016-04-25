@@ -92,7 +92,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		Assert.assertNull(dri.getHash());
 	}
 
-	protected Diagram createDiagram() {
+	public static Diagram createDiagram() {
 		Diagram d = new Diagram(HelpMethods.createList(new Glyph("stereo", "Some Label", 
 			HelpMethods.createList(
 				new TextLine("Some Text Here To Make It A Bit Wider", 
@@ -109,7 +109,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		return d;
 	}
 	
-	protected String createDiagramXML() {
+	public static String createDiagramXML() {
 		return new XMLHelper().toXML(createDiagram());
 	}
 }

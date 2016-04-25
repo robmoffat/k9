@@ -4,6 +4,8 @@ import org.kite9.diagram.adl.Diagram;
 import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.MediaType;
 
+import com.kite9.k9server.adl.format.MediaTypes;
+
 /**
  * Holds DiagramML (either rendered or unrendered) which will be output from other Controllers in the system.
  * This can then be rendered into a given content-type.
@@ -36,9 +38,10 @@ public class ADLImpl implements ADL {
 	}
 
 	@Override
-	public MediaType getMediaType() {
-		return mt;
+	public boolean isArranged() {
+		return MediaTypes.RENDERED_ADL_XML.isCompatibleWith(mt);
 	}
+	
 	@Override
 	public String getAsXMLString() {
 		if (xml == null) {

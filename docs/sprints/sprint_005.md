@@ -246,4 +246,8 @@ containing our diagram, rendered as SVG.
 To do this, I am going to use a React.js component, which will draw on the screen, and then render the D3 contained
 within it.
 
+## Step 2:  Returing A HTML Page
+
+http://localhost:8080/api/renderer/test
+
 

@@ -76,7 +76,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 			
 		try {
 			Diagram d = t.getAsDiagram();
-			if (MediaTypes.ADL_XML.isCompatibleWith(t.getMediaType())) {
+			if (!t.isArranged()) {
 				// unrendered, so render.
 				d = arranger.arrangeDiagram(d, stylesheet);
 			}

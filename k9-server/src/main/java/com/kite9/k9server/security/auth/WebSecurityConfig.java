@@ -55,6 +55,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin();
 		http.httpBasic();
 		http.authorizeRequests()
+			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
+			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
 			.antMatchers("/api/users/**").permitAll()
 			.antMatchers("/api/profile/**").permitAll()
 			.antMatchers("/api").permitAll()

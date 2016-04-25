@@ -78,26 +78,11 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
 - currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
 - Use REST, use the user token to validate requests.
-- get it to render PDF, PNG, XML files using REST POSTs. 
 - If we’ve been refactoring carefully, this should also still work.
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
 
-### Port To Grails 3 in the new project.
-
-*(sprint added 20/3/2016)*
-
-- Upgrade the original Kite9 to Grails 3.
-- We can keep our existing Kite9 infrastructure working by moving to Grails 3, which is based on Spring Boot.
-- This probably means moving to gradle builds too, and therefore a gradle fabric8 plugin.
-- I think ideally we should stick to the spring/jpa-based persistence because it's more future proof, so we need to move the rest of those entites and add tests for them.
-- This means that Kite9 should be completely ported to AWS.
-- Revisions, Documents, etc.  From Grails app.  With Test.  
-
-[Sprint Notes](sprint_003.md)
-
-<del>
 ### We need to send our object model to JSON.
 
 - This is going to be a lot of JSON.

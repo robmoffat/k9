@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class BasicFormatSupplier implements FormatSupplier {
 
-	public static Format PDF = new PDFFormat();
-	public static Format MAP = new ClientSideMapFormat();
-	public static Format XML = new XMLFormat();
-	public static Format PNG = new PNGFormat();
-	public static Format HTML = new HTMLFormat();
+	public static final Format PDF = new PDFFormat();
+	public static final Format MAP = new ClientSideMapFormat();
+	public static final Format XML = new XMLFormat();
+	public static final Format PNG = new PNGFormat();
+	public static final Format HTML = new HTMLFormat();
 	
 	/**
 	 * Ordered most specific to least.

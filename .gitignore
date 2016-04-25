@@ -22,3 +22,13 @@ hs_err_pid*
 
 # Jekyll
 _site
+
+# Javascript Built Files
+k9-server/src/main/resources/static/dist
+k9-server/src/main/frontend/node_modules/
+
+# Kite9 Debug Files
+k9-server/merges.txt
+k9-server/plan.txt
+k9-server/ssp.info
+

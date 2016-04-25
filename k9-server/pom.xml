@@ -106,6 +106,71 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+		        <groupId>com.github.eirslett</groupId>
+		        <artifactId>frontend-maven-plugin</artifactId>
+		        <version>1.0</version>
+	            <configuration>
+	            	<installDirectory>target/frontend</installDirectory>
+			        <workingDirectory>src/main/frontend</workingDirectory>
+			    </configuration>
+			    <executions>
+			    	<execution>
+						<id>install node and npm</id>
+						<goals>
+						    <goal>install-node-and-npm</goal>
+						</goals>
+						<configuration>
+							<nodeVersion>v5.10.1</nodeVersion>
+							<npmVersion>3.8.3</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+					    <id>npm install</id>
+					    <goals>
+					        <goal>npm</goal>
+					    </goals>
+					    <configuration>
+					        <!-- optional: The default argument is actually
+					        "install", so unless you need to run some other npm command,
+					        you can remove this whole <configuration> section.
+					        -->
+					        <arguments>install</arguments>
+					    </configuration>
+					</execution>
+					<execution>
+					    <id>webpack build</id>
+					    <goals>
+					        <goal>webpack</goal>
+					    </goals>
+					    <configuration>
+					        <arguments>--display-modules --display-chunks</arguments>
+					    </configuration>
+					</execution>
+					<execution>
+					    <id>default-cli</id>
+					    <goals>
+					        <goal>npm</goal>
+					    </goals>
+						<configuration>
+					        <arguments>run watch</arguments>
+					    </configuration>
+					</execution>
+					<!-- execution>
+					    <id>build testing</id>
+					    <goals>
+					        <goal>karma</goal>
+					    </goals>
+					    <phase>test</phase>
+					    <configuration>
+					        <karmaConf>karma.conf.js</karmaConf>
+					    </configuration>
+					</execution> -->
+					
+			    </executions>
+
+	    	</plugin>
 
 			<plugin>
 				<groupId>io.fabric8</groupId>
