@@ -55,7 +55,7 @@ public class HTMLFormat implements Format {
 	}
 
 	private void writeXMLScriptTag(String xml, OutputStreamWriter wos1) throws IOException {
-		wos1.write("<script type=\"text/xml\">\n");
+		wos1.write("<script type=\"text/xml\" id=\"data\">\n");
 		wos1.write(xml);
 		wos1.write("\n</script>\n");
 	}

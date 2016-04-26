@@ -37,4 +37,5 @@ public class RenderingController {
 		String xml = Resources.toString(this.getClass().getResource("/test-card.xml"), Charset.defaultCharset());
 		return new ADLImpl(xml, expected);
 	}
+	
 }
