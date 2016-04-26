@@ -33,7 +33,7 @@ into this project to use.
 
 This will actually be the main bulk of the project, I think.  
 
-Step 1: Rendering XML
+## Step 1: Rendering XML
 
 For this we need two classes to encapsulate the XML, and therefore the content types.  To do all of that, I need an `ADLMessageConverter`,
 and a class to hold the XML:
@@ -88,9 +88,9 @@ public class ADLImpl implements ADL {
 		}
 		
 		return xml;
-	}
-	
+	}	
 }
+```
 
 ### Media Types
 
@@ -246,8 +246,221 @@ containing our diagram, rendered as SVG.
 To do this, I am going to use a React.js component, which will draw on the screen, and then render the D3 contained
 within it.
 
-## Step 2:  Returing A HTML Page
 
 http://localhost:8080/api/renderer/test
+
+### Setting Up Maven-Frontend-Plugin
+
+Ok, so broadly I am going to use the [Maven Frontend Plugin](https://github.com/eirslett/frontend-maven-plugin) to handle javascript packages and testing.   It includes `node`, `karma` and `webpack` integration.
+
+```xml
+<plugin>
+		        <groupId>com.github.eirslett</groupId>
+		        <artifactId>frontend-maven-plugin</artifactId>
+		        <version>1.0</version>
+	            <configuration>
+	            	<installDirectory>target/frontend</installDirectory>
+			        <workingDirectory>src/main/frontend</workingDirectory>
+			    </configuration>
+```
+This says:
+
+ - Download `node` into the `target/frontend` directory.  
+ - Get the list of modules to download from `src/main/frontend/package.json`.
+
+There are now *lots* of packages downloaded, but broadly they fall into a few categories:
+
+ - Things to make testing work (in the `devDependencies` section).
+ - Things to make `webpack` work (listed under the webpack dependency)
+ - Things to make `react` work (stuff at the top of the dependency list).
+ 
+### Webpack
+
+[Webpack](http://webpack.github.io) is a brain-bending creation that allows you to package up javascript (and css, fonts, etc) into
+*bundles*, which can then be served as a single HTTP request.  
+
+ES6 now includes the `import` directive, so, Webpack looks for these and resolves them to build large javascript modules.  The entry-point
+of our application will be `app.jsx`, and this will import various other resources like this:
+
+```
+import React from 'react';
+import { render } from 'react-dom'
+import ADLSpace from './adl/components/ADLSpace.jsx'
+```
+
+Webpack has a config file `webpack.config.js`, which contains details about the *inputs* and *outputs*, and the transforms that need to apply
+in the middle:
+
+```js
+module.exports = {
+	...
+    
+    entry: {
+    	bundle:  './app.jsx'
+    },
+    output: {
+        path: __dirname + "/../../../target/classes/static/dist",
+        filename: "bundle.js"
+    },
+
+    module: {
+    	loaders: [
+    	   ...
+    	   { test: /\.less$/, loader: "style!css!less" },
+    	   { test: /\.css$/, loader: "style!css" },
+    	   { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: "url-loader?limit=1000000" } 
+    	]    	
+    }
+
+}
+```
+
+So the loaders are chained together.  The less loader for example chains, `less-loader`, `css-loader` and `style-loader` in that order, 
+and bundles the output into the same bundle.js file as everything else goes in.
+
+Note that webpack is building into the `target/classes` directory, which allows us to have a refreshing loader when we run:
+
+```sh
+mvn frontend:npm 
+```
+
+### Setting up React
+
+`.jsx` is an extension for React files which allows them to include snippets of HTML which will be unpacked into React template code.
+
+So our app.jsx calls this:
+
+```js
+render(
+		<App />,
+		document.getElementById('react')
+)
+```
+
+Which renders the <App /> react module into the `react` element on the page.   At the moment, <App /> just renders to `Hello World`.
+
+### HTMLFormat
+
+Finally, we are ready to construct the `HTMLFormat` code, which will output our `ADLImpl` as a webpage, which effectively means just outputting this:
+
+```html
+<!DOCTYPE html>
+	<html>
+	<head lang="en">
+	    <meta charset="UTF-8"/>
+	    <title>Kite9</title>
+	</head>
+	<body>
+		{content}
+	
+	    <div id="react"></div>
+
+	    <script src="/dist/bundle.js"></script>
+
+	</body>
+</html>
+```
+
+The built webpack code, containing the `<App />` react template is loaded in from the `/dist/bundle.js` file, and rendered on the screen,
+inside the `react` element.
+
+This can be easily run in a browser, and is the default format, since browsers ask for the `text/html` content-type when they request the page.  
+Again, I am skipping the choice of view/templating code on the server side as it's just not needed yet.
+
+## Step 3: Further Design Work
+
+### Groups
+
+This is something we can plausibly do now:  each rendering element can be a group.
+
+### Kite9 Control Object
+
+This is the way you register callbacks and things.   We're still going to need this. I think when we set up our ADLSpace object, we should pass
+in a set of functions, which register behaviours on this control object.  When we render an ADLSpace, we are going to be doing it sometimes as a full-screen thing, and sometimes as a dialog box for a palette, and sometimes as just a menu page.
+So, it makes sense that the behaviours are going to need to be passed in somehow separately.
+
+ i.e. each function is like:
+
+```javascript
+function someRegister(control) {
+	...
+}
+```
+So, the ADLSpace will create one of these, and then pass it round to load up with behaviours.
+
+### Rendering in the future
+
+*I believe* that we should base rendering entirely of the content of **renderingInformation**.  This way we achieve separation in the gui of 
+before and after.  This way, we could take any given tag with an ID, and call render on it.  In fact, I am not going to go 
+crazy on rendering client-side for now because of this.  I'm just going to get the basics in place and worry about fine-grained
+rendering later, by changing the model. 
+
+So, in this world, rendering information would contain an SVG "payload".  We would construct a group for the id'd element, and then 
+dump the SVG payload into the group.  Things like offset / size and so on could also be set here.  I expect there is a way of 
+using Batik to handle this outputting.
+
+### D3?  
+
+I am looking less favourably on this now.  I only really need animation - everything else is just straight svg.  I think making the animation in 
+some way pluggable is a good idea.  So, I'd like to downplay this and try to do things in basic SVG for the time being.
+
+### With Raphael for now?
+
+Seems like an easier win.  Let's bring this in, and then slowly reactify/webpackify/derephaelify...
+
+### Initial import
+
+So, to start with, I want a react component that actually renders some SVG on the screen.  I'm going to import the old Kite9
+code for now, and get this displaying to give a base from which to improve things.
+
+This is the entire component for rendering some SVG:
+
+```js
+import React from 'react'
+import ReactDOM from 'react-dom'
+import jQuery from 'jquery'
+import setup_rendering from '../lib/kite9_rendering'
+import setup_primitives from '../lib/kite9_primitives'
+import setup_style_chooser from '../lib/kite9_style_chooser'
+
+import Raphael from 'raphael'
+
+class ADLSpace extends React.Component {
+
+	render() {
+		return (<svg id="ADLSpace" width="1000" height="1000"></svg>)
+	}
+	
+	componentDidMount() {
+		var dom = ReactDOM.findDOMNode(this);
+
+		var kite9 = {}; 
+		kite9.isTouch = jQuery("html").hasClass("touch");
+		jQuery("body").addClass(kite9.isTouch ? "touch" : "mouse");
+		setup_primitives(kite9);
+		setup_rendering(kite9);
+		kite9.main_control = kite9.new_control(Raphael("ADLSpace", 1, 1), dom);
+        setup_style_chooser(kite9, kite9.main_control);
+		kite9.load(kite9.main_control, "http://localhost:8080/dist/test-card-rendered.xml", undefined);
+	}
+}
+
+
+export default ADLSpace
+```
+
+Effectively, we are not changing much here: we're still using Raphael, and we're loading the XML from a pre-rendered file (the test card).
+I had to add Raphael to the `package.json` (for now), and also create hard-coded copies of the stylesheets for webpack. 
+
+But, it mainly seems to work:
+
+![First laid out page](images/005_01.png)
+
+ - Fonts are wrong (webpack wants to add them to the bundle)
+ - Background colours are also not present for some reason.
+ 
+
+
+
 
 
