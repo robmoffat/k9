@@ -97,6 +97,19 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
+	public void testHTMLRender() throws URISyntaxException, IOException {
+		byte[] back = withBytesInFormat(MediaType.TEXT_HTML);
+		String s = new String(back);
+		
+		Assert.assertTrue(s.contains("<renderingInformation xsi:type=\"diagram-ri\" rendered=\"true\">\n"+
+			"  <position x=\"0.0\" y=\"0.0\"></position>\n"+
+			"  <size x=\""+EXPECTED_WIDTH+".0\" y=\""+EXPECTED_HEIGHT+".0\"></size>\n"+
+			" </renderingInformation>\n"));
+		
+		Assert.assertTrue(s.endsWith("</html>"));
+	}
+	
+	@Test
 	public void testADLAndSVGRender() throws URISyntaxException {
 		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
 		// ensure diagram has been rendered
