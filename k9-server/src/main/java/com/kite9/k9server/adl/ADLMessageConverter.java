@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
+import org.kite9.diagram.visualization.display.style.Stylesheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -37,7 +37,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	 * This is the list of media types we can support writing.
 	 */
 	public ADLMessageConverter() {
-		super(MediaTypes.ADL_XML, MediaTypes.RENDERED_ADL_XML, MediaType.IMAGE_PNG, MediaTypes.SVG, MediaTypes.PDF, MediaType.TEXT_HTML);
+		super(MediaTypes.ADL_XML, MediaTypes.ADL_SVG, MediaType.IMAGE_PNG, MediaTypes.SVG, MediaTypes.PDF, MediaType.TEXT_HTML);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	 */
 	@Override
 	protected boolean canRead(MediaType mediaType) {
-		return MediaTypes.ADL_XML.includes(mediaType) || MediaTypes.RENDERED_ADL_XML.includes(mediaType);
+		return MediaTypes.ADL_XML.includes(mediaType) || MediaTypes.ADL_SVG.includes(mediaType);
 	}
 
 	@Override

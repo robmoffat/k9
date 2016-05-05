@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.java2d.GriddedCompleteDisplayer;
-import org.kite9.diagram.visualization.display.java2d.adl_basic.ADLBasicCompleteDisplayer;
-import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
+import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
+import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
+import org.kite9.diagram.visualization.display.style.Stylesheet;
 import org.kite9.diagram.visualization.format.pdf.PDFRenderer;
 import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
 import org.springframework.http.MediaType;

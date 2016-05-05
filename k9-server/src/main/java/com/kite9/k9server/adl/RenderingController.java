@@ -26,7 +26,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class RenderingController {
 	
 	@RequestMapping(path="/api/renderer", 
-		consumes= {MediaTypes.ADL_XML_VALUE, MediaTypes.RENDERED_ADL_XML_VALUE})
+		consumes= {MediaTypes.ADL_XML_VALUE, MediaTypes.ARRANGED_ADL_XML_VALUE})
 	public @ResponseBody ADL echo(@RequestBody ADL input) {
 		return input;
 	}

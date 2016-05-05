@@ -5,14 +5,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
+import org.kite9.diagram.visualization.display.style.Stylesheet;
 import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.MediaType;
 
 public final class XMLFormat implements Format {
 	@Override
 	public MediaType[] getMediaTypes() {
-		return new MediaType[] { MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaTypes.RENDERED_ADL_XML, MediaTypes.ADL_XML };
+		return new MediaType[] { MediaType.TEXT_XML, MediaType.APPLICATION_XML, MediaTypes.ADL_XML };
 	}
 
 	@Override

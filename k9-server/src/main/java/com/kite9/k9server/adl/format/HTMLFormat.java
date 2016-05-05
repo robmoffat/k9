@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
+import org.kite9.diagram.visualization.display.style.Stylesheet;
 import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.MediaType;
 
@@ -55,9 +55,9 @@ public class HTMLFormat implements Format {
 	}
 
 	private void writeXMLScriptTag(String xml, OutputStreamWriter wos1) throws IOException {
-		wos1.write("<script type=\"text/xml\" id=\"data\">\n");
+		wos1.write("<script type=\"text/xml\" id=\"data\">");
 		wos1.write(xml);
-		wos1.write("\n</script>\n");
+		wos1.write("</script>\n");
 	}
 
 	@Override

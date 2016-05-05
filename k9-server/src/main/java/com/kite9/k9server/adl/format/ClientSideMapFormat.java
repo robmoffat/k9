@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.java2d.style.Stylesheet;
+import org.kite9.diagram.visualization.display.style.Stylesheet;
 import org.kite9.diagram.visualization.pipeline.rendering.ClientSideMapRenderingPipeline;
 import org.springframework.http.MediaType;
 

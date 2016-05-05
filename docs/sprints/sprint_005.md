@@ -1,7 +1,6 @@
 # 19th April 2016: Sprint 5: D3 To Load XML
 
 - We should be able to render the XML returned by passing it through a simple d3 component which turns it into SVG.
-- Every item from the object model will be a group, which will potentially have some svg elements associated with it.
 - Using D3 to display on the screen.
 - This should be a simple drop-in replacement to Raphael, and clear out this tech debt.
 - Tests should look like "here's some rendering information, handle it".
@@ -459,7 +458,77 @@ But, it mainly seems to work:
  - Fonts are wrong (webpack wants to add them to the bundle)
  - Background colours are also not present for some reason.
  
+I think I can live with this:  it's a reasonable starting point to begin with removing the Raphael dependency.
 
+## Step 3: Removing Raphael, Tidying Up
+
+So there's still a bit of a mess here:
+
+1.  We've got three large javascript files which control all the loading/updating rendering. 
+2.  Two of them are referencing Raphael.
+3.  They're all doing lots of XML manipulation, which in the future I think will just *go*.
+
+I need to decide whether to pause this, and do the `renderingInformation` change, or try and pull out the Raphael.  Obviously, doing the R.I. change will *massively*
+reduce the amount of XML we are importing, so maybe this is a good idea.
+
+Also, we need to do the grouping change.  But, I definitely want to do that after renderingInformation.  So...
+ 
+### Spike Solution: Rendering SVG Within Kite9 Visualisation
+
+Some of this turned out to be easy:   I used Batik's `SVGGraphics2D` class to create a new SVGRenderer class in Kite9.  What doesn't work:
+
+ - By default, Kite9 renders all the fonts into shapes before adding them to the graphics, so you end up with a much larger
+SVG file than you expect (all the paths to describe each character).  
+ - Any kind of fill, including background fills
+ - Shadows
+ - Literally *everything* is encoded on a per-element basis.. stylesheets are completely out-of-the-question.
+ 
+ But on the plus side, it's pretty exact.  By not using text, I wonder if this improves speed?  Hard to say.
+
+So, I could just spend the rest of this sprint sorting this out, and that would be great.  Is this worth doing? I think, yes:
+if we can plug this into the rendering information, it's going to simplify things massively, and that's a huge win, 
+and it should knock out the Raphael problem at the same time.  (Animation is likely to be made harder though I think).
+
+### Fixing Background Fills + Shadows
+
+ - Batik comes with it's own `LinearGradientPaint`.  Maybe I should use this instead of the AWT one?
+ 
+Trying [this handler](https://gist.github.com/msteiger/4509119) from the internet.  This works really well and solves the issue of Gradient fills not being
+supported.  I had to make a couple of changes:
+
+1.  `LinearGradientPaint` is the object used in Java to represent the gradient fill.  However, I wrap one of these so that I can use the same paint for any size of
+glyph.  This means it's not a `LinearGradientPaint` when it gets the handler.  So, I unwrap it first.
+2.  As a result of (1), I have to modify the handler class to use percentages for gradient start/end points, which is pretty simple.
+3.  Naively, each element with a gradient paint gets their gradient converted separately, e.g.
+
+```xml
+<linearGradient xmlns="http://www.w3.org/2000/svg" x1="50.0%" x2="50.0%" y1="0.0%" style="color-interpolation:sRGB;" y2="100.0%" id="gradient1" spreadMethod="pad"><stop style="stop-color:rgb(242,242,242);" offset="0%"/><stop style="stop-color:rgb(204,204,204);" offset="100%"/></linearGradient>
+<linearGradient xmlns="http://www.w3.org/2000/svg" x1="50.0%" x2="50.0%" y1="0.0%" style="color-interpolation:sRGB;" y2="100.0%" id="gradient1" spreadMethod="pad"><stop style="stop-color:rgb(242,242,242);" offset="0%"/><stop style="stop-color:rgb(204,204,204);" offset="100%"/></linearGradient>
+<linearGradient xmlns="http://www.w3.org/2000/svg" x1="50.0%" x2="50.0%" y1="0.0%" style="color-interpolation:sRGB;" y2="100.0%" id="gradient1" spreadMethod="pad"><stop style="stop-color:rgb(242,242,242);" offset="0%"/><stop style="stop-color:rgb(204,204,204);" offset="100%"/></linearGradient>
+...
+```
+
+This is pointless duplication, so I introduced a cache.  But there is something called `GradientPaintValueManager` which I wrote to convert between Raphael's idea 
+of gradients, and the one in Batik/Java.  So, this will need to be removed at some point soon.
+
+What's the right way to do this?  I guess, if we are using CSS generally, then we will need some CSS for fill gradients, and Raphael's approach is both working and OK.
+So, maybe we're barking up the wrong tree by removing this.  For now, I've added the fill property as the key for the cache, so that we can cache the gradients.  This fixes the problem, but 
+on the whole this bit is messy now.
+
+### Fixing the TestCard
+
+ - Stuff seems to be offset incorrectly is all. This turned out to be because we had zero-size connection 
+ bodies in the diagram, which, if you try to draw them cause the masks to go out of whack.  Easily fixed.
+
+### Adding the SVG To The Rendering Information
+
+
+### Rendering it on-screen
+
+
+
+
+ 
 
 
 

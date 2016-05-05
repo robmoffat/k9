@@ -2,12 +2,15 @@ package com.kite9.k9server.docker;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,16 +21,22 @@ import org.kite9.diagram.adl.Symbol;
 import org.kite9.diagram.adl.Symbol.SymbolShape;
 import org.kite9.diagram.adl.TextLine;
 import org.kite9.diagram.position.DiagramRenderingInformation;
+import org.kite9.diagram.position.RectangleRenderingInformation;
 import org.kite9.framework.common.HelpMethods;
-import org.kite9.framework.common.TestingHelp;
+import org.kite9.framework.serialization.XMLFragments;
 import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
+import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.MediaTypes;
 
 
@@ -49,6 +58,15 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		byte[] back = getRestTemplate().exchange(data);
 		return back;
 	}
+	
+	protected byte[] withBytesFromFile(MediaType output) throws IOException, URISyntaxException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		StreamHelp.streamCopy(this.getClass().getResourceAsStream("/test-card.xml"), baos, true);
+		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_XML, output);
+		RequestEntity<String> data = new RequestEntity<String>(new String(baos.toByteArray()), headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
+		byte[] back = getRestTemplate().exchange(data);
+		return back;
+	}
 
 	@Test
 	public void testPNGRender() throws URISyntaxException, IOException {
@@ -59,10 +77,15 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
+	public void testPNGRenderFromFile() throws URISyntaxException, IOException {
+		byte[] back = withBytesFromFile(MediaType.IMAGE_PNG);
+		BufferedImage bi = ImageIO.read(new ByteArrayInputStream(back));
+		Assert.assertEquals(1051, bi.getWidth());
+	}
+	
+	@Test
 	public void testPDFRender() throws URISyntaxException, IOException {
 		byte[] back = withBytesInFormat(MediaTypes.PDF);
-		File f = TestingHelp.prepareFileName(RestRenderingIT.class, "testPDFRenderer", "some.pdf");
-//		StreamHelp.streamCopy(new ByteArrayInputStream(back), new FileOutputStream(f), true);
 		
 		ByteArrayInputStream bais = new ByteArrayInputStream(back);		
 		PdfReader reader = new PdfReader(bais);
@@ -74,13 +97,42 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
-	public void testXMLRender() throws URISyntaxException {
-		byte[] back = withBytesInFormat(MediaTypes.RENDERED_ADL_XML);
+	public void testADLAndSVGRender() throws URISyntaxException {
+		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
 		// ensure diagram has been rendered
 		Diagram d = (Diagram) new XMLHelper().fromXML(new ByteArrayInputStream(back));
 		DiagramRenderingInformation dri = d.getRenderingInformation();
 		Assert.assertEquals(EXPECTED_WIDTH, (int)  dri.getSize().getWidth());
-		Assert.assertEquals(EXPECTED_HEIGHT, (int)  dri.getSize().getHeight());		
+		Assert.assertEquals(EXPECTED_HEIGHT, (int)  dri.getSize().getHeight());	
+		
+		Glyph g1 = (Glyph) d.getContents().get(0);
+		RectangleRenderingInformation rri = (RectangleRenderingInformation) g1.getRenderingInformation();
+		XMLFragments frags = (XMLFragments) rri.getDisplayData();
+		Assert.assertEquals(2, frags.getParts().size());
+		
+	}
+	
+	@Test
+	public void testSVGRender() throws Exception {
+		byte[] back = withBytesInFormat(MediaTypes.SVG);
+
+		// parse it to make sure it's good svg
+		Document d = parseBytesToXML(back);
+		
+		Element e = d.getDocumentElement();
+		Assert.assertEquals("svg", e.getTagName());
+		Assert.assertEquals(3, e.getChildNodes().getLength());
+	}
+
+	public Document parseBytesToXML(byte[] back) throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setValidating(false);
+		dbf.setFeature( "http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		dbf.setExpandEntityReferences(false);
+		DocumentBuilder db= dbf.newDocumentBuilder();
+		Document d = db.parse(
+			new InputSource(new ByteArrayInputStream(back)));
+		return d;
 	}
 	
 	@Test

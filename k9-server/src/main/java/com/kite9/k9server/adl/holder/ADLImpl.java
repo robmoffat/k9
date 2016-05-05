@@ -39,7 +39,7 @@ public class ADLImpl implements ADL {
 
 	@Override
 	public boolean isArranged() {
-		return MediaTypes.RENDERED_ADL_XML.isCompatibleWith(mt);
+		return MediaTypes.ARRANGED_ADL_XML.isCompatibleWith(mt);
 	}
 	
 	@Override
