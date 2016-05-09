@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom'
 import ADLSpace from './adl/components/ADLSpace.jsx'
+import jQuery from 'jquery'
 
 class App extends React.Component {
 
@@ -9,14 +10,18 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {		
-//		client({method: 'GET', path: '/api/employees'}).done(response => {
-//			this.setState({employees: response.entity._embedded.employees});
-//		});
+
 	}
 
 	render() {
+
+		var dataElem = jQuery("#data")
+		var initialText = dataElem.html()
+		var layers = [ 'SHADOW', 'MAIN' ];
+	
+		
 		return (
-			<ADLSpace />
+			<ADLSpace id={"ADLSpace1"} content={initialText} width={1000} height={500} layers={layers} />
 		)
 	}
 }

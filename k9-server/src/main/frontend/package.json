@@ -18,6 +18,7 @@
 		"d3" : "3.5.16",
 		"d3-transition" : "0.2.8",
 		"jquery" : "2.2.3",
+		"innersvg-polyfill": "0.0.2",
 		
 		"webpack" : "1.12.14",
 		"babel-core" : "6.7.6",

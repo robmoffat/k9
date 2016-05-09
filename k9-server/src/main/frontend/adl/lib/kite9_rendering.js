@@ -47,25 +47,7 @@ function setup_rendering(kite9) {
 		return false;
 	};
 	
-	/**
-	 * A useful hash function.  
-	 */
-	kite9.hash = function(str) {
-		var hash = 0;
-		if ((str == undefined) || (str==null)) {
-			return hash;
-		}
-		
-		if (str.length == 0) 
-			return hash;
-		    
-		for (var i = 0; i < str.length; i++) {
-		        var char = str.charCodeAt(i);
-		        hash = ((hash<<5)-hash)+char;
-		}
-
-		return hash;
-	};
+	
 	
 	
 	/**
@@ -89,51 +71,6 @@ function setup_rendering(kite9) {
 		   return false;
 		};
 	
-	/**
-	 * Translates the xml into some local-coordinates rendering info.
-	 */
-	kite9.createRectangularBounds = function(location_xml, left, top, scale, internal) {
-		var pos = internal ? jQuery(location_xml).find("internalPosition").first() : jQuery(location_xml).find("position").first();		
-		var size = internal ? jQuery(location_xml).find("internalSize").first() : jQuery(location_xml).find("size").first(); 
-		
-		var x = parseFloat(pos.attr("x"));
-		var y = parseFloat(pos.attr("y"));
-		var w = parseFloat(size.attr("x"));
-		var h = parseFloat(size.attr("y"));
-		x = x + left;
-		y = y + top;
-		
-		return { x: x, y: y, w: w, h: h};
-	};
-	
-	kite9.get_symbol_baseline = function(symbolSize) {
-		return symbolSize;
-	};
-	
-	kite9.lineBreakCount = function(str){
-		/* counts \n */
-		try {
-			return((str.match(/[^\n]*\n[^\n]*/gi).length));
-		} catch(e) {
-			return 0;
-		}
-	};
-	
-	kite9.get_baseline = function(text, textStyle) {
-		var c = kite9.lineBreakCount(text);
-		return c * textStyle.height + textStyle.baseline;
-	};
-	
-	/**
-	 * Draws the collection of symbols on screen, left-to-right from x.
-	 */
-	kite9.drawSymbols = function(symbols, x, y, baseline, contents, control, xo, yo) {
-		jQuery(symbols).each(function (i, sym) {
-	        kite9.draw_symbol(jQuery(sym).attr("theChar"), x, y+baseline, jQuery(sym).attr("shape"), contents, control, xo, yo);
-			x = x + kite9_stylesheet.interSymbolPadding;
-	        x = x + kite9_stylesheet.symbolSize;
-		});
-	};
 	
 	/**
 	 * xl = leftmost x point

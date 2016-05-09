@@ -6,8 +6,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
 import org.kite9.diagram.adl.Diagram;
+import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
+import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
 import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.framework.serialization.XMLHelper;
+import org.kite9.diagram.visualization.format.svg.ADLAndSVGRenderer;
+import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
 import org.springframework.http.MediaType;
 
 import com.google.common.io.Resources;
@@ -44,9 +47,10 @@ public class HTMLFormat implements Format {
 
 	@Override
 	public void handleWrite(Diagram arrangedDiagram, OutputStream baos, Stylesheet ss, boolean watermark, Integer width, Integer height) throws IOException {
-		XMLHelper helper = new XMLHelper();
-		String xml = helper.toXML(arrangedDiagram);
+		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
+				new ADLAndSVGRenderer(width, height));
 		
+		String xml = p.render(arrangedDiagram);
 		OutputStreamWriter wos1 = new OutputStreamWriter(baos);
 		wos1.write(pageTemplateStart);
 		writeXMLScriptTag(xml, wos1);
