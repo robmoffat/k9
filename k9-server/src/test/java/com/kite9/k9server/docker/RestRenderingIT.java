@@ -3,6 +3,9 @@ package com.kite9.k9server.docker;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,6 +26,8 @@ import org.kite9.diagram.adl.TextLine;
 import org.kite9.diagram.position.DiagramRenderingInformation;
 import org.kite9.diagram.position.RectangleRenderingInformation;
 import org.kite9.framework.common.HelpMethods;
+import org.kite9.framework.common.RepositoryHelp;
+import org.kite9.framework.common.TestingHelp;
 import org.kite9.framework.serialization.XMLFragments;
 import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.HttpHeaders;
@@ -79,8 +84,14 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	@Test
 	public void testPNGRenderFromFile() throws URISyntaxException, IOException {
 		byte[] back = withBytesFromFile(MediaType.IMAGE_PNG);
+		persistInAFile(back, "testPNGRenderFromFile", "diagram.png");
 		BufferedImage bi = ImageIO.read(new ByteArrayInputStream(back));
 		Assert.assertEquals(1051, bi.getWidth());
+	}
+
+	public void persistInAFile(byte[] back, String test, String filename) throws IOException, FileNotFoundException {
+		File f = TestingHelp.prepareFileName(this.getClass(),test, filename);
+		RepositoryHelp.streamCopy(new ByteArrayInputStream(back), new FileOutputStream(f), true);
 	}
 	
 	@Test
@@ -99,6 +110,8 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	@Test
 	public void testHTMLRender() throws URISyntaxException, IOException {
 		byte[] back = withBytesInFormat(MediaType.TEXT_HTML);
+		persistInAFile(back, "testHTMLRender", "diagram.html");
+
 		String s = new String(back);
 		
 		Assert.assertTrue(s.contains("<renderingInformation xsi:type=\"diagram-ri\" rendered=\"true\">\n"+
@@ -128,6 +141,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	@Test
 	public void testSVGRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaTypes.SVG);
+		persistInAFile(back, "testSVGRender", "diagram.svg");
 
 		// parse it to make sure it's good svg
 		Document d = parseBytesToXML(back);

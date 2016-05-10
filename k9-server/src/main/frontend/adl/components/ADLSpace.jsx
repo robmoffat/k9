@@ -75,6 +75,11 @@ export default class ADLSpace extends React.Component {
 			return str;
 		});
 		
+		// add SVG style
+		d3.select(dom).attr("style", function() {
+			return  d3.select(xml).selectAll("svg").attr("style");
+		});
+		
 		defsData.exit().remove();
 		
 		// create the layers
@@ -99,16 +104,20 @@ export default class ADLSpace extends React.Component {
 			return react.props.id+"-layer-"+d3.select(key).attr('id')
 		})
 		
-		elementsData.enter().append("g").html(function(data) {
+		elementsData.enter().append("g").attr("id", function(key) {
+			
+			
+		}).html(function(data) {
 			var parent = this.parentElement;
 			var layer = d3.select(parent).attr('layer')
-			var toRender = d3.select(data).select('renderingInformation displayData g[layer="'+layer+'"] g')
-			if (toRender[0][0] != null) {
-				var str = xmlSerializer.serializeToString(toRender[0][0]);
-				return str;
-			} else {
-				return null;
-			}
+			var toRender = d3.select(data).select('renderingInformation displayData g[layer="'+layer+'"]')
+			var out = '';
+			
+			toRender.each(function (d, i) {
+				out = out + xmlSerializer.serializeToString(this);
+			})
+			
+			return out;
 		});
 	}
 }
