@@ -9,26 +9,37 @@ class App extends React.Component {
 		super(props);
 	}
 
-	componentDidMount() {		
-
-	}
-
 	render() {
 
 		var dataElem = jQuery("#data")
 		var initialText = dataElem.html()
 		var layers = [ 'SHADOW', 'MAIN' ];
-	
+		var react = this;	
 		
 		return (
-			<ADLSpace id={"ADLSpace1"} content={initialText} width={1000} height={500} layers={layers} />
+				
+			<div>
+				<ADLSpace id={"ADLSpace1"} content={initialText} width={1000} height={500} layers={layers} />
+				<button class="btn-default" onClick={function() {
+					doMainRender();
+					
+				}}>Press Me</button>
+			</div>
 		)
 	}
 }
 
-render(
-		<App />,
-		document.getElementById('react')
-)
+
+function doMainRender() {
+	
+	render(
+			<App />,
+			document.getElementById('react')
+	)	
+	
+}
+
+doMainRender();
+
 
 
