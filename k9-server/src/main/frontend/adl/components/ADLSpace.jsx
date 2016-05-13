@@ -4,6 +4,7 @@ import jQuery from 'jquery'
 import d3 from 'd3'
 import polyfill from 'innersvg-polyfill'
 
+const xmlSerializer = new XMLSerializer();
 
 export default class ADLSpace extends React.Component {
 	
@@ -19,26 +20,26 @@ export default class ADLSpace extends React.Component {
 		this.update(this.props.content);
 	}
 		
-	update(content) {	
-		var xml = jQuery.parseXML(content);
-		var xmlSerializer = new XMLSerializer();
+	update(xml) {	
 		var react = this;
 		var groups = [];
 		var dom = ReactDOM.findDOMNode(this);
+		var d3dom = d3.select(dom)
+		var d3xml = d3.select(xml)
 		
 		// add SVG style
-		var size = d3.select(xml).select("diagram > renderingInformation > size");
+		var size = d3xml.select("diagram > renderingInformation > size");
 		d3.select(dom).attr("style", function() {
-			return  d3.select(xml).selectAll("svg").attr("style");
+			return  d3xml.selectAll("svg").attr("style");
 		}).transition()
 			.attr("width", function() { return size.attr("x") })
 			.attr("height", function() { return size.attr("y") })
 		
 		
 		// create the defs
-		var d3Defs = d3.select(dom).selectAll("defs").remove();
-		var svgDefs = d3.select(xml).selectAll("defs > *");
-		d3.select(dom).append("defs").html(function (data) {
+		var d3Defs = d3dom.selectAll("defs").remove();
+		var svgDefs = d3xml.selectAll("defs > *");
+		d3dom.append("defs").html(function (data) {
 			var out = '';
 			svgDefs.each(function (d, i) {
 				out = out + xmlSerializer.serializeToString(this);
@@ -48,19 +49,18 @@ export default class ADLSpace extends React.Component {
 		});
 				
 		// create the layers
-		var d3Groups = d3.select(dom).selectAll("g")
-		var layersData = d3Groups.data(this.props.layers, function(d) { return react.props.id+"-"+d; });
-		layersData.enter().append("g").attr('layer', function (d) { return d; });
-		layersData.exit().remove("g");
-		layersData.order();
-		
-		
-		// populate the layers
-		layersData.each(function (layer, i) {
-			var elements = d3.select(xml).selectAll('*[id] > renderingInformation > displayData > g[layer="'+layer+'"]')[0];
-			var elementsData = d3.select(this).selectAll("g").data(elements, function(key) {
-				var adlElement = key.parentElement.parentElement.parentElement
-				return d3.select(adlElement).attr('id')
+		this.props.layers.forEach(function(layer, i) {
+			var groupLayer = d3dom.select("g[group-layer='"+layer+"']")
+			if (groupLayer.size() == 0) {
+				d3dom.append("g").attr("group-layer", layer);
+				groupLayer = d3dom.select("g[group-layer='"+layer+"']")
+			}
+			
+			var elements = d3xml.selectAll('*[id] > renderingInformation > displayData > g[layer="'+layer+'"]')[0];
+			var d3groups = groupLayer.selectAll("g[key]")
+			var elementsData = d3groups.data(elements, function(data) {
+				var key = data.attributes['element-id'].value
+				return key
 			})
 
 			elementsData.enter().append("g").html(function(data) {
@@ -75,9 +75,41 @@ export default class ADLSpace extends React.Component {
 				})
 				
 				return out;
+			}).attr("id", function(data) {
+				return react.props.id+"-"+layer+"-"+data.attributes['element-id'].value.replace(":","-")
+			}).attr("key", function(data) {
+				return data.attributes['element-id'].value
 			});
+//			
+//			elementsData.transition().each(function() {
+//				console.log("transitioning "+this);
+//			});
+//						
+			elementsData.exit().remove();
 			
 		});
 	}
+}
+
+function mergeContents(domWithin, d3From, d3To) {
+	if (domFrom.name == domTo.name) {
+		if (domFrom.hash = hash(domTo)) {
+			
+		}
+	} else {
+		domFrom.remove();
+		d3.select(domWithin).append(domTo.name).html().each(transitionAttributes)
+	}
+}
+
+function hash(d3Element) {
+	
+	if (d3Element.hash != undefined) {
+		return d3Element.hash;
+	}
+}
+
+function transitionAttributes(dom, i) {
+	
 }
 

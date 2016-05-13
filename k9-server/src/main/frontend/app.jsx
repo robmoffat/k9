@@ -11,15 +11,13 @@ class App extends React.Component {
 
 	render() {
 
-		var dataElem = jQuery("#data")
-		var initialText = dataElem.html()
 		var layers = [ 'SHADOW', 'MAIN' ];
 		var react = this;	
 		
 		return (
 				
 			<div>
-				<ADLSpace id={"ADLSpace1"} content={initialText} width={1000} height={500} layers={layers} />
+				<ADLSpace id={"ADLSpace1"} content={this.props.xml} width={1000} height={500} layers={layers} />
 				<button class="btn-default" onClick={function() {
 					doMainRender();
 					
@@ -32,14 +30,13 @@ class App extends React.Component {
 
 function doMainRender() {
 	
-	render(
-			<App />,
-			document.getElementById('react')
-	)	
+	d3.xml('http://localhost:8080/api/renderer/random', 'text/adl-svg+xml', function(x) {	
+		render(
+				<App xml={x} />,
+				document.getElementById('react')
+		)	
+	}) 
 	
 }
 
-doMainRender();
-
-
-
+doMainRender()
