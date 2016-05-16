@@ -63,53 +63,143 @@ export default class ADLSpace extends React.Component {
 				return key
 			})
 
-			elementsData.enter().append("g").html(function(data) {
-				var renderingInformation = data.parentElement.parentElement;
-				var adlElement = renderingInformation.parentElement;
-				var layerGroup = this.parentElement;
-				var toRender = d3.select(data)
-				var out = '';
-				
-				toRender.each(function (d, i) {
-					out = out + xmlSerializer.serializeToString(this);
-				})
-				
-				return out;
-			}).attr("id", function(data) {
-				return react.props.id+"-"+layer+"-"+data.attributes['element-id'].value.replace(":","-")
-			}).attr("key", function(data) {
-				return data.attributes['element-id'].value
-			});
-//			
-//			elementsData.transition().each(function() {
-//				console.log("transitioning "+this);
-//			});
-//						
-			elementsData.exit().remove();
+			elementsData.enter().append("g")
+				.attr("id", function(data) {
+					return react.props.id+"-"+layer+"-"+data.attributes['element-id'].value.replace(":","-")
+				}).attr("key", function(data) {
+					return data.attributes['element-id'].value
+				});
 			
+			elementsData.each(function(data) {
+				mergeElements(this.parentElement, data, this)
+				console.log("transitioning "+this);
+			});
+						
+			elementsData.exit().remove();
 		});
 	}
 }
 
-function mergeContents(domWithin, d3From, d3To) {
-	if (domFrom.name == domTo.name) {
-		if (domFrom.hash = hash(domTo)) {
+function mergeElements(domWithin, domFrom, domTo) {
+	if (hashElement(domFrom) != hashElement(domTo)) {
+		if (domFrom.tagName == 'text') {
+			// transition text content (if any)
+			d3.select(domTo.children).remove();
+			d3.select(domTo).transition().text(domFrom.textContent)
+			mergeAttributes(domFrom, domTo)
+		} else {
+			// transition the elements
+			var processed = [];
 			
+			for (var i = 0; i < domFrom.children.length; i++) {
+				var e = domFrom.children.item(i)
+				var matchTo = findMatchingNode(processed, domTo.children, e)
+				
+				if (matchTo == undefined) {
+					matchTo = d3.select(domTo).append(e.tagName)[0][0]
+				}
+				
+				mergeElements(domTo, e, matchTo)
+				processed.push(matchTo)
+			}
+			
+			
+			// remove any surplus elements left in domTo
+			for (var i = 0; i < domTo.children.length; i++) {
+				var e = domTo.children.item(i)
+				if (processed.indexOf(e) == -1) {
+					d3.select(e).remove();
+				}
+			}
+			
+			mergeAttributes(domFrom, domTo)
 		}
-	} else {
-		domFrom.remove();
-		d3.select(domWithin).append(domTo.name).html().each(transitionAttributes)
+	} 
+}
+
+function mergeAttributes(domFrom, domTo) {
+	var trans = d3.select(domTo).transition();
+	
+	// transition attributes in domFrom
+	var attrs = domFrom.attributes
+	for (var i = 0; i < attrs.length; i++) {
+		var attr = attrs.item(i)
+		trans.attr(attr.name, attr.value)
+	}
+	
+	// remove any surplus elements left in domTo
+	attrs = domTo.attributes
+	for (var i = 0; i < attrs.length; i++) {
+		var attr = attrs.item(i)
+		if (domFrom.attributes.getNamedItem(attr.name) == undefined) {
+			domTo.attributes.removeNamedItem(attr.name)
+		}
 	}
 }
 
-function hash(d3Element) {
+
+function findMatchingNode(doneList, available, e) {
+	var found = undefined;
 	
-	if (d3Element.hash != undefined) {
-		return d3Element.hash;
+	for (var i = 0; i < available.length; i++) {
+		var opt = available.item(i)
+		if ((found == undefined) && (doneList.indexOf(opt) == -1)) {
+			if (opt.name == e.name) {
+				doneList.push(opt);
+				found = opt;
+			}
+		}
 	}
+	
+	return found;
 }
 
-function transitionAttributes(dom, i) {
+function hashElement(domElement) {	
+	if (domElement.hash != undefined) {
+		return domElement.hash;
+	}
 	
+	var h = 0;
+	var attrs = domElement.attributes
+	for (var length = attrs.length, i = 0; i < length; i++) {
+		var a = attrs.item(i)
+		var key = a.name
+		var value = a.value
+		h += hashString(key) + 5*hashString(value);
+	}
+	
+	var h2 = 0;
+	var cn = domElement.childNodes
+	for(i=0; i < cn.length; i++) {
+		var a = cn.item(i)
+		if (a.nodeType == 3) {
+			// text element
+			h2 += hashString(a.textContent)
+		} else if (a.nodeType == 1) {
+			// element
+			h2 += hashElement(a);
+		}
+	}
+	
+	domElement.hash = h+h2;
+	return h+h2;
 }
+
+function hashString(str) {
+	var hash = 0;
+	if ((str == undefined) || (str==null)) {
+		return hash;
+	}
+	
+	if (str.length == 0) 
+		return hash;
+	    
+	for (var i = 0; i < str.length; i++) {
+	        var char = str.charCodeAt(i);
+	        hash = ((hash<<5)-hash)+char;
+	}
+
+	return hash;
+};
+
 
