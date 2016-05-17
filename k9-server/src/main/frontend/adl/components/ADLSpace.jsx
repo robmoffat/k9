@@ -6,6 +6,8 @@ import polyfill from 'innersvg-polyfill'
 
 const xmlSerializer = new XMLSerializer();
 
+var round = 1;
+
 export default class ADLSpace extends React.Component {
 	
 	render() {
@@ -21,6 +23,7 @@ export default class ADLSpace extends React.Component {
 	}
 		
 	update(xml) {	
+		round = round + 1;
 		var react = this;
 		var groups = [];
 		var dom = ReactDOM.findDOMNode(this);
@@ -72,7 +75,6 @@ export default class ADLSpace extends React.Component {
 			
 			elementsData.each(function(data) {
 				mergeElements(this.parentElement, data, this)
-				console.log("transitioning "+this);
 			});
 						
 			elementsData.exit().remove();
@@ -85,10 +87,17 @@ function mergeElements(domWithin, domFrom, domTo) {
 		if (domFrom.tagName == 'text') {
 			// transition text content (if any)
 			d3.select(domTo.children).remove();
-			d3.select(domTo).transition().text(domFrom.textContent)
+			d3.select(domTo).text(domFrom.textContent)
 			mergeAttributes(domFrom, domTo)
 		} else {
 			// transition the elements
+			mergeAttributes(domFrom, domTo)
+			
+			if ((domFrom.children.length != domTo.children.length) && (domTo.children.length > 0)) {
+				var id = domWithin.attributes.item("id")
+				console.log("Different Dom size "+domFrom.textContent+" "+ ((id != null) ? id.value : ""))
+			}
+
 			var processed = [];
 			
 			for (var i = 0; i < domFrom.children.length; i++) {
@@ -99,20 +108,28 @@ function mergeElements(domWithin, domFrom, domTo) {
 					matchTo = d3.select(domTo).append(e.tagName)[0][0]
 				}
 				
-				mergeElements(domTo, e, matchTo)
 				processed.push(matchTo)
+				mergeElements(domTo, e, matchTo)
 			}
 			
 			
 			// remove any surplus elements left in domTo
 			for (var i = 0; i < domTo.children.length; i++) {
 				var e = domTo.children.item(i)
+				
+				var r = e.attributes.getNamedItem("round")
+				
 				if (processed.indexOf(e) == -1) {
 					d3.select(e).remove();
-				}
-			}
-			
-			mergeAttributes(domFrom, domTo)
+					i = i - 1;  //because we removed one
+					console.log("removed " +e.textContent)
+				} 
+				
+//				else if (r != round) {
+//					d3.select(e).remove();
+//					console.log("removed the other way "+e.tagName)
+//				}
+			}			
 		}
 	} 
 }
@@ -131,27 +148,26 @@ function mergeAttributes(domFrom, domTo) {
 	attrs = domTo.attributes
 	for (var i = 0; i < attrs.length; i++) {
 		var attr = attrs.item(i)
-		if (domFrom.attributes.getNamedItem(attr.name) == undefined) {
-			domTo.attributes.removeNamedItem(attr.name)
+		if (attr.name != 'key') {
+			if (domFrom.attributes.getNamedItem(attr.name) == undefined) {
+				domTo.attributes.removeNamedItem(attr.name)
+			}
 		}
 	}
 }
 
 
-function findMatchingNode(doneList, available, e) {
-	var found = undefined;
-	
+function findMatchingNode(doneList, available, e) {	
 	for (var i = 0; i < available.length; i++) {
 		var opt = available.item(i)
-		if ((found == undefined) && (doneList.indexOf(opt) == -1)) {
-			if (opt.name == e.name) {
-				doneList.push(opt);
-				found = opt;
+		if (doneList.indexOf(opt) == -1) {
+			if ((opt.tagName == e.tagName) && (opt.children.length == e.children.length)) {
+				return opt;
 			}
 		}
 	}
 	
-	return found;
+	return undefined;
 }
 
 function hashElement(domElement) {	

@@ -9,4 +9,10 @@
    <label>Full Glyph</label>
   </glyph>
  </context>
+   <glyph id="withStereo">
+    <stereotype>Stereotype</stereotype>
+    <label>With Stereo</label>
+    <text-lines></text-lines>
+    <symbols></symbols>
+   </glyph>
 </diagram>
