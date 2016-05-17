@@ -3,20 +3,37 @@
 - We should be able to render the XML returned by passing it through a simple d3 component which turns it into SVG.  DONE (24th April 2016)
 - Tests should look like "here's some rendering information, handle it". DONE
 - Using D3 to display on the screen.   DONE (10th May 2016)
-- This should be a simple drop-in replacement to Raphael, and clear out this tech debt.
-- (Bonus Goal) make sure animation still looks good, so handle updates.
+- This should be a simple drop-in replacement to Raphael, and clear out this tech debt.  DONE (17th May 2016)
+- (Bonus Goal) make sure animation still looks good, so handle updates. DONE  (17th May 2016)
 
-## Prelude:  Content Types
+## Prelude: A new Style of Rendering
+
+In the existing Kite9, I send the sizes and positions of the elements through to the client layer, and then write logic on the client to put all the elements
+in their correct positions using Raphael.   Now, aside from the fact we want to remove Raphael, this means duplication:  we have code on both client and server
+that knows how to position content within a Glyph.  
+
+One thing that occurred to me in this sprint is tha  we should base rendering entirely of the content of **renderingInformation**.  This way we achieve separation in the gui of 
+before and after.  This way, we could take any given tag with an ID, and call render on it.  In fact, I am not going to go 
+crazy on rendering client-side for now because of this.  I'm just going to get the basics in place and worry about fine-grained
+rendering later, by changing the model. 
+
+So, in this world, `RenderingInformation` would contain an SVG "payload".  We would construct a group for the id'd element, and then 
+dump the SVG payload into the group.  Things like offset / size and so on could also be set here.  
+
+In order to do this, I am going to rely on Batik to convert my diagrams into SVG, and handle the outputting.  
+
+## Second Prelude:  Content Types
 
 Outputting SVG (or a web page containing SVG) is a *Content-Type* issue, and this is supported by the HTTP spec.  We should make
 use of this.  The content types related to diagrams in Kite9 are:
 
  - **text/adl+xml** : Unrendered ADL (Kite9's internal XML Format).  
- - **text/rendered-adl+xml**:  Same as the above, but including rendering information to say where each element goes.
+ - **text/rendered-adl+xml**:  Same as the above, but including `RenderingInformation` tags to say where each element goes.
+ - **text/adl-svg+xml**: As above, but also including snippets of SVG that say exactly what the element looks like (also embedded within `RenderingInformation`
  - **application/pdf**:  PDF type
  - **image/png**: PNG Image format (the usual web format)
  - **image/svg+xml**:  SVG Images
- - **text/html**: Our rendered page, with an SVG image embedded in it.
+ - **text/html**: Our rendered page, with an SVG image embedded in it (processed using D3/React/etc)
  
 To handle these in Spring, we use a [HttpMessageConverter](http://docs.spring.io/spring/docs/3.0.x/javadoc-api/org/springframework/http/converter/HttpMessageConverter.html)
 subtype.  
@@ -24,7 +41,9 @@ subtype.
 By default, browsers handle a variety of content types themselves.  So, PNG, SVG and HTML would be handled automatically.  Then it would be up to the browser to ask 
 for the right content type beyond this.
 
-## Second Prelude: JavaScript
+(ADL = Abstract Diagramming Language, a format for (theoretically) holding any type of diagram)
+
+## Third Prelude: JavaScript
 
 One of the reasons I'm doing this part of the project *right now* is that I want to get the JavaScript libraries sorted out properly.   I am going to use
 `maven-frontend-plugin`, which combines several technologies:  Node.js, NPM, Webpack, and Karma.   I'm using these all at work as it is, and I'm going to now port them 
@@ -98,11 +117,12 @@ And here are the `MediaType`s we are going to convert from/to:
 ```java
 public class MediaTypes {
 
-	public static final MediaType SVG = new MediaType("image", "svg+xml");
-	public static final MediaType PDF = new MediaType("application", "pdf");
-	public static final MediaType ADL_XML = new MediaType("text", "adl+xml");
-	public static final MediaType RENDERED_ADL_XML = new MediaType("text", "rendered-adl+xml");
-	public static final MediaType CLIENT_SIDE_IMAGE_MAP = new MediaType("text", "html-image-map");
+	public static final String SVG_VALUE = "image/svg+xml";
+	public static final String PDF_VALUE = "application/pdf";
+	public static final String ADL_XML_VALUE = "text/adl+xml";
+	public static final String ARRANGED_ADL_XML_VALUE = "text/arranged-adl+xml";
+	public static final String ADL_SVG_VALUE = "text/adl-svg+xml";
+	public static final String CLIENT_SIDE_IMAGE_MAP_VALUE = "text/html-image-map";
 	
 }
 ```
@@ -162,22 +182,22 @@ of already-built Kite9 code that can render diagrams into the different formats.
 		Charset charset = contentType.getCharSet() == null ? Charset.forName("UTF-8") : contentType.getCharSet();
 		String stylesheet = StylesheetProvider.DEFAULT;  (1)
 		
-		if (MediaTypes.ADL_XML.isCompatibleWith(contentType)) { (2)
-			outputMessage.getBody().write(t.getAsXMLString().getBytes(charset));
+		if (MediaTypes.ADL_XML.isCompatibleWith(contentType)) {
+			outputMessage.getBody().write(t.getAsXMLString().getBytes(charset)); (2)
 			return;
 		}
 			
 		try {
 			Diagram d = t.getAsDiagram();
-			if (MediaTypes.ADL_XML.isCompatibleWith(t.getMediaType())) {
+			if (!t.isArranged()) {
 				// unrendered, so render.
 				d = arranger.arrangeDiagram(d, stylesheet); (3)
 			}
 
-			Format f = formatSupplier.getFormatFor(contentType);  (4)
-			Stylesheet ss = StylesheetProvider.getStylesheet(stylesheet);
+			Format f = formatSupplier.getFormatFor(contentType); (4)
+			Stylesheet ss = StylesheetProvider.getStylesheet(stylesheet); 
 			
-			f.handleWrite(d, outputMessage.getBody(), ss, true, null, null);  (5)
+			f.handleWrite(d, outputMessage.getBody(), ss, true, null, null); (5)
 		} catch (Exception e) {
 			throw new HttpMessageNotReadableException("Caused by: "+e.getMessage(), e);
 		}
@@ -206,7 +226,10 @@ public class RenderingController {
 }
 ```
 
-Obviously, this will change in the future, and we will do caching, etc.
+Obviously, this will change in the future, and we will do caching, etc.  I also added a method for returning a test card 
+`api/renderer/test`, which is just a handy shortcut to having to post content, and a method which randomly modifies this 
+test card by changing the links and the text (`api/renderer/random`), which allows me to see how the diagram will animate
+between states.
 
 ### Testing
 
@@ -366,92 +389,51 @@ inside the `react` element.
 This can be easily run in a browser, and is the default format, since browsers ask for the `text/html` content-type when they request the page.  
 Again, I am skipping the choice of view/templating code on the server side as it's just not needed yet.
 
-## Step 3: Further Design Work
+### ADLSpace React Component
 
-### Groups
-
-This is something we can plausibly do now:  each rendering element can be a group.
-
-### Kite9 Control Object
-
-This is the way you register callbacks and things.   We're still going to need this. I think when we set up our ADLSpace object, we should pass
-in a set of functions, which register behaviours on this control object.  When we render an ADLSpace, we are going to be doing it sometimes as a full-screen thing, and sometimes as a dialog box for a palette, and sometimes as just a menu page.
-So, it makes sense that the behaviours are going to need to be passed in somehow separately.
-
- i.e. each function is like:
-
-```javascript
-function someRegister(control) {
-	...
-}
-```
-So, the ADLSpace will create one of these, and then pass it round to load up with behaviours.
-
-### Rendering in the future
-
-*I believe* that we should base rendering entirely of the content of **renderingInformation**.  This way we achieve separation in the gui of 
-before and after.  This way, we could take any given tag with an ID, and call render on it.  In fact, I am not going to go 
-crazy on rendering client-side for now because of this.  I'm just going to get the basics in place and worry about fine-grained
-rendering later, by changing the model. 
-
-So, in this world, rendering information would contain an SVG "payload".  We would construct a group for the id'd element, and then 
-dump the SVG payload into the group.  Things like offset / size and so on could also be set here.  I expect there is a way of 
-using Batik to handle this outputting.
-
-### D3?  
-
-I am looking less favourably on this now.  I only really need animation - everything else is just straight svg.  I think making the animation in 
-some way pluggable is a good idea.  So, I'd like to downplay this and try to do things in basic SVG for the time being.
-
-### With Raphael for now?
-
-Seems like an easier win.  Let's bring this in, and then slowly reactify/webpackify/derephaelify...
-
-### Initial import
+Instead of just rendering 'Hello World' on the screen, we really want the `App` component to render an `ADLSpace` component, which 
+will lay out the diagram using D3.  
 
 So, to start with, I want a react component that actually renders some SVG on the screen.  I'm going to import the old Kite9
 code for now, and get this displaying to give a base from which to improve things.
 
-This is the entire component for rendering some SVG:
+This is the entire component for rendering some SVG, excluding the actual `update` logic:
 
 ```js
 import React from 'react'
 import ReactDOM from 'react-dom'
 import jQuery from 'jquery'
-import setup_rendering from '../lib/kite9_rendering'
-import setup_primitives from '../lib/kite9_primitives'
-import setup_style_chooser from '../lib/kite9_style_chooser'
+import d3 from 'd3'
 
-import Raphael from 'raphael'
+var round = 1;
 
-class ADLSpace extends React.Component {
-
+export default class ADLSpace extends React.Component {
+	
 	render() {
-		return (<svg id="ADLSpace" width="1000" height="1000"></svg>)
+		return (<svg id={this.props.id} width={this.props.width} height={this.props.height} xmlns="http://www.w3.org/2000/svg" />)
 	}
 	
 	componentDidMount() {
-		var dom = ReactDOM.findDOMNode(this);
-
-		var kite9 = {}; 
-		kite9.isTouch = jQuery("html").hasClass("touch");
-		jQuery("body").addClass(kite9.isTouch ? "touch" : "mouse");
-		setup_primitives(kite9);
-		setup_rendering(kite9);
-		kite9.main_control = kite9.new_control(Raphael("ADLSpace", 1, 1), dom);
-        setup_style_chooser(kite9, kite9.main_control);
-		kite9.load(kite9.main_control, "http://localhost:8080/dist/test-card-rendered.xml", undefined);
+		this.update(this.props.content);
+	}		
+	
+	componentDidUpdate() {
+		this.update(this.props.content);
+	}
+		
+	update(xml) {	
+		...
 	}
 }
-
-
-export default ADLSpace
+	
 ```
 
-Effectively, we are not changing much here: we're still using Raphael, and we're loading the XML from a pre-rendered file (the test card).
-I had to add Raphael to the `package.json` (for now), and also create hard-coded copies of the stylesheets for webpack. 
+Whenever react renders the ADLSpace component, it will call either `componentDidMount` (on the first render) or 
+`componentDidUpdate` (on subsequent ones).   
 
-But, it mainly seems to work:
+In the initial version of the `update` method, I simply called off to the old Kite9 render methods and used Raphael.
+
+It mainly seems to work:
 
 ![First laid out page](images/005_01.png)
 
@@ -627,6 +609,7 @@ public class SVGGraphicsLayer extends BasicGraphicsLayer {
 	
 	...
 	
+	@Override
 	public void startElement(DiagramElement de) {
 		Element group = document.createElement("g");
 		group.setAttribute("layer", name.name());
@@ -638,18 +621,22 @@ public class SVGGraphicsLayer extends BasicGraphicsLayer {
 		super.startElement(de);
 	}
 
-	public void endElement() {
-		Element topGroup = ((SVGGraphics2D)g2).getTopLevelGroup();
-		if (topGroup.getChildNodes().getLength() > 0) {
+	@Override
+	public void endElement(DiagramElement de) {
+		Element topGroup = getTopLevelGroup();
+		if (worthKeeping(topGroup)) {
 			originalTopGroup.appendChild(topGroup);
 		}
 		
-		super.endElement();
+		super.endElement(de);
 		((SVGGraphics2D)g2).setTopLevelGroup(topGroup);
 	}
+
 ```
 
-Now, the XML looks like this:
+Finally, we have an `SVGRenderer`, which implements `GraphicsSourceRenderer` and passes back the `SVGGraphicsLayer` object to the ADL Renderers to use.
+
+Now, the XML coming out of the `SVGRenderer` looks like this:
 
 ```xml
 <svg ...
@@ -684,7 +671,7 @@ public abstract class AbstractRenderingInformation implements RenderingInformati
 	
 ```
 
-And `displayData` would simply be an object containing some SVG, so the parts from the previous block of XML would just be held in different map elements.
+And `displayData` would simply be an object containing some XML, so the parts from the previous block of XML would just be held in different map elements.
 
 ```java
 /**
@@ -692,107 +679,449 @@ And `displayData` would simply be an object containing some SVG, so the parts fr
  * 
  * @author robmoffat
  */
-public class SVGData {
+public class XMLFragments {
 
-	public static final String SHADOW = "SHADOW";
-	public static final String PERIMETER = "PERIMETER";
-	public static final String BODY = "BODY";
+	@XStreamImplicit
+	private final List<Element> parts = new ArrayList<Element>();
+
+	public List<Element> getParts() {
+		return parts;
+	}
+}
+```
+
+### Populating the XMLFragments with SVG
+
+We need to be able to output essentially the original ADL document, but containing SVG fragments.  And, because we have divided up the XML into different layers and groups, 
+it's just a case of transferring those layers/groups into our ADL document `RenderingInformation` objects.
+
+To do this, I have a renderer called `ADLAndSVGRenderer`:
+
+```java
+public class ADLAndSVGRenderer extends SVGRenderer {
+
+	...
 	
-	private Map<String, String> svgParts = new HashMap<>();
+	@Override
+	protected SVGGraphicsLayer createGraphicsLayer(GraphicsLayerName name) {
+		return new SVGGraphicsLayer(g2, name, document, topGroup, externalizeFonts()) {
 
-	private Dimension2D offset;
-
-	public void setPathOffset(Dimension2D offset) {
-		this.offset = offset;
+			@Override
+			public void endElement(DiagramElement de) {
+				Element thisGroup= getTopLevelGroup();
+				if ((worthKeeping(thisGroup)) && (de instanceof PositionableDiagramElement)) {
+					RenderingInformation ri = ((PositionableDiagramElement)de).getRenderingInformation();   (1)
+					SVGCSSStyler.style(thisGroup);	
+					ensureDisplayData(thisGroup, ri); (2)
+				}
+					
+				...
+				
+				super.endElement(de);   
+			}
+		};
 	}
 	
-	public Dimension2D getPathOffset() {
-		return this.offset;
+	private void ensureDisplayData(Element xml, RenderingInformation ri) {
+		Object displayData = ri.getDisplayData();
+		
+		if (displayData == null) {
+			displayData = new XMLFragments();
+			ri.setDisplayData(displayData);
+		}
+		
+		if (displayData instanceof XMLFragments) {
+			((XMLFragments) displayData).getParts().add(xml);
+		} else {
+			throw new Kite9ProcessingException("Mixed rendering: "+displayData.getClass());
+		}
 	}
 
-	public void setSvgPart(String name, String value) {
-		this.svgParts.put(name, value);
+	@Override
+	protected boolean externalizeFonts() {
+		return true;
+	}
+	
+}
+```
+
+1.  Find the `RenderingInformation` for the element in question
+2.  Add the XML fragment to the `renderingInformation`
+
+The XML now looks something like this:
+
+```xml
+<arrow id="a1">  (1)
+   <renderingInformation xsi:type="rectangle" rendered="true">  (2)
+    <displayData xsi:type="org.kite9.framework.serialization.XMLFragments">  (3)
+     <g element-id="a1" layer="SHADOW">   (4)
+      <g style="fill:rgb(179,179,179); text-rendering:optimizeLegibility; color-rendering:optimizeQuality; image-rendering:optimizeQuality; stroke:rgb(179,179,179); color-interpolation:linearRGB; stroke-width:2;">
+       <rect height="24" rx="4" ry="4" style="stroke:none;" width="108" x="26" y="38"></rect>
+      </g>
+     </g>
+	...
+```
+
+1.  The ADL definition for the `<arrow>` element.
+2.  `RenderingInformation for the arrow.
+3.  `DisplayData` (embedded XMLFragments)
+4.  A fragment - the group containing the shadow of the arrow.
+
+### Minimizing/Converting Defs
+
+One problem with the XML fragments approach is that we end up repeatedly defining things like the `<defs>` (gradient fills and so on).
+It would be best if we stored all of these within the XML fragments of *just* the diagram, and referenced them from there.
+
+Also, there are lots of 'default' values that get applied to the base `<svg>` tag, which go missing by just rendering the sub-fragments
+within our ADL structure.  So, it would be nice to keep these too.
+
+I managed to get all of this to store within the `XMLFragments` of the diagram like so:
+
+```xml
+<diagram xmlns="http://www.kite9.org/schema/adl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="auto:41">
+ <renderingInformation xsi:type="diagram-ri" rendered="true">
+  <displayData xsi:type="org.kite9.framework.serialization.XMLFragments" xmlns="http://www.w3.org/2000/svg">
+   <defs id="defs1">
+    <linearGradient color-interpolation="sRGB" id="gradient1" spreadMethod="pad" x1="50.0%" x2="50.0%" y1="0.0%" y2="100.0%">
+     <stop offset="0%" stop-color="rgb(242,242,242)"></stop>
+     <stop offset="100%" stop-color="rgb(204,204,204)"></stop>
+    </linearGradient>
+   </defs>
+   <svg style="fill-opacity:1; color-rendering:auto; color-interpolation:auto; text-rendering:auto; stroke:black; stroke-linecap:square; stroke-miterlimit:10; shape-rendering:auto; stroke-opacity:1; fill:black; stroke-dasharray:none; font-weight:normal; stroke-width:1; font-family:'Dialog'; font-style:normal; stroke-linejoin:miter; font-size:12; stroke-dashoffset:0; image-rendering:auto;"></svg>
+  </displayData>
+  <position x="0.0" y="0.0"></position>
+  <size x="432.0" y="96.0"></size>
+ </renderingInformation>
+ ```
+ 
+This is done inside `ADLAndSVGRenderer`, which extends the usual `SVGRenderer`, because it enscapsulates the SVG within the original ADL document.  
+
+```java
+public class ADLAndSVGRenderer extends SVGRenderer {
+
+	...
+
+	@Override
+	protected String output(Diagram something) throws SVGGraphics2DIOException, IOException {  (1)
+		ensureDisplayData(getDiagramDefs(), diagramRendering);
+		ensureDisplayData(getDiagramDefaultStyles(), diagramRendering);
+		g2.setTopLevelGroup(topGroup);
+		return new XMLHelper().toXML(something);
+	}
+ 
+ 	...
+ 	
+ 	
+ 	private void ensureDisplayData(Element xml, RenderingInformation ri) {  (2)
+		Object displayData = ri.getDisplayData();
+		
+		if (displayData == null) {
+			displayData = new XMLFragments();
+			ri.setDisplayData(displayData);
+		}
+		
+		if (displayData instanceof XMLFragments) {
+			((XMLFragments) displayData).getParts().add(xml);
+		} else {
+			throw new Kite9ProcessingException("Mixed rendering: "+displayData.getClass());
+		}
+	}
+	
+	...
+```	
+
+1.  This is the regular `output()` method for a `Renderer`, extended to add the new details in.
+
+
+
+### Rendering it on-screen using D3 / Animating
+
+This is really the nub of the problem:   we have a React component on the screen with some SVG.  We have some new XML coming in, and we need to transition between the 
+two.  To do this, we need to consider each XMLFragment in turn.  Each fragment refers to a particular layer of a particular diagram element.  So, it could be the shadow of 
+a glyph, or the border of a context.  We have the 'before' and 'after' SVG, and we need to animate between the two.   
+
+Additionally, we need to consider what happens if there is a new element, or an element gets removed.   Luckily, D3 has a great idea for this: the `data()` command, 
+which is capable of keeping track of what entities are on the screen, vs what's new and what's removed:
+
+```js
+
+export default class ADLSpace extends React.Component {
+
+	... (see above)
+
+	update(xml) {
+		var react = this;
+		var groups = [];
+		var dom = ReactDOM.findDOMNode(this);
+		var d3dom = d3.select(dom)
+		var d3xml = d3.select(xml)				(1)
+	
+		...
+	
+	
+		// create the layers
+		this.props.layers.forEach(function(layer, i) {
+			var groupLayer = d3dom.select("g[group-layer='"+layer+"']")   (2)
+			if (groupLayer.size() == 0) {
+				d3dom.append("g").attr("group-layer", layer);
+				groupLayer = d3dom.select("g[group-layer='"+layer+"']")
+			}
+			
+			var elements = d3xml.selectAll('*[id] > renderingInformation > displayData > g[layer="'+layer+'"]')[0];   (3)
+			var d3groups = groupLayer.selectAll("g[key]")	(4)
+			var elementsData = d3groups.data(elements, function(data) {   	(5)
+				var key = data.attributes['element-id'].value
+				return key
+			})
+
+			elementsData.enter().append("g")			(6)
+				.attr("id", function(data) {
+					return react.props.id+"-"+layer+"-"+data.attributes['element-id'].value.replace(":","-")
+				}).attr("key", function(data) {
+					return data.attributes['element-id'].value
+				});
+			
+			elementsData.each(function(data) {			(7)
+				mergeElements(this.parentElement, data, this)
+			});
+						
+			elementsData.exit().remove();			(8)
+		});
+	
+	
+	
 	}
 
-	public String getPart(String name) {
-		return svgParts.get(name);
+
+1. Now we have d3 handles to the new xml and the existing svg dom.
+2. Creating svg groups for each layer (ensures the correct ordering of elements in the diagram)
+3. Select the ADL elements to display in the new state
+4. Select existing elements to match them with
+5. This key explains how to match elements between new state and old - i.e. where keys match on new and old versions, it's the same element.
+6. `enter()` deals with new entities coming onto the diagram.  We create a new group for them, with ID and Key attributes.
+7. This handles the transition of elements between their old (or just initialized) state, and their new state.
+8. This handles removing elements that are not in the new XML.
+
+Merging elements works in the following way:
+
+- Go through each element in the 'from' state.  
+- For each element, find a (hopefully) corresponding element in the copy-'to' state.
+- Transition all the attributes.
+- Recurse into that element and do the same thing. ( unless it's text - in this case, just change the text contents)
+- Remove any elements in the 'to' state that didn't get transitioned.
+
+It looks like this:
+
+```js
+function mergeElements(domWithin, domFrom, domTo) {
+	if (hashElement(domFrom) != hashElement(domTo)) {    (1)
+		if (domFrom.tagName == 'text') {    (2)
+			// transition text content (if any)
+			d3.select(domTo.children).remove();
+			d3.select(domTo).text(domFrom.textContent)
+			mergeAttributes(domFrom, domTo)  (3)
+		} else {
+			// transition the elements
+			mergeAttributes(domFrom, domTo)  (3)
+			
+			var processed = [];	(4)
+			
+			for (var i = 0; i < domFrom.children.length; i++) { (5)
+				var e = domFrom.children.item(i)
+				var matchTo = findMatchingNode(processed, domTo.children, e)  
+				
+				if (matchTo == undefined) {
+					matchTo = d3.select(domTo).append(e.tagName)[0][0]
+				}
+				
+				processed.push(matchTo)
+				mergeElements(domTo, e, matchTo)   (6)
+			}
+			
+			
+			// remove any surplus elements left in domTo
+			for (var i = 0; i < domTo.children.length; i++) {  (7)
+				var e = domTo.children.item(i)
+				
+				if (processed.indexOf(e) == -1) {
+					d3.select(e).remove();
+					i = i - 1;  //because we removed one
+					console.log("removed " +e.textContent)
+				} 
+				
+			}			
+		}
+	} 
+}
+```
+
+1.  A quick check to see if any change is needed - using the `hash` functionality from the original Kite9 client.
+2.  Checking if the element is a `text` node - if so, we just transition the text.
+3.  Merge Attributes - this goes through each attribute in turn and does a D3 transition between them.
+4.  Keeps track of the elements in the 'to' state that we want to keep.
+5.  Go through each from state element
+6.  Recursive call to merge the contents of the from element and it's matched element.
+7.  Removing elements that are not needed anymore
+
+### Merging Attributes
+
+This works in a similar way to merging elements, except that we are going to use D3's transition here to ensure a smooth change between the elements.  This 
+makes it look like we are animating smoothly from one state to another.
+
+```js
+function mergeAttributes(domFrom, domTo) {
+	var trans = d3.select(domTo).transition();  (1)
+	
+	// transition attributes in domFrom
+	var attrs = domFrom.attributes
+	for (var i = 0; i < attrs.length; i++) {
+		var attr = attrs.item(i)
+		trans.attr(attr.name, attr.value)   (2)
+	}
+	
+	// remove any surplus elements left in domTo
+	attrs = domTo.attributes    
+	for (var i = 0; i < attrs.length; i++) {   (3)
+		var attr = attrs.item(i)
+		if (attr.name != 'key') {
+			if (domFrom.attributes.getNamedItem(attr.name) == undefined) {
+				domTo.attributes.removeNamedItem(attr.name)
+			}
+		}
+	}
+}
+```
+
+1. Create the transition
+2. This transitions one of the 'to' elements to it's 'from' value.
+3. Remove any attributes that aren't present in the 'from' state now.
+
+### Big Win
+
+We've now replaced 1500 lines of Javascript with something faster but pretty much equivalent in 200 lines.  There are a few issues:
+
+ - The key is rendering all over the place.  (I'm going to leave this for now)
+ - For some reason, the group structure being sent by Batik changes from one render to the next.  This means the animation isn't quite as smooth as it otherwise could be.
+ 
+Now we are up to here:
+
+![Nearly complete](images/005_2.png)
+
+ 
+It's working "enough" that I can forget about this now and focus on some of the main things to get right.
+
+### Fonts
+
+There is a *huge* performance improvement to be made from rendering fonts on the client side rather 
+than the server.   If they're rendered on the server, the client is sent a huge `<path>` containing the outline of every letter.
+
+This is OK for when we are rendering a standalone SVG file, but it's a waste if we can store font's on the client and reuse them.
+
+```java
+/**
+ * Outputs Font information in a CSS stylesheet format.  
+ * 
+ * @author robmoffat
+ * 
+ */
+@Controller
+public class FontController {
+	
+	public static final String BASIC = "basic";
+	
+	@RequestMapping("/api/renderer/fonts/{name}.ttf")   (1)
+	public void font(@PathVariable("name") String name, OutputStream os) throws IOException {
+		InputStream is = AbstractStylesheet.getFontStream(name);
+		StreamUtils.copy(is, os);
+	}
+	
+	@RequestMapping("/api/renderer/stylesheet.css")  (2)
+	public void guiStylesheetCss(@RequestParam(value = "name", required = false) String name,
+			final HttpServletResponse sr) throws IOException, InstantiationException, IllegalAccessException {
+		Stylesheet ss = StylesheetProvider.getStylesheet(name);
+
+		Map<String, ? extends Font> textStyles = ss.getFontFamilies();
+		sr.setContentType("text/css");
+		Writer w = sr.getWriter();
+
+		for (Map.Entry<String, ? extends Font> e : textStyles.entrySet()) {
+			Font f = e.getValue();
+			String family = SVGFont.familyToSVG(f);
+			String weight = SVGFont.weightToSVG(f);
+			String style = SVGFont.styleToSVG(f);
+			w.write("@font-face { \n");
+			w.write("\tfont-family: " + family +";\n");
+			w.write("\tfont-weight: "+weight+";\n");
+			w.write("\tfont-style: "+style+";\n");
+
+			if (f instanceof LocalFont) {
+				w.write("\tsrc: url('/api/renderer" + ((LocalFont) f).getFontFileName() + "') format('truetype');\n");
+			}
+
+			w.write("}\n\n");
+		}
+		w.flush();
+		w.close();
 	}
 
 }
 ```
 
-A few questions arising from this:
+1.  This is for sending back the font data.
+2.  This is for rendering a simple stylesheet to define these fonts.  It looks like this:
 
-1.  What would you do about fonts / icons / textures?  These would need to be held at document-level, so that would need some extra thought.
-2.  The hard part is, how to we interrupt the stream of commands going to the `Graphics2D` context, in order to divide the work up amongst the different parts / elements?
-  - Since Graphics2D isn't an interface, we can't add any methods to it... although perhaps we could create an interface that Graphics2D can implement?
+```css
 
-### Converting To XML
+@font-face {
+    font-family: 'opensans light webfont';
+    font-weight: normal;
+    font-style: normal;
+    src: url('/api/renderer/fonts/opensans-light-webfont.ttf') format('truetype');
+}
 
-- Need to write a Test for this. Also a test for embedding within ADL.
+@font-face {
+    font-family: 'opensans bold webfont';
+    font-weight: normal;
+    font-style: normal;
+    src: url('/api/renderer/fonts/opensans-bold-webfont.ttf') format('truetype');
+}
 
+```
 
-### Rendering it on-screen
+One thing to note here is that I'm overriding the meaning of 'Font Family'.   For Open Sans, for some reason, the weight 
+was not set correctly in the fonts, and so both Bold and Light were given the same font-weight.  This broke rendering.
 
-Talk about d3 code here.
+I control between outputting path info and SVG `<text>' elements using this code in the `SVGGraphicsLayer`:
 
-### Minimizing/Converting Defs
+```java
 
--- adding to diagram.
-
-### Converting svg default style
-
--- style element on 'svg', (making sure it's a single attribute)
-
-Now we are up to here:
-
-![Nearly complete](images/005_2.png)
-
-A couple of things are definitely wrong here:
-
- - The join-point on the connection is missing
- - The key is rendering all over the place.
- 
-However, it's working "enough" that I can forget about this now and focus on some of the main things to get right.
-
-### Fonts / Support / PositionInfoRenderer
-
-There is a *huge* performance improvement to be made from rendering fonts on the client side rather 
-than the server.   So, this is the next job.
-
-**Sometimes, fonts don't get loaded up properly - maybe a memory issue, or something to do with Spring application
-context reloading?**
-
-- Added the controller
-- Deriving font family.
-
+	@Override
+	public void outputText(Font font, double y, double x, String line) {
+		if (!externalFonts) {
+			GlyphVector gv = font.createGlyphVector(FONT_RENDER_CONTEXT, line.toCharArray());
+			outline = gv.getOutline((float) (x), (float) y);
+			fill(outline);
+		} else {
+			g2.setFont(font);
+			g2.drawString(line, (float) x, (float) y); 
+		}
+	}
+	
+```	
 
 ### Simplifying the SVG
 
--- Leaving this for now.  Although, I think animations will be improved if we have it.
+One last problem is that Batik outputs SVG differently at different times.  Sometimes, all of the graphics elements are in 
+a single `<g>` group.  Other times, there are multiple elements.  
 
+I'm leaving this for now, as the whole rendering subsystem will get overhauled with Sprint 7.  
 
-### Animating Between Versions
+Although, I think animations will be improved if we have it.
 
-This is the last remaining thing to test.  I guess one way I could do this is add back in the delete function...
-And then at least I can animate between versions.  Or, I could edit the xml and post it off.  That might be the simplest way.  
+## Wrap-Up
 
-All I need is an update button
-
-
-### Why don't the fonts load correctly when we're using Kite9 Visualization as a library?  (Even though they clearly do when we called the other render method?)
-
-Classpaths.
-
- 
-## Step 3: Raphael?  
-
-Ok, so at this point, the spike solution looks good, and I don't need either Raphael, or pretty much any
-of the original code that got written...  All I need is the event handlers, and I think basically I'm going 
-to re-write the way this works too.   
-
-Do we need the control object?  
-
+Although this sprint has taken 2 weeks longer than expected, it's won in another way - I've been able to remove all of the client-side
+stylesheet logic from the app (3 sprints' worth) so, it's a bigger gain than a loss.
 
 
 

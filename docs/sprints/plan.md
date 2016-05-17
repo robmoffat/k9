@@ -68,10 +68,10 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - building of all projects (including Visualization)
 - Continuous build of master, (releasing to Amazon automatically? )
-- Turn off Linode?
 - Sort out DNS
-- Scaling ?
 - mail gateway
+- automated service testing (running docker tests)
+
 [Sprint Notes](sprint_006.md)
 
 <strike>
@@ -79,8 +79,10 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - This is going to be a lot of JSON.
 - It should be about creating groupings, setting paths and setting styles + classes.
-- Everything that was in the original object model, plus layout information.</del>  
+- Everything that was in the original object model, plus layout information.
+
 *(Removed 13/4/2016)*
+
 </strike>
 
 <strike>
@@ -97,14 +99,17 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Write a Kite9 CSS file, which will be also loaded up by the react component.
 - Turn off the style element coming from Kite9:  can we replace this with CSS class?
+
 *(Removed 13/5/06)*
 </strike>
 
 ### Server-side CSS
+
 - Modify XML Loader so that elements are annotated with CSS Attributes
 - Get the CSS loaded up on the server side by Batik.
 - Extend CSS so that we add our new attributes for shapes, etc.
 - Remove style information from the java Stylesheet
+
 [Sprint Notes](sprint_007.md)
 
 <strike>
@@ -112,6 +117,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Get React to render the client using the same css file.
 - Write some tests for this somehow to check it’s correct.
+
 *(Removed 11/5/2016)*
 </strike>
 

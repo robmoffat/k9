@@ -2,11 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import jQuery from 'jquery'
 import d3 from 'd3'
-import polyfill from 'innersvg-polyfill'
-
-const xmlSerializer = new XMLSerializer();
-
-var round = 1;
 
 export default class ADLSpace extends React.Component {
 	
@@ -23,7 +18,6 @@ export default class ADLSpace extends React.Component {
 	}
 		
 	update(xml) {	
-		round = round + 1;
 		var react = this;
 		var groups = [];
 		var dom = ReactDOM.findDOMNode(this);
@@ -38,18 +32,18 @@ export default class ADLSpace extends React.Component {
 			.attr("width", function() { return size.attr("x") })
 			.attr("height", function() { return size.attr("y") })
 		
-		
 		// create the defs
-		var d3Defs = d3dom.selectAll("defs").remove();
-		var svgDefs = d3xml.selectAll("defs > *");
-		d3dom.append("defs").html(function (data) {
-			var out = '';
-			svgDefs.each(function (d, i) {
-				out = out + xmlSerializer.serializeToString(this);
-			})
-			
-			return out;
+		var xmlDefElements = d3xml.selectAll("defs")[0];
+		var d3DefElements = d3dom.selectAll("defs");
+		var d3DefData = d3DefElements.data(xmlDefElements, function(data) {
+			return data.attributes['id'].value
 		});
+		
+		d3DefData.enter().append("defs");
+		d3DefData.each(function(data) {
+			mergeElements(this.parentElement, data, this)
+		});
+		d3DefData.exit().remove();
 				
 		// create the layers
 		this.props.layers.forEach(function(layer, i) {
@@ -93,11 +87,6 @@ function mergeElements(domWithin, domFrom, domTo) {
 			// transition the elements
 			mergeAttributes(domFrom, domTo)
 			
-			if ((domFrom.children.length != domTo.children.length) && (domTo.children.length > 0)) {
-				var id = domWithin.attributes.item("id")
-				console.log("Different Dom size "+domFrom.textContent+" "+ ((id != null) ? id.value : ""))
-			}
-
 			var processed = [];
 			
 			for (var i = 0; i < domFrom.children.length; i++) {
@@ -117,18 +106,12 @@ function mergeElements(domWithin, domFrom, domTo) {
 			for (var i = 0; i < domTo.children.length; i++) {
 				var e = domTo.children.item(i)
 				
-				var r = e.attributes.getNamedItem("round")
-				
 				if (processed.indexOf(e) == -1) {
 					d3.select(e).remove();
 					i = i - 1;  //because we removed one
 					console.log("removed " +e.textContent)
 				} 
 				
-//				else if (r != round) {
-//					d3.select(e).remove();
-//					console.log("removed the other way "+e.tagName)
-//				}
 			}			
 		}
 	} 
