@@ -86,7 +86,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		byte[] back = withBytesFromFile(MediaType.IMAGE_PNG);
 		persistInAFile(back, "testPNGRenderFromFile", "diagram.png");
 		BufferedImage bi = ImageIO.read(new ByteArrayInputStream(back));
-		Assert.assertEquals(1051, bi.getWidth());
+		Assert.assertEquals(956, bi.getWidth());
 	}
 
 	public void persistInAFile(byte[] back, String test, String filename) throws IOException, FileNotFoundException {
@@ -114,10 +114,10 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 
 		String s = new String(back);
 		
-		Assert.assertTrue(s.contains("<renderingInformation xsi:type=\"diagram-ri\" rendered=\"true\">\n"+
-			"  <position x=\"0.0\" y=\"0.0\"></position>\n"+
-			"  <size x=\""+EXPECTED_WIDTH+".0\" y=\""+EXPECTED_HEIGHT+".0\"></size>\n"+
-			" </renderingInformation>\n"));
+		Assert.assertTrue(s.contains(
+			" <renderingInformation xsi:type=\"diagram-ri\" rendered=\"true\">\n"+
+			"  <displayData xsi:type=\"org.kite9.framework.serialization.XMLFragments\">\n"+
+			"   <defs id=\"defs1\">\n"));
 		
 		Assert.assertTrue(s.endsWith("</html>"));
 	}
