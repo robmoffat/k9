@@ -435,7 +435,7 @@ In the initial version of the `update` method, I simply called off to the old Ki
 
 It mainly seems to work:
 
-![First laid out page](images/005_01.png)
+![First laid out page](images/005_1.png)
 
  - Fonts are wrong (webpack wants to add them to the bundle)
  - Background colours are also not present for some reason.
@@ -455,7 +455,7 @@ reduce the amount of XML we are importing, so maybe this is a good idea.
 
 Also, we need to do the grouping change.  But, I definitely want to do that after renderingInformation.  So...
  
-## Spike Solution: Rendering SVG Within Kite9 Visualisation
+### Spike Solution: Rendering SVG Within Kite9 Visualisation
 
 Some of this turned out to be easy:   I used Batik's `SVGGraphics2D` class to create a new SVGRenderer class in Kite9.  What doesn't work:
 
@@ -463,7 +463,7 @@ Some of this turned out to be easy:   I used Batik's `SVGGraphics2D` class to cr
 SVG file than you expect (all the paths to describe each character).  
  - Any kind of fill, including background fills
  - Shadows
- - Literally *everything* is encoded on a per-element basis.. stylesheets are completely out-of-the-question.
+ - Literally *everything* is encoded on a per-element basis: stylesheets are completely out-of-the-question.
  
  But on the plus side, it's pretty exact.  By not using text, I wonder if this improves speed?  Hard to say.
 
@@ -763,8 +763,8 @@ The XML now looks something like this:
 ```
 
 1.  The ADL definition for the `<arrow>` element.
-2.  `RenderingInformation for the arrow.
-3.  `DisplayData` (embedded XMLFragments)
+2.  `RenderingInformation` for the arrow.
+3.  `DisplayData` (embedded `XMLFragment`s)
 4.  A fragment - the group containing the shadow of the arrow.
 
 ### Minimizing/Converting Defs
@@ -811,23 +811,6 @@ public class ADLAndSVGRenderer extends SVGRenderer {
  
  	...
  	
- 	
- 	private void ensureDisplayData(Element xml, RenderingInformation ri) {  (2)
-		Object displayData = ri.getDisplayData();
-		
-		if (displayData == null) {
-			displayData = new XMLFragments();
-			ri.setDisplayData(displayData);
-		}
-		
-		if (displayData instanceof XMLFragments) {
-			((XMLFragments) displayData).getParts().add(xml);
-		} else {
-			throw new Kite9ProcessingException("Mixed rendering: "+displayData.getClass());
-		}
-	}
-	
-	...
 ```	
 
 1.  This is the regular `output()` method for a `Renderer`, extended to add the new details in.
@@ -837,7 +820,7 @@ public class ADLAndSVGRenderer extends SVGRenderer {
 ### Rendering it on-screen using D3 / Animating
 
 This is really the nub of the problem:   we have a React component on the screen with some SVG.  We have some new XML coming in, and we need to transition between the 
-two.  To do this, we need to consider each XMLFragment in turn.  Each fragment refers to a particular layer of a particular diagram element.  So, it could be the shadow of 
+two.  To do this, we need to consider each `XMLFragment` part in turn.  Each fragment refers to a particular layer of a particular diagram element.  So, it could be the shadow of 
 a glyph, or the border of a context.  We have the 'before' and 'after' SVG, and we need to animate between the two.   
 
 Additionally, we need to consider what happens if there is a new element, or an element gets removed.   Luckily, D3 has a great idea for this: the `data()` command, 
@@ -891,7 +874,7 @@ export default class ADLSpace extends React.Component {
 	
 	
 	}
-
+```
 
 1. Now we have d3 handles to the new xml and the existing svg dom.
 2. Creating svg groups for each layer (ensures the correct ordering of elements in the diagram)
@@ -1091,7 +1074,7 @@ public class FontController {
 One thing to note here is that I'm overriding the meaning of 'Font Family'.   For Open Sans, for some reason, the weight 
 was not set correctly in the fonts, and so both Bold and Light were given the same font-weight.  This broke rendering.
 
-I control between outputting path info and SVG `<text>' elements using this code in the `SVGGraphicsLayer`:
+I control between outputting path info and SVG `<text>` elements using this code in the `SVGGraphicsLayer`:
 
 ```java
 
