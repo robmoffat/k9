@@ -2,8 +2,8 @@
 
 - Modify XML Loader so that elements are annotated with CSS Attributes DONE
 - Get the CSS loaded up on the server side by Batik.  DONE
-- Extend CSS so that we add our new attributes for shapes, etc.
-- Remove style information from the java Stylesheet
+- Extend CSS so that we add our new attributes for shapes, etc. DONE
+- Remove style information from the java Stylesheet DONE
 
 ## Prelude:  Extending Batik
 
@@ -263,10 +263,415 @@ due to styling anyway, so they'd just get broken when we do the next part of thi
 When we set the size of the background, it seems like the component doesn't change shape to it.  This needs to be sorted out.  Again, I'd rather push
 on and break some more things before I fix this.   
 
-## Using CSS Instead Of Java Stylesheets
+## Step 2: Using CSS Instead Of Java Stylesheets
 
 Ok, so this is the next big change:  we want to use Batik to load the stylesheet information up for a node, from the attached stylesheets.  Broadly,
 I want to have each *type of component* (e.g. glyph) having a CSS class, and have the CSS classes listed in a stylesheet.   Then, we can use the CSS stylesheet
 attached to the XML document to render the right fonts etc.  
 
 We should be able to do this in the first instance with *existing CSS classes*, and the existing Java stylesheet information (somehow).
+
+### Writing A Stylesheet
+
+My first attempt at this is `designer2012.css`, which has elements in it like this:
+
+```css
+
+.glyph {
+	...
+	
+	stroke-width: 2px;
+	stroke: black;
+	
+	...
+}
+```
+
+In order to get glyphs to have the '.glyph' style, we have `AbstractStyledDiagramElement`:
+
+```java
+
+public abstract class AbstractStyledDiagramElement extends AbstractDiagramElement implements StyledDiagramElement {
+	
+	...
+	private StyleMap sm;
+
+	public StyleMap getComputedStyleMap(String pseudoElement) {
+		return sm;
+	}
+
+	public void setComputedStyleMap(String pseudoElement, StyleMap sm) {
+		this.sm = sm;
+	}
+
+	public String getCSSClass() {
+		return getAttribute("class")+" "+getTagName();
+	}
+
+	public String getShapeName() {
+		return getAttribute("shape");
+	}
+	
+	public void setShapeName(String s) {
+		setAttribute("shape", s);
+	}
+
+	...
+	
+```
+
+So the css Classes also have the tag name added to them.
+
+### Loading It Up
+
+To load up the stylesheet, we need to first add an implementation of `CSSStylesheetNode`:
+
+```java
+public class StylesheetReference extends AbstractDiagramElement implements CSSStyleSheetNode {
+
+	...
+	
+    /**
+     * The DOM CSS style-sheet.
+     */
+    protected transient StyleSheet styleSheet;
+	
+	/**
+     * Returns the associated style-sheet.
+     * TODO: Also need to handle in-line style sheets.
+     */
+    public StyleSheet getCSSStyleSheet() {
+        if (styleSheet == null) {
+            ADLDocument doc = (ADLDocument)getOwnerDocument();
+            CSSEngine e = doc.getCSSEngine();
+            String bu = getHref();
+            ParsedURL burl = new ParsedURL(getBaseURI(), bu);
+            String media = getMedia();
+            styleSheet = e.parseStyleSheet(burl, media);
+        }
+        return styleSheet;
+    }
+	
+	public String getHref() {
+		return getAttribute("href");
+	}
+	
+	public void setHref(String href) {
+		setAttribute("href", href);
+	}
+	
+	public String getMedia() {
+		return getAttribute(SVGConstants.SVG_MEDIA_ATTRIBUTE);
+	}
+	
+	public void setMedia(String media) {
+		setAttribute(SVGConstants.SVG_MEDIA_ATTRIBUTE, media);
+	}
+}
+
+```
+
+This class *knows enough* to get the `CSSEngine`, and use it to parse the stylesheet.  To get the `CSSEngine`, we are calling the `ADLDocument` class, 
+and this simply calls through to the `ADLExtensibleDOMImplementation`, which returns a Batik `SVG12CSSEngine`.   ADLDocument has a wrinkle:
+ it needs to extend SVGOMDocument, as this is what the `SVG12CSSEngine` is now expecting to use.
+ 
+```java
+**
+ * NOTE:  It would be better not to extend SVGOMDocument, and extend AbstractStyleableDocument,
+ * but CSSUtilities does lots of casting to SVGOMDocument, and we want to use that in the
+ * kite9-visualisation project.
+ * 
+ * @author robmoffat
+ *
+ */
+public class ADLDocument extends SVGOMDocument {
+
+	...
+
+	public Element createElementNS(String namespaceURI, String qualifiedName) throws DOMException {
+		return ((ADLExtensibleDOMImplementation)implementation).createElementNS(this, namespaceURI, qualifiedName);
+	}
+
+	public Element createElement(String name) throws DOMException {
+		return ((ADLExtensibleDOMImplementation)implementation).createElementNS(this, XMLHelper.KITE9_NAMESPACE, name);
+	}
+	
+	 /**
+     * Returns true if the given Attr node represents an 'id'
+     * for this document.
+     */
+    public boolean isId(Attr node) {
+        if (node.getNamespaceURI() != null) return false;
+        return XMLConstants.XML_ID_ATTRIBUTE.equals(node.getNodeName());
+    }
+
+    /**
+     * The default view.
+     */
+    protected transient AbstractView defaultView;
+
+    /**
+     * The CSS engine.
+     */
+    protected transient CSSEngine cssEngine;
+
+
+    /**
+     * Sets the CSS engine.
+     */
+    public void setCSSEngine(CSSEngine ctx) {
+        cssEngine = ctx;
+    }
+
+    /**
+     * Returns the CSS engine.
+     */
+    public CSSEngine getCSSEngine() {
+    	if (cssEngine == null) {
+    		ADLExtensibleDOMImplementation impl = (ADLExtensibleDOMImplementation) getImplementation();
+    		cssEngine = impl.createCSSEngine(this);
+    	}
+    	
+        return cssEngine;
+    }
+
+    // DocumentStyle /////////////////////////////////////////////////////////
+
+    public StyleSheetList getStyleSheets() {
+        throw new RuntimeException(" !!! Not implemented");
+    }
+
+   ...
+
+}
+```
+
+Finally, we need to give the  `Diagram` class a reference to it's stylesheet:
+
+```java
+
+public class Diagram extends AbstractConnectedContainer {
+
+	...
+
+	public StylesheetReference getStylesheetReference() {
+		return getProperty("stylesheet", StylesheetReference.class);
+	}
+	
+	public void setStylesheetReference(StylesheetReference ref) {
+		replaceProperty("stylesheet", ref, StylesheetReference.class);
+	}
+	
+}
+
+In each test, we need to make sure that the stylesheet is set before rendering, otherwise everything would go wrong.
+
+### Refactoring the Displayers
+
+The displayers all make references to the `Stylesheet` object, which no longer exists at this level - style is all a subservient property of
+the ADL diagram elements themselves.
+
+This means you're almost *forced* down the route of refactoring the `Displayers` to work one-to-one with the diagram elements, but I am going to
+resist this as long as possible, because the diagram elements themselves will be changing so much soon.
+
+In the meantime, I deleted all of the references to the Stylesheet object, but then had to add some of this information back into a `StaticStyles` object:
+
+```java
+/**
+ * Temporary class
+ * @author robmoffat
+ *
+ */
+public class StaticStyle {
+	
+	public static double getSymbolWidth() {
+		return 20; 
+		//return ss.getSymbolSize() + ss.getInterSymbolPadding();
+	}
+
+	public static Color getWatermarkColour() {
+		return new Color(0f, 0f, 0f, .2f);
+	}
+
+	public static float getLinkHopSize() {
+		return 12;
+	}
+
+	public static Paint getBackground() {
+		return Color.WHITE;
+	}
+
+	public static Stroke getDebugLinkStroke() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static Font getDebugTextFont() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static double getInterSymbolPadding() {
+		return 2;
+	}
+
+	public static int getKeyInternalSpacing() {
+		return 15;
+	}
+}
+```
+
+But really, this is pretty minimal.
+
+The displayers themselves already made heavy use of some style objects: `SVGAttributedStyle`, `BoxStyle`, `FixedShape`, `TextStyle` and `TerminatorShape`.  
+
+So, instead of getting these classes from the stylesheet, they are now constructed, using the element from the DOM.  e.g.:
+
+```java
+public class ShapeStyle extends SVGAttributedStyle {
+	
+	public ShapeStyle(StyledDiagramElement stylableElement) {
+		super(stylableElement);
+	}
+
+	...
+	
+	public Stroke getStroke() {
+		Element e = getStyleElement();
+		return PaintServer.convertStroke(e);
+	}
+		
+	
+	public Paint getStrokeColour() {
+		return convertPaint(false);
+	}
+
+	public boolean isFilled() {
+		Value v = getCSSStyleProperty(CSSConstants.CSS_FILL_PROPERTY);
+		return v != null;
+	}
+
+	public Paint getBackground(Shape s) {
+		return convertPaint(true);
+	}
+	
+	...
+```
+
+So, because they have access to the element itself, they know both the `style` and the `class` of the element.  Methods like 
+`getStroke()` and `getBackground()` already exist on the style objects, it was just a case of using the in-built Batik functions
+to compute the styles from the element rather than the old way, which was to create a temporary element.
+
+## Step 3: New CSS Properties
+
+The first problem was that there are plenty of CSS properties we need in the stylesheet, which aren't in the expected list of CSS elements for SVG.
+
+### Margins & Padding
+
+These are supported by Batik as RectValues, so we need to add a value manager which returns those.  *Except there already is one*, which is nice.
+I was also able to use much of this code again for handling padding in the same way.
+
+### Shadows
+
+I introduced the box-shadow css from HTML quite easily:
+
+```css
+	box-shadow-x-offset: 4px;
+	box-shadow-y-offset: 4px;
+	box-shadow-color: teal;
+	box-shadow-opacity: .3; 
+	
+	/* or */
+	box-shadow: 4px 4px 0px #333333; 
+```
+
+This is obviously now defined on a per-element basis, but still it works well.  
+
+### Fills
+
+Fill is more tricky:  The problem is that in SVG, a fill is defined with a pattern, which is actual SVG code:
+
+- We could somehow embed the fill in the stylesheet.  This would work, ...ish.  However, it would be messy.  
+- We could expect the fill to be defined somewhere else (in another file).  Although, this might not work very well on all browsers.  Somehow, it has to be 
+rendered correctly back into the SVG document.
+- I think somehow importing the texture into the stylesheet sounds best.   That way, we can add it to the SVG document as we use it.  
+- All of this makes me think that we should just be constructing an SVG document to output...  This would be massively consistent.  
+- Needs thought first.  
+- Some thought later.  This is definitely the way to go.   It's going to mean changing the way displayers work *fairly* radically, but it's not the end of the world.
+- Going to add a new sprint for this
+
+### Shapes
+
+Shapes are an interesting problem.  Originally, I wanted to define shapes with classes.  Actually, I think I still do.
+But, for now, I am going to define them with names and leave them in a fixed class, `ShapeHelper`, which will serve up the shapes.
+
+It looks something like this:
+
+```java
+
+public abstract class ShapeHelper {
+	
+	...
+	
+	public static java.awt.Shape createSymbolShape(SymbolShape shape, double innerSize, double x, double y) {
+
+		...
+	}
+
+	public static Shape getTerminatorShape(String shape) {
+		float ahs = getLinkEndSize();
+		float half = ahs / 2;
+
+		switch (shape) {
+		case "ARROW":
+		case "ARROW OPEN":
+			return new Polygon2D(
+					new float[] { 0, 0 - half, 0, half }, 
+					new float[] { ahs, ahs, 0, ahs  }, 4);
+		case "CIRCLE":
+			float radius = half;
+			return new Ellipse2D.Float(- radius, - radius, radius * 2, radius * 2);
+		case "GAP":
+		case "NONE":
+			return null;
+			
+		case "DIAMOND":
+		case "DIAMOND OPEN":
+			return  new Polygon2D(
+					new float[] { 0, 0 - half, 0, half }, 
+					new float[] { ahs*2, ahs, 0, ahs  }, 4);
+		case "BARBED ARROW":
+			// taily arrow
+			GeneralPath s = new GeneralPath();
+			s.moveTo(0, ahs);
+			s.lineTo(0, 0);
+			s.lineTo(-half, ahs);
+			s.moveTo(0, 0);
+			s.lineTo(half, ahs);
+			s.moveTo(0, 0);
+			return s;
+		default:
+			return null;
+		}
+	}
+	
+	...
+	
+	
+}
+```
+
+Again, this is not a perfect implementation, but a placeholder to avoid having to get involved in more work on refactoring
+the displayers.
+
+## Summary
+
+Ok, so this sprint has taken a long time.  It's 2nd August now, which means it took 9 weeks rather than 2.  There were about 3 weeks
+of holidays in that, and a new job, so perhaps this is not such a huge underestimate.  
+
+Right now, about 80% of the tests are passing, but it's pointless to get to 100% because everything I'm going to do next is going
+to break more things.  It's time to move on.
+
+
+
+

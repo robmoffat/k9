@@ -74,35 +74,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_006.md)
 
-<strike>
-### We need to send our object model to JSON.
-
-- This is going to be a lot of JSON.
-- It should be about creating groupings, setting paths and setting styles + classes.
-- Everything that was in the original object model, plus layout information.
-
-*(Removed 13/4/2016)*
-
-</strike>
-
-<strike>
-### Styling
-
-- React should pass through the style tag to the JSON elements for inclusion on the diagram.
-- Write a test to make sure this happens.
-
-*(Removed 11/5/2016)*
-</strike>
-
-<strike>
-### CSS
-
-- Write a Kite9 CSS file, which will be also loaded up by the react component.
-- Turn off the style element coming from Kite9:  can we replace this with CSS class?
-
-*(Removed 13/5/06)*
-</strike>
-
 ### Server-side CSS
 
 - Modify XML Loader so that elements are annotated with CSS Attributes
@@ -111,15 +82,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Remove style information from the java Stylesheet
 
 [Sprint Notes](sprint_007.md)
-
-<strike>
-### Client-Side CSS
-
-- Get React to render the client using the same css file.
-- Write some tests for this somehow to check it’s correct.
-
-*(Removed 11/5/2016)*
-</strike>
 
 ### Time to overhaul the object model.
 
@@ -137,13 +99,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 *This would seriously break my existing GUI.  How to solve this problem?  I really don't want to refactor the GUI at this point.  Nore do I want to waste time on converting the XML back to the old format.  So, at this point, we would be really screwed.*
 
-### Project CSS/JS/SVG Icon/Font Repository
-
-- We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
-- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
-- So, handle this caching.
-- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
-
 ### Visualisation Engine refactoring
 
 - some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
@@ -153,6 +108,19 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
+
+### SVG As The Output Format
+
+- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
+- this means converting our displayers to use SVG rather than Graphics2D.  
+- Better to get this out of the way early.
+
+### Project CSS/JS/SVG Icon/Font Repository
+
+- We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
+- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
+- So, handle this caching.
+- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
 
 ### Layout
 
