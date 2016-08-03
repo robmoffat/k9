@@ -463,6 +463,7 @@ public class Diagram extends AbstractConnectedContainer {
 	}
 	
 }
+```
 
 In each test, we need to make sure that the stylesheet is set before rendering, otherwise everything would go wrong.
 
