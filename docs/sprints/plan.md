@@ -83,21 +83,29 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_007.md)
 
-### Time to overhaul the object model.
+### Object Model Part 1 - Containers
 
 - everything should be parts and containers.  Links should be reformatted.   Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml and it comes back in the new format.  (this means objects like Glyph still work...)
 - Containers
 - Parts (with type = glyph-simple, glyph-with-stereo etc.)
-- Classes
-- Text Areas
-- Links broken down into Ends (which can have labels?)
-- Ports
-- Links as “straight” rather than LEFT, RIGHT etc.
-- Aligns
-- Stylesheet to use 
-- After we’ve done this, Visualisation is pretty much unrecognisable from it’s original form, but we need for the tests to still pass.
 
-*This would seriously break my existing GUI.  How to solve this problem?  I really don't want to refactor the GUI at this point.  Nore do I want to waste time on converting the XML back to the old format.  So, at this point, we would be really screwed.*
+[Sprint Notes](sprint_008.md)
+
+### Object Model Part 2 - Links
+
+- Links broken down into Ends (which can have labels?)
+- Links as “straight” rather than LEFT, RIGHT etc.
+- Containers - allowed leaving edges.
+
+[Sprint Notes](sprint_009.md)
+
+### Object Model Part 3 - Ports
+
+- Ports
+- Aligns (allowed arriving edges)
+- STRAIGHT directive.
+
+[Sprint Notes](sprint_010.md)
 
 ### Visualisation Engine refactoring
 
