@@ -107,6 +107,21 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_010.md)
 
+### SVG As The Output Format
+
+- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
+- this means converting our displayers to use SVG rather than Graphics2D.  
+- Better to get this out of the way early.
+
+[Sprint Notes](sprint_011.md)
+
+### Project CSS/JS/SVG Icon/Font Repository
+
+- We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
+- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
+- So, handle this caching.
+- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
+
 ### Visualisation Engine refactoring
 
 - some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
@@ -116,42 +131,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
-
-### SVG As The Output Format
-
-- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
-- this means converting our displayers to use SVG rather than Graphics2D.  
-- Better to get this out of the way early.
-
-### Project CSS/JS/SVG Icon/Font Repository
-
-- We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
-- Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
-- So, handle this caching.
-- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
-
-### Layout
-
-- extract this so that there’s a separate class for each different layout.
-- Just keep existing tests working.
-
-### Extend CSS
-
-- Add my own elements to the CSS so that I can see these being inherited by various elements.  I want to get to the stage where part layout has some CSS properties associated with it.
-- Need to decide what these CSS elements are, but obviously they should be about layouts.
-
-### Glyph Using Grid Layout
-
-- Write a few simple tests to do a grid layout.   We have 3 basic glyph-types that can use this.
-
-### Symbols Using Grid Layout
-
-- Write a test that shows some symbols, each having a class, inheriting their outline shape, colour etc.  and being rendered correctly.
-
-### Grid-Layout Context
-
-- Contexts should have the capacity now to store multiple grids.  There will need to be some clever interpretation here (i.e. we need to construct the grid on-the-fly) but it’s ok.
-- This should be a nice example, with a test.
 
 ### BPML:  Write a stylesheet for this in CSS
 

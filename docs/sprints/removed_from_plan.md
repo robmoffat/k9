@@ -90,3 +90,34 @@ As we've gone along, various sprints have become unnecessary:
 
 *(Removed 11/5/2016)*
 </strike>
+
+
+<strike>
+### Glyph Using Grid Layout
+
+- Write a few simple tests to do a grid layout.   We have 3 basic glyph-types that can use this.
+
+### Symbols Using Grid Layout
+
+- Write a test that shows some symbols, each having a class, inheriting their outline shape, colour etc.  and being rendered correctly.
+*(Removed 8/8/2016)*
+</strike>
+
+
+<strike>
+### Layout
+
+- extract this so that there’s a separate class for each different layout.
+- Just keep existing tests working.
+
+### Extend CSS
+
+- Add my own elements to the CSS so that I can see these being inherited by various elements.  I want to get to the stage where part layout has some CSS properties associated with it.
+- Need to decide what these CSS elements are, but obviously they should be about layouts.
+
+### Grid-Layout Context
+
+- Contexts should have the capacity now to store multiple grids.  There will need to be some clever interpretation here (i.e. we need to construct the grid on-the-fly) but it’s ok.
+- This should be a nice example, with a test.
+</strike> 
+*(Removed 19/9/2016)
