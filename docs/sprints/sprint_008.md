@@ -3,12 +3,11 @@
 - everything should be (`DiagramElement`s) and `Container`s.  Links should be reformatted.    DONE
 - Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml  DONE
 - Containers are things within DiagramElements.  DONE
-- Grid layout for Glyphs (i.e. layout=grid ) 
 
 ## Prelude: So, what changes do I need to see:
 
 0.  I need a set of deterministic tests, otherwise, how can I be sure what I am doing?
-1.  Everything is `Contained`s and `Containers`.  
+1.  Everything is `Connection`s and `Containers`.  
 
 ## Step 1: Refactoring Containers - Analysis
 
@@ -263,7 +262,7 @@ So, I added the `getReferences()` method to the ADLDocument class to support thi
 
 , handled by list in ADLDocument.
 
--- COnnectionDiagramElement (simple version for now).
+-- ConnectionDiagramElement (simple version for now).
 
 
 ### Contained and Connected
@@ -483,6 +482,24 @@ to size our `buffer`.
 Because this is implicated in gridding, is it something we need to fix now?  Arguably, yes, because it will make reading the positioning diagram much easier.
 So, I fixed that up, which means that container border vertices are always based on the size of the smallest grid square.
 
+#### A Further Issue
+
+One result of this change is that actually, we end up with a small problem:  because Grids are based on fractions, but the positioner is based on bisections,
+we end up with the grid not bearing much relationship to the contents within it.  
+
+Secondly, the way we use grids is not *completely* bisections, either:  we use bits of padding on the tops and bottoms to create decent separations from other elements,
+which is used in the layout part of the RHD algorithm.
+
+Using fractions is a great thing to avoid creating too many vertices, however using fractions for positioning is a fail.  What we should do instead is
+work out where the mid-point between the containers is, and place the elements there.    So, to do this, I created a method in `GridPositionerImpl`:
+
+```java
+
+	public OPair<Map<BigFraction, Double>> getFracMapForGrid(Container c, RoutableHandler2D rh, ContainerVertices containerVertices);
+```
+
+Where the pair of `Map`s returned show you how to translate from a fraction to a proportion of the grid in `Bounds` terms.
+
 ### ContainerBorderEdge
 
 Having constructed all of the vertices, and made sure we are re-using them where possible for multiple sub-containers (or whatever), we now need to join them
@@ -564,27 +581,160 @@ So, now, we get this:
 
 ![Correct Supergrid](images/008_4.png)
 
+And, after a bit more work, this:
 
-### Modifying The Diagram
+![Grid With Directed Connections](images/008_5.png)
 
-When we lay out the diagram and it has horiz/vertical components, and they move, we change the *actual XML of the diagram*.  I don't think this really 
+However, despite this working, there is a problem with it:  
+
+```
+GS   Inserting with Illegal: [MO: 42 27 (2)  28(4): t= LINKED i=2.0 a=2.0 t=6.0ags=1 od=1, p=1000 a=[24[1[glyph:'one':TextImpl]( c: [context:'tl':ContainerImpl],X_FIRST_MERGE)],[22[2null( c: [context:'tl':ContainerImpl],X_FIRST_MERGE)],[16[6null( c: [context:'tr':ContainerImpl],Y_FIRST_MERGE)],[5null( c: [context:'tl':ContainerImpl],Y_FIRST_MERGE)]:X_FIRST_MERGE]:X_FIRST_MERGE]:X_FIRST_MERGE] ad=RIGHT lr=2147483647]
+```
+
+### Fixing Up All The Tests
+
+Apart from a few Grid tests, pretty much everything else fails.  The trick now is to fix up all the tests.  Obviously, easier said than done.
+
+Some remaining issues:
+
+- 15: container bounds illegal:  *Turned out that I'd not initialized the borderTrimArea for containers * 
+- 12_9: a and b must share a container:  *Removed test to check ordering of elements.  Seemed excessive.  Will find out if so*
+- 46_6 etc.  getDirectionForLayout() - not compiling yet: *Fixed this by adding a check for `GRID` layout and throwing an exception for now*.
+- 37_23: -labelling issue, where we can't find a place for a label.  * This was caused by some `Dart`s having an underyling of `Container` 
+(those created by ContainerCornerVertexArranger, while others with `ContainerBorderEdge`, (created with `MappedFlowGraphOrthBuilder`).  Changed to just use `ContainerBorderEdge`, since
+this is more specific.
+
+#### 37_13 Contradiction 
+
+*Planarization seems completely different here to the checked in version.*
+
+Thoughts:
+
+1.  For 37_13, positions looks correct.  The class hierarchy is correctly represented.  Somehow, edge insertion is where it falls down.
+4.  Looking into 37_13 more closely, it seems like we try (and fail) to add a Directed downward edge between m1/rel_implements and m1.  This fails because the distance is short.
+(We've had this problem before).  But, it seems like it tries to insert *two versions* of this edge.  In any case, they should both work:
+	1. [auto:4/[V:m1/rel_implements]-[V:m1]] underlying auto:64
+	2. [auto:5/[V:m1]-[V:m/rel_implements]] underlying auto:67  (so, actually, it is different)
+	
+The first goes in fine, the second doesn't.  
+
+m1 vertical bounds: 4080-.4688
+V:m/rel_implements: .7753-.8360
+
+But, maximumBoundedAxis distance: 0.30649206293902 (sounds right)
+
+So the problem is that it is trying to go below a big, long vertex to the left.  Now, we are on the right, and it's not in our way, but somehow, the changes to 
+sort order have caused this.  I have made a mistake - I need to reinstate the special sort ordering machine we built.
+
+I've added some comments about why the 'old style' sorting is not sufficient, hopefully this will be enough to prevent me from removing this in future.
+
+
+#### 38_14
+
+- 38_14 "not dealt with this" - *We end up trying to set a contradiction on a layout edge, which shouldn't happen.*
+
+To fix these, I am going to store the logs, and compare with the master revision from before sprint 7.
+
+1.  For 38_14, there is an immediate difference in the LeafGroup construction: on master, one of the directions on the arrows is relaxed *even at the leaf-group stage*.  I don't know
+how this could happen.  These are the connections to id_54.   *The reason for this is that in the XML, the element is specified as being contradicting, but we ignore this when we load it up!*
+2.  For 38_14, we end up relaxing one of the *layout* constraints, which should never happen.  *Except when we are inserting using an illegal*.  
+
+With these two facts understood, it should be easy to solve now:  I just need to get the `<contradicting>true</contradicting>` working.
+
+*Or do I?*
+
+On second thoughts, the XML should *not* be responsible for saying whether something is contradicting or not.  It has no idea.  So, we won't do this.  (We'll remove 
+
+For part 2 of this problem - this is caused by having a cycle in the links.  So, it ends up creating a mess, rather than just saying one of the links is contradicting.
+To fix this better, we need to move onto Test33 and see what's going on there.
+
+Turns out, `rank` is broken as a concept, which means that we are not prioritising later links over earlier ones (fixed).
+
+### Back to Supergrids
+
+At this point the tests are pretty much working.  However, looking back at the grid code, things aren't looking so great.  Where we are now, is that the container vertices
+are being positioned correctly.  Their positions are being determined by the containers, and the contents of the containers.
+
+However, if the containers don't contain anything, we have a problem.   51_5 is currently a test where we have spanning squares,
+things taking different sizes on the grid.  However, as a concept, this is not going to work at all with directed edges.  We have no way 
+of correctly planarizing spanning squares, and you can create situations like the zig-zag paving test with them.
+
+So really, if you want to implement odd arrangements of grid squares with different sizes, you'd have to subdivide the grid with extra 
+containers.  
+
+So, I am going to change 51_5 and other tests like it to use a nested container approach.  This works fine - we have left and right containers, and then inside
+each, top and bottom.  Vertices are shared all over the place - each of the four containers uses the central vertex in the middle.   
+
+*However*.   The problem comes with 51_7, which is the same, but with directed edges joining the contents of top-left with bottom-right.  
+
+By having a single `ContainerVertices` implementation for the whole grid-hierarchy, we are actually making a mistake.  What we need are separate grid vertices, but
+with some shared elements, but what we get is everyone again sharing the central vertex.  The difference is that in this use-case, they shouldn't.
+
+The culprit in this is the `GridPositionerImpl` class, which is not clever enough to realise that it's dealing with a hierarchical grid system, in which:
+- There is some kind of grid, which
+- Can be reused in a `SubWindowContainerVertices`, which 
+- Uses four corner points from the parent and
+- Places all of the vertices (irrespective of level) with a fractional map.
+
+What this means is:
+ - Any given grid, we should be able to set the positions correctly for that grid.
+
+We are going to come up against an interesting case, which is that sometimes, we are going to need to merge vertices if we do this.  In the example above, we could
+have two vertices at 1/2, but they are placed differently on the page (fine).  However, with 51_5, we would get two vertices at 1/2 (left and right), but they 
+would overlap one another.  
+
+*If the vertices have the same ordinal position, and overlap, they should be one vertex*.
+
+How can we achieve this?
+
+For this, we would need to detect any overlapping vertices in the `ContainerVertices` object, and remove them, *before* we add them to the planarization.  
+Container vertices for the first-level subwindow should be added to the parent.
+
+(Grouping issue moved into [Sprint 12](sprint_012.md))
+
+### Grid Containers With Connections
+
+What Works:
+
+ - Seems we can create a container, and have it link to a vertex somewhere.  It can be connected.
+ - Having the super-container link to a vertex somewhere - this doesn't work, because the vertex often overlaps with other vertices around the edge of one of the inner containers
+ - Seems to get confused when creating directed edges.
+
+I've changed the test now so that there are 9 different variations on it, covering all the alternatives of 
+directed, undirected, inside, outside, etc.  
+
+Some work, some don't.  The problems basically all come from creating the container vertices to join them, and 
+in drawing the edge of the container around all these vertices.
+
+### Adding Edges
+
+The problem with the `EdgeRouter` class is that it routes edges.  But edges join vertices. And, we need to add a connection, which doesn't use a
+vertex, it uses a pair of diagram elements.
+
+However, if the edge has an *underlying*, we can figure out what it connects to using that.
+
+One thing we had to do was modify `Vertex` to have multiple underlying parts, for all the containers that they might now represent:
+
+```java
+public interface Vertex extends Comparable<Vertex>, ArtificialElement, Positioned, Routable {
+	
+	...
+
+	public boolean isPartOf(DiagramElement de);
+	
+}
+```
+
+For most implementations, we simply return the underlying.  But, for ContainerVertex, we return multiple containers.
+
+This matches up with `ContainerBorderEdge` described earlier, which also knows about it's containers.  Similarly, when we bisect a container using 
+`EdgeCrossingVertex`, we need to keep track on this element what containers it is part of.
+
+## Concluding Thoughts / Loose Ends
+
+1. This sprint has taken a massive amount of time.  It's due as usual to edge cases.  But, I also need to get into the habit of running the tests after
+every small change.
+2. When we lay out the diagram and it has horiz/vertical components, and they move, we change the *actual XML of the diagram*.  I don't think this really 
 happens anywhere else.  Perhaps we should *stop* doing this for now, and treat the diagrams as immutable again?
- 
-### Improving Tests
 
-Having refactored all the XML like this, there should be a better way (now) to check that the `DiagramElement` structure
-matches up with the XML structure, and that everything is rendered.
-
-TBC
-
-
-### Shortcut attributes vs styles.
-
-### Removing the `@Ignore`s.
-
-We added a whole load of these in Sprint7, to cover Keys, and complex Glyphs.  They need to now be removed.
-
-
-# Some Gridding Issues
-
-This doesn't really solve the crazy-paving problem.  Might need more thought, or it might manifest anyway in 51_5.
+It's now 25th November.  This has taken nearly 3 months to do.  How do I make this faster?

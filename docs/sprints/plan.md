@@ -91,10 +91,22 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_008.md)
 
+### SVG As The Output Format
+
+- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
+- this means converting our displayers to use SVG rather than Graphics2D.  
+- Better to get this out of the way early.
+
+[Sprint Notes](sprint_011.md)
+
+### Glyphs Using Grids
+
+- Grid layout for Glyphs (i.e. layout=grid ) 
+- Removing @Ignores
+
 ### Object Model Part 2 - Links
 
 - Links broken down into Ends (which can have labels?)
-- Links as “straight” rather than LEFT, RIGHT etc.
 - Containers - allowed leaving edges.
 
 [Sprint Notes](sprint_009.md)
@@ -103,17 +115,11 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Ports
 - Aligns (allowed arriving edges)
+- Links as “straight” rather than LEFT, RIGHT etc.
 - STRAIGHT directive.
 
 [Sprint Notes](sprint_010.md)
 
-### SVG As The Output Format
-
-- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
-- this means converting our displayers to use SVG rather than Graphics2D.  
-- Better to get this out of the way early.
-
-[Sprint Notes](sprint_011.md)
 
 ### Project CSS/JS/SVG Icon/Font Repository
 
@@ -250,6 +256,12 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Containers should have a smallest-size option.
 
+
+### Grouping Fix
+
+Test 51_7 is broken because we do gridding in a funny order.  Investigate this and provide a fix.
+
+[Sprint Notes](sprint_012.md)
 
 ## Other Stuff
 
