@@ -2,63 +2,9 @@
 
 - everything should be (`DiagramElement`s) and `Container`s.  Links should be reformatted.    DONE
 - Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml  DONE
-- Containers are things within DiagramElements.  DONE
+- We should be able to use `GRID` layout for Containers. DONE
 
 ## Prelude: So, what changes do I need to see:
-
-0.  I need a set of deterministic tests, otherwise, how can I be sure what I am doing?
-1.  Everything is `Connection`s and `Containers`.  
-
-## Step 1: Refactoring Containers - Analysis
-
-So, the point is, the `Container`s that are defined on a `ComposedDiagramElement` could contain a single element, or multiple ones.  
-(So, I guess this should be another option).  What would happen if I add a second label to a Glyph?  Should it replace the first one, or be added to it?  Isn't this going
-to create an over-abundance of containers in the svg?  A lot of the time, you can't even interact with a container, because it's obscured by
-something else.  Should it be the case that a container *must have* padding, if it contains more than one thing?  What if it contains *nothing*?  Should 
-it still be visible on the diagram?  Maybe there is a way to handle this in the GUI.
-
-The problem is going to be the old XML format:  we have lots of tests just checked in as XML, and I don't see how they
-are going to survive this change, although maybe there is a way:  we need to devise some kind of transform that allows
-us to convert the whole xml library to the new format.  XLST is the obvious idea, I guess.
-
-Also, we have the issue of tests.  We need to *not break any more of them*, but some are broken already.  So, I am going to 
-label the currently-broken tests with `	@Ignore("Broken in sprint 7")`.  The main reason the tests are broken is because of
-missing fonts, or the fact that the SVG renderer is no longer working, or something to do with background styles.  All of which are 
-acceptable right now.
-
-### Inside/Outside
-
-If we go down the route that a `ComposedDiagramElement` has `Container`s which can have `Contained`s within them, when you planarize a part,
-you need to decide what to do with those components:
-
-- If an internal `DiagramElement` has linked `Connected`s, you need to render it using the 'corners' approach, as you need to handle the overlaps.
-- If it doesn't, use the 'leaf' approach'.
-- (in the future: `Port`s count as `DiagramElement`s).  
-- If a part has a component which is a container, you need to render the container with the 'corners' approach too. (if it has contents).
-
-So, we need to have a `PlanarizationMethod` enum:  
-
-|Enum Name | Effect When Applied To Containers| Effect When Applied To ComposedDiagramElements|
-|---------------------------------------------------------------------------------------------|
-|CORNERS   | 4 vertices, one for each internal corner| 4 vertices, one for each external corner|
-|LEAF      | not used                                | 1 vertex.  edge leaving direction not important|
-|DERIVE   | no vertices, position derived later| no vertices, position derived later |
-|GRID     |not used                                | many, divides up internal containers efficiently|
-
-- `CORNERS` is used when there are interal links, and you care how they leave the current `Container`.  Or if there are multiple connected elements 
-inside.  Otherwise, the orthogonalization step won't keep these elements in proximity in the final diagram.
-- `LEAF` is where you don't care how the edge leaves the element (there are no further internal edges to consider), so you can put it in the planarization as a single 
-vertex. 
-
-These we can figure out later:
-   
-- `DERIVE` can be used in situations where we don't need to worry about the planarization of the container.  For example, it has a single element inside it,
-so the container can be in same place as the contents.  We can derive the size and position of the container just by looking at the stuff inside it.  This can also be 
-used for text labels on glyphs:  we can derive them later, and they don't need to be in the orthogonalization.
-- 'GRID' is for where we are rendering a grid context, and we need to show the edges, even for empty containers (we'll implment this later)
-
-In the short term (without `DERIVE`, we are going to get an explosion of elements, because every label will get turned into a Vertex (at least this will make it easy
-to test).
 
 ### Fixing the Inheritance Hierarchy
 
@@ -137,7 +83,7 @@ Since the nature of what an element *is* on the diagram is entirely governed by 
 need to load up the XML, and then *interpret* the elements, based on what properties they have in the CSS.
 
 This means, we need to divorce `XMLElement` and `DiagramElement` from each other.  Also, we probably shouldn't have setters on the `DiagramElement`s.  So, all the old
-stuff like `Glyph` and `Context` will be XMLElements, as will `Diagram`.  There will be a method on `Diagram` called `getContents()` which returns a list of
+stuff like `Glyph` and `Context` will be `XMLElement`s, as will `Diagram`.  There will be a method on `Diagram` called `getContents()` which returns a list of
 actual `DiagramElements`, derived from the looking at the styles of the individual objects... and then off we go.  
 
 ### Immutability
@@ -257,51 +203,13 @@ the `getLinks()` method, which works in the reverse direction.  From `AbstractCo
 	}
 ```
 
-So, I added the `getReferences()` method to the ADLDocument class to support this.  
-
-
-, handled by list in ADLDocument.
-
--- ConnectionDiagramElement (simple version for now).
-
-
-### Contained and Connected
+### `Connected`
 
 Since we have now got rid of `Contained`, `Connected` needs to take it's place in the Planarization.  Since planarization is 
 basically all about creating the planar embedding of all the `Connected` objects, this makes sense.
 
-However, we previously defined a `Contained` to have a `getContainer()` method, that returned the container.
 
-Is this always still true, now?
-
-I'm not sure it always is.  Because you could have a port, which is a `Connected`, existing on a glyph, which will be a
-`Compound` shape. But right now, this doesn't exist.  So, maybe it's allowed for now.
-
-### Future Of `Container`
-
-How should this work out in the future?  It seems likely that `Container` will disappear from the Planarization code, and 
-be replaced with something else (just DiagramElement, I guess).  So, let's make the assumption true for now and then we
-can relax it later.  
-
-The entire effort here is just getting rid of `Contained` and getting things working again.
-
-As we go through this, it seems increasingly clear that actually, since a `Container` can have `DiagramElement`s inside it, 
-we should be planarizing based on this, rather than on a class.  
-
-Later.
-
-### Summary So Far
-
-This has been a complex set of changes to make.    `Connection` is working, and simple objects can be connected.  However, 
-containers are failing right now, as (probably) are terminators, labels and so on.  
-
-How far should we go to fix these things?  This is a really hard thing to judge...  I think we definitely need to see a lot more stuff 
-working before we continue refactoring.  
-
-We aren't going to get Glyphs working again without the bit below, so perhaps the only other thing is to fix up `Container`s
-properly so that they work.  
-
-### Containers
+### `Container`s
 
 This actually just fell into place by setting up the stylesheet:
 
@@ -309,6 +217,7 @@ This actually just fell into place by setting up the stylesheet:
 context {
 	type: container;
 }
+```
 
 It now looks like this:
 
