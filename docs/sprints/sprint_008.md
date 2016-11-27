@@ -4,11 +4,9 @@
 - Ideally, we are backwards-compatible with what came before.  So, you can load up the original diagram xml  DONE
 - We should be able to use `GRID` layout for Containers. DONE
 
-## Prelude: So, what changes do I need to see:
+## Step 1: Fixing the Inheritance Hierarchy
 
-### Fixing the Inheritance Hierarchy
-
-#### What We have now
+### What We have now
 
 Really, it's just too crazy and needs simplifying.  Let's sort this out now:
 
@@ -77,7 +75,7 @@ So, we need to somehow extract this part out, eventually.
 - `LinkEnd`: for the end of a link?
 - `Terminator`: for the end of a connection too.
 
-## Step 2: Epiphany
+### Epiphany
 
 Since the nature of what an element *is* on the diagram is entirely governed by the Stylesheet, we have to make a separation.  Instead of returning *XML* elements, we
 need to load up the XML, and then *interpret* the elements, based on what properties they have in the CSS.
@@ -124,7 +122,7 @@ We've completely divorced the XML structure from the rendering approach (for goo
 The good part of this is that we can now use stylesheets to define the behaviour of the elements in the diagram.
 This means that Kite9 is getting more "programmable", but the expense is another layer of indirection.
 
-### DiagramElementFactory
+### `DiagramElementFactory`
 
 This converts from an XML element to a `DiagramElement`, with the new hierarchy defined above.  
 
@@ -157,8 +155,7 @@ public enum DiagramElementSizing {
 
 ```
 
-
-### Connections
+### `Connection`s
 
 In the `Connection` object, we have `getFrom()` and `getTo()`, which are the only methods which, instead of returning
 some nested structural data, are actually returning a reference to a diagram element elsewhere in the XML structure.  Here is the
@@ -208,7 +205,6 @@ the `getLinks()` method, which works in the reverse direction.  From `AbstractCo
 Since we have now got rid of `Contained`, `Connected` needs to take it's place in the Planarization.  Since planarization is 
 basically all about creating the planar embedding of all the `Connected` objects, this makes sense.
 
-
 ### `Container`s
 
 This actually just fell into place by setting up the stylesheet:
@@ -229,7 +225,7 @@ nearly entirely to the stylesheet now, so it's something we should realistically
 *However*, doing so would be a waste of time, as later on we are going to convert output entirely to SVG.  
 So, it would be almost wasted effort to do so.  
 
-### Labels
+### `Label`s
 
 Before I go on, let's just think about this:   `Label`s need to *not have* connections.  So, they 
 are clearly different from `Text` or `Container`.  But, we do want labels to have complex, content.  
@@ -273,7 +269,7 @@ Also, ports should allow people much more control over the positioning of links,
 So, this needs some more thought:  the ordering in the diagram should affect the original XML that is going to get writen out, 
 leaving our main `DiagramElement` layer immutable.
 
-## Step 2: Containerizing Glyphs / CSS For Layout
+## Step 2: CSS For Layout
 
 ### Grid CSS
 
@@ -335,9 +331,9 @@ So...
 
 All we really need to do is to create a container with a grid, right?  
 
-### Changing RHDPlanarizationBuilder
+### Changing `RHDPlanarizationBuilder`
 
-The first step is to introduce the idea of 'GRID' layout to the `GroupPhase`.  This was pretty simple, and is encapuslated into `GridHelp` class.  
+The first step is to introduce the idea of `GRID` layout to the `GroupPhase`.  This was pretty simple, and is encapuslated into `GridPositioner` and `GridPositionerImpl` classes.  
 Grids are trivial to group (almost not worth bothering... maybe remove later?).  So, implementing this was fine.
 
 ### Building A Test
@@ -391,7 +387,7 @@ to size our `buffer`.
 Because this is implicated in gridding, is it something we need to fix now?  Arguably, yes, because it will make reading the positioning diagram much easier.
 So, I fixed that up, which means that container border vertices are always based on the size of the smallest grid square.
 
-#### A Further Issue
+### A Further Issue
 
 One result of this change is that actually, we end up with a small problem:  because Grids are based on fractions, but the positioner is based on bisections,
 we end up with the grid not bearing much relationship to the contents within it.  
