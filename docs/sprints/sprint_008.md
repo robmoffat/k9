@@ -635,7 +635,7 @@ For most implementations, we simply return the underlying.  But, for ContainerVe
 This matches up with `ContainerBorderEdge` described earlier, which also knows about it's containers.  Similarly, when we bisect a container using 
 `EdgeCrossingVertex`, we need to keep track on this element what containers it is part of.
 
-## Concluding Thoughts / Loose Ends
+## Loose Ends
 
 1. This sprint has taken a massive amount of time.  It's due as usual to edge cases.  But, I also need to get into the habit of running the tests after
 every small change.
