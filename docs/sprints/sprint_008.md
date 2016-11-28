@@ -280,8 +280,8 @@ grid is going to be using css up-front:
 
 glyph.full-spec {
 	type: composed;
-	layout: grid
-	grid-size: 3 4							// defines a 4x4 grid, from x1-x4 and y1-y4
+	layout: grid;
+	grid-size: 3 4;							// defines a 4x4 grid, from x1-x4 and y1-y4
 	
 	path: M x0 y0 H xe V y3 H x0 z;			// basically a rectangle. xs is an alias for x0 and xe is an alias for whatever the last one is (y3 in this case)
 	padding: 6px 6px 6px 6px;				// leaves padding around the rectangle 
