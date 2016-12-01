@@ -91,6 +91,13 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_008.md)
 
+### Glyphs Using Grids
+
+- Grid layout for Glyphs (i.e. layout=grid ) 
+- Removing @Ignores
+
+[Sprint Notes](sprint_013.md)
+
 ### SVG As The Output Format
 
 - In order that we can properly take advantage of fills, we need to start using SVG as the output format.
@@ -99,10 +106,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_011.md)
 
-### Glyphs Using Grids
 
-- Grid layout for Glyphs (i.e. layout=grid ) 
-- Removing @Ignores
 
 ### Project CSS/JS/SVG Icon/Font Repository
 
