@@ -95,14 +95,18 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Grid layout for Glyphs (i.e. layout=grid ) 
 - Removing @Ignores
+- Containers - allowed leaving edges. (brought in as needed to fix errors)
 
 [Sprint Notes](sprint_013.md)
 
 ### SVG As The Output Format
 
 - In order that we can properly take advantage of fills, we need to start using SVG as the output format.
+- "Common" section of the diagram, containing things to reference.
 - this means converting our displayers to use SVG rather than Graphics2D.  
 - Better to get this out of the way early.
+- Update test results to check SVG, where necessary.  Don't use this for all tests, just some.
+- Split tests into planarization, orth, compaction, display so we can add SVG to the display ones only.
 
 [Sprint Notes](sprint_011.md)
 
@@ -146,7 +150,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 ### Object Model Part 2 - Links
 
 - Links broken down into Ends (which can have labels?)
-- Containers - allowed leaving edges.
 
 [Sprint Notes](sprint_009.md)
 
@@ -156,6 +159,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Aligns (allowed arriving edges)
 - Links as “straight” rather than LEFT, RIGHT etc.
 - STRAIGHT directive.
+- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff)
 
 [Sprint Notes](sprint_010.md)
 
