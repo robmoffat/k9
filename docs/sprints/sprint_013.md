@@ -6,33 +6,6 @@
  - Stereotype and text content layouts. DONE
  - Default Layout for glyphs (containing a label)
  
-## Padding / Margins
-
-One question arising from this is:  where exactly is the vertex?  We might assume for Glyphs that it is 
-outside of the padding.  In fact, from a rectangularization perspective, this is a good answer.  It's a shame that 
-this in fact means that we've got our grid model wrong for containers.
-
-However, maybe that's not so important, it just means that we're going to unify it for containers and glyphs.
-
-It's not necessary for planarization to have the inside and outside edges of everything.  But, maybe later on it is?
-
-What's the rule here?
-
-- Originally, containers didn't have padding, so they weren't a problem.
-- Glyphs, the outside of the glyph was marked by it's vertices.  (During planarization, it was a single vertex, converted to multiple for rectangularization)
-- If we already have vertices for the inside of the glyph, we're going to need to add new ones.
-- What if we have a nested glyph?  e.g.  a text box, which contains a grid, which has padding, and is within another grid?   This will require two layers 
-of vertices to get right.
-
-To solve this simply:
-
-1.  Containers need inside and outside vertices.  This needs to be set up when we create the arrangement.  This really sucks though, as it doubles the 
-complexity of the diagrams.
-2.  They really only need the inside vertices when a grid is involved.   Thus, actually, we really only need to create a new set of vertices for grid contents.
-3.  But, really we are going to simplify this later so that we only add the grid at the planarization stage when it is populated (see step 3, below)
-
-Where do grid vertices exist?  Are they container vertices?  (yes)   I guess they are just a level deeper than the outer container vertices.
- 
 # Step 1: Glyphs Like Containers
 
 Take our example glyph, and try and render it.  The `size()` method should *only* be called on the text (and there should be some).
@@ -53,17 +26,26 @@ arrow3 {
 ```
 
 Previously, containers got corner vertices, and everything else didn't.  Now though, it's more complex.  To avoid adding too many pointless elements to the planarization,
-we only add corner vertices or regular vertices if an element has connections.   So we have this in `RHDPlanarizationBuider`:
+we only add corner vertices or regular vertices if an element has connections.   So we have this in `ElementMapperImpl`:
 
 ```java
 
-	private boolean requiresCornerVertices(DiagramElement c) {
+	public boolean requiresCornerVertices(DiagramElement c) {
+		if (c instanceof Diagram) {
+			return true;
+		}
 		// does anything inside it have connections?
 		if (c instanceof Container) {
 			for (DiagramElement de : ((Container) c).getContents()) {
-				if (hasConnections(de)) {
+				if (hasNestedConnections(de)) {
 					return true;
 				}
+			}
+			
+			// are connections allowed to pass through it?
+			boolean canTraverse = isElementTraversible(c);
+			if (canTraverse && hasNestedConnections(c)) {
+				return true;
 			}
 		}
 		
@@ -71,6 +53,7 @@ we only add corner vertices or regular vertices if an element has connections.  
 		Layout l = c.getParent() == null ? null : ((Container) c.getParent()).getLayout();
 		return (l == Layout.GRID);
 	}
+	
 ```	
 	
 So now, we are using the container layout approach for glyphs.  Now, immediately, this causes problems because we can't correctly size the glyphs: if the elements
@@ -328,18 +311,61 @@ public class BorderEdge extends AbstractPlanarizationEdge {
 
 
 
-## 51_*: Back to Gridding
+# Step 5: Inside / Outside Vertices in Gridding
+
+## Padding / Margins
+
+One question arising from this is:  where exactly is the vertex?  We might assume for Glyphs that it is 
+outside of the padding.  In fact, from a rectangularization perspective, this is a good answer.  It's a shame that 
+this in fact means that we've got our grid model wrong for containers.
+
+However, maybe that's not so important, it just means that we're going to unify it for containers and glyphs.
+
+It's not necessary for planarization to have the inside and outside edges of everything.  But, maybe later on it is?
+
+What's the rule here?
+
+- Originally, containers didn't have padding, so they weren't a problem.
+- Glyphs, the outside of the glyph was marked by it's vertices.  (During planarization, it was a single vertex, converted to multiple for rectangularization)
+- If we already have vertices for the inside of the glyph, we're going to need to add new ones.
+- What if we have a nested glyph?  e.g.  a text box, which contains a grid, which has padding, and is within another grid?   This will require two layers 
+of vertices to get right.
+- If a Glyph has some `text-line`s, then these could have connections.  When we planarize these, those `text-line`s will definitely need corners for the `Connection`s
+to attach to.
+- This means elements of a grid must be allowed to have links connecting to them.
+- Further, this means that the grid elements *cannot be* re-using the vertices from the Container.
+
+To solve this simply:
+
+1.  **Containers need inside and outside vertices.**  This needs to be set up when we create the arrangement.  This really sucks though, as it doubles the 
+complexity of the diagrams.
+2.  But, **they really only need the inside vertices when a grid is involved**.   Thus, actually, we really only need to create a new set of vertices for grid contents.
+3.  But, really we are going to simplify this later so that we only add the grid at the planarization stage when it is populated (see step 3, below)
+
+Where do grid vertices exist?  Are they container vertices?  (yes)   I guess they are just a level deeper than the outer container vertices.
+ElementMapper needs to handle all of this properly.
+
+
+## Internal Grid Links
 
 Sometimes, we've see odd artifacts like this:
 
 ![Dodgy Link](images/013_3.png)
 
-This is caused by containers *internal to a grid* having links.  This doesn't make any sense.  Let's 
-not allow this to happen, and only allow the outer edge to have leaving links.  Everything else just won't get 
-rendered.
+This is caused by containers *internal to a grid* having links.  
 
 This will clear up multiple issues with grid tests, but there are still some issues remaining:  it's not always clear that a side-vertex will align correctly
 with something it's joining to, and even if we fix that, we might see an issue where it overlaps an existing corner vertex. 
+
+
+
+
+
+# Step 6: Complete Old-Style Glyphs
+
+TBD
+
+# Remaining Issues
 
 ## Container Labels
 
@@ -348,17 +374,7 @@ content within the container.  It would be nice to simplify this, but I'm not su
 
 
 
-## Complete Old-Style Glyphs
-
-Ok, so we don't have 
 
 
-
-
-- If a Glyph has a grid, and all the elements are labels, then you shouldn't be planarizing it.  (Ok, that works)
-- At the moment, we planarize *every* container, and no
-- But, if an element in the grid has a connection somewhere, you have to planarize it.
-
-(We go too far with the grouping of the glyphs)
 
 
