@@ -4,7 +4,7 @@
  - Removing @Ignores DONE
  - Containers - allowed leaving edges. DONE
  - Stereotype and text content layouts. DONE
- - Default Layout for glyphs (containing a label)
+ - Default Layout for glyphs (containing a label)  NOT DOING
  
 # Step 1: Glyphs Like Containers
 
@@ -62,11 +62,12 @@ inside a glyph don't have connections, the glyph is added as a single vertex (ra
 # Step 2: Fixing Compaction / Use of `Displayer.size()`
 
 At the moment, we:
-	- Planarize
-	- Create an orthogonalization
-	- Modify glyphs so they have corner vertices
-	- Set sizes on the darts, so that the vertices are the right distance apart.
-	- Use all that for the compaction process (slidables, etc)
+
+ - Planarize
+ - Create an orthogonalization
+ - Modify glyphs so they have corner vertices
+ - Set sizes on the darts, so that the vertices are the right distance apart.
+ - Use all that for the compaction process (slidables, etc)
 	
 This has served us well. What we need to do now is make a few small changes.
 
@@ -81,6 +82,82 @@ Second, glyphs are probably going to be using the grid system, so we need to mak
 
 Finally, it's quite possible now that entire containers have been reduced to just their corners:  sometimes, we need to use a displayer to create the contents
 even when we're *not* using the grid system.
+
+## Padding / Margins
+
+One question arising from this is:  where exactly is the vertex?  We might assume for Glyphs that it is 
+outside of the padding.  In fact, from a rectangularization perspective, this is a good answer.  It's a shame that 
+this in fact means that we've got our grid model wrong for containers.
+
+However, maybe that's not so important, it just means that we're going to unify it for containers and glyphs.
+
+It's not necessary for planarization to have the inside and outside edges of everything.  But, maybe later on it is?
+
+What's the rule here?
+
+- Originally, containers didn't have padding, so they weren't a problem.
+- Glyphs, the outside of the glyph was marked by it's vertices.  (During planarization, it was a single vertex, converted to multiple for rectangularization)
+- If we already have vertices for the inside of the glyph, we're going to need to add new ones.
+- What if we have a nested glyph?  e.g.  a text box, which contains a grid, which has padding, and is within another grid?   This will require two layers 
+of vertices to get right.
+- If a Glyph has some `text-line`s, then these could have connections.  When we planarize these, those `text-line`s will definitely need corners for the `Connection`s
+to attach to.
+- This means elements of a grid must be allowed to have links connecting to them.
+- Further, this means that the grid elements *cannot be* re-using the vertices from the Container.
+
+To solve this simply:
+
+1.  **Containers need inside and outside vertices.**  This needs to be set up when we create the arrangement.  This really sucks though, as it doubles the 
+complexity of the diagrams.
+2.  But, **they really only need the inside vertices when a grid is involved**.   Thus, actually, we really only need to create a new set of vertices for grid contents.
+3.  But, really we are going to simplify this later so that we only add the grid at the planarization stage when it is populated (see step 3, below)
+
+Where do grid vertices exist?  Are they container vertices?  (yes)   I guess they are just a level deeper than the outer container vertices.
+ElementMapper needs to handle all of this properly.
+
+## Grid Corners
+
+So, `GridCornerVertices` represents any grid contents now.  `BaseGridCornerVertices` is the top-level grid.  This represents the grid *contents* of a container.
+Elements embedded within this grid use `SubGridCornerVertices`.   `ElementMapper` handles all of this via `getOuterCornerVertices(DiagramElement c)`.
+
+This means that `BaseGridCornerVertices` is kind of hidden - you never really directly access this.  Mainly, the result is that we now have the *outside* vertices
+for the grid container, and the *inside*, gridded vertices of the things embedded within the container's grid.
+
+## Nested Grids
+
+This gets a bit complicated when we have nested elements in the grid.  Recall from [Sprint 8](sprint_008.md) that we made a realisation:  *Grouping relies on bisecting the
+space, whereas grids don't necessarily do this, if you allow spanning squares*.  (The herring-bone paving problem).
+
+You could solve this problem by not allowing elements in the grid to have directed connections between them.  After all, what's the point?  These just create extra constraints
+that we don't really need. **Or, you could say that directed connections can only go between grid elements with the same grid position.**  The algorithm could look like this:
+
+- Group everything up within a cell.   But,
+- There is a special CompoundGroup for merging grids, which does both axes at once.  
+
+To avoid this problem (for now), we decided that spanning shouldn't be allowed at the planarization level.   What should happen at other levels?  We have several tests where
+we have sub-grids.  There are two options:
+
+1) We roll the whole thing up into a single grid.  However, this is not really the expected behaviour.
+2) Grids-within-grids are not special.  
+
+Really, I am thinking that we should be adopting (2), with an eye on implementing spanning separately.
+
+So for now, what we are really talking about is removing everything to do with nested grids.
+
+
+## Internal Grid Links
+
+Sometimes, we've see odd artifacts like this:
+
+![Dodgy Link](images/013_3.png)
+
+This is caused by containers *internal to a grid* having links.  
+
+This will clear up multiple issues with grid tests, but there are still some issues remaining:  it's not always clear that a side-vertex will align correctly
+with something it's joining to, and even if we fix that, we might see an issue where it overlaps an existing corner vertex. 
+
+
+## Updating `BasicVertexArranger`
 
 So, this required some changes to `BasicVertexArranger`:
 
@@ -309,63 +386,14 @@ public class BorderEdge extends AbstractPlanarizationEdge {
 ```
 
 
+# Step 5: Complete Old-Style Glyphs
 
-
-# Step 5: Inside / Outside Vertices in Gridding
-
-## Padding / Margins
-
-One question arising from this is:  where exactly is the vertex?  We might assume for Glyphs that it is 
-outside of the padding.  In fact, from a rectangularization perspective, this is a good answer.  It's a shame that 
-this in fact means that we've got our grid model wrong for containers.
-
-However, maybe that's not so important, it just means that we're going to unify it for containers and glyphs.
-
-It's not necessary for planarization to have the inside and outside edges of everything.  But, maybe later on it is?
-
-What's the rule here?
-
-- Originally, containers didn't have padding, so they weren't a problem.
-- Glyphs, the outside of the glyph was marked by it's vertices.  (During planarization, it was a single vertex, converted to multiple for rectangularization)
-- If we already have vertices for the inside of the glyph, we're going to need to add new ones.
-- What if we have a nested glyph?  e.g.  a text box, which contains a grid, which has padding, and is within another grid?   This will require two layers 
-of vertices to get right.
-- If a Glyph has some `text-line`s, then these could have connections.  When we planarize these, those `text-line`s will definitely need corners for the `Connection`s
-to attach to.
-- This means elements of a grid must be allowed to have links connecting to them.
-- Further, this means that the grid elements *cannot be* re-using the vertices from the Container.
-
-To solve this simply:
-
-1.  **Containers need inside and outside vertices.**  This needs to be set up when we create the arrangement.  This really sucks though, as it doubles the 
-complexity of the diagrams.
-2.  But, **they really only need the inside vertices when a grid is involved**.   Thus, actually, we really only need to create a new set of vertices for grid contents.
-3.  But, really we are going to simplify this later so that we only add the grid at the planarization stage when it is populated (see step 3, below)
-
-Where do grid vertices exist?  Are they container vertices?  (yes)   I guess they are just a level deeper than the outer container vertices.
-ElementMapper needs to handle all of this properly.
-
-
-## Internal Grid Links
-
-Sometimes, we've see odd artifacts like this:
-
-![Dodgy Link](images/013_3.png)
-
-This is caused by containers *internal to a grid* having links.  
-
-This will clear up multiple issues with grid tests, but there are still some issues remaining:  it's not always clear that a side-vertex will align correctly
-with something it's joining to, and even if we fix that, we might see an issue where it overlaps an existing corner vertex. 
-
-
-
-
-
-# Step 6: Complete Old-Style Glyphs
-
-TBD
+So, I was going to do this as the remainder of this sprint, but in order to test this properly, we're going to need the SVG thing working, so I'm moving this
+forward into the later sprint instead.
 
 # Remaining Issues
+
+Labels generally:  we are not displaying these correctly, they are overlapping each other.
 
 ## Container Labels
 

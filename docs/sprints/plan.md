@@ -110,8 +110,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_011.md)
 
-
-
 ### Project CSS/JS/SVG Icon/Font Repository
 
 - We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
@@ -159,7 +157,9 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Aligns (allowed arriving edges)
 - Links as “straight” rather than LEFT, RIGHT etc.
 - STRAIGHT directive.
-- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff)
+- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
+- Allow gridded containers to have links leaving them.
+- Label overlapping
 
 [Sprint Notes](sprint_010.md)
 
@@ -269,6 +269,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 ### Grouping Fix
 
 Test 51_7 is broken because we do gridding in a funny order.  Investigate this and provide a fix.
+See [Sprint 13](sprint_013.md) for how we should do gridding, and allow spanning squares.
 
 [Sprint Notes](sprint_012.md)
 
