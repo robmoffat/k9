@@ -1,10 +1,10 @@
 # 18 January 2017 - Sprint 011:  SVG As The Output Format
 
 - Split tests into planarization, orth, compaction, display so we can add SVG to the display ones only.  DONE
-- Update test results to check SVG, where necessary.  Don't use this for all tests, just some.
-- this means converting our displayers to use SVG rather than Graphics2D.    
-- Test against SVG content, make sure it's deterministic.   
-- In order that we can properly take advantage of fills, we need to start using SVG as the output format.
+- Update test results to check SVG, where necessary.  Don't use this for all tests, just some.  DONE
+- this means converting our displayers to use SVG rather than Graphics2D.   DONE 
+- Test against SVG content, make sure it's deterministic.   DONE
+- In order that we can properly take advantage of fills, we need to start using SVG as the output format. DONE
 - "Common" section of the diagram, containing things to reference.
 - Better to get this out of the way early.
 
@@ -380,53 +380,515 @@ glyph stereotype {
 }
 ```
 
-Where, we can define a path based on the shape of the grid.  That's cool, but we don't even need to go that far.  We could define a path based on just the size of
-the stereotype.  The path may be related to the padding (we have minimum size padding, but layout may increase the padding to accommodate arriving connections).  Or, the 
-path might be related to just the text within the text area.  Also, we have a margin which surrounds this, which the path might stray into, reasonably.  
+## A Variable-Sized Path `GraphicsNode`
 
-What is the difference between the padding and the margin, then?  Padding is putatively "within" the shape, and connections meet up to it.  But, margin is the distance 
-between other elements, and while margin might be a minimum distance from the another element on the diagram, it doesn't mean that you "own" this space, so 
-anyone overlapping into it might end up overlapping with something else.
+For the above to work, we need two things:
 
-## Point Transformations
+1.  A new path-parser, which can handle extra variables.
+2.  A context containing those variables, which is set up according to either the element itself, or the parent element.
 
-As well as paths (which are in SVG specified using d=""), we could also perform transformations on points:
+To do (1), we need to subclass `SVGPathElementBridge` to create a new `ShapeNode`.  There is a problem here
+that the bridge is responsible for parsing the path and creating the shape, but obviously, we aren't going to know the exact
+dimensions of the shape until we've called `draw()` on the parent element of the shape. 
 
-```xml
-<line x1="20" y1="100" x2="100" y2="20"
-      stroke-width="2" stroke="black"/>
+The way the `ShapeNode`s work is that they create a `ShapePainter` instance and use it to display the shape on the `Graphics2D`.
+`ShapePainter` uses the normal AWT `Shape`, with it's path iterator etc.   So, the way to go about this is to create a shape which
+has the context defined with some variables.
+
+### The XML
+
+In the CSS above, we add the path to the `<glyph>` element, and it will render.  But currently, we are using the `Kite9DiagramGroupBridge` for 
+*any* Kite9 element, turning them all into SVG `<g>` elements.  All of the actual content, we are using SVG.   We're going to want to minimize
+the amount of XML later though.  For example:
+
+ - We might want to automatically add the text `GraphicsNode` to our group, without any extra XML.  (`type: text` in the SVG)
+ - We need the path to work (above).   (`type: composed`, or anything else)
+ - But, we might need to add extra paths... so we'd need other elements for those.   (maybe `type: fixed;`)
+ 
+... I can't think of any more examples.  It's just all text and graphics at the end of the day.   So, it feels like we might need to create 
+more than one `GraphicsNode` from a given XML element?  I think a `Bridge` implementation should be ok to do this.  
+
+The easiest thing to start with is to override the `SVGPathElementBridge` to create `ScalablePathElementBridge`.  From here, 
+we can override some of the behaviour of regular SVG paths and introduce our new variables.  Can we render this, for instance:
+
+```java
+	private String scalablePath() {
+		return "<svg:path d='Mx0 y0 H x1 V y1z' />";
+	}
 ```
 
-or 
+The problem I now have is that at the time of building the shape, I don't know how big it's supposed to be.  Somehow, I need to defer it, so I can build it
+at a time when I *do* know.  The best way to achieve this might be to set a simple initial path, and then overwrite it with the correct path once we have it.
 
-```xml
-  <polygon points="60,20 100,40 100,80 60,100 20,80 20,40"/>
+Problem with this is that the `CSSEngine` seems to be disposed of by the time I come to write the `GraphicsNode`s.  This is *kind of* OK, except that I really hadn't
+finished using it.  So, Kite9 does it's arranging, but then the SVG path is lost.  How should this work?
+
+What needs to happen is that Kite9 *reconstructs* the shapes for the scalable paths sometime after it has sized everything, but *before* the process of drawing the 
+`GraphicsNode`s to the output.
+
+### Reconfiguration
+
+`DiagramElement`s are now in control of the various `GraphicsNode`s which represent their layers.  This means that we need to be able to use the `Bridge` over and
+over again for the elements in order to construct these layers.
+
+However, for the `DiagramImpl` itself this is a problem - we want to use the `Bridge` to construct the `CompositeGraphicsNode` which holds the entire diagram (i.e.
+all the layers).  For the layers within `DiagramImpl` (and within any other element), we're going to construct a temporary `<g>` element, and then use this to 
+create the `CompositeGraphicsNode` for each layer.
+
+This now means that Kite9 is in control of the creation of the `GraphicsNode`s, and can do this anytime we call:
+
+```java
+public interface HasLayeredGraphics extends DiagramElement {
+	
+	public GraphicsNode getGraphicsForLayer(Object l);
+	
+	public void eachLayer(Function<GraphicsNode, Void> cb);
+	
+	/**
+	 * Returns just the bounds of the SVG elements.
+	 */
+	public Rectangle2D getSVGBounds();
+}
 ```
 
-Remember, groups will help us do simple translations, but if we want to scale to the size of the container, or to particular grid positions, we'll have to do
-something cleverer.
+Now, the next problem is back to the scalable path:  we need Kite9 to create `DiagramElement`s for scalable paths, so that it can position them, and also so we
+can defer their 'drawing' (i.e. creating `GraphicsNode`s from them).  
 
-One problem with this is that we will struggle to load the code in using Batik, I would think?  It's going to hate parsing CSS entities if they contain weird 
-syntax.  
+Additionally, we have a second, related issue:  at the moment, we are interleaving SVG and `DiagramElement` XML in the same place.  However, this won't get rendered
+in the correct order.  We have `FixedSizeGraphics`, but really we also need to implement `ScaledGraphics` the same way.
 
-# Step 4: Managing Transitions
+So, in future, we need to make sure we don't interleave both SVG and Kite9 XML at the same level. 
 
-One problem we are going to face is that we need to transition between old and new versions of an SVG diagram.
-This is going to be tricky.  We need to make sure:
+### `Decal`
 
-- We have IDs on all the elements
-- We use translations
-- We use groups correctly, so each element has a group, which we can move around.  
+One element I've wanted to introduce for a while is the `Decal`, which is a piece of ornamentation over another element.  Now, we can.  `Decal` has a single method:
 
-(I think we now achieve this, but we'll find out later if it all works)
+```java
+public interface Decal extends DiagramElement {
+
+	public void setParentSize(double[] x, double[] y);
+}
+```
+
+And `Decal`s are going to be the basis of the adaptive graphics element. They have zero size for compaction purposes, but on display, take the size of the container.
+The container sets the sizing information for itself, so that when we call `getGraphicsForLayer`, we can get the decal to return something related to the size of the container.
+
+The simplest implementation for `Decal` is to use SVG:
+
+```java
+public class AdaptiveScaleSVGGraphicsImpl extends AbstractRectangularDiagramElement implements ScaledGraphics, Decal {
+
+	@Override
+	public void setParentSize(double[] x, double[] y) {
+		// iterate over the contained svg and overwrite any variables
+		performReplace(theElement.getChildNodes(), x, y);
+		RectangleRenderingInformation rri = getRenderingInformation();
+		RectangleRenderingInformation parent = getContainer().getRenderingInformation();
+		rri.setSize(parent.getSize());
+		rri.setPosition(parent.getPosition());
+	}
+
+	private void performReplace(NodeList nodeList, double[] x, double[] y) {
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node n = nodeList.item(i);
+
+			if (n instanceof Element) {
+				performReplace(n.getChildNodes(), x, y);
+				for (int j = 0; j < n.getAttributes().getLength(); j++) {
+					Attr a = (Attr) n.getAttributes().item(j);
+					performValueReplace(a, x, y);
+				}
+			} 
+		}
+	}
+
+```
+
+What this does is resolve references in the contained SVG to {x0} {y1} etc. and replace them with the measurements from the container element.  i.e. we change the XML
+*before* we create the `GraphicsNode`.  To do this, we can simply iterate over the attributes of the SVG.
+
+# Step 5: Proper Glyphs
+
+## Text
+
+At this point, it should be possible to (laboriously) create a proper glyph using SVG and Kite9.  Later, we'll add some CSS shortcuts to generate elements automatically
+which should make things much easier.   But, let's try this first.
+
+First thing, let's fix the problem of rendering text.  At the moment, Batik is turning all text into `GlyphVectors`, and this gets rendered as one big path in the SVG 
+output file.  This isn't great- it means that a lot more data is going to get pushed from server to client, and also, it makes testing harder.  Further, it's a problem
+best solved up-front if we are going to do work on positioning text properly.  
+
+Batik uses a `TextPainter` implementation in each `TextNode` for outputting the text to the `Graphics2D` output.  The `TextPainter` in turn chops up the text into runs,
+and uses a `TextLayoutFactory` for converting these runs into `TextSpanLayout` implementations, which handle the actual
+drawing.  It wasn't too hard to overwrite the `draw()` method to use `Graphics2D.drawString()`.
+
+The only problem with this is that the text colours don't seem to be set properly.  Now, I could spend ages figuring this out, but I'm not sure it's worth it.  We 
+just need to set the `fill` attributes like everything else does:  `fill` is the only attribute used by SVG text.   So, we end up overriding the `draw` method like this,
+in `TextBridge`:
+
+```java
+@Override
+				public void draw(Graphics2D g2d) {
+					Paint basePaint = g2d.getPaint();
+					TextPaintInfo tpi = (TextPaintInfo)aci.getAttribute (GVTAttributedCharacterIterator.TextAttribute.PAINT_INFO);
+			        if (tpi == null) return;
+			        if (!tpi.visible) return;
+
+			        Paint  fillPaint   = tpi.fillPaint;
+			        
+			        if (fillPaint != null) {
+		                g2d.setPaint(fillPaint);
+						g2d.drawString(aci, (float) getOffset().getX(), (float) getOffset().getY());
+		            }
+
+				        
+					g2d.setPaint(basePaint);
+				}
+```
 
 
-# Step 5: Definitions
+
+At this stage, fonts are not a solved problem - we'll get to this.
+
+## Fills
+
+On the *writing* side, fills are handled in Batik by the `SVGGeneratorContext`, which is responsible for dictating styling, fonts, and how fills 
+are translated from `awt` constructs into SVG ones.   
+
+On the *reading* side, the SVG XML is converted (via Bridges) into things like Batik's own `LinearGradientPaint`.  
+
+Luckily, we already wrote a plug-in for the `SVGGeneratorContext` that handles paint, the `GradientExtensionHandler`, which I was able
+to make work with Batik's gradients rather than `awt`s very simply.   We'll eventually need to do the same thing with images,
+but it's not strictly necessary just to get Glyphs working again.
+
+## Glyphs
+
+### Basic Glyph
+
+The simplest Kite9 Glyph is a round-cornered box with some text in the middle.  Let's see if we can create a nice one 
+of those using what we've created so far:
+
+![First Glyph](images/011_02.png)
+
+The XML to generate this was:
+
+```xml
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:linearGradient id='gg' x1='0%' x2='0%' y1='0%' y2='100%'>
+      <svg:stop offset='0%' stop-color='#FFF' />
+      <svg:stop offset='100%' stop-color='#DDD' />
+    </svg:linearGradient>
+  </svg:defs>
+  <diagram xmlns='http://www.kite9.org/schema/adl' id='one' style='type: diagram; padding: 10px'>
+    <glyph id='g1' style='type: connected; sizing: minimize; padding: 8px 10px 8px 10px;  '>
+      <back id='back' style='type: decal; sizing: adaptive; '>
+        <svg:rect x='0' y='0' width='{x1}' height='{y1}' rx='8' ry='8' style='fill: url(#gg); stroke: black; stroke-width: 2px; ' />
+      </back>
+      <label id='label' style='type: connected; sizing: fixed'>
+        <svg:text style='font-size: 15px; stroke: black; font-face: sans-serif; '>Some Glyph</svg:text>
+      </label>
+    </glyph>
+  </diagram>
+</svg:svg>
+```
+
+### More Complex Glyph
+
+What about a glyph with text-lines, stereotype and symbols?  Can we do this?  To achieve this, we are going to need to use a container with a grid.  I think this
+is worth trying right now, before we consider optimising the XML, so let's do that next.   55_2 defines this:
+
+```xml
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:linearGradient id='gg' x1='0%' x2='0%' y1='0%' y2='100%'>
+      <svg:stop offset='0%' stop-color='#FFF' />
+      <svg:stop offset='100%' stop-color='#DDD' />
+    </svg:linearGradient>
+  </svg:defs>
+  <diagram xmlns='http://www.kite9.org/schema/adl' id='one' style='type: diagram; padding: 10px'>
+    <glyph id='g1' style='type: connected; sizing: minimize; layout: grid; grid-size: 2 3; padding: 8px 10px 8px 10px;  '>
+      <back id='back' style='type: decal; sizing: adaptive; '>
+        <svg:rect x='0' y='0' width='{x1}' height='{y1}' rx='8' ry='8' style='fill: url(#gg); stroke: black; stroke-width: 2px; ' />
+      </back>
+      <stereo id='stereo' style='type: connected; sizing: fixed; occupies: 0 0'>
+        <svg:text style='font-size: 12px; font-weight: bold; stroke: black; font-face: sans-serif; '>Stereo</svg:text>
+      </stereo>
+      <symbols id='symbolsContainer' style='type: connected; sizing: minimize; layout: horizontal; occupies: 1 0 '>
+        <symbol id='s1' style='type: connected; sizing: fixed;'>
+          <svg:circle cx='0' cy='0' r='10' />
+        </symbol>
+        <symbol id='s2' style='type: connected; sizing: fixed;'>
+          <svg:circle cx='0' cy='0' r='10' />
+        </symbol>
+        <symbol id='s3' style='type: connected; sizing: fixed;'>
+          <svg:circle cx='0' cy='0' r='10' />
+        </symbol>
+      </symbols>
+      <label id='label' style='type: connected; sizing: fixed; occupies: 1 1 0 1'>
+        <svg:text style='font-size: 15px; stroke: black; font-face: sans-serif; '>Some Glyph</svg:text>
+      </label>
+      <text id='textContainer' style='type: connected; sizing: minimize; layout: vertical; occupies: 0 1 2 2 '>
+        <text-line id='tl1' style='type: connected; sizing: fixed;'>
+          <svg:text style='font-size: 15px; stroke: black; font-face: sans-serif; '>This is text line tl1</svg:text>
+        </text-line>
+        <text-line id='tl2' style='type: connected; sizing: fixed;'>
+          <svg:text style='font-size: 15px; stroke: black; font-face: sans-serif; '>This is text line tl2</svg:text>
+        </text-line>
+        <text-line id='tl3' style='type: connected; sizing: fixed;'>
+          <svg:text style='font-size: 15px; stroke: black; font-face: sans-serif; '>This is text line tl3</svg:text>
+        </text-line>
+      </text>
+    </glyph>
+  </diagram>
+</svg:svg>
+```
+
+Using the PNG renderer, this renders as something like this:
+
+![Complex Glyph](images/011_3.png)
+
+Clearly, margins and padding are not really being respected in this version.  Do I care about this now, or will it do?
+I think it might be best to leave this now and move on - the point is proven, even if rendering isn't perfect.
+
+# Step 6: Definitions
+
+The XML above was *ok*, but it's not where we want to be as a final destination- it's hardly *minimal*.  We'd like something like:
+
+```xml
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <diagram xmlns='http://www.kite9.org/schema/adl' id='one'>
+    <glyph id='g1'>
+      <label id='label' text='Some Glyph' />
+    </glyph>
+  </diagram>
+</svg:svg>
+```
+
+Which is going to involve a bit more extremes of stylesheeting.  
 
 In SVG, it's possible to define a filter or texture in one place, and then re-use it across the whole diagram.  If we import an element using a palette
-then it's important we also bring in the `defs` from it.  
+then it's important we also bring in the `defs` from it. 
+
+We have various elements which we might want to reuse:
+
+- `defs`:  e.g. gradient fills, or any SVG elements which are general rather than specific.  These are likely to come from a palette.
+- `binary`:  e.g. backgrounds, images, fonts.  These are going to be referenced in stylesheets or in the XML on the palette, and we want to reference the same.
+- `stylesheets`: The palette is likely to use a stylesheet for it's layout.  A palette is going to be a Kite9 XML document, rather than an SVG document.
+- `javascript`: Behaviours apply to the *transformed* SVG version of the XML document, but apply to the Kite9 XML document.
+
+So, how to be explicit about reuse?
+
+- If we use stylesheets for this, it *feels wrong*, as stylesheets are for style.
+- Also, we can't store XML in a stylesheet, just directives.  Trying to make them more than they are is crazy.
+- But, we need to consider what's going to happen:
+  - Someone loads a palette.
+  - They drag an element off the palette into the diagram
+  - Then, the element is in the diagram too.   Will it change appearance in the new context?   
+  - How do we set up the behaviours on the diagram, how do they interact with the stylesheet.
+  
+## Principles
+
+1.  Stylesheets are for Styles
+
+We don't store XML in them.  But, we are likely to want to give some 'template' contents for an XML element.  I think the best way to do this is with a `url()` 
+in the stylesheet.  This way, we can pull a fragment of XML in from somewhere, and use it as the content of the diagram element.  Ideally, we will add this
+to the `defs` section, so that it can be re-used by other elements.  We're going to need a test for this kind of cross-referencing within a document.  (And probably, 
+versioning is going to be important).
+
+2.  The Palette will define all of the XML we need.  
+
+Either in its `defs` section, or the main section, and we'll just pull it in (copy it).  If it's using a `def`, we'll have to copy that in too... and make the URL
+non-local at the same time.
+
+3.  There needs to be an Empty Document template.
+
+- This will contain the basic behaviours (a list of javascript files) and the stylesheets ( a list of CSS files).   
+- Behaviours will be attached to SVG elements using CSS classes, and some kind of jQuery-like way of attaching behaviours.
+  
+4.  Each Bevhaviour in a separate Javascript file.
+
+ - We could use at-rules in the stylesheet to specify these behaviours.
+ - Or, we could list them all at the top of the XML document, like a regular web page.
+ - We can use class matching to attach these to SVG primitives.
+ 
+## Building an Example
+
+### `template`
+
+We need to add a CSS directive for `template`, which can set up an `<svg:use>`.   IE doesn't support `use` when it refers to
+documents outside the current URL.  But do we even want to do that anyway?  Let's decide later.  
+
+But, is this good enough?  What if it's a label, and we want to replace some text?  In these cases, it's not enough to
+have the rendered `<use>` in our output:  we need to resolve that and turn it into real XML.  So, the templates need to be
+resolved at draw time and turned back into normal XML.  This is going to be done by the `Kite9BridgeContext`, like so:
+
+```java
+
+	/**
+	 * This needs to copy the template XML source into the destination.
+	 */
+	public void handleTemplateElement(XMLElement in, DiagramElement out) {
+		Value template = out.getCSSStyleProperty(CSSConstants.TEMPLATE);
+		if (template != ValueConstants.NONE_VALUE) {
+			String uri = template.getStringValue();
+
+			try {
+				// identify the fragment referenced in the other document and
+				// load it
+				URI u = new URI(uri);
+				String fragment = u.getFragment();
+				String resource = u.getScheme() + ":" + u.getSchemeSpecificPart();
+				ADLDocument templateDoc = loadReferencedDocument(resource);
+				Element e = templateDoc.getElementById(fragment);
+
+				Node copy = copyIntoDocument(in, e);
+				
+				// ensure xml:base is set so references work in the copied content
+				((Element)copy).setAttributeNS(XMLConstants.XML_NAMESPACE_URI, XMLConstants.XML_BASE_ATTRIBUTE, resource);
+
+			} catch (Exception e) {
+				throw new Kite9ProcessingException("Couldn't resolve template: " + uri, e);
+			}
+		}
+	}
+```
+
+The `BridgeContext` has a class called `DocumentLoader` for the purpose of loading referenced resources.  This *seems* like the right place, but I guess 
+alternatively, the code could go in a `Bridge` instance.  However, `Bridge`s are for converting from XML to `GraphicsNode`s, and this is actually mucking about
+with the XML itself, so it seems like it would be the wrong place.
+
+In the test, 56_1, we are actually trying two imports:  one of a Kite9 XML element, and one of an SVG element.  Further, we are going to 
+use the `<defs>` from the template too, so those will need to be imported across.  One problem is that when we copy across the XML from one document to another,
+any references (like the reference to the Glyph's background texture) which are local are going to be wrong.
+
+Luckily, XML has the `xml:base` attribute, so we can set this for all the copied content in order to fix the references, which is in the code above.
+
+## Fixing Up The Tests
+
+At this point, Glyphs are looking OK.  So, in order to complete work on these, we need to sort out the stylesheet properly and then run all the
+tests.  *We can't make everything look perfect yet*, because we aren't supporting fonts - that's in the next sprint.  So, for now, we should
+just concentrate on getting the tests running and not worry too much about Symbols/Glyphs/Margins and so on.
+
+### Links
+
+Links should be represented by a single 'path' element, so let's try and render these next.  But first, what does the XML look like for one?
+
+```xml
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>
+  <stylesheet xmlns='http://www.kite9.org/schema/adl' href="file:/Users/robmoffat/Documents/adl-projects/kite9-visualization/target/classes/stylesheets/designer.css"
+    xml:space="preserve " />
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram">
+    <glyph id="one" rank="0">
+      <stereotype id="auto:0">Stereo</stereotype>
+      <label id="auto:1">One</label>
+    </glyph>
+    <glyph id="two" rank="1">
+      <stereotype id="auto:2">Stereo</stereotype>
+      <label id="auto:3">Two</label>
+    </glyph>
+    <arrow id="meets" rank="2">
+      <label id="auto:4">meets</label>
+    </arrow>
+    <link id="meets-one" rank="3">
+      <from reference="meets" />
+      <to reference="one" />
+    </link>
+    <link id="meets-two" rank="4">
+      <from reference="meets" />
+      <to reference="two" />
+    </link>
+  </diagram>
+</svg:svg>
+```
+
+This contains no information about `terminator`s.  But, we have added this code to artificially create them if they don't exist:
+
+```java
+	private Terminator getTerminator(XMLElement el) {
+		if (el == null) {
+			el = (XMLElement) theElement.getOwnerDocument().createElement("terminator");
+			theElement.appendChild(el);
+		}
+		return (Terminator) el.getDiagramElement();
+	}
+```
+
+So, in order to turn a `RouteRenderingInformation` into a `GraphicsNode`, I co-opted the existing `SVGShapeBridge` functionality, and
+created `Kite9RouteBridge` like this:
+
+```java
+public class Kite9RouteBridge extends SVGShapeElementBridge {
+
+	private Connection c;
+	
+	public Kite9RouteBridge(Connection c) {
+		super();
+		this.c = c;
+	}
+
+	@Override
+	public String getLocalName() {
+		return null;
+	}
+
+	@Override
+	protected void buildShape(BridgeContext ctx, Element e, ShapeNode node) {
+		RoutePainter rp = new RoutePainter();
+		Shape s = rp.drawRouting(c.getRenderingInformation(), rp.NULL_END_DISPLAYER, rp.NULL_END_DISPLAYER, rp.LINK_HOP_DISPLAYER, false);
+		node.setShape(s);
+	}
+
+}
+```
+
+`RoutePainter` is the old code used to convert the `RouteRenderingInformation`, just packaged up to output a `GeneralPath`.  Easy ish.
+
+Next, let's try and get some tests working that don't rely on exact SVG positioning, i.e. most of them.  I've picked o Test10CrossingEdges` to
+start with, and they are looking pretty bad:
+
+![Grid Crossing](images/011_4.png)
+
+One key problem here that I need to solve is that the entire viewport is off.  This needs to be fixed.  Luckily, the size of the output image
+is held in the `BridgeContext`, so it's an easy job to get the `Kite9DiagramBridge` to write back the size after it's rendered a diagram.
+
+This allows me to see things like this:
+
+![Messed Up](images/011_5.png)
+
+There are at least 3 things going wrong here:
+
+First, connections aren't centred on a side.  This is because *we don't really know the length of the sides now*.  Because we are using labels, 
+and groups, we don't really "roll up" the glyph sizes like we used to.  This needs to be fixed where possible, although I'm kind of unsure how. 
+It should be possible to Rectangularize from the bottom up, so we work out the sizes of the embedded elements, so that we can position in the 
+middle again.  
+
+Second, because we don't know side-lengths, the rectangularization is off on elements like a4.  I think this is part of the same problem.
+
+Third, we don't have any snap-to-grid functionality, and because of this, the position of nearly everything is off.
+
+Fourth, and for entirely unconnected reasons, it's complaining about things having turns which should be TurnLink objects.  This is because we
+turn everything into XML before we render it, and it loses the information about turn links there.  I can fix this fairly easily I think.
+
+
+
+
+
+  
+
+
+# 7: Sunset The Other Displayers
+
+It's time to get rid of everything *except* Batik.  In order to do this, we're going to need to make Symbols, Labels and Links also use Batik/SVG for display.
+
 
 - rename XMLElement to Kite9XMLElement
+
+
+# 8: Shadows and Other Layers
+
+Shadows are a great example of where we are going to use other diagram layers.  The main process of shadow will be to create the same shape as the 
+MAIN layer, but then shade it, offset it, and add the SVG to the SHADOW `<g>` element.
 
 
 
