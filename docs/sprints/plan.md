@@ -112,15 +112,27 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 ### Fixing Stuff
 
-- Label overlapping 
+- Labels and overlapping 
 - Centering of content within a container
+- Complete work on the designer stylesheet so we can display everything in high fidelity.
+- Add shadows in
+- Add Gridding Back in (using CSS)
+- Terminators
+- Performance Tests
 
-### Project CSS/JS/SVG Icon/Font Repository
+[Sprint Notes](sprint_014.md)
+
+
+### Project CSS/JS/SVG/Icon/Font Repository
 
 - We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
 - Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
 - So, handle this caching.
 - We need an "Entity" element in the database, which we'll also use later for indexing the XML.
+
+### Shadows and Control Layer
+
+
 
 ### Visualisation Engine refactoring
 
@@ -136,10 +148,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Include most of the basic entities, render a diagram using it.
 
-### Container exit-sides CSS directive
-
-- So we can dictate in the stylesheet where things can leave.
-
 ### Command Pattern
 
 - Insert element (id, id-less xml bits)
@@ -149,6 +157,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - All basically stuff that allows you to manipulate XML (this allows palettes to work).
 - After posting the command, it should return the new JSON (for react), or an error message should pop up. redux can handle that.
 - Commands should attempt to apply to the active diagram.
+- Load
 
 ### Object Model Part 2 - Links
 
@@ -221,8 +230,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - We need to grey out elements that are not allowed.
 - So, this is some kind of plugin to the react component again.  (We are going to need some general way of adding callbacks to react).
 - We also need a way to say which elements a container can accept.  (or alternatively, which elements can go in container x).   Which way round makes more sense?  Either a container can accept anything, or it can accept only certain kinds of element.
-
-
 
 ### Top-Level Menu
 

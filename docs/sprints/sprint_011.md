@@ -5,7 +5,7 @@
 - this means converting our displayers to use SVG rather than Graphics2D.   DONE 
 - Test against SVG content, make sure it's deterministic.   DONE
 - In order that we can properly take advantage of fills, we need to start using SVG as the output format. DONE
-- "Common" section of the diagram, containing things to reference.
+- "Common" section of the diagram, containing things to reference. DONE
 - Better to get this out of the way early.
 
 
@@ -844,6 +844,8 @@ public class Kite9RouteBridge extends SVGShapeElementBridge {
 
 `RoutePainter` is the old code used to convert the `RouteRenderingInformation`, just packaged up to output a `GeneralPath`.  Easy ish.
 
+### The Viewport
+
 Next, let's try and get some tests working that don't rely on exact SVG positioning, i.e. most of them.  I've picked o Test10CrossingEdges` to
 start with, and they are looking pretty bad:
 
@@ -852,43 +854,66 @@ start with, and they are looking pretty bad:
 One key problem here that I need to solve is that the entire viewport is off.  This needs to be fixed.  Luckily, the size of the output image
 is held in the `BridgeContext`, so it's an easy job to get the `Kite9DiagramBridge` to write back the size after it's rendered a diagram.
 
-This allows me to see things like this:
+### `TurnLink`s
 
-![Messed Up](images/011_5.png)
-
-There are at least 3 things going wrong here:
-
-First, connections aren't centred on a side.  This is because *we don't really know the length of the sides now*.  Because we are using labels, 
-and groups, we don't really "roll up" the glyph sizes like we used to.  This needs to be fixed where possible, although I'm kind of unsure how. 
-It should be possible to Rectangularize from the bottom up, so we work out the sizes of the embedded elements, so that we can position in the 
-middle again.  
-
-Second, because we don't know side-lengths, the rectangularization is off on elements like a4.  I think this is part of the same problem.
-
-Third, we don't have any snap-to-grid functionality, and because of this, the position of nearly everything is off.
-
-Fourth, and for entirely unconnected reasons, it's complaining about things having turns which should be TurnLink objects.  This is because we
+For entirely unconnected reasons, it's complaining about things having turns which should be `TurnLink` objects.  This is because we
 turn everything into XML before we render it, and it loses the information about turn links there.  I can fix this fairly easily I think.
 
+This is easy to fix by using an XML attribute to hold the type of test we are doing:
 
+```java
 
+	public TurnLink(XMLElement from, XMLElement to, String fromStyle, XMLElement fromLabel, String toEndStyle,
+			XMLElement toLabel, Direction drawDirection) {
+		super(from, to, fromStyle, fromLabel, toEndStyle, toLabel, drawDirection);
+		setAttribute(LINK_TEST, TURN);
+	}
+	
+```
 
+### XML Examples
 
-  
+Unfortunately, our new XML format is not exactly the same as our old one: there are a few minor differences.  First, we have a lot of inline `stereotype="blah"` and
+`label="blah"` going on.  These *must* be handled as elements in the new world, which is a problem.   To get around this,
+I've added an old-to-new conversion of the XML format:
 
+```java
+	private void convertOldStructure(Element dxe) {
+		if (dxe.getTagName().equals("allLinks")) {
+			moveChildrenIntoParentAndDelete(dxe);
+		} if (dxe.getTagName().equals("text")) {
+			moveChildrenIntoParentAndDelete(dxe);
+		} if (dxe.getTagName().equals("hints")) {
+			dxe.getParentNode().removeChild(dxe);
+		} if ((dxe.getTagName().equals("symbols")) && (((Element) dxe.getParentNode()).getTagName().equals("text-line"))) {
+			dxe.getParentNode().removeChild(dxe);
+		} else {
+			NodeList nl = dxe.getChildNodes();
+			for (int i = 0; i < nl.getLength(); i++) {
+				Node n = nl.item(i);
+				if (n instanceof Element) {
+					convertOldStructure((Element) n);
+				}
+			}
+			convertAttributeToTag(dxe, "label");
+			convertAttributeToTag(dxe, "stereotype");
+		}
+		
+	}
+``` 
+
+Tests are at this point in a fairly good shape for layout, and XML.  
+
+### Fixing Compilation
+
+At this point, since diagram elements are internal to the visualization process, there's literally no 
+need to have them in a separate project with separate tests.
 
 # 7: Sunset The Other Displayers
 
 It's time to get rid of everything *except* Batik.  In order to do this, we're going to need to make Symbols, Labels and Links also use Batik/SVG for display.
 
-
 - rename XMLElement to Kite9XMLElement
-
-
-# 8: Shadows and Other Layers
-
-Shadows are a great example of where we are going to use other diagram layers.  The main process of shadow will be to create the same shape as the 
-MAIN layer, but then shade it, offset it, and add the SVG to the SHADOW `<g>` element.
 
 
 
