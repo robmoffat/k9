@@ -915,5 +915,5 @@ It's time to get rid of everything *except* Batik.  In order to do this, we're g
 
 - rename XMLElement to Kite9XMLElement
 
-
+Finished, 20th March 2017.
 

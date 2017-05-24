@@ -110,17 +110,39 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_011.md)
 
-### Fixing Stuff
+### Centering
 
-- Labels and overlapping 
 - Centering of content within a container
-- Complete work on the designer stylesheet so we can display everything in high fidelity.
-- Add shadows in
-- Add Gridding Back in (using CSS)
-- Terminators
-- Performance Tests
+- Centering / alignment of text
 
 [Sprint Notes](sprint_014.md)
+
+### Coverage
+
+- Code coverage / deleting unused code
+
+### Looks
+
+- Fonts
+- Add shadows in
+- Add Gridding Back in (using CSS)
+- Complete work on the designer stylesheet so we can display everything in high fidelity.
+- Control Layer
+
+### Object Model Part 2 - Links/Ports/Terminators/Labels
+
+- Links broken down into Ends (which can have labels?)
+- Terminators
+- Labels, generally (broken right now)
+- Connection Labels and overlapping 
+- Ports
+- Aligns (allowed arriving edges)
+- Links as “straight” rather than LEFT, RIGHT etc.
+- STRAIGHT directive.
+- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
+- Allow gridded containers to have links leaving them.
+
+[Sprint Notes](sprint_010.md)
 
 
 ### Project CSS/JS/SVG/Icon/Font Repository
@@ -130,8 +152,9 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - So, handle this caching.
 - We need an "Entity" element in the database, which we'll also use later for indexing the XML.
 
-### Shadows and Control Layer
 
+### Finishing Up
+- Performance Tests
 
 
 ### Visualisation Engine refactoring
@@ -143,6 +166,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
+
 
 ### BPML:  Write a stylesheet for this in CSS
 
@@ -158,23 +182,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - After posting the command, it should return the new JSON (for react), or an error message should pop up. redux can handle that.
 - Commands should attempt to apply to the active diagram.
 - Load
-
-### Object Model Part 2 - Links
-
-- Links broken down into Ends (which can have labels?)
-
-[Sprint Notes](sprint_009.md)
-
-### Object Model Part 3 - Ports
-
-- Ports
-- Aligns (allowed arriving edges)
-- Links as “straight” rather than LEFT, RIGHT etc.
-- STRAIGHT directive.
-- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
-- Allow gridded containers to have links leaving them.
-
-[Sprint Notes](sprint_010.md)
 
 ### Porting Javascript
 
