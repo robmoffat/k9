@@ -56,7 +56,7 @@ contents, setting the perimeter dart lengths.
 
 - A vertex can only have *one `Dart` leaving it in any direction*.  
 
-## Refactoring
+# 1. Refactoring
 
 Each stage of the layout should be the creation of a mapping:
 
@@ -67,14 +67,18 @@ Each stage of the layout should be the creation of a mapping:
 We should try and enforce this, and not allow things to pollute-through to other layers.  This turns out to be quite a hard thing to achieve, and took * a lot * of
 refactoring.   
 
-### `Dart` / `DartFace` 
+## `Dart` / `DartFace` 
 
 We have fairly immutable structures for `Dart` and `DartFace`, which can only be manipulated through the `Orthogonalization`.  These don't have anything to 
 do with the elements constructed during `Planarization`.
 
 `Vertex` is still shared across many layers, though.
 
-### `PlanarizationEdge`
+`Dart` no longer has any idea about size.  This means that the `VertexArranger` can just concentrate on creating the Darts in the right directions, and leave 
+sizing entirely to the compaction process.  
+
+
+## `PlanarizationEdge`
 
 The effect of gridding is *still being felt* in the engine:  I've finally bitten the bullet on refactoring so that `PlanarizationEdge` no longer has a single underlying.
 Instead, we have:
@@ -86,7 +90,7 @@ This was a massive change.
 
 Secondly, removing `isReversed()`.  This means that the PlanarizationEdge is a bit more immutable (though sadly, not yet entirely). 
 
-# 1.  `BasicVertexArranger`
+## 2.  `BasicVertexArranger`
 
 This has been completely re-done.  Instead we now have `VertexArranger` interface, which looks like this:
 
@@ -127,14 +131,10 @@ public interface VertexArranger {
  - We have a further subclass, `ContainerContentsVertexArranger`, which puts the contents *inside the vertex*, if they are not included in the planarization.
  - There is also `returnAllDarts()`, which is used for vertices not connected in the planarization.
  
-## Sizing
-
-`Dart` no longer has any idea about size.  This means that the `VertexArranger` can just concentrate on creating the Darts in the right directions, and leave 
-sizing entirely to the compaction process.  
 
 ## Future
 
-We can further extend the dart creation process to handle terminators and labels.  Again, we will be positioning these at this stage and not worrying about sizing.
+We can further extend the dart creation process to handle terminators and labels (labels are done below).  Again, we will be positioning these at this stage and not worrying about sizing.
 I don't even think we really need to worry about the `LabelCompactionStep` anymore - which also simplifies massively the SlackOptimisation process (no more ordering of slack).
 These will have `Dart`s and `DartFace`s in the Orthogonalization, and be handled in no different way to anything else.
 
@@ -184,8 +184,6 @@ distance, we end up with a stack-overflow error the next time we optimise anythi
 
 One option is that we somehow test the DAG-ness.  But, maybe this is a dead-end and too complex for now.  Let's try and solve the real problem...
 
-## Set the `Rectangular` dart-lengths.  
-
 Rectangularization is probably part of the phase where we insert the outer `DartFace`. (Which we already know how to do).  Then, we can size at this point.  This means, when considering
 `MINIMIZE` functionality, we need to do them in the correct order, so the smallest elements are the minimized first.
 
@@ -215,53 +213,34 @@ At this point, we can handle mid-point setting.    This needs to happen when we 
 in order to determine `width`, we have to use the `Slideable`s, which are actually a separate part of the process.  *Do we know all the `Slideable`s up front?  No - 
 because of label insertion.  We need to create the `Slideable` for that, in order that we can insert them later.  
 
+# 3. Re-implementing `Label`s
 
-## Extra Tests For Labels
+## Extra Tests
+
+There are a few new constraint checks we can perform during layout:
+
+ - Making sure that `Connection`s *meet their `Connected`s*.
+ - Making sure that `Label`s are rendered, and, that they touch the `Connection`s at some point.
+ 
+This should segue nicely into fixing up the labels again.  
 
 We need to make sure we test out the multiple-edges-on-a-side with labels, and then make sure the links below it are correctly centered.
 This means special handling for some labels.
 
 
-## Simplify `Rectangularization`
-
-It should be the case now that when we get to the `Rectangularization`, we know the length of every Dart.  So, can we 
-simplify further?  (Maybe not).
-
 - New Test Case:  two columns, connected so we can get fans on both sides
 - Segment position?
-- Vertex position setting (MultiCorner anyway)
 - HiddenSideVertex
-- Rename the branch to 14_.
-- AbstractTempEdgeRouteFinder2 (use generics for the edge type)
 - Add test that connections meet their connecteds
 - Simplify / Remove a load of edge ordering logic (not needed for border edges)
 - printlns
 - isStraightInPlanarization
 - protected RoutingInfo getPosition(Vertex v) { // AbstractRouteFinder
 isSeparatingConnections - ConnectedVertex
-- changes to AbstractVertexArranger etc.
 
 # JaCoCo
 
 
 ```xml
- <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>generate-code-coverage-report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
 ```

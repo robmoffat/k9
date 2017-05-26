@@ -114,6 +114,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Centering of content within a container
 - Centering / alignment of text
+- Connection Labels and overlapping 
 
 [Sprint Notes](sprint_014.md)
 
@@ -133,8 +134,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Links broken down into Ends (which can have labels?)
 - Terminators
-- Labels, generally (broken right now)
-- Connection Labels and overlapping 
 - Ports
 - Aligns (allowed arriving edges)
 - Links as “straight” rather than LEFT, RIGHT etc.
