@@ -39,7 +39,7 @@ make sure it's middle-aligned".
 **When should Rectangularization Happen?**:  Face-depth is a blunt instrument:  it means that we cannot consider multiple faces at the same time. 
 This is an issue because the solution to fixing the size in one face may lie in another.  Can we incorporate container-depth too?
 
-**Running `MINIMIZE`:  We want to be able to take a couple of faces, and run minimize over them early on, so we can see how big the thing is.
+**Running `MINIMIZE`**:  We want to be able to take a couple of faces, and run minimize over them early on, so we can see how big the thing is.
 Once you've run minimize over the faces contained within a `Rectangle`, it's then possible to set the dart sizes for that rectangle.
 
 **Running Outer-Face Insertion**:  Linked to the above, but not always.  
@@ -61,7 +61,7 @@ contents, setting the perimeter dart lengths.
 Each stage of the layout should be the creation of a mapping:
 
 - `Planarization` is about the mapping between `DiagramElement`s and `Vertex`s, `PlanariationEdge`s and `Face`s (with support of `EdgeOrdering`s around a `Vertex`).  It deals with **`Vertex` positioning** and **`Edge` insertion**.
-- `Orthogonalization` is about the mapping between `DiagramElement`s and `Dart`s and `DartFace`s.  It deals with **turns**, **vertical and horizontal Dart sections** and **elements ignored in `Planarization**.
+- `Orthogonalization` is about the mapping between `DiagramElement`s and `Dart`s and `DartFace`s.  It deals with **turns**, **vertical and horizontal `Dart` sections** and **elements ignored in `Planarization`**. (i.e. `Label`s)
 - `Compaction` is about the mapping between `DiagramElement`s and `Segment`s, with support in layout from `Slideable`s.  It deals with **sizing**.
 
 We should try and enforce this, and not allow things to pollute-through to other layers.  This turns out to be quite a hard thing to achieve, and took * a lot * of
@@ -90,7 +90,7 @@ This was a massive change.
 
 Secondly, removing `isReversed()`.  This means that the PlanarizationEdge is a bit more immutable (though sadly, not yet entirely). 
 
-## 2.  `BasicVertexArranger`
+# 2.  `BasicVertexArranger`
 
 This has been completely re-done.  Instead we now have `VertexArranger` interface, which looks like this:
 
@@ -123,7 +123,7 @@ public interface VertexArranger {
 	public boolean needsConversion(Vertex v);
 ```
 
- - `VertexArranger now returns you a `List` of `DartDirection`s to use between one `PlanarizationEdge` ending and another starting, at a `Vertex`.  This is needed any time
+ - `VertexArranger` now returns you a `List` of `DartDirection`s to use between one `PlanarizationEdge` ending and another starting, at a `Vertex`.  This is needed any time
  the `Vertex` has dimension (i.e. maybe has a label, size, content of it's own).  In this case `needsConversion()` would return `true`.
  - In order for this to work, the `MappedFlowGraphOrthBuilder` passes a `TurnInformation` object to the `VertexArranger`, which contains the details of which sides all
  the `PlanarizationEdge`s arrive on.  (Which it can easily calculate from the flow graph).
@@ -138,7 +138,7 @@ We can further extend the dart creation process to handle terminators and labels
 I don't even think we really need to worry about the `LabelCompactionStep` anymore - which also simplifies massively the SlackOptimisation process (no more ordering of slack).
 These will have `Dart`s and `DartFace`s in the Orthogonalization, and be handled in no different way to anything else.
 
-# 2.  Compact By `Rectangular`, with a set of `DartFace`s
+# 3.  Compact By `Rectangular`, with a set of `DartFace`s
 
 - Identify all contained `Rectangular` elements.  
 - Order them in smallest-first.
@@ -213,7 +213,7 @@ At this point, we can handle mid-point setting.    This needs to happen when we 
 in order to determine `width`, we have to use the `Slideable`s, which are actually a separate part of the process.  *Do we know all the `Slideable`s up front?  No - 
 because of label insertion.  We need to create the `Slideable` for that, in order that we can insert them later.  
 
-# 3. Re-implementing `Label`s
+# 4. Re-implementing `Label`s
 
 ## Extra Tests
 
@@ -238,7 +238,7 @@ This means special handling for some labels.
 - protected RoutingInfo getPosition(Vertex v) { // AbstractRouteFinder
 isSeparatingConnections - ConnectedVertex
 
-# JaCoCo
+# 5. JaCoCo
 
 
 ```xml
