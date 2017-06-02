@@ -1,8 +1,10 @@
 # 20th March 2017: Sprint 14: Labels And Centering
 
-- Centering of content within a container
 - Refactoring
 - A different approach to `VertexArranger`
+- Centering of content within a container
+- Centering Edges / Rectangularization
+- Container Labels
 
 # Thinking
 
@@ -68,6 +70,9 @@ We should try and enforce this, and not allow things to pollute-through to other
 refactoring.   
 
 ## `Dart` / `DartFace` 
+
+The big change that I wanted to effect was that `Orthogonalization` was the process of creating `Dart`s.  *No Darts should get created in other steps*.
+`Compaction` therefore is the setting of lengths.    
 
 We have fairly immutable structures for `Dart` and `DartFace`, which can only be manipulated through the `Orthogonalization`.  These don't have anything to 
 do with the elements constructed during `Planarization`.
@@ -173,20 +178,95 @@ public class HierarchicalCompactionStep extends AbstractCompactionStep {
  - Multiple `CompactionStep` interfaces handle the details at a given level, for a given `Rectangular` object.
  - However, compaction must complete for the elements contained within it first.
 
-## Changing Rectangularization
 
-The big change that I wanted to effect was that `Orthogonalization` was the process of creating `Dart`s.  *No Darts should get created in other steps*.
-`Compaction` therefore is the setting of lengths.    So, only `Compaction` need know about `Display`.   This is working fine when considering the size of `Rectangular`
-elements, however, we seem to have hit a snag setting the positions of `Segment`s which are parts of `Connection`s.  How to size these?
+# 4. Re-implementing Connection `Label`s
 
-Secondly, we're rubbing up against a new problem with `SlackOptimisation`:  if we set a maximum distance between two elements, and then also set a contradictory minimum
+## Extra Tests
+
+There are a few new constraint checks we can perform during layout:
+
+ - Making sure that `Connection`s *meet their `Connected`s*.
+ - Making sure that `Label`s are rendered, and, that they touch the `Connection`s at some point, and they don't overlap anything else.
+ 
+This should segue nicely into fixing up the labels again.  
+
+We need to make sure we test out the multiple-edges-on-a-side with labels, and then make sure the links below it are correctly centered.
+This means special handling for some labels.  Firstly, though, just getting the labels working.   The good thing now is that a `Dart` can be part of the 
+rectangle surrounding a label, and part of the connection which the label is on.  
+
+This works very nicely, and ensures that labels will always be part of connection edges.  
+
+## Problem with Labels and Templating
+
+At the moment, a label in the source looks like this:
+
+```xml
+   <toLabel id="auto:2">to</toLabel>
+```
+
+The problem with this is that we can only expand it to a single `DiagramElement` - in this case a `LabelLeafImpl`.   It would be better if we could separate out
+the XML-importing logic, so that this could work to create a `Container` and a `Leaf` to go inside it.  This way, there would be more shapes for the label to have.
+
+In order to do this, we need to change templates a bit:  they should be allowed to import elements which *could turn out to be* Kite9 elements.  For example:
+
+```xml
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'><stylesheet xmlns='http://www.kite9.org/schema/adl' href="file:/Users/robmoffat/Documents/adl-projects/kite9-visualization/target/classes/stylesheets/designer.css" xml:space="preserve "/>
+<diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram">
+  ...
+  <link drawDirection="RIGHT" id="arrow1-g2" rank="4">
+    <from reference="arrow1"/>
+    <to reference="g2"/>
+    <toLabel id="auto:2">to</toLabel>
+  </link>
+</diagram>
+</svg:svg>
+
+`<tolabel>` here is using a template, because of the stylesheet (designer.css):  
+
+```css
+toLabel, 
+fromLabel,
+context > label,
+diagram > label {
+	type: label; 
+    ...
+	sizing: minimize;
+	template: url(template.svg#connection-label)
+}
+```
+
+This is declaring that labels use a template, from template.svg:
+
+```xml
+ <template id='connection-label'>
+    <back style='type: decal; sizing: adaptive; '>
+      <svg:rect x='0' y='0' width='{x1}' height='{y1}' rx='4' ry='4' style='fill: ccc; ' />
+    </back>
+    <text style="type: label; sizing: fixed">
+      <svg:text>{{contents}}</svg:text>
+    </text>
+  </template>
+```
+
+And this now has 2 elements inside it, the `Decal` and the `Label`.  We can replace the text in at the point of 
+inserting the element, but the {x1} and {y1} need to be resolved when we have finally *sized* the label.
+
+This means templating is now two-step (for `Decal`s anyway). 
+
+# 5.  Rectangularization
+
+We're rubbing up against a new problem with `SlackOptimisation`:  if we set a maximum distance between two elements, and then also set a contradictory minimum
 distance, we end up with a stack-overflow error the next time we optimise anything.   Is there a way to fix this?
 
 One option is that we somehow test the DAG-ness.  But, maybe this is a dead-end and too complex for now.  Let's try and solve the real problem...
 
-Rectangularization is probably part of the phase where we insert the outer `DartFace`. (Which we already know how to do).  Then, we can size at this point.  This means, when considering
-`MINIMIZE` functionality, we need to do them in the correct order, so the smallest elements are the minimized first.
+When we do the 'minimization' step described above, we are not really considering the links to/from the `Rectangular` being minimized.
+When we get to the Rectangularization, it messes up, in a couple of obvious ways:
 
+ - First, simple rectangularization - we extend the extender into 'meets', and increase the length of 'meets', but it's already fixed-length.
+ - Second, we don't consider all the links arriving at the vertex before doing the minimization step.  Minimization needs to include incoming edges.
+ 
+## The Minimization Process
 
 This is now implemented as `MinimizeCompactionStep`:
 
@@ -208,35 +288,45 @@ This is now implemented as `MinimizeCompactionStep`:
 	}
 ```
 
+However, this isn't enough:  
+
+ - it's not considering the edges arriving at this Rectangular
+ - it's being processed *before* rectangularization, which causes the aforementioned stack-overflow.
+ 
+Nevertheless, it's at this point we need to consider mid-point setting.  Let's have a think about this.  Things that affect the length of a `Connected` side are:
+
+ - Terminators
+ - Labels
+ - Other glyphs that are somehow needing to be rectangularized first
+ - Leaving edges
+ - Fanning
+ 
+So, at what point *can* we set the **Minimization** process off, above, and at the same time set the mid-point of the edges?  Clearly, it has to be done after we have
+rectangularized those other elements.  
+
+   
 
 At this point, we can handle mid-point setting.    This needs to happen when we do the sub-graph insertion, that's the obvious place.  The only problem with this is that
 in order to determine `width`, we have to use the `Slideable`s, which are actually a separate part of the process.  *Do we know all the `Slideable`s up front?  No - 
 because of label insertion.  We need to create the `Slideable` for that, in order that we can insert them later.  
 
-# 4. Re-implementing `Label`s
+So, clearly, the only time we can set the mid-points is *during Rectangularization*:  it's part of the process!   What does it look like?
 
-## Extra Tests
+# 6.Container `Label`s.
 
-There are a few new constraint checks we can perform during layout:
+Currently, these aren't placed on the diagram, and for that reason, a lot of tests are failing.  A good question right now is, should we fix these, and get the
+labels working, or leave them for later?  
 
- - Making sure that `Connection`s *meet their `Connected`s*.
- - Making sure that `Label`s are rendered, and, that they touch the `Connection`s at some point.
- 
-This should segue nicely into fixing up the labels again.  
-
-We need to make sure we test out the multiple-edges-on-a-side with labels, and then make sure the links below it are correctly centered.
-This means special handling for some labels.
+Container labels have changed:  we no longer have a single label in a container, and I guess if we are going to persist with this we need to give labels a specific
+side.   This is probably not that hard to achieve, but can be left for now.    So, we'll make the simplifying assumption of a single label per container, 
+in order that we can get back to having working tests.
 
 
-- New Test Case:  two columns, connected so we can get fans on both sides
-- Segment position?
-- HiddenSideVertex
-- Add test that connections meet their connecteds
-- Simplify / Remove a load of edge ordering logic (not needed for border edges)
-- printlns
-- isStraightInPlanarization
-- protected RoutingInfo getPosition(Vertex v) { // AbstractRouteFinder
-isSeparatingConnections - ConnectedVertex
+
+
+
+
+
 
 # 5. JaCoCo
 
@@ -244,3 +334,20 @@ isSeparatingConnections - ConnectedVertex
 ```xml
 
 ```
+
+
+
+
+
+- New Test Case:  two columns, connected so we can get fans on both sides
+- Segment position?
+- HiddenSideVertex
+
+- Simplify / Remove a load of edge ordering logic (not needed for border edges)
+- printlns
+- isStraightInPlanarization
+- protected RoutingInfo getPosition(Vertex v) { // AbstractRouteFinder
+isSeparatingConnections - ConnectedVertex
+
+multiple labels per container, on different sides, different orientations.
+

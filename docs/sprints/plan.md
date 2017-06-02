@@ -122,6 +122,8 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Code coverage / deleting unused code
 
+[Sprint Notes](sprint_015.md)
+
 ### Looks
 
 - Fonts
@@ -129,6 +131,10 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Add Gridding Back in (using CSS)
 - Complete work on the designer stylesheet so we can display everything in high fidelity.
 - Control Layer
+- Further simplifications to XML (for labels)
+- Improving stylesheet intelligence (see notes in sprint 14)
+
+[Sprint Notes](sprint_016.md)
 
 ### Object Model Part 2 - Links/Ports/Terminators/Labels
 
@@ -142,7 +148,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Allow gridded containers to have links leaving them.
 
 [Sprint Notes](sprint_010.md)
-
 
 ### Project CSS/JS/SVG/Icon/Font Repository
 
