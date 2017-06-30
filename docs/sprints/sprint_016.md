@@ -7,4 +7,6 @@
 2. What exactly does 'Label' mean?  And 'Connected' for that matter?  Really, it's a choice of how they are laid out, so these are totally the wrong terms to
 use.   We can have a label with some connected elements in it, and it lays out fine, but we can't have one with labels in it, that breaks everything.  Something must
 change.  This also affects the GridPositioner. We should call it "normal" or something I guess.
+3. We need to have sensible defaults for when we see a new element in the xml. Does it have text? Can we default the rendering to text then?  Does it have children?  Can we default
+to a container rendering?
 

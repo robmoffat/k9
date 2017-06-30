@@ -124,18 +124,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_015.md)
 
-### Looks
-
-- Fonts
-- Add shadows in
-- Add Gridding Back in (using CSS)
-- Complete work on the designer stylesheet so we can display everything in high fidelity.
-- Control Layer
-- Further simplifications to XML (for labels)
-- Improving stylesheet intelligence (see notes in sprint 14)
-
-[Sprint Notes](sprint_016.md)
-
 ### Object Model Part 2 - Links/Ports/Terminators/Labels
 
 - Links broken down into Ends (which can have labels?)
@@ -148,6 +136,21 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Allow gridded containers to have links leaving them.
 
 [Sprint Notes](sprint_010.md)
+
+### Looks
+
+- Fonts
+- Add shadows in
+- Add Gridding Back in (using CSS)
+- Complete work on the designer stylesheet so we can display everything in high fidelity.
+- Control Layer
+- Further simplifications to XML (for labels)
+- Improving stylesheet intelligence (see notes in sprint 14)
+- Container Corners
+- Label positioning
+
+[Sprint Notes](sprint_016.md)
+
 
 ### Project CSS/JS/SVG/Icon/Font Repository
 
@@ -300,4 +303,5 @@ See [Sprint 13](sprint_013.md) for how we should do gridding, and allow spanning
 
 - Ports: should also be configured in stylesheet.  At the moment, we default these to the middle of each side.  That should change
 - Line-lengths: we should be able to set these.
+- 14_3 could be better
 

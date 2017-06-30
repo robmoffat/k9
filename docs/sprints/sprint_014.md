@@ -1,10 +1,10 @@
 # 20th March 2017: Sprint 14: Labels And Centering
 
-- Refactoring
-- A different approach to `VertexArranger`
+- Refactoring DONE
+- A different approach to `VertexArranger` DONE
+- Container Labels DONE
+- Centering Edges / Rectangularization DONE
 - Centering of content within a container
-- Centering Edges / Rectangularization
-- Container Labels
 
 # Thinking
 
@@ -253,66 +253,7 @@ inserting the element, but the {x1} and {y1} need to be resolved when we have fi
 
 This means templating is now two-step (for `Decal`s anyway). 
 
-# 5.  Rectangularization
-
-We're rubbing up against a new problem with `SlackOptimisation`:  if we set a maximum distance between two elements, and then also set a contradictory minimum
-distance, we end up with a stack-overflow error the next time we optimise anything.   Is there a way to fix this?
-
-One option is that we somehow test the DAG-ness.  But, maybe this is a dead-end and too complex for now.  Let's try and solve the real problem...
-
-When we do the 'minimization' step described above, we are not really considering the links to/from the `Rectangular` being minimized.
-When we get to the Rectangularization, it messes up, in a couple of obvious ways:
-
- - First, simple rectangularization - we extend the extender into 'meets', and increase the length of 'meets', but it's already fixed-length.
- - Second, we don't consider all the links arriving at the vertex before doing the minimization step.  Minimization needs to include incoming edges.
- 
-## The Minimization Process
-
-This is now implemented as `MinimizeCompactionStep`:
-
-```java
-@Override
-	public void compact(Compaction c, Rectangular r, Compactor rc) {
-		DiagramElementSizing sizing = r.getSizing();
-		
-		if (sizing == DiagramElementSizing.MINIMIZE) {
-			OPair<Slideable> lr = c.getXSlackOptimisation().getSlideablesFor(r);
-			OPair<Slideable> ud = c.getYSlackOptimisation().getSlideablesFor(r);
-			if ((lr != null) && (ud != null)) {
-				// sometimes, we might not display everything (e.g. labels)
-				log.send("Minimizing Distance "+r);
-				minimizeDistance(c.getXSlackOptimisation(), lr.getA(), lr.getB());
-				minimizeDistance(c.getYSlackOptimisation(), ud.getA(), ud.getB());
-			}			
-		}
-	}
-```
-
-However, this isn't enough:  
-
- - it's not considering the edges arriving at this Rectangular
- - it's being processed *before* rectangularization, which causes the aforementioned stack-overflow.
- 
-Nevertheless, it's at this point we need to consider mid-point setting.  Let's have a think about this.  Things that affect the length of a `Connected` side are:
-
- - Terminators
- - Labels
- - Other glyphs that are somehow needing to be rectangularized first
- - Leaving edges
- - Fanning
- 
-So, at what point *can* we set the **Minimization** process off, above, and at the same time set the mid-point of the edges?  Clearly, it has to be done after we have
-rectangularized those other elements.  
-
-   
-
-At this point, we can handle mid-point setting.    This needs to happen when we do the sub-graph insertion, that's the obvious place.  The only problem with this is that
-in order to determine `width`, we have to use the `Slideable`s, which are actually a separate part of the process.  *Do we know all the `Slideable`s up front?  No - 
-because of label insertion.  We need to create the `Slideable` for that, in order that we can insert them later.  
-
-So, clearly, the only time we can set the mid-points is *during Rectangularization*:  it's part of the process!   What does it look like?
-
-# 6.Container `Label`s.
+## Container Labels
 
 Currently, these aren't placed on the diagram, and for that reason, a lot of tests are failing.  A good question right now is, should we fix these, and get the
 labels working, or leave them for later?  
@@ -321,8 +262,387 @@ Container labels have changed:  we no longer have a single label in a container,
 side.   This is probably not that hard to achieve, but can be left for now.    So, we'll make the simplifying assumption of a single label per container, 
 in order that we can get back to having working tests.
 
+We'll come back to this later, and work out exactly how this will work.
 
+In order to implement this, I made the `LabellingEdgeConverter` (which does the Connection labels) handle conversion
+of `BorderEdge`s too.  However, it seems like this is already an issue:  putting vertices on the bottom edge of a container to support the label may screw up gridding:
+it's possible that the edge may include multiple sub-grids below it, and these of course shouldn't be affected by the label.  Hmmm.
 
+Really, container labels should be outer faces in their own right within the container, but this would mess up `SubGraphInsertionCompactionStep`, which would have to 
+know how to insert a DartFace due to a label.  (And not only that, we would have to create an outer face, and add it to some (not yet created) inner face 
+within the diagram.
+
+### How Should Container Labels Work, Ideally?
+
+1.  A Container can have as many labels as it likes.  
+2.  Labels are different from `Connected`s.  They don't get involved in the gridding.  If you want Connected's, use them?
+3.  We should be able to say that a container label occupies a certain place in the container - left, bottom, right, top etc.  (or, maybe, corners).
+4.  Labels exist *inside* the element.
+5.  Are container labels separate to the edges they are on?  If so, we need to place them inside a `DartFace` within the container.
+
+Ok so:
+
+- We'll have a separate `ContainerLabelConverter`, which will convert container labels into an outer `DartFace`, and add them to an inner `DartFace` which is part of the container.
+- Finally, (later), we need to consider how we are going to position the `Label` `DartFace`s within the container. 
+- At the moment, they're just shoved into the container like everything else.
+
+## Fanning
+
+Next part of the `BasicVertexArranger` overhaul is to support fanning again.  
+
+In order for this to work, we will need to know whether the edge needs to be fanned up, down or both.   In some future state, we will be allowing multiple edges to meet
+a single `Port` on the side of a shape.  When this happens, fanning will be complicated.  But for now it's pretty simple: just look at the index of the edge on the side
+and work it out from that:
+
+```java
+protected IncidentDart convertEdgeToIncidentDart(PlanarizationEdge e, Set<DiagramElement> cd, Orthogonalization o, Direction incident, int idx, Vertex und, int count) {
+		Vertex sideVertex = createSideVertex(cd, und);
+		Vertex externalVertex = createExternalVertex(e, und);
+		Direction fan = null;
+		if (count > 1) {
+			Direction lowerOrders = Direction.rotateClockwise(incident);
+			Direction higherOrders = Direction.rotateAntiClockwise(incident);
+
+			int lower = (int) Math.floor(((double) count / 2d) - 1d);
+			int higher = (int) Math.ceil((double) count / 2d);
+
+			fan = idx <= lower ? lowerOrders : ((idx >= higher) ? higherOrders : null);
+		}
+
+		return ec.convertPlanarizationEdge(e, o, incident, externalVertex, sideVertex, und, fan);
+	}
+```
+
+This shows how fans can go really wrong, as we have them currently:
+
+![Bad Fan](images/014_2.svg)
+
+ - Fan from 5 shouldn't have a dogleg: this happens because of the g1 end, but it's already heading down, so
+ it doesn't need it.
+
+So, the algorithm for fans is wrong, it needs to consider:
+
+ - How many connections there are on the side
+ - Whether they are turning up or down already
+ - If the connection turns up, there's no point in fanning it up as well
+ - Therefore, we only need to consider fanning on the subset of edges leaving a side which have no turns already.
+
+In order to support this, I've added an extra method to `TurnInformation`:
+
+```java
+public interface TurnInformation {
+		
+		public Edge getFirstEdgeClockwiseEdgeOnASide();
+		
+		/**
+		 * Direction of dart arriving at this vertex, after orthogonalization.
+		 */
+		public Direction getIncidentDartDirection(Edge e);
+		
+		public boolean doesEdgeHaveTurns(Edge e);
+		
+	}
+```
+
+And this now works really well. 
+
+## Flow Graph Orthogonalization: Side
+
+There is some logic which tries to get connections to arrive at opposite sides of a `Connected`. This is great when the `Connected` in
+question represents a link body, but at other times this looks bad:
+
+![Bad Linking](images/014_1.svg)
+
+Because everything is now controlled by CSS, we've lost the ability to control this.  The function in question is now in `ConnectedVertex`:
+
+```java
+	/**
+	 * Means that when we try to lay out, we arrange so that different incoming connections
+	 * are on opposite sides.
+	 */
+	public boolean isSeparatingConnections() {
+		return true;
+	}
+	
+```
+
+This is now handled by CSS:
+
+```css
+/* Arrow */
+arrow {
+	...
+	template: url(template.svg#arrow);
+	connections: separate;
+}
+```
+
+# 5.  Rectangularization
+
+## Easy Contradictions
+
+We're rubbing up against a new problem with `SlackOptimisation`:  if we set a maximum distance between two elements, and then also set a contradictory minimum
+distance, we end up with a stack-overflow error the next time we optimise anything.   Is there a way to fix this?
+
+One option is that we somehow test the DAG-ness.  But, maybe this is a dead-end and too complex for now.  Let's try and solve the real problem...
+
+## Existing Rectangularization Method
+
+1.  Pick Priority Turns First.
+ - These are ones where the extender-end is a fan turn.   Additionally, it Rs the inner end of the fan first.
+
+2.  Pick Lowest Cost Meets Next
+  - This is worked out by looking at the `meets` edge.  Each `meets` has a cost-to-increase.  The lowest cost-to-increase is first, *unless* we can calculate
+  that `meets` is so long that pushing `par` onto it won't move it.  `meets` costs look like this:
+  
+```java
+	public static final int EXTEND_IF_NEEDED = 0;
+	public static final int CONNECTION_DART_FAN = 2;	
+	public static final int VERTEX_DART_GROW = 3;
+ 	public static final int CONNECTION_DART = 4;	
+	public static final int VERTEX_DART_PRESERVE = 5;
+```
+  
+3.  If `meets` Costs Are Same, Pick the One Moving Least
+
+ - This is done by calculating the `pushOut`:
+ 
+```java
+		public boolean isRectangularizationSafe() {
+			Dart pd = getPar().getUnderlying();
+			pushOut = Math.max(0, pd.getLength() - availableMeets);
+			
+			if ((pd.isVertexLengthKnown())) {
+				if (pushOut <= 0) {
+					return true;
+				}
+			}	
+			
+			return false;
+		}
+
+		public double calcAvailableMeets() {
+			Dart md = getMeets().getUnderlying();
+			
+			double minAdd;
+			
+			if (canBoxout()) {
+				// no double-back dart
+				minAdd = 0;
+			} else {
+				// need to include cost of double-back dart
+				Direction d = getMeets().d;
+				minAdd = getMinimumDistance(c, getPost().startsWith, getExtender().startsWith, d);
+			}
+	
+			return md.getLength() - minAdd;
+		}
+		
+```
+
+4.  If all that's the same, pick the one with the lowest `link` change cost. 
+  - Not entirely sure why this would be.    I guess there is the chance that the link cost increases too.
+
+## Re-thinking Minimization / Mid-Point Setting
+
+When we do the 'minimization' step for Glyphs, we are not really considering the links to/from the `Rectangular` being minimized.
+When we get to the Rectangularization, it messes up, in a couple of obvious ways:
+
+ - First, simple rectangularization - we extend the extender into 'meets', and increase the length of 'meets', but it's already fixed-length.
+ - Second, we don't consider all the links arriving at the vertex before doing the minimization step.  Minimization needs to include incoming edges.
+ - it's not considering the edges arriving at this Rectangular
+ - it's being processed *before* rectangularization, which causes the aforementioned stack-overflow when we try to use one of the minimized edges in a 'meets'.
+ 
+So, minimization needs to occur *within* planarization:  as we go along, we need to set the maximum sizes of `Rectangular` objects, and for that, we need to consider
+all the `DartFace`s that are conneced together at the same time.
+
+## Embeddings
+
+One thing we are currently getting wrong is the we are considering a single `DartFace` at-a-time.   We know this is wrong, because there are probably other
+inner faces that could be processed at the same time.  We need to consider a whole `embedding`:  all the faces associated with an outer `DartFace` at once, so some of the stuff
+done earlier in the sprint is wrong:
+
+```java
+public interface Embedding {
+
+	/**
+	 * Used in rectangularization
+	 */
+	List<DartFace> getDartFaces();
+		
+	Set<Embedding> getInnerEmbeddings();
+	
+	public Collection<Segment> getVerticalSegments(Compaction c);
+
+	public Collection<Segment> getHorizontalSegments(Compaction c);
+	
+	public boolean isTopEmbedding();
+
+}
+```
+
+This is how `HierarchicalCompactionStep` should look:  we process a hierarchy of `Embedding`s, not `Rectangular`s:
+
+```java
+
+public class HierarchicalCompactionStep extends AbstractCompactionStep {
+
+	...
+
+	@Override
+	public void compact(Compaction c, Embedding e, Compactor rc) {
+		for (Embedding e2: e.getInnerEmbeddings()) {
+			log.send("Compacting: "+e2);
+			rc.compact(e2, c);
+		}
+	}
+	
+```
+
+## Changing Rectangularization
+
+The first, easy change was to parallelize the R18n process so that it considers all the options for all the `DartFace`s in an `Embedding` at the same time.
+Having done this, the next step is to generalize the process around setting maximum distances.   When we set these, we set a *minimum* constraint from right to left,
+and a maximum constraint from left-to-right:
+
+```java
+	public void ensureMaximumDistance(Slideable<X> left, Slideable<X> right, int maxLength) {
+		if (left.getSlackOptimisation() != right.getSlackOptimisation()) {
+			throw new Kite9ProcessingException("Mixing dimensions");
+		}
+		
+		try {
+			log.send(log.go() ? null : "Updating max distance to " + maxLength + " for " + left + " to " + right);
+			right.addMinimumBackwardConstraint(left, maxLength);
+			left.addMaximumBackwardConstraint(right, maxLength);
+		} catch (LogicException e) {
+			debugOutput(false);
+		}
+	}
+```
+
+## Safe Theory
+
+My current idea is that if all the `RectOption`s around a face are 'safe', then it's possible to set the maximum sizes of elements:
+
+```
+ ---     ----      ----    ----
+    |   |         |       |
+     ---           -------
+     
+    Safe             Not Safe
+```     
+     
+The thinking here is that, whenever you rectangularize something safe, you can always do it without increasing the `meet`s length:  the meets
+is always the longer one, unless they're the same, in which case fine.
+
+So, we just need to figure out when it is that the safe-point is reached for a face, and then set the constraints (and mid-points).  In order to process this correctly,
+we need to set the maximum length of 'par' and 'meets' before we rectangularize.   This way, they can't move against each other.
+
+## Problem with Safe Theory
+
+One problem with this is that, in order to correctly set the size of everything, we need to do sub-graph insertion before we do R18n.   However, we *rely* on 
+R18n first, because that leaves a nice, rectangular gap in the inner faces for us to insert into.   So, that's a problem.  How do we solve this?  
+
+From a cursory analysis, it seems that, with an inner face, there is always a way of processing the face with unsafe turns.  If this is correct, then we really 
+only have to worry about unsafes for outer faces, and these don't actually have embedded inner faces anyway.   Let's try this...
+
+Turns out, this is *not quite correct*.  As 16_1 shows, you can have an inner face comprised entirely of glyphs, and then the inner face will have safe turns.
+Ok, next question - is it possible that a face with embedded elements can be like this?   It doesn't seem like it should be, but how do we choose which inner face will
+contain the embedded elements?
+
+If the embeddding face is chosen with a border to the container, then it might still be true... and, for the tests we have, it seems like this is the case.  So now we have:
+
+1. `InnerFaceWithEmbeddingRectangularizer` - excludes 'safe' `RectOption`s.
+2.  Sub-Graph Insertion
+3.  Non-EmbeddedFaceRectangularizer - does everything else.
+
+## What Lengths to Set
+
+It seems like actually we have 3 lengths that are important:
+
+```
++-------
+|
+A
++- - B - +------
+|        |
+|        C
++--------+
+```
+
+- A must be set from the extender to the end of meets.  It matters whether it's concave (i.e. it comes back after meets, i.e not safe)
+- B should be set to the distance between A and C (link)
+- C is the distance from the extender to link.  
+
+* Do we really only need to set A?*  (For another day)
+
+## Testing Rectangularization (31_8 No Fan Turn)
+
+At this point, with the extra "safe theory" in place, we are getting really high-quality rectanularization going on, with minimal glyphs.  However, there seems
+like there are some error cases we're not dealing with:
+
+![Broken Line](images/014_3.svg)
+
+- Connection edges shouldn't sit alongside (or inside) rectangulars.
+
+After spending a while on this, I decided it's really hard to test for, and it's better to just eyeball it as a display test.
+
+- It would be nice to add a test to say: if there is only one connection leaving the vertex side, ensure it's leaving in the middle.  
+- Secondly, does `TurnLink` work with this stuff?  It would be nice if TurnLink only afforded a *certain number* of turns.
+- `Test31Fan` and `Test12LabelledArrows` seem to cover most of the important bases.  We should work with those to start with.
+
+## Mid-Point Setting
+
+A couple of rules-of-thumb again:
+
+- We should only set the maximum sizes on `Rectangular`s which are set to size=MINIMIZE.  Otherwise, it gets too mad to think about.
+- The hard part is therefore working out when to do this.
+- We do need to do a sweep after R18n, to make sure it's done for all `Connected`s.
+- Often, it's impossible to do this:  if we have a `Connection` on a `Container`, and there are other leavers from *within* the container, 
+that could throw the position out.
+- So, we need to make sure that mid-point setting is robust, and doesn't crash when it can't work.
+- Further, in the future, we are likely to want to do 25%, 75% or whatever positions, so this algorithm is likely to evolve.
+- Sometimes, mid-point setting will therefore *increase* the size of the diagram.  Do we allow this?
+
+In the example of 29_3, setting the mid-point for g2 would increase the size of g4.  And, we've already set the maximum size of g4.  So, sometimes it's not 
+possible to get all this right beforehand.  Problem is, we have no way of knowing (once some maximums are inserted) whether
+
+# 6. Aligning Content
+
+Aligning is actually *almost* implemented already:  we have code which exists to center pairs of Segments, but it's disabled.   This is what we need to use 
+for general centering of text, labels, everything, *since everything is segments now*.
+
+Things to align:
+
+ - Fans should be pushed next to the glyph they are from.
+ - Text generally should be aligned left, right, top, bottom or centered along any of those 4 axes.
+ - Connections should be centered within their space.
+ - Glyphs should be centered.
+ 
+The default, therefore, is to center.  
+
+## Grid Contents
+
+After hashing together a basic implementation, and adding `HorizontalAlignment` and `VerticalAlignment` enums which can be pulled out of a `Rectangular`, the first issue
+is grids.  We've been working under the assumption that the *right thing to do* was to make diagram elements *part of the grid*.  That is, when we define a diagram
+element and put it in a gridded container, it's the grid itself.  
+
+However, this now seems not-quite-right:  *labels* for example, we really need to 'float' within the grid, so that we can align them left and right.  
+
+It seems like, when we do the gridding (and set up the grid components) what we really need to do is create a set of containers for the grid, and then add to those.
+
+We *kind of* do this already, with the `GridTemporaryConnected` element.  However, I think this should become a much more first-class element, which contains our
+other elements.  
+
+In fact, this kind of super-structure really should be handled early on, at the stage where we create the diagram elements.  
+
+*However*
+
+This introduces a *secondary* problem:   what we wanted to do was to define the grid containers, because we wanted to be able to say what layout they would have,
+background, etc.  
+
+We need *both* of these mechanisms.  
 
 
 
@@ -330,13 +650,11 @@ in order that we can get back to having working tests.
 
 # 5. JaCoCo
 
-
-```xml
-
-```
+The easiest thing here was to add the EclEmma plugin to eclipse, which does excellent code coverage, and takes about 10 mins to run.
 
 
 
+- Along length - bit broken in AbstractCompactionStep
 
 
 - New Test Case:  two columns, connected so we can get fans on both sides
