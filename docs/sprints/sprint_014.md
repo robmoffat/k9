@@ -220,6 +220,7 @@ In order to do this, we need to change templates a bit:  they should be allowed 
   </link>
 </diagram>
 </svg:svg>
+```
 
 `<tolabel>` here is using a template, because of the stylesheet (designer.css):  
 
