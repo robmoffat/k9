@@ -121,3 +121,10 @@ As we've gone along, various sprints have become unnecessary:
 - This should be a nice example, with a test.
 </strike> 
 *(Removed 19/9/2016)
+
+
+### Coverage
+
+- Code coverage / deleting unused code
+
+(Removed 20/9/2017)

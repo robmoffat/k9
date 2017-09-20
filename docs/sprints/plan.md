@@ -118,25 +118,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_014.md)
 
-### Coverage
-
-- Code coverage / deleting unused code
-
-[Sprint Notes](sprint_015.md)
-
-### Object Model Part 2 - Links/Ports/Terminators/Labels
-
-- Links broken down into Ends (which can have labels?)
-- Terminators
-- Ports
-- Aligns (allowed arriving edges)
-- Links as “straight” rather than LEFT, RIGHT etc.
-- STRAIGHT directive.
-- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
-- Allow gridded containers to have links leaving them.
-
-[Sprint Notes](sprint_010.md)
-
 ### Looks
 
 - Fonts
@@ -159,6 +140,8 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - So, handle this caching.
 - We need an "Entity" element in the database, which we'll also use later for indexing the XML.
 
+[Sprint Notes](sprint_015.md)
+
 
 ### Finishing Up
 - Performance Tests
@@ -173,6 +156,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
+
 
 
 ### BPML:  Write a stylesheet for this in CSS
@@ -200,6 +184,18 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - These are going to simply take you back and forth through the diagram history and choose the “active” diagram.  Revisions will still be in numbered / timestamped order, but when you undo, you undo for everyone.  But nothing is lost.  NAILED IT.
 - You should be able to head back to any previous version in the diagram history and say, “this is the active version”.  We should have some marker record somewhere to do this.  i.e in Document.
 - All other commands end up creating a new revision, and setting the active document to that.
+
+### Object Model Part 2 - Links/Ports/Terminators/Labels
+
+- Links broken down into Ends (which can have labels?)
+- Terminators
+- Ports
+- Aligns (allowed arriving edges)
+- Links as “straight” rather than LEFT, RIGHT etc.
+- STRAIGHT directive.
+- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
+- Allow gridded containers to have links leaving them.
+
 
 ### Select Behaviour
 
@@ -251,6 +247,13 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - We want to add the zoom controls, as well as undo/redo.
 - Undo and redo are actually going to post commands to the server now.
 - Write some javascript tests for the existence of these and that you can press them and the correct actions occur.
+
+### Keys And Labels
+
+- Currently, keys are a big mess.
+- It should be possible to place labels anywhere (and everywhere) inside a container
+- It should be possible to set the alignment for the label sides.
+
 
 ### Link
 
@@ -304,4 +307,5 @@ See [Sprint 13](sprint_013.md) for how we should do gridding, and allow spanning
 - Ports: should also be configured in stylesheet.  At the moment, we default these to the middle of each side.  That should change
 - Line-lengths: we should be able to set these.
 - 14_3 could be better
+- 
 
