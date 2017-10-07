@@ -122,13 +122,9 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Fonts
 - Add shadows in
-- Add Gridding Back in (using CSS)
 - Complete work on the designer stylesheet so we can display everything in high fidelity.
 - Control Layer
-- Further simplifications to XML (for labels)
-- Improving stylesheet intelligence (see notes in sprint 14)
 - Container Corners
-- Label positioning
 
 [Sprint Notes](sprint_016.md)
 
@@ -145,6 +141,14 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 ### Finishing Up
 - Performance Tests
+
+### Other Stuff
+
+- Add Gridding Back in (using CSS)
+- Further simplifications to XML (for labels)
+- Improving stylesheet intelligence (see notes in sprint 14)
+- Label positioning
+
 
 
 ### Visualisation Engine refactoring

@@ -706,7 +706,7 @@ non-local at the same time.
 - This will contain the basic behaviours (a list of javascript files) and the stylesheets ( a list of CSS files).   
 - Behaviours will be attached to SVG elements using CSS classes, and some kind of jQuery-like way of attaching behaviours.
   
-4.  Each Bevhaviour in a separate Javascript file.
+4.  Each Behaviour in a separate Javascript file.
 
  - We could use at-rules in the stylesheet to specify these behaviours.
  - Or, we could list them all at the top of the XML document, like a regular web page.
