@@ -191,8 +191,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 ### Object Model Part 2 - Links/Ports/Terminators/Labels
 
-- Links broken down into Ends (which can have labels?)
-- Terminators
 - Ports
 - Aligns (allowed arriving edges)
 - Links as “straight” rather than LEFT, RIGHT etc.
@@ -200,6 +198,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
 - Allow gridded containers to have links leaving them.
 
+[Sprint Notes](sprint_010.md)
 
 ### Select Behaviour
 
@@ -300,16 +299,16 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 ### Grouping Fix
 
-Test 51_7 is broken because we do gridding in a funny order.  Investigate this and provide a fix.
-See [Sprint 13](sprint_013.md) for how we should do gridding, and allow spanning squares.
+
 
 [Sprint Notes](sprint_012.md)
 
-## Other Stuff
+## Known Remaining Issues
 
-
-- Ports: should also be configured in stylesheet.  At the moment, we default these to the middle of each side.  That should change
 - Line-lengths: we should be able to set these.
 - 14_3 could be better
-- 
+- Test 51_7 is broken because we do gridding in a funny order.  Investigate this and provide a fix.
+- See [Sprint 13](sprint_013.md) for how we should do gridding, and allow spanning squares.
+
+[Notes](technical_debt.md)
 

@@ -8,8 +8,8 @@
 - Control Layer ? (Not doing)
 - Terminators (DONE)
 - Grid (DONE)
-- Link middle position
 - Container Corners (DONE)
+- Link Middle Position
 
 # 1. Fonts
 
@@ -1003,7 +1003,8 @@ One upshot of this is that I'd always imagined that grid elements must be able t
 
 ## 13_10
 
-For some reason, this is massively wide.
+For some reason, this is massively wide: turned out to be an error in the mid-size checker that thought labels were the edges of the containers, and invoked the 
+mid-sizer for not-quite-the-full-width `VertexTurns`.
 
 ## Margins (12_3)
 
@@ -1057,6 +1058,86 @@ So, we use: *padding* for immediate parent and *margin* for not-a-parent (seems 
 ## End Lengths (39_3)
 
 Perhaps something due to margins, but the fans don't line up on this one now.  Turned out to be just a stylesheet issue.
+
+# Text Links / Link middle position
+
+I want to add now some tests for links connecting to `TextLine`s.  So, I created test_57_1 which is a glyph containing a couple of text lines, one of which has a link to 
+an external arrow.
+
+However, immediate problems:  
+
+- the text line is set to `maximize`, but this means links don't get aligned to the middle position.
+- because the glyph now contains a link embedded within it, it shifts the content over because the link has a minimum 
+length within the glyph.  (That's actually weird - I wasn't expecting that to be enforced... think it's because of padding).
+
+## CSS Properties for Mid-Point
+
+So, how to address this problem?   First, it would be better if the decision of whether to align-to-middle was not tied to 
+maximize/minimize.  Although, I don't know if it's necessarily going to work if we allow element maximization, we probably need a
+test for this.  So, that's number 1. We can do that and see what happens.
+
+Also, we wanted to be able to set where the mid-point should be.  e.g. should it be 50%, or somewhere else?  I think we can
+probably sort this out, right?   Actually, this functionality probably requires the correct implementation of *ports*, so 
+maybe we should leave that for now.
+
+Fine:  but what *should* Ports look like, in final form?  This is discussed in [Sprint 10](sprint_010.md).
+
+Mid-Point checking is not the same as ports, it has different applicability:  you can either use ports, of use mid-points, or use nothing.
+Probably, we need to say:  if there are ports on a side, we'll use them, and mid-point is disabled.  Otherwise, mid-point *can* be used, optionally.
+
+```css
+
+
+kite9-connection-align: 50%;  /  none;
+ 
+kite9-connection-align: 50px 20%;	/* horiz / vert align  */
+
+kite9-connection-align-horiz: 50px;
+
+kite9-connection-align: 50px 20% -50px 10%; 
+
+kite9-connection-align-top: 50px 20% -50px 10%; 
+
+
+```
+
+For now, we'll just implement the setting of 50% (as this is all we've coded).  So far, it looks ok.  However, 
+sometimes, the elements don't expand as expected:
+
+![Not as big as it should be](images/016_14.png)
+
+Here, I've set the arrow "a" to be as large as possible, but it's not filled the width at all.  This points to a prioritisation 
+problem in the rectangularization.  We also have the issue of 39_6 still outstanding.
+
+The problem with rectangularization basically boils down to the fact that we are not rectangularizing inside-to-out:  because we don't handle
+the inner elements of 57_3 first, (i.e rectangularizing the grid inside 'One', and 'One' itself, we don't know how big it is when we rectangularize it 
+against 'Two'.  
+
+Now, really, we should be able to say that since the grid is within 'One', don't worry about the fact that 'One' is set to minimize:  that's only pertinent
+when you're outside 'One'.  That would fix it.   However, we've played with this inside-outside logic before in R18N, and it's not worked.   But, I can't 
+find any notes related to it, so it seems we're going to have to revisit this.  
+
+Weirdly, as a solution, this seemed to do the job, except that now the key is often in the wrong place - on the right side instead of at the bottom.
+
+
+## Embedded Link Distance
+
+This can be solved in the stylesheet:  we need to give the cell containing the stereo/label the padding, rather than the
+actual glyph.  That way, the text-lines can be full-width, and push right to the edges.  This may screw up some other stuff, 
+we'll have to see.  
+
+How do we get the terminator to appear at the edge without screwing it all up?  Somehow, we need to be able to override the link minimum
+length at the `end` level.  However, if we do this, the space for the terminator might not get reserved properly outside the glyph.
+
+
+Remaining Broken Tests:  
+- 13-7: positioning
+- 38_2: positioning
+- 1_3: positioning?
+
+
+
+
  
 
 
