@@ -47,3 +47,7 @@ we set a constraint against all of them.
 
 
 These sound quite simple but I've been bitten before so I don't want to get into this now.  These are both highly related and should be done together.
+
+# 38_2: Positioning
+
+Ok, what's going on here? 

@@ -1130,10 +1130,9 @@ How do we get the terminator to appear at the edge without screwing it all up?  
 length at the `end` level.  However, if we do this, the space for the terminator might not get reserved properly outside the glyph.
 
 
-Remaining Broken Tests:  
-- 13-7: positioning
-- 38_2: positioning
-- 1_3: positioning?
+## 38_2: Positioning
+
+Ok, what's going on here? 
 
 
 
