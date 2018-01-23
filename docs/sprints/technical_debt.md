@@ -51,3 +51,9 @@ These sound quite simple but I've been bitten before so I don't want to get into
 # 38_2: Positioning
 
 Ok, what's going on here? 
+
+# Label Positioning
+
+Why can you only place labels on the bottom edge of a container? 
+
+ - Mainly, because 2 labels on the same edge would totally interfere with each other...

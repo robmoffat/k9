@@ -1,4 +1,4 @@
-3# 21st September 2017: Sprint 16: Looks
+# 21st September 2017: Sprint 16: Looks
 
 - Fonts (DONE)
 - Images (DONE)
@@ -1130,9 +1130,7 @@ How do we get the terminator to appear at the edge without screwing it all up?  
 length at the `end` level.  However, if we do this, the space for the terminator might not get reserved properly outside the glyph.
 
 
-## 38_2: Positioning
 
-Ok, what's going on here? 
 
 
 

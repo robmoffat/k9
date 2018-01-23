@@ -128,6 +128,18 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_016.md)
 
+### Visualisation Engine refactoring
+
+- some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
+- currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
+- Use REST, use the user token to validate requests.
+- If we’ve been refactoring carefully, this should also still work.
+- Write some tests for this.
+- Store results in the content table.
+- hard-code the stylesheets for now.
+
+[Sprint Notes](sprint_017.md)
+
 
 ### Project CSS/JS/SVG/Icon/Font Repository
 
@@ -143,24 +155,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Performance Tests
 
 ### Other Stuff
-
-- Add Gridding Back in (using CSS)
-- Further simplifications to XML (for labels)
-- Improving stylesheet intelligence (see notes in sprint 14)
-- Label positioning
-
-
-
-### Visualisation Engine refactoring
-
-- some new entities:  rendered data entity.  diagram xml entity.   (should we have a single entity for hashed content?  Might be a good idea)
-- currently, this is groovy code.  Refactor so this is a first-class Java, Spring service.
-- Use REST, use the user token to validate requests.
-- If we’ve been refactoring carefully, this should also still work.
-- Write some tests for this.
-- Store results in the content table.
-- hard-code the stylesheets for now.
-
 
 
 ### BPML:  Write a stylesheet for this in CSS
