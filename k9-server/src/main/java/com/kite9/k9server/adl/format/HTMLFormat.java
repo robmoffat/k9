@@ -5,15 +5,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
-import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.diagram.visualization.format.svg.ADLAndSVGRenderer;
-import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
 import com.google.common.io.Resources;
+import com.kite9.k9server.adl.holder.ADL;
 
 /**
  * Will eventually render the GUI, I guess?  Although, maybe we won't do it this way.
@@ -46,16 +42,16 @@ public class HTMLFormat implements Format {
 	}
 
 	@Override
-	public void handleWrite(Diagram arrangedDiagram, OutputStream baos, Stylesheet ss, boolean watermark, Integer width, Integer height) throws IOException {
-		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
-				new ADLAndSVGRenderer(width, height));
-		
-		String xml = p.render(arrangedDiagram);
-		OutputStreamWriter wos1 = new OutputStreamWriter(baos);
-		wos1.write(pageTemplateStart);
-		writeXMLScriptTag(xml, wos1);
-		wos1.write(pageTemplateEnd);
-		wos1.flush();
+	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+//		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
+//				new ADLAndSVGRenderer(width, height));
+//		
+//		String xml = p.render(arrangedDiagram);
+//		OutputStreamWriter wos1 = new OutputStreamWriter(baos);
+//		wos1.write(pageTemplateStart);
+//		writeXMLScriptTag(xml, wos1);
+//		wos1.write(pageTemplateEnd);
+//		wos1.flush();
 	}
 
 	private void writeXMLScriptTag(String xml, OutputStreamWriter wos1) throws IOException {
@@ -64,7 +60,6 @@ public class HTMLFormat implements Format {
 		wos1.write("</script>\n");
 	}
 
-	@Override
 	public String getExtension() {
 		return ".html";
 	}

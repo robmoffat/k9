@@ -1,41 +1,34 @@
 package com.kite9.k9server.adl.format;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
-import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.diagram.visualization.format.svg.SVGRenderer;
-import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
+import com.kite9.k9server.adl.holder.ADL;
+
+/**
+ * Converts ADL to SVG.
+ * 
+ * @author robmoffat
+ *
+ */
 public class SVGFormat implements Format {
 
 	public MediaType[] getMediaTypes() {
 		return new MediaType[] { MediaTypes.SVG };
 	}
 
-	public void handleWrite(Diagram arrangedDiagram, OutputStream baos, Stylesheet ss,
-			boolean watermark, Integer width, Integer height) throws IOException {
-		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
-				new SVGRenderer(width, height));
-		
-		String str = p.render(arrangedDiagram);
-		
-		if (baos != null) {
-			OutputStreamWriter wos1 = new OutputStreamWriter(baos);
-			wos1.write(str);
-			wos1.flush();
-		}
-	}
-
-
-
-	public String getExtension() {
-		return ".png";
+	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+		Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder(rr);
+		TranscoderInput in = new TranscoderInput(new StringReader(data.getAsXMLString()));
+		TranscoderOutput out = new TranscoderOutput(new OutputStreamWriter(baos));
+		transcoder.transcode(in, out);	
 	}
 	
 }

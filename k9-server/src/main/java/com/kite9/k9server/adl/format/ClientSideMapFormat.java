@@ -1,13 +1,11 @@
 package com.kite9.k9server.adl.format;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.diagram.visualization.pipeline.rendering.ClientSideMapRenderingPipeline;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
+
+import com.kite9.k9server.adl.holder.ADL;
 
 public final class ClientSideMapFormat implements Format {
 
@@ -20,15 +18,13 @@ public final class ClientSideMapFormat implements Format {
 	}
 
 	@Override
-	public void handleWrite(Diagram arrangedDiagram, OutputStream baos,
-			Stylesheet ss, boolean watermark,
-			Integer width, Integer height) throws IOException {
-		ClientSideMapRenderingPipeline mapPipeline = new ClientSideMapRenderingPipeline();
-		String theMap = mapPipeline.render(arrangedDiagram);
-		
-		
-		OutputStreamWriter wos1 = new OutputStreamWriter(baos);
-		wos1.write(theMap);
-		wos1.flush();
+	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+//		ClientSideMapRenderingPipeline mapPipeline = new ClientSideMapRenderingPipeline();
+//		String theMap = mapPipeline.render(arrangedDiagram);
+//		
+//		
+//		OutputStreamWriter wos1 = new OutputStreamWriter(baos);
+//		wos1.write(theMap);
+//		wos1.flush();
 	}
 }

@@ -1,35 +1,29 @@
 package com.kite9.k9server.adl.format;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
-import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.diagram.visualization.format.svg.ADLAndSVGRenderer;
-import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
+import com.kite9.k9server.adl.StreamHelp;
+import com.kite9.k9server.adl.holder.ADL;
+
+/**
+ * Does nothing as the output format and the input format are the same.
+ * 
+ * @author robmoffat
+ *
+ */
 public class ADLAndSVGFormat implements Format {
 
 	public MediaType[] getMediaTypes() {
 		return new MediaType[] { MediaTypes.ADL_SVG };
 	}
 
-	public void handleWrite(Diagram arrangedDiagram, OutputStream baos, Stylesheet ss,
-			boolean watermark, Integer width, Integer height) throws IOException {
-		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
-				new ADLAndSVGRenderer(width, height));
-		
-		String str = p.render(arrangedDiagram);
-		
-		if (baos != null) {
-			OutputStreamWriter wos1 = new OutputStreamWriter(baos);
-			wos1.write(str);
-			wos1.flush();
-		}
+	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+		StreamHelp.streamCopy(new StringReader(data.getAsXMLString()), new OutputStreamWriter(baos), false);
 	}
 
 

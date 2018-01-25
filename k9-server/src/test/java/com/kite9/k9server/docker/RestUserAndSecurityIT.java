@@ -26,7 +26,6 @@ import com.kite9.k9server.web.NotificationResource;
 
 public class RestUserAndSecurityIT extends AbstractRestIT {
 
-
 	@Test
 	public void testCreateUserRestAPI() throws URISyntaxException {
 		RestTemplate restTemplate = getRestTemplate();

@@ -4,8 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -15,7 +14,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.adl.arranger.DiagramArranger;
 import com.kite9.k9server.adl.format.Format;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.MediaTypes;
@@ -28,7 +26,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
 	
 	@Autowired
-	private DiagramArranger arranger;
+	private ResourceReferencer resourceReferencer;
 	
 	@Autowired
 	private FormatSupplier formatSupplier;
@@ -37,7 +35,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	 * This is the list of media types we can support writing.
 	 */
 	public ADLMessageConverter() {
-		super(MediaTypes.ADL_XML, MediaTypes.ADL_SVG, MediaType.IMAGE_PNG, MediaTypes.SVG, MediaTypes.PDF, MediaType.TEXT_HTML);
+		super(MediaTypes.ADL_SVG, MediaType.IMAGE_PNG, MediaTypes.SVG, MediaTypes.PDF, MediaType.TEXT_HTML);
 	}
 
 	@Override
@@ -50,7 +48,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	 */
 	@Override
 	protected boolean canRead(MediaType mediaType) {
-		return MediaTypes.ADL_XML.includes(mediaType) || MediaTypes.ADL_SVG.includes(mediaType);
+		return MediaTypes.SVG.includes(mediaType) || MediaTypes.ADL_SVG.includes(mediaType);
 	}
 
 	@Override
@@ -67,28 +65,20 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 	protected void writeInternal(ADL t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 		MediaType contentType = outputMessage.getHeaders().getContentType();
 		Charset charset = contentType.getCharSet() == null ? Charset.forName("UTF-8") : contentType.getCharSet();
-		String stylesheet = StylesheetProvider.DEFAULT;
 		
-		if (MediaTypes.ADL_XML.isCompatibleWith(contentType)) {
+		if (MediaTypes.ADL_SVG.isCompatibleWith(contentType)) {
 			outputMessage.getBody().write(t.getAsXMLString().getBytes(charset));
 			return;
-		}
+		} else {
+			// all other output types require conversion
 			
-		try {
-			Diagram d = t.getAsDiagram();
-			if (!t.isArranged()) {
-				// unrendered, so render.
-				d = arranger.arrangeDiagram(d, stylesheet);
+			try {
+				Format f = formatSupplier.getFormatFor(contentType);
+				f.handleWrite(t, outputMessage.getBody(), true, null, null, resourceReferencer);
+			} catch (Exception e) {
+				throw new HttpMessageNotReadableException("Caused by: "+e.getMessage(), e);
 			}
-
-			Format f = formatSupplier.getFormatFor(contentType);
-			Stylesheet ss = StylesheetProvider.getStylesheet(stylesheet);
-			
-			f.handleWrite(d, outputMessage.getBody(), ss, true, null, null);
-		} catch (Exception e) {
-			throw new HttpMessageNotReadableException("Caused by: "+e.getMessage(), e);
 		}
-		
 	}
 	
 }

@@ -7,8 +7,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,19 +20,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.adl.Glyph;
-import org.kite9.diagram.adl.Key;
-import org.kite9.diagram.adl.Symbol;
-import org.kite9.diagram.adl.Symbol.SymbolShape;
-import org.kite9.diagram.adl.TextLine;
-import org.kite9.diagram.position.DiagramRenderingInformation;
-import org.kite9.diagram.position.RectangleRenderingInformation;
-import org.kite9.framework.common.HelpMethods;
+import org.junit.runner.RunWith;
 import org.kite9.framework.common.RepositoryHelp;
 import org.kite9.framework.common.TestingHelp;
-import org.kite9.framework.serialization.XMLFragments;
-import org.kite9.framework.serialization.XMLHelper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -56,9 +49,9 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	private static final int EXPECTED_HEIGHT = 204;
 	public static final int EXPECTED_WIDTH = 264;
 
-	protected byte[] withBytesInFormat(MediaType output) throws URISyntaxException {
+	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();
-		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_XML, output);
+		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_SVG, output);
 		RequestEntity<String> data = new RequestEntity<String>(xml, headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
 		byte[] back = getRestTemplate().exchange(data);
 		return back;
@@ -67,14 +60,14 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	protected byte[] withBytesFromFile(MediaType output) throws IOException, URISyntaxException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		StreamHelp.streamCopy(this.getClass().getResourceAsStream("/test-card.xml"), baos, true);
-		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_XML, output);
+		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_SVG, output);
 		RequestEntity<String> data = new RequestEntity<String>(new String(baos.toByteArray()), headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
 		byte[] back = getRestTemplate().exchange(data);
 		return back;
 	}
 
 	@Test
-	public void testPNGRender() throws URISyntaxException, IOException {
+	public void testPNGRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaType.IMAGE_PNG);
 		BufferedImage bi = ImageIO.read(new ByteArrayInputStream(back));
 		Assert.assertEquals(EXPECTED_WIDTH, bi.getWidth());
@@ -95,7 +88,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
-	public void testPDFRender() throws URISyntaxException, IOException {
+	public void testPDFRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaTypes.PDF);
 		
 		ByteArrayInputStream bais = new ByteArrayInputStream(back);		
@@ -108,7 +101,7 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
-	public void testHTMLRender() throws URISyntaxException, IOException {
+	public void testHTMLRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaType.TEXT_HTML);
 		persistInAFile(back, "testHTMLRender", "diagram.html");
 
@@ -123,19 +116,11 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 	}
 	
 	@Test
-	public void testADLAndSVGRender() throws URISyntaxException {
+	public void testADLAndSVGRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
-		// ensure diagram has been rendered
-		Diagram d = (Diagram) new XMLHelper().fromXML(new ByteArrayInputStream(back));
-		DiagramRenderingInformation dri = d.getRenderingInformation();
-		Assert.assertEquals(EXPECTED_WIDTH, (int)  dri.getSize().getWidth());
-		Assert.assertEquals(EXPECTED_HEIGHT, (int)  dri.getSize().getHeight());	
-		
-		Glyph g1 = (Glyph) d.getContents().get(0);
-		RectangleRenderingInformation rri = (RectangleRenderingInformation) g1.getRenderingInformation();
-		XMLFragments frags = (XMLFragments) rri.getDisplayData();
-		Assert.assertEquals(2, frags.getParts().size());
-		
+		// ensure diagram hasn't been rendered
+		String out = new String(back);
+		Assert.assertTrue(out.contains("<glyph id=\"auto:0-one\" rank=\"0\">"));
 	}
 	
 	@Test
@@ -162,33 +147,24 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		return d;
 	}
 	
-	@Test
-	public void testXMLWithoutRender() throws URISyntaxException {
-		byte[] back = withBytesInFormat(MediaTypes.ADL_XML);
-		// ensure diagram has been not been rendered
-		Diagram d = (Diagram) new XMLHelper().fromXML(new ByteArrayInputStream(back));
-		DiagramRenderingInformation dri = d.getRenderingInformation();
-		Assert.assertNull(dri.getHash());
+	public String getDesignerStylesheetReference() {
+		URL u = this.getClass().getResource("/stylesheets/designer.css");
+		return "<svg:defs><svg:style type=\"text/css\"> @import url(\""+u+"\");</svg:style></svg:defs>";
 	}
 
-	public static Diagram createDiagram() {
-		Diagram d = new Diagram(HelpMethods.createList(new Glyph("stereo", "Some Label", 
-			HelpMethods.createList(
-				new TextLine("Some Text Here To Make It A Bit Wider", 
-						HelpMethods.createList(
-								new Symbol("sdfs", 'W', SymbolShape.HEXAGON)))),				
-			HelpMethods.createList(
-				new Symbol("sdfsf", 's', SymbolShape.CIRCLE),
-				new Symbol("sdfsf", 'w', SymbolShape.DIAMOND)))),
-			
-			new Key("bold", "body", 
-				HelpMethods.createList(
-					new Symbol("sdfs", 'W', SymbolShape.HEXAGON))));
-		
-		return d;
+	protected String addSVGFurniture(String xml) {
+		String prefix = "<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>";
+		String style = getDesignerStylesheetReference();
+		String suffix = "</svg:svg>";
+		xml = xml.replaceFirst("<\\?.*\\?>","");
+		String full = prefix + style + xml + suffix;
+		return full;
 	}
 	
-	public static String createDiagramXML() {
-		return new XMLHelper().toXML(createDiagram());
+	public String createDiagramXML() throws IOException {
+		StringWriter sw = new StringWriter();
+		StreamHelp.streamCopy(new InputStreamReader(this.getClass().getResourceAsStream("/test1.xml")), sw, true);
+		String theDiagram = sw.toString();
+		return addSVGFurniture(theDiagram);
 	}
 }

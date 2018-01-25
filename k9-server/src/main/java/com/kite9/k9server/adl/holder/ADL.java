@@ -1,12 +1,13 @@
 package com.kite9.k9server.adl.holder;
 
-import org.kite9.diagram.adl.Diagram;
-
+/**
+ * ADL is our description of an XML format containing SVG data with mixed-in 
+ * Kite9-namespace elements.  It is readable using the {@link org.kite9.framework.dom.ADLExtensibleDOMImplementation}.
+ * 
+ * @author robmoffat
+ *
+ */
 public interface ADL {
-
-	boolean isArranged();
-	
-	Diagram getAsDiagram();
 	
 	String getAsXMLString();
 

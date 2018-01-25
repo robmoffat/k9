@@ -1,15 +1,11 @@
 package com.kite9.k9server.adl.format;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
-import org.kite9.diagram.adl.Diagram;
-import org.kite9.diagram.visualization.display.complete.ADLBasicCompleteDisplayer;
-import org.kite9.diagram.visualization.display.complete.GriddedCompleteDisplayer;
-import org.kite9.diagram.visualization.display.style.Stylesheet;
-import org.kite9.diagram.visualization.format.pdf.PDFRenderer;
-import org.kite9.diagram.visualization.pipeline.rendering.ImageRenderingPipeline;
+import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
+
+import com.kite9.k9server.adl.holder.ADL;
 
 public final class PDFFormat implements Format {
 
@@ -17,16 +13,15 @@ public final class PDFFormat implements Format {
 		return new MediaType[] { MediaTypes.PDF };
 	}
 
-	public void handleWrite(Diagram arrangedDiagram, OutputStream baos,
-			Stylesheet ss, boolean watermark, Integer width, Integer height) throws IOException {
-		ImageRenderingPipeline<byte[]> p = new ImageRenderingPipeline<byte[]>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
-				new PDFRenderer());
-
-		byte[] bi = p.render(arrangedDiagram);
-		if (baos != null) {
-			baos.write(bi);
-			baos.flush();
-		}
+	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+//		ImageRenderingPipeline<byte[]> p = new ImageRenderingPipeline<byte[]>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
+//				new PDFRenderer());
+//
+//		byte[] bi = p.render(arrangedDiagram);
+//		if (baos != null) {
+//			baos.write(bi);
+//			baos.flush();
+//		}
 	}
 
 	public String getExtension() {

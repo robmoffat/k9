@@ -5,21 +5,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BasicFormatSupplier implements FormatSupplier {
-
-	public static final Format PDF = new PDFFormat();
-	public static final Format MAP = new ClientSideMapFormat();
-	public static final Format XML = new XMLFormat();
-	public static final Format PNG = new PNGFormat();
-	public static final Format HTML = new HTMLFormat();
-	public static final Format SVG = new SVGFormat();
-	public static final Format ADLSVG = new ADLAndSVGFormat();
-	
-	
 	
 	/**
 	 * Ordered most specific to least.
 	 */
-	public static Format[] FORMATS = new Format[] {PDF, MAP, PNG, HTML, XML, SVG, ADLSVG} ;
+	public static Format[] FORMATS = new Format[] {
+//			new PDFFormat(),
+//			new ClientSideMapFormat(),
+//			new PNGFormat(),
+			new SVGFormat(),
+			new ADLAndSVGFormat(),
+//			new HTMLFormat(),
+		} ;
 	
 	
 	@Override
