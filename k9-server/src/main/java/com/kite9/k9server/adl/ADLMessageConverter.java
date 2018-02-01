@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -24,9 +23,6 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
-	
-	@Autowired
-	private ResourceReferencer resourceReferencer;
 	
 	@Autowired
 	private FormatSupplier formatSupplier;
@@ -74,7 +70,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 			
 			try {
 				Format f = formatSupplier.getFormatFor(contentType);
-				f.handleWrite(t, outputMessage.getBody(), true, null, null, resourceReferencer);
+				f.handleWrite(t, outputMessage.getBody(), true, null, null);
 			} catch (Exception e) {
 				throw new HttpMessageNotReadableException("Caused by: "+e.getMessage(), e);
 			}

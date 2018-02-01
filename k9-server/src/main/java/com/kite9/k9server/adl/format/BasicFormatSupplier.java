@@ -12,7 +12,7 @@ public class BasicFormatSupplier implements FormatSupplier {
 	public static Format[] FORMATS = new Format[] {
 //			new PDFFormat(),
 //			new ClientSideMapFormat(),
-//			new PNGFormat(),
+			new PNGFormat(),
 			new SVGFormat(),
 			new ADLAndSVGFormat(),
 //			new HTMLFormat(),

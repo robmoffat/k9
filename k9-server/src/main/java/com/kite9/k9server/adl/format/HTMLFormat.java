@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 
-import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
 import com.google.common.io.Resources;
@@ -42,7 +41,7 @@ public class HTMLFormat implements Format {
 	}
 
 	@Override
-	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
 //		ImageRenderingPipeline<String> p = new ImageRenderingPipeline<String>(new GriddedCompleteDisplayer(new ADLBasicCompleteDisplayer(ss, watermark, false),ss),
 //				new ADLAndSVGRenderer(width, height));
 //		

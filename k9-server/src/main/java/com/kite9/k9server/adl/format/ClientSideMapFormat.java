@@ -2,7 +2,6 @@ package com.kite9.k9server.adl.format;
 
 import java.io.OutputStream;
 
-import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -18,7 +17,7 @@ public final class ClientSideMapFormat implements Format {
 	}
 
 	@Override
-	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception {
+	public void handleWrite(ADL xml, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
 //		ClientSideMapRenderingPipeline mapPipeline = new ClientSideMapRenderingPipeline();
 //		String theMap = mapPipeline.render(arrangedDiagram);
 //		

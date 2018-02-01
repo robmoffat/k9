@@ -146,7 +146,7 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
 - Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
 - So, handle this caching.
-- We need an "Entity" element in the database, which we'll also use later for indexing the XML.
+- //We need an "Entity" element in the database, which we'll also use later for indexing the XML.// Don't do this yet
 
 [Sprint Notes](sprint_015.md)
 

@@ -2,7 +2,6 @@ package com.kite9.k9server.adl.format;
 
 import java.io.OutputStream;
 
-import org.kite9.diagram.batik.format.ResourceReferencer;
 import org.springframework.http.MediaType;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -16,6 +15,6 @@ public interface Format {
 	
 	public MediaType[] getMediaTypes();
 
-	public void handleWrite(ADL input, OutputStream baos, boolean watermark, Integer width, Integer height, ResourceReferencer rr) throws Exception;
+	public void handleWrite(ADL input, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception;
 	
 }

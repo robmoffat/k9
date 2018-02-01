@@ -68,7 +68,7 @@ public interface ADL {
 }
 ```
 
-Implementation for this below.  You can initialize with either the xml or the `Diagram` object, and both getters will work:\\
+Implementation for this below.  You can initialize with either the xml or the `Diagram` object, and both getters will work:
 
 ```java
 public class ADLImpl implements ADL {
