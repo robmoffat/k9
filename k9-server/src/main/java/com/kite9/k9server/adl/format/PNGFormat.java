@@ -1,7 +1,6 @@
 package com.kite9.k9server.adl.format;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 
 import org.apache.batik.transcoder.TranscoderInput;
@@ -19,9 +18,8 @@ public class PNGFormat implements Format {
 
 	public void handleWrite(ADL adl, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
 		Kite9PNGTranscoder transcoder = new Kite9PNGTranscoder();
-		TranscoderInput in = new TranscoderInput(adl.getAsXMLString());
-		OutputStreamWriter writer = new OutputStreamWriter(baos);
-		TranscoderOutput out = new TranscoderOutput(writer);
+		TranscoderInput in = new TranscoderInput(new StringReader(adl.getAsXMLString()));
+		TranscoderOutput out = new TranscoderOutput(baos);
 		transcoder.transcode(in, out);	
 		
 	}

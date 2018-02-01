@@ -47,8 +47,8 @@ import com.kite9.k9server.adl.format.MediaTypes;
  */
 public class RestRenderingIT extends AbstractAuthenticatedIT {
 	
-	private static final int EXPECTED_HEIGHT = 204;
-	public static final int EXPECTED_WIDTH = 264;
+	private static final int EXPECTED_HEIGHT = 400;
+	public static final int EXPECTED_WIDTH = 400;
 
 	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();

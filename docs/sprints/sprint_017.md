@@ -28,5 +28,28 @@ between one SVG diagram and another.   I think inevitably we're going to have to
 
 # 2.  Fixing the Formats
 
-First thing is to get the `RestRenderingIT` working again, and that means fixing up the image formats.  Notably HTML, PDF and PNG are broken
+First thing is to get the `RestRenderingIT` working again, and that means fixing up the image formats.  Notably HTML, PDF and PNG are broken.
+
+# 3.  Foreign URLs / Mail
+
+This is a problem.  When we are loading the tests in eclipse, we are ok to create URLs which link to filesystem elements, and they
+get loaded up fine by the renderer.  However,  when we run in Docker, everything goes crazy.
+
+So, first up:  do we really need Docker?  The way I am taking things at work is to build everything into the Spring application that it needs
+(the opposite of Microservices).  Given the overhead of Docker, I feel we probably should do the same thing here, and make the *executable jar*
+the unit of deployment.
+
+There's just too much I don't know about Docker.
+
+**Aspirin** might allow me to get around this limitation.  Then, I can simplify the project and run everything in the one executable.
+This is probably a couple of hours work and will save me a lot of time.  You live and learn.
+
+This actually will solve the URL problem entirely, too.  Although ideally we should look at ways to cache URLs so that we don't 
+have to load fonts every single time we render something.
+
+
+
+
+
+
 
