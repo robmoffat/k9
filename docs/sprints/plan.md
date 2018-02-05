@@ -155,6 +155,8 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Commands should attempt to apply to the active diagram.
 - Load
 
+[Sprint Notes](sprint_015.md)
+
 ### Porting Javascript
 
 - We’re going to need a lot of the original app now.  So, we need to structure this a bit better, and use webpack / npm stuff.
