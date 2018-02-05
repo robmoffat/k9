@@ -137,29 +137,12 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - Write some tests for this.
 - Store results in the content table.
 - hard-code the stylesheets for now.
-
-[Sprint Notes](sprint_017.md)
-
-
-### Project CSS/JS/SVG/Icon/Font Repository
-
 - We need an entity in the system to hold details about registered CSS stylesheets.  We will use the public URLs of these in the XML, but the actual values will be cached in the DB to speed things up.
 - Should be an option to say “don’t update” or “update every…”, and the cache, when returning, will check and behave accordingly.
 - So, handle this caching.
 - //We need an "Entity" element in the database, which we'll also use later for indexing the XML.// Don't do this yet
 
-[Sprint Notes](sprint_015.md)
-
-
-### Finishing Up
-- Performance Tests
-
-### Other Stuff
-
-
-### BPML:  Write a stylesheet for this in CSS
-
-- Include most of the basic entities, render a diagram using it.
+[Sprint Notes](sprint_017.md)
 
 ### Command Pattern
 
@@ -182,6 +165,12 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - These are going to simply take you back and forth through the diagram history and choose the “active” diagram.  Revisions will still be in numbered / timestamped order, but when you undo, you undo for everyone.  But nothing is lost.  NAILED IT.
 - You should be able to head back to any previous version in the diagram history and say, “this is the active version”.  We should have some marker record somewhere to do this.  i.e in Document.
 - All other commands end up creating a new revision, and setting the active document to that.
+
+
+### BPML:  Write a stylesheet for this in CSS
+
+- Include most of the basic entities, render a diagram using it.
+
 
 ### Object Model Part 2 - Links/Ports/Terminators/Labels
 
