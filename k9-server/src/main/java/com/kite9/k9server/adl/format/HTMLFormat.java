@@ -51,6 +51,7 @@ public class HTMLFormat implements Format {
 //		writeXMLScriptTag(xml, wos1);
 //		wos1.write(pageTemplateEnd);
 //		wos1.flush();
+		throw new UnsupportedOperationException();		// not implemented
 	}
 
 	private void writeXMLScriptTag(String xml, OutputStreamWriter wos1) throws IOException {

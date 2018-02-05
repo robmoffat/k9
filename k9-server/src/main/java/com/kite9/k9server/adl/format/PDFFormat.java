@@ -21,6 +21,8 @@ public final class PDFFormat implements Format {
 //			baos.write(bi);
 //			baos.flush();
 //		}
+		throw new UnsupportedOperationException();		// not implemented
+
 	}
 
 	public String getExtension() {

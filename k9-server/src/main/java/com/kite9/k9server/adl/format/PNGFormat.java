@@ -17,11 +17,11 @@ public class PNGFormat implements Format {
 	}
 
 	public void handleWrite(ADL adl, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		Kite9PNGTranscoder transcoder = new Kite9PNGTranscoder();
-		TranscoderInput in = new TranscoderInput(new StringReader(adl.getAsXMLString()));
-		TranscoderOutput out = new TranscoderOutput(baos);
-		transcoder.transcode(in, out);	
-		
+//		Kite9PNGTranscoder transcoder = new Kite9PNGTranscoder();
+//		TranscoderInput in = new TranscoderInput(new StringReader(adl.getAsXMLString()));
+//		TranscoderOutput out = new TranscoderOutput(baos);
+//		transcoder.transcode(in, out);	
+		throw new UnsupportedOperationException();		// not implemented
 	}
 
 
