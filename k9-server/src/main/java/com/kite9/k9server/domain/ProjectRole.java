@@ -5,8 +5,9 @@ package com.kite9.k9server.domain;
  */
 public enum ProjectRole {
 	
-    MEMBER("M", "glyphicon-pencil", true, true, false), 
 	ADMIN("A", "glyphicon-list-alt", true, true, true), 
+	PUBLISHER("P", "publisher", true, true, false), 
+	MEMBER("M", "glyphicon-pencil", true, false, false), 
 	VIEWER("V", "glyphicon-eye-open", false, false, false);
 
     String id;

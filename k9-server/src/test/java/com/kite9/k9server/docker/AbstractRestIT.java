@@ -9,6 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.kite9.framework.logging.Kite9Log;
+import org.slf4j.Logger;
+import org.springframework.boot.logging.LogLevel;
+import org.springframework.boot.logging.LoggingSystem;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -28,6 +36,8 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RequestCallback;
@@ -35,20 +45,31 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.domain.User;
+import com.kite9.k9server.web.WebConfig;
+import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
-public class AbstractRestIT extends AbstractDockerIT {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
+public class AbstractRestIT {
 
-	protected String urlBase = "http://" + getDockerHostName()+ ":8080";
+	protected String urlBase = "http://localhost:8080";
 	public static TypeReferences.ResourceType<User> USER_RESOURCE_TYPE = new TypeReferences.ResourceType<User>() {};
 	public static TypeReferences.ResourcesType<User> USER_RESOURCES_TYPE = new TypeReferences.ResourcesType<User>() {};
 
 	public AbstractRestIT() {
 		super();
+	}
+	
+	@Before
+	public void logLevel() {
+		Kite9Log.setLogging(false);
+		LoggingSystem.get(this.getClass().getClassLoader()).setLogLevel(LoggingFilter.class.getName(), LogLevel.DEBUG);
 	}
 	
 	private MappingJackson2HttpMessageConverter getJacksonConverter(RestTemplate rt) {

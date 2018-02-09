@@ -1,0 +1,72 @@
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' 
+  xmlns="http://www.kite9.org/schema/adl"
+  xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <template id="link">
+      <contents />
+      <svg:path d="{path}" class="link" style="marker-start: {markerstart}; marker-end: {markerend}"/>
+    </template>
+    <template id='glyph'>
+      <back style='kite9-usage: decal; kite9-type: svg; '>
+        <svg:rect x='0' y='0' width='{x1}' height='{y1}' rx='8' ry='8' style='fill: grey;'  />
+      </back>
+      <svg:g class="glyph">
+        <contents />
+      </svg:g>
+    </template>
+    <template id="glyph-label-text">
+      <svg:g class="glyph-label-text">
+        <text-label style="kite9-type: text;">
+          <contents />
+        </text-label>
+      </svg:g>
+    </template>
+    
+
+    <svg:style type="text/css"> 
+      glyph {
+        kite9-type: container;
+        kite9-layout: grid; 
+        kite9-grid-size: 1 2;
+        kite9-template: url(#glyph);
+        kite9-padding: 6px 10px 6px 10px; 
+        kite9-margin: 10px;
+        kite9-connection-align: 50%;
+      }
+      
+      diagram glyph label {
+        kite9-type: container;
+        kite9-sizing: minimize;
+        kite9-template: url(#glyph-label-text);
+        kite9-occupies: 0 0 0 0;
+        kite9-vertical-align: top;
+        kite9-margin: 5px 
+      }
+      
+      link {
+        kite9-type: link;
+        kite9-template: url(#link);
+      }
+      from,
+      to {
+        kite9-type: link-end;
+        kite9-padding: 5px 5px 5px 5px; 
+      } 
+    
+    </svg:style>
+  </svg:defs>
+  
+  <diagram  id="The Diagram">
+    <glyph id="one">
+      <label id="one-label">One</label>
+    </glyph>
+    <glyph id="two">
+      <label id="two-label">Two</label>
+    </glyph>
+    <link id="link" rank="4">
+      <from reference="one" id="link-from" />
+      <to class="arrow" reference="two" id="link-to" />
+    </link>
+  </diagram>
+
+</svg:svg>

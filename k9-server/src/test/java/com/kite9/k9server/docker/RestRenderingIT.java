@@ -129,7 +129,8 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
 		// ensure diagram hasn't been rendered
 		String out = new String(back);
-		Assert.assertTrue(out.contains("<glyph id=\"auto:0-one\" rank=\"0\">"));
+		Assert.assertTrue(out.contains("id=\"auto:0-one\" rank=\"0\""));
+		Assert.assertTrue(out.contains("<glyph"));
 	}
 	
 	@Test
