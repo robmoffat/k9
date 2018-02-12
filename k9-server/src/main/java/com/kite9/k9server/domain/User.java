@@ -194,4 +194,12 @@ public class User extends AbstractLongIdEntity {
 	private <X> X checkNotNull(X possiblyNull, X original) {
 		return possiblyNull == null ? original : possiblyNull;
 	}
+
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", email=" + email + ", id=" + id + ", getLinks()=" + getLinks() + "]";
+	}
+	
+	
+	
 }

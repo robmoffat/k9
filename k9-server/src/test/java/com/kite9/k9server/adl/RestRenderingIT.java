@@ -1,4 +1,4 @@
-package com.kite9.k9server.docker;
+package com.kite9.k9server.adl;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
+import com.kite9.k9server.AbstractAuthenticatedIT;
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.MediaTypes;
 

@@ -5,10 +5,10 @@ import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.DocumentRepository;
 import com.kite9.k9server.domain.Revision;
+import com.kite9.k9server.domain.RevisionRepository;
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.repos.DocumentRepository;
-import com.kite9.k9server.repos.RevisionRepository;
 
 /**
  * This command changes the contents of a single XML element to something new.  
@@ -22,7 +22,7 @@ public class ModifyCommand extends NewRevisionCreatingCommand {
 	String oldContents;
 	String modification;
 	
-	public ModifyCommand(long docId, User author, String elementId, String oldContents, String modification) {
+	public ModifyCommand(Long docId, User author, String elementId, String oldContents, String modification) {
 		super(docId, author);
 		this.oldContents = oldContents;
 		this.modification = modification;
@@ -47,7 +47,7 @@ public class ModifyCommand extends NewRevisionCreatingCommand {
 		}
 		
 		// if ok, replace with "modification"
-		adl.getTranscoder().
+//		adl.getTranscoder().
 		
 		// save the new revision
 		Revision newRevision = createNewRevision(d, r, dr, rr, adl.getAsXMLString(), getAuthor());

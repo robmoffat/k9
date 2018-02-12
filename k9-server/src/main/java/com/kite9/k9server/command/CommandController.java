@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.DocumentRepository;
 import com.kite9.k9server.domain.Revision;
-import com.kite9.k9server.repos.DocumentRepository;
 
 /**
  * Accepts commands to the system in order to modify XML.  Contents are returned back in whatever format is

@@ -1,10 +1,10 @@
 package com.kite9.k9server.command;
 
 import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.DocumentRepository;
 import com.kite9.k9server.domain.Revision;
+import com.kite9.k9server.domain.RevisionRepository;
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.repos.DocumentRepository;
-import com.kite9.k9server.repos.RevisionRepository;
 import com.kite9.k9server.security.Hash;
 
 /**
@@ -14,7 +14,7 @@ import com.kite9.k9server.security.Hash;
  */
 public abstract class NewRevisionCreatingCommand extends AbstractCommand {
 	
-	public NewRevisionCreatingCommand(long docId, User author) {
+	public NewRevisionCreatingCommand(Long docId, User author) {
 		super(docId, author);
 	}
 

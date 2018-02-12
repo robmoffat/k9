@@ -75,10 +75,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		protected String createMessage(HttpServletRequest request, String prefix, String suffix) {
 			return request.getMethod() + " " + super.createMessage(request, prefix, suffix);
 		}
-
-		@Override
-		protected void beforeRequest(HttpServletRequest request, String message) {
-		}
 		
 	}
 	
