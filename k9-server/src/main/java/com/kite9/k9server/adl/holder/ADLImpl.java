@@ -1,13 +1,6 @@
 package com.kite9.k9server.adl.holder;
 
 import java.io.StringReader;
-import java.io.StringWriter;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.transcoder.Transcoder;
@@ -16,7 +9,13 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.kite9.framework.dom.ADLExtensibleDOMImplementation;
 import org.kite9.framework.xml.ADLDocument;
+import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Node;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+
+import com.sun.org.apache.xerces.internal.dom.DOMConfigurationImpl;
+import com.sun.org.apache.xerces.internal.impl.Constants;
 
 
 /**
@@ -49,12 +48,10 @@ public class ADLImpl implements ADL {
 
 	public static String toXMLString(Node n) {
 		try {
-			TransformerFactory factory = TransformerFactory.newInstance();
-			Transformer transformer = factory.newTransformer();
-			StringWriter sw = new StringWriter();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			transformer.transform(new DOMSource(n), new StreamResult(sw));
-			return sw.toString();
+			ADLDocument owner = (ADLDocument) (n instanceof ADLDocument ? n : n.getOwnerDocument());
+			DOMImplementationLS ls = owner.getImplementation();
+			LSSerializer ser = ls.createLSSerializer();
+			return ser.writeToString(n);
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
 		}

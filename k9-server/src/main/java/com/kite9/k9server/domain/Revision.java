@@ -17,9 +17,10 @@ public class Revision extends AbstractLongIdEntity {
 	@ManyToOne(targetEntity=Revision.class, optional=false, fetch=FetchType.LAZY)
     Document document;
     
+	@Column(columnDefinition="TEXT")
 	String inputXml;
 
-	@Column(length=32)
+	@Column(length=40)
     String diagramHash;
     
     Date dateCreated = new Date();
@@ -27,6 +28,7 @@ public class Revision extends AbstractLongIdEntity {
     @ManyToOne(targetEntity=User.class, optional=false, fetch=FetchType.LAZY)
     User author;
     
+	@Column(columnDefinition="TEXT")
     String renderedXml;
     
     @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)

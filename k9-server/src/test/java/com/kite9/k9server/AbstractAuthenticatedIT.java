@@ -9,7 +9,7 @@ import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.DocumentResource;
 import com.kite9.k9server.domain.Project;
 import com.kite9.k9server.domain.User;
 

@@ -1,13 +1,15 @@
 package com.kite9.k9server.command;
 
+import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.DocumentRepository;
-import com.kite9.k9server.domain.RevisionRepository;
+import com.kite9.k9server.domain.User;
 
 public interface Command {
 	
-	public long getDocumentId();
+	public Document getDocument();
 	
-	public Change applyCommand(Document d, DocumentRepository dr, RevisionRepository rr) throws CommandException;
+	public User getAuthor();
+		
+	public ADL applyCommand(ADL adl) throws CommandException;
 	
 }

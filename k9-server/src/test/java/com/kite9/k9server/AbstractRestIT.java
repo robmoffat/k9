@@ -1,6 +1,5 @@
 package com.kite9.k9server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,9 +34,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -48,16 +44,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.ResponseExtractor;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.domain.User;
 import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
@@ -209,7 +201,7 @@ public class AbstractRestIT {
 			Assert.fail();
 		} catch (HttpClientErrorException e) {
 			// should throw this.
-		}
+		} 
 		
 		
 	}

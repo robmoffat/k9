@@ -14,7 +14,7 @@ import org.springframework.hateoas.ResourceSupport;
  *
  */
 @MappedSuperclass
-public class AbstractLongIdEntity extends ResourceSupport {
+public class AbstractLongIdEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
