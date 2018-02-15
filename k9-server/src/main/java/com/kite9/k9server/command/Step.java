@@ -45,7 +45,7 @@ public class Step {
 			return create(c, adl, this.newState, this.insideNodeId, this.afterNodeId);
 		case CREATE_DOC:
 		default:
-			return createDoc(c, newState);
+			return createDoc(c, newState, adl);
 		}
 	}
 	
@@ -54,7 +54,10 @@ public class Step {
 		return null;
 	}
 
-	public static ADL createDoc(Command c, String newState2) {
+	public static ADL createDoc(Command c, String newState2, ADL adl) throws CommandException {
+		if (adl != null) {
+			throw new CommandException("createdoc requires empty document", c);
+		}
 		return new ADLImpl(newState2,"someuri");
 	}
 
