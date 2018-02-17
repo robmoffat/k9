@@ -20,7 +20,7 @@ public class Step {
 
 	StepType type;
 	
-	String afterNodeId;
+	String beforeNodeId;
 	String insideNodeId;
 	String nodeId;
 	boolean deep;
@@ -28,10 +28,10 @@ public class Step {
 	String existingState;
 	String newState;
 	
-	public Step(StepType type, String afterNodeId, String insideNodeId, String nodeId, String existingState, String newState) {
+	public Step(StepType type, String beforeNodeId, String insideNodeId, String nodeId, String existingState, String newState) {
 		super();
 		this.type = type;
-		this.afterNodeId = afterNodeId;
+		this.beforeNodeId = beforeNodeId;
 		this.insideNodeId = insideNodeId;
 		this.nodeId = nodeId;
 		this.existingState = existingState;
@@ -45,9 +45,9 @@ public class Step {
 		case MODIFY:
 			return modify(c, adl, this.nodeId, this.existingState, this.newState);
 		case MOVE:
-			return move(c, adl, this.nodeId, this.afterNodeId, this.insideNodeId);
+			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
 		case CREATE:
-			return create(c, adl, this.newState, this.insideNodeId, this.afterNodeId);
+			return create(c, adl, this.newState, this.insideNodeId, this.beforeNodeId);
 		case CREATE_DOC:
 		default:
 			return createDoc(c, newState, adl);
@@ -66,9 +66,36 @@ public class Step {
 		return new ADLImpl(newState2,"someuri");
 	}
 
-	private ADL move(Command c, ADL adl, String nodeId2, String afterNodeId2, String insideNodeId2) {
-		// TODO Auto-generated method stub
+	private ADL move(Command c, ADL adl, String nodeId, String beforeNodeId, String insideNodeId, String oldState) throws CommandException {
+		ensureNotNull(c, "move", "nodeId", nodeId);
+		ensureNotNull(c, "move", "oldState", oldState);
+		ensureNotNull(c, "move", "insideNodeId", insideNodeId);
 		
+		ADLDocument doc = adl.getAsDocument();
+		Element e = doc.getElementById(nodeId);
+
+		ADLDocument oDoc = adl.loadXMLDocument(oldState, adl.getUri());
+		Element o = getSingleContentElement(oDoc, c);
+
+		Element inside = doc.getElementById(insideNodeId);		
+		if (inside == null) {
+			throw new CommandException("No element for id: "+insideNodeId, c);
+		}
+		
+		compareElements(c, insideNodeId, inside, o);
+
+		
+		Element before = null;
+		if (beforeNodeId != null) {
+			before = doc.getElementById(beforeNodeId);
+			if (before == null) {
+				throw new CommandException("No element for id: "+beforeNodeId, c);
+			}
+		}
+
+		inside.insertBefore(e, before);
+		
+		return adl;		
 	}
 
 	public static void ensureNotNull(Command c, String operation, String field, Object n) throws CommandException {
@@ -109,8 +136,6 @@ public class Step {
 		// replace the old with the new
 		doc.adoptNode(n);
 		e.getParentNode().replaceChild(n, e);
-		
-		
 		
 		return adl;
 	}

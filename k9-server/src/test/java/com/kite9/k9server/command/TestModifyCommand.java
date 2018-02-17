@@ -1,5 +1,6 @@
 package com.kite9.k9server.command;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.junit.Assert;
@@ -79,44 +80,57 @@ public class TestModifyCommand {
 	
 	@Test
 	public void testCommandLifecycle() throws Exception {
-		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command1.xml"), Charset.forName("UTF-8"));
-		
-		// step 1: create
-		StepsCommand create = new StepsCommand(d, u, new Step(StepType.CREATE_DOC, null, null, null, null, xml));
-		ADL out = commandController.applyCommand(create);
-		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "1.xml", result);
-		compareXML(xml, result);
+
+		ADL out = testCreateCommand();
 		
 		// step 2: insert content (add a stereotype)
 		String before = START_SVG_DOCUMENT+ "<glyph id=\"two\"><label id=\"two-label\" /></glyph>" + END_SVG_DOCUMENT;
 		String after = START_SVG_DOCUMENT+"<glyph id=\"two\"><stereo id=\"two-stereo\" /><label id=\"two-label\" /></glyph>"+END_SVG_DOCUMENT;
-		StepsCommand modify = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
-		out = commandController.applyCommand(modify);
-		result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command2.xml"), Charset.forName("UTF-8"));
-		compareXML(expected, result);
+		out = testModifyCommand(before, after);
 		
-		// step 3: try an invalid command (state changed already)
+		// step 2b: try an invalid command (state changed already)
 		try {
-			StepsCommand modifyInvalid = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
-			out = commandController.applyCommand(modifyInvalid);
+			out = testModifyCommand(before, after);
 			Assert.fail();
 		} catch (CommandException ce) {
 			// good
 		}
 		
-		
-		
-		
-//		StepsCommand mc = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two-label", 
-//				"<label id=\"two-label\">Two</label>",
-//				"<label id=\"two-label\">Desmond</label>"));
-//		ADL out = commandController.applyCommand(mc);
-		
-		
-		//System.out.println("Change: "+change);
+		// step 3: let's move an element
+		out = testMoveCommand(after);
+
+	}
+
+	public ADL testMoveCommand(String before) throws CommandException, IOException {
+		ADL out;
+		StepsCommand move = new StepsCommand(d, u, new Step(StepType.MOVE, "two-stereo", "two", "two-label", before, null));
+		out = commandController.applyCommand(move);
+		String result = out.getAsXMLString();
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "3.xml", result);
+		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command3.xml"), Charset.forName("UTF-8"));
+		compareXML(expected3, result);
+		return out;
+	}
+
+	public ADL testModifyCommand(String before, String after) throws CommandException, IOException {
+		StepsCommand modify = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
+		ADL out = commandController.applyCommand(modify);
+		String result = out.getAsXMLString();
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
+		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command2.xml"), Charset.forName("UTF-8"));
+		compareXML(expected2, result);
+		return out;
+	}
+
+	public ADL testCreateCommand() throws IOException, CommandException {
+		// step 1: create
+		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command1.xml"), Charset.forName("UTF-8"));
+		StepsCommand create = new StepsCommand(d, u, new Step(StepType.CREATE_DOC, null, null, null, null, xml));
+		ADL out = commandController.applyCommand(create);
+		String result = out.getAsXMLString();
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "1.xml", result);
+		compareXML(xml, result);
+		return out;
 	}
 	
 	private void compareXML(String a, String b) {
