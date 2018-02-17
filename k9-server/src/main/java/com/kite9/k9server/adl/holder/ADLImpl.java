@@ -9,13 +9,10 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.kite9.framework.dom.ADLExtensibleDOMImplementation;
 import org.kite9.framework.xml.ADLDocument;
-import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
-
-import com.sun.org.apache.xerces.internal.dom.DOMConfigurationImpl;
-import com.sun.org.apache.xerces.internal.impl.Constants;
 
 
 /**
@@ -62,11 +59,11 @@ public class ADLImpl implements ADL {
 		return doc;
 	}
 
-	private ADLDocument loadXMLDocument(String xml2, String uri) {
+	public ADLDocument loadXMLDocument(String content, String uri2) {
 		DocumentFactory f = transcoder.getDocFactory();
-		StringReader sr = new StringReader(xml2);
+		StringReader sr = new StringReader(content);
 		try {
-			ADLDocument document = (ADLDocument) f.createDocument(ADLExtensibleDOMImplementation.SVG_NAMESPACE_URI, SVG12Constants.SVG_SVG_TAG, uri, sr);
+			ADLDocument document = (ADLDocument) f.createDocument(ADLExtensibleDOMImplementation.SVG_NAMESPACE_URI, SVG12Constants.SVG_SVG_TAG, uri2, sr);
 			return document;
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't load XML into DOM: ", e);

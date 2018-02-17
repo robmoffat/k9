@@ -64,10 +64,10 @@ public class CommandController {
 		
 		// commit changes
 		Revision saved = revisionRepo.save(change);
-		if (old != null) {
-			old.setNextRevision(saved);
-			revisionRepo.save(old);
-		}
+//		if (old != null) {
+//			old.setNextRevision(saved);
+//			revisionRepo.save(old);
+//		}
 		
 		d.setCurrentRevision(saved);
 		docRepo.save(d);

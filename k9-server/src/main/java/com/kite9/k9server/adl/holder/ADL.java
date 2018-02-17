@@ -17,6 +17,8 @@ public interface ADL {
 	
 	String getAsXMLString();
 	
+	ADLDocument loadXMLDocument(String content, String uri);
+	
 	ADLDocument getAsDocument();
 
 	Transcoder getTranscoder();

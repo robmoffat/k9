@@ -32,10 +32,13 @@ import com.kite9.k9server.security.user_repo.UserRepository;
 @SpringBootTest
 public class TestModifyCommand {
 	
-	public static final String EMPTY_DOCUMENT = "<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' \n" + 
-			"  xmlns=\"http://www.kite9.org/schema/adl\"\n" + 
-			"  xmlns:svg='http://www.w3.org/2000/svg'></svg:svg>";
+	public static final String END_SVG_DOCUMENT = "</svg:svg>";
 
+	public static final String NS = " xmlns=\"http://www.kite9.org/schema/adl\"\n  xmlns:svg='http://www.w3.org/2000/svg' ";
+
+	public static final String START_SVG_DOCUMENT = "<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' " + NS + ">";
+	
+	public static final String EMPTY_DOCUMENT = START_SVG_DOCUMENT + END_SVG_DOCUMENT;
 	
 	@Autowired
 	ProjectRepository projectRepository;
@@ -78,11 +81,33 @@ public class TestModifyCommand {
 	public void testCommandLifecycle() throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command1.xml"), Charset.forName("UTF-8"));
 		
+		// step 1: create
 		StepsCommand create = new StepsCommand(d, u, new Step(StepType.CREATE_DOC, null, null, null, null, xml));
 		ADL out = commandController.applyCommand(create);
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "1.xml", result);
 		compareXML(xml, result);
+		
+		// step 2: insert content (add a stereotype)
+		String before = START_SVG_DOCUMENT+ "<glyph id=\"two\"><label id=\"two-label\" /></glyph>" + END_SVG_DOCUMENT;
+		String after = START_SVG_DOCUMENT+"<glyph id=\"two\"><stereo id=\"two-stereo\" /><label id=\"two-label\" /></glyph>"+END_SVG_DOCUMENT;
+		StepsCommand modify = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
+		out = commandController.applyCommand(modify);
+		result = out.getAsXMLString();
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command2.xml"), Charset.forName("UTF-8"));
+		compareXML(expected, result);
+		
+		// step 3: try an invalid command (state changed already)
+		try {
+			StepsCommand modifyInvalid = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
+			out = commandController.applyCommand(modifyInvalid);
+			Assert.fail();
+		} catch (CommandException ce) {
+			// good
+		}
+		
+		
 		
 		
 //		StepsCommand mc = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two-label", 
