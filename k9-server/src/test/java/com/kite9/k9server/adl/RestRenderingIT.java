@@ -1,4 +1,4 @@
-package com.kite9.k9server.docker;
+package com.kite9.k9server.adl;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
+import com.kite9.k9server.AbstractAuthenticatedIT;
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.MediaTypes;
 
@@ -129,7 +130,8 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
 		// ensure diagram hasn't been rendered
 		String out = new String(back);
-		Assert.assertTrue(out.contains("<glyph id=\"auto:0-one\" rank=\"0\">"));
+		Assert.assertTrue(out.contains("id=\"auto:0-one\" rank=\"0\""));
+		Assert.assertTrue(out.contains("<glyph"));
 	}
 	
 	@Test

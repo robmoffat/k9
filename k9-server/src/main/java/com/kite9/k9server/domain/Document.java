@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -25,8 +26,8 @@ public class Document extends AbstractLongIdEntity {
 		this.project = project;
 	}
 
-//    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
-//	private Revision currentRevision = null;
+    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
+	private Revision currentRevision = null;
     
     private Date dateCreated = new Date();
     private Date lastUpdated;
@@ -50,13 +51,13 @@ public class Document extends AbstractLongIdEntity {
 		this.description = description;
 	}
 
-//	public Revision getCurrentRevision() {
-//		return currentRevision;
-//	}
-//
-//	public void setCurrentRevision(Revision currentRevision) {
-//		this.currentRevision = currentRevision;
-//	}
+	public Revision getCurrentRevision() {
+		return currentRevision;
+	}
+
+	public void setCurrentRevision(Revision currentRevision) {
+		this.currentRevision = currentRevision;
+	}
 
 	public Date getLastUpdated() {
 		return lastUpdated;

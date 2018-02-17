@@ -2,11 +2,10 @@ package com.kite9.k9server.adl.format;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 
+import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.springframework.http.MediaType;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -24,8 +23,8 @@ public class SVGFormat implements Format {
 	}
 
 	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
-		TranscoderInput in = new TranscoderInput(new StringReader(data.getAsXMLString()));
+		Transcoder transcoder = data.getTranscoder();
+		TranscoderInput in = new TranscoderInput(data.getAsDocument());
 		TranscoderOutput out = new TranscoderOutput(new OutputStreamWriter(baos));
 		transcoder.transcode(in, out);	
 	}

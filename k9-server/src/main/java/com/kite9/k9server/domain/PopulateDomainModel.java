@@ -1,13 +1,10 @@
-package com.kite9.k9server.repos;
+package com.kite9.k9server.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.Project;
-import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.user_repo.UserRepository;
 
 /**

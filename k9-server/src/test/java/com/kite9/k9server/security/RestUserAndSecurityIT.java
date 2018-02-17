@@ -1,4 +1,4 @@
-package com.kite9.k9server.docker;
+package com.kite9.k9server.security;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -17,8 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.domain.Project;
 import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.user_repo.UserController;
@@ -43,26 +45,26 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		Assert.assertNotNull(u.getApi());
 		
 		// try to create over the top
-		uOut = createUser(restTemplate, username, password, email);
-		Assert.assertEquals(HttpStatus.CONFLICT, uOut.getStatusCode());
+		try {
+			createUser(restTemplate, username, password, email);
+		} catch (HttpClientErrorException e) { 
+			Assert.assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+		}
 		
 		// retrieve the user, testing basic authentication
-		ResponseEntity<Resources<User>> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
-		Collection<User> us = uOuts.getBody().getContent();
+		Resources<User> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
+		Collection<User> us = uOuts.getContent();
 		Assert.assertEquals(1, us.size());
 		Assert.assertEquals(username, us.iterator().next().getUsername());
 		
 		// retrieve the user with the wrong password
-		uOuts = retrieveUserViaBasicAuth(restTemplate, "blah", email);
-		Assert.assertTrue(uOut.getStatusCode().is4xxClientError());
+		try {
+			retrieveUserViaBasicAuth(restTemplate, "blah", email);
+		} catch (HttpClientErrorException e) {
+			Assert.assertTrue(e.getStatusCode().is4xxClientError());
+		}
 		
-		// remove the user
-		delete(restTemplate, url, u);
-		
-		// check access is revoked
-		ResponseEntity<Void> sOut = retrieveObjectViaApiAuth(restTemplate, u, url, Void.class);
-		Assert.assertEquals(HttpStatus.UNAUTHORIZED, sOut.getStatusCode());
-
+		deleteAndCheckDeleted(restTemplate, url, u, User.class);
 	}
 	
 	@Test
@@ -84,9 +86,13 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		Assert.assertEquals("Please check your email for a message from Kite9 Support.", resp.getBody().getMessage());
 		
 		// ensure that a wrong email addresss will fail the call
-		String wrongHref = href.replace(email, "blardyblar");
-		resp = restTemplate.getForEntity(wrongHref, NotificationResource.class);
-		Assert.assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
+		try {
+			String wrongHref = href.replace(email, "blardyblar");
+			resp = restTemplate.getForEntity(wrongHref, NotificationResource.class);
+			Assert.fail();
+		} catch (HttpClientErrorException e) {
+			Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+		}
 		
 		// next, simulate the approval process
 		u.setEmail(email);
@@ -97,18 +103,21 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		Assert.assertEquals("Email validated", resp.getBody().getMessage());
 
 		// check validation flag now set
-		ResponseEntity<Resources<User>> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
-		Assert.assertEquals(HttpStatus.OK, uOuts.getStatusCode());
-		Assert.assertEquals(1, uOuts.getBody().getContent().size());
-		u = uOuts.getBody().getContent().iterator().next();
+		Resources<User> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
+		Assert.assertEquals(1, uOuts.getContent().size());
+		u = uOuts.getContent().iterator().next();
 		Assert.assertTrue(u.isEmailVerified());
 		
 		// remove the user
 		delete(restTemplate, uOut.getHeaders().getLocation().toString(), u);
 
 		// check access is revoked
-		ResponseEntity<Void> sOut = retrieveObjectViaApiAuth(restTemplate, u, url, Void.class);
-		Assert.assertEquals(HttpStatus.UNAUTHORIZED, sOut.getStatusCode());
+		try {
+			retrieveResource(restTemplate, u, url, Void.class);
+			Assert.fail();
+		} catch (HttpClientErrorException e) {
+			Assert.assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());
+		}
 	}
 
 	protected String generateResponseUrl(String email, String code, String path) {
@@ -159,8 +168,12 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		Assert.assertEquals(HttpStatus.OK, cOut.getStatusCode());
 		
 		// check that the code no longer works.
-		cOut = restTemplate.postForEntity(postUrl, in, NotificationResource.class);
-		Assert.assertEquals(HttpStatus.BAD_REQUEST, cOut.getStatusCode());
+		try {
+			cOut = restTemplate.postForEntity(postUrl, in, NotificationResource.class);
+			Assert.fail();
+		} catch (HttpClientErrorException e) {
+			Assert.assertEquals(HttpStatus.BAD_REQUEST, e.getStatusCode());
+		}
 		
 		// check that we can log in.
 		ResponseEntity<String> s = formLogin(restTemplate, email, newPassword);
@@ -208,9 +221,13 @@ public class RestUserAndSecurityIT extends AbstractRestIT {
 		Assert.assertEquals("Test Project", pGet.getBody().getTitle());
 	
 		// try with "wrong" cookie
-		String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
-		pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), wrongCookie, "", HttpMethod.GET, Project.class);
-		Assert.assertTrue(pGet.getStatusCode().is4xxClientError());
+		try {
+			String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
+			pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), wrongCookie, "", HttpMethod.GET, Project.class);
+			Assert.fail();
+		} catch (HttpClientErrorException e) {
+			Assert.assertTrue(e.getStatusCode().is4xxClientError());
+		}
 		
 		// tidy up: delete project
 		delete(restTemplate, projOut.getHeaders().getLocation().toString(), uOut.getBody().getContent());

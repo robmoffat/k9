@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import com.kite9.k9server.security.Hash;
 
 @Entity
-public class User extends AbstractLongIdEntity {
+public class User2 extends AbstractLongIdEntity {
 
 	/**
 	 * Users can call themselves anything.  We'll use email address to log in.
@@ -39,7 +39,7 @@ public class User extends AbstractLongIdEntity {
 	 * This cannot be set externally.
 	 */
 	@Column(length=10, nullable=false)
-	private String salt = User.createNewSalt();
+	private String salt = User2.createNewSalt();
 	
 	/**
 	 * Can be set to expired if the user is deleted, but still has foreign-key references remaining.
@@ -58,10 +58,10 @@ public class User extends AbstractLongIdEntity {
 	private boolean emailable = true;
 	private boolean emailVerified=false;
 
-	public User() {
+	public User2() {
 	}
 	
-	public User(String username, String password, String email) {
+	public User2(String username, String password, String email) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -88,7 +88,7 @@ public class User extends AbstractLongIdEntity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		User2 other = (User2) obj;
 		if (username == null) {
 			if (other.username != null)
 				return false;
@@ -177,7 +177,7 @@ public class User extends AbstractLongIdEntity {
 		this.salt = salt;
 	}
 
-	public void update(User newUser) {
+	public void update(User2 newUser) {
 		this.emailable = newUser.emailable;
 		this.emailVerified = email.equals(newUser.getEmail());
 		this.email = newUser.getEmail();

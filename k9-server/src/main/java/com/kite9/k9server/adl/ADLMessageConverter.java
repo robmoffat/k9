@@ -54,7 +54,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL>{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
 		StreamHelp.streamCopy(inputMessage.getBody(), baos, true);
 		String s = baos.toString(charset.name());
-		return new ADLImpl(s, mt);
+		return new ADLImpl(s, "someurl");
 	}
 
 	@Override

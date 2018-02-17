@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,7 @@ public class RenderingController {
 	@RequestMapping(path="/api/renderer/test")
 	public @ResponseBody ADL testCard(@RequestHeader HttpHeaders headers) throws IOException {
 		MediaType expected = headers.getAccept().get(0);
-		String xml = Resources.toString(this.getClass().getResource("/test-card.xml"), Charset.defaultCharset());
+		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test-card.xml"), Charset.defaultCharset());
 		return new ADLImpl(xml, expected);
 	}
 	

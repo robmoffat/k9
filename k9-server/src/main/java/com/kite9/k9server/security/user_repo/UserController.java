@@ -3,30 +3,28 @@ package com.kite9.k9server.security.user_repo;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import javax.mail.Message.RecipientType;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.io.Resources;
 import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.Hash;
 import com.kite9.k9server.security.auth.WebSecurityConfig;
@@ -58,12 +56,15 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	public static final String PASSWORD_RESET_FORM_URL = "/password-reset-form";
 	public static final String PASSWORD_RESET_REQUEST_URL = "/password-reset-request";
 	
+	@Value("${kite9.mail.from-address:support@kite9.com}")
+	String fromAddress;
+	
 	@Autowired
 	public UserController(UserRepository ur) throws IOException {
 		this.userRepository = ur;
-		emailValidationRequestTemplate = Resources.toString(this.getClass().getResource("/email-validation-request.txt"), Charset.defaultCharset());
-		passwordResetRequesTemplate = Resources.toString(this.getClass().getResource("/password-reset-request.txt"), Charset.defaultCharset());
-		passwordResetForm = Resources.toString(this.getClass().getResource("/password-reset-form.txt"), Charset.defaultCharset());
+		emailValidationRequestTemplate = StreamUtils.copyToString(this.getClass().getResourceAsStream("/email-validation-request.txt"), Charset.defaultCharset());
+		passwordResetRequesTemplate = StreamUtils.copyToString(this.getClass().getResourceAsStream("/password-reset-request.txt"), Charset.defaultCharset());
+		passwordResetForm = StreamUtils.copyToString(this.getClass().getResourceAsStream("/password-reset-form.txt"), Charset.defaultCharset());
 	}
 	
 	/**
@@ -81,7 +82,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	}
 	
 	@Autowired
-    private JavaMailSender mailSender;
+    private MailSender mailSender;
 
 	/**
 	 * Sends an email validation request.
@@ -177,20 +178,16 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	 * Sends a generic email to the user, containing a URL to click on.
 	 */
 	private NotificationResource sendTemplatedEmail(User u, String responseUrl, String template, String subject) {
-		MimeMessagePreparator preparator = new MimeMessagePreparator() {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(u.getEmail());
+		message.setFrom(fromAddress);
+		message.setSubject(subject);
+		message.setText((template.replace("{username}", u.getUsername()) + responseUrl));
 
-            public void prepare(MimeMessage mimeMessage) throws Exception {
-                mimeMessage.setRecipient(RecipientType.TO, new InternetAddress(u.getEmail()));
-                mimeMessage.setFrom(new InternetAddress("support@kite9.com"));
-                mimeMessage.setSubject(subject);
-				mimeMessage.setText(template.replace("{username}", u.getUsername()) + responseUrl);
-            }
-        };
-        
-        mailSender.send(preparator);
-        
-        LOG.info("Emailed "+u.getEmail()+" with url: "+responseUrl);
-	
+		mailSender.send(message);
+
+		LOG.info("Emailed " + u.getEmail() + " with url: " + responseUrl);
+
 		return new NotificationResource("Please check your email for a message from Kite9 Support.");
 	}
 	

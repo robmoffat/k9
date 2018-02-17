@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<svg:svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.kite9.org/schema/adl">
+  
+  <diagram id="The Diagram">
+    <glyph id="one">
+      <label id="one-label">One</label>
+    </glyph>
+    
+    <link id="link" rank="4">
+      <from reference="one" id="link-from"/>
+      <to class="arrow" reference="two" id="link-to"/>
+    </link>
+  </diagram>
+
+</svg:svg>

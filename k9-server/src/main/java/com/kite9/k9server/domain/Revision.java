@@ -17,15 +17,10 @@ public class Revision extends AbstractLongIdEntity {
 	@ManyToOne(targetEntity=Revision.class, optional=false, fetch=FetchType.LAZY)
     Document document;
     
-    /**
-     * xml defining the diagram (input)
-     */
-	String diagramXml;
+	@Column(columnDefinition="TEXT")
+	String inputXml;
 
-	/**
-     * hash of the xml.
-     */
-	@Column(length=32)
+	@Column(length=40)
     String diagramHash;
     
     Date dateCreated = new Date();
@@ -33,8 +28,78 @@ public class Revision extends AbstractLongIdEntity {
     @ManyToOne(targetEntity=User.class, optional=false, fetch=FetchType.LAZY)
     User author;
     
-    /**
-     * XML of the (rendered) diagram.
-     */
+	@Column(columnDefinition="TEXT")
     String renderedXml;
+    
+    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
+    Revision previousRevision;
+    
+    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
+    Revision nextRevision;
+
+	public Document getDocument() {
+		return document;
+	}
+
+	public void setDocument(Document document) {
+		this.document = document;
+	}
+
+	public String getInputXml() {
+		return inputXml;
+	}
+
+	public void setInputXml(String inputXml) {
+		this.inputXml = inputXml;
+	}
+
+	public String getDiagramHash() {
+		return diagramHash;
+	}
+
+	public void setDiagramHash(String diagramHash) {
+		this.diagramHash = diagramHash;
+	}
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	public String getRenderedXml() {
+		return renderedXml;
+	}
+
+	public void setRenderedXml(String renderedXml) {
+		this.renderedXml = renderedXml;
+	}
+
+	public Revision getPreviousRevision() {
+		return previousRevision;
+	}
+
+	public void setPreviousRevision(Revision previousRevision) {
+		this.previousRevision = previousRevision;
+	}
+
+	public Revision getNextRevision() {
+		return nextRevision;
+	}
+
+	public void setNextRevision(Revision nextRevision) {
+		this.nextRevision = nextRevision;
+	}
+    
+    
 }

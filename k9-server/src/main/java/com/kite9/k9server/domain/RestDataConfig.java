@@ -1,4 +1,4 @@
-package com.kite9.k9server.repos;
+package com.kite9.k9server.domain;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
