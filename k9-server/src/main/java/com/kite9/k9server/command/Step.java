@@ -41,22 +41,15 @@ public class Step {
 	public ADL apply(Command c, ADL adl) throws CommandException {
 		switch (this.type) {
 		case DELETE:
-			return delete(c, adl, this.nodeId);
+			return delete(c, adl, this.nodeId, this.existingState);
 		case MODIFY:
 			return modify(c, adl, this.nodeId, this.existingState, this.newState);
 		case MOVE:
 			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
-		case CREATE:
-			return create(c, adl, this.newState, this.insideNodeId, this.beforeNodeId);
 		case CREATE_DOC:
 		default:
 			return createDoc(c, newState, adl);
 		}
-	}
-	
-	public static ADL create(Command c, ADL adl, String ns, String inside, String after) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public static ADL createDoc(Command c, String newState2, ADL adl) throws CommandException {
@@ -94,6 +87,7 @@ public class Step {
 		}
 
 		inside.insertBefore(e, before);
+		LOG.info("Processed move of "+nodeId);
 		
 		return adl;		
 	}
@@ -104,15 +98,22 @@ public class Step {
 		}
 	}
 	
-	public static ADL delete(Command c, ADL adl, String nodeId) throws CommandException {
+	public static ADL delete(Command c, ADL adl, String nodeId, String oldState) throws CommandException {
 		ensureNotNull(c, "delete", "nodeId", nodeId);
+		ensureNotNull(c, "delete", "oldState", oldState);
 		
 		ADLDocument doc = adl.getAsDocument();
 		Element e = doc.getElementById(nodeId);
+		
+		ADLDocument oDoc = adl.loadXMLDocument(oldState, adl.getUri());
+		Element o = getSingleContentElement(oDoc, c);
+		compareElements(c, nodeId, e, o);
+		
 		Node parent = e.getParentNode();
 		parent.removeChild(e);
 		
 		LOG.info("Processed delete of "+nodeId);
+		return adl;
 	}
 	
 	public static ADL modify(Command c, ADL adl, String nodeId, String oldState, String newState) throws CommandException {
@@ -136,6 +137,9 @@ public class Step {
 		// replace the old with the new
 		doc.adoptNode(n);
 		e.getParentNode().replaceChild(n, e);
+		
+		LOG.info("Processed modify of "+nodeId);
+
 		
 		return adl;
 	}

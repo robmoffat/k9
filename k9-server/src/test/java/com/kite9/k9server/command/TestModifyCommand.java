@@ -1,6 +1,7 @@
 package com.kite9.k9server.command;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.junit.Assert;
@@ -26,6 +27,7 @@ import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.DocumentRepository;
 import com.kite9.k9server.domain.Project;
 import com.kite9.k9server.domain.ProjectRepository;
+import com.kite9.k9server.domain.RevisionRepository;
 import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.user_repo.UserRepository;
 
@@ -53,6 +55,9 @@ public class TestModifyCommand {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	RevisionRepository revisionRepository;
+	
 	@MockBean
 	MailSender mailSender;
 	
@@ -78,6 +83,11 @@ public class TestModifyCommand {
 		}
 	}
 	
+	public String getURI() {
+		URL u = this.getClass().getResource("/designer-server.css");
+		return u.toString();
+	}
+	
 	@Test
 	public void testCommandLifecycle() throws Exception {
 
@@ -96,9 +106,24 @@ public class TestModifyCommand {
 			// good
 		}
 		
-		// step 3: let's move an element
 		out = testMoveCommand(after);
+		out = testDeleteCommand();
 
+		// make sure we have the correct number of revisions
+		Assert.assertEquals(4, revisionRepository.count());
+		
+	}
+	
+	public ADL testDeleteCommand() throws CommandException, IOException {
+		ADL out;
+		String oldState = START_SVG_DOCUMENT + "<glyph id=\"two\"><label id=\"two-label\">Two</label><stereo id=\"two-stereo\"/></glyph>" + END_SVG_DOCUMENT;
+		StepsCommand delete = new StepsCommand(d, u, new Step(StepType.DELETE, null, null, "two", oldState, null));
+		out = commandController.applyCommand(delete);
+		String result = out.getAsXMLString();
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "4.xml", result);
+		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command4.xml"), Charset.forName("UTF-8"));
+		compareXML(expected4, result);
+		return out;
 	}
 
 	public ADL testMoveCommand(String before) throws CommandException, IOException {
