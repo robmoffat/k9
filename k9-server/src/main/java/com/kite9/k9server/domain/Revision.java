@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Revision extends AbstractLongIdEntity {
 
-	@ManyToOne(targetEntity=Revision.class, optional=false, fetch=FetchType.LAZY)
+	@ManyToOne(targetEntity=Document.class, optional=false)
     Document document;
     
 	@Column(columnDefinition="TEXT")

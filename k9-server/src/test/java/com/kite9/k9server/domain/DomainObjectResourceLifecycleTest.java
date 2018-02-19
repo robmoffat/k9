@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import com.kite9.k9server.AbstractAuthenticatedIT;
 import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -43,11 +42,14 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	}
 	
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
-		RevisionResource r = new RevisionResource(forDocument.getLink(Link.REL_SELF).getHref(), "someXML", "abc123", new Date(), userUrl, "renderedXML", null, null);  
+		String doc = forDocument.getLink(Link.REL_SELF).getHref();
+		RevisionResource r = new RevisionResource(doc, "someXML", "abc123", new Date(), userUrl, "renderedXML", null, null);  
 		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(revisionsUrl));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
-		Assert.assertEquals(r, rOut.getBody());
+		Assert.assertEquals("someXML", rOut.getBody().inputXml);
+		Assert.assertEquals("renderedXML", rOut.getBody().renderedXml);
+		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
 		return rOut.getBody();
 		
 	}
