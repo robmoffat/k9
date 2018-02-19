@@ -38,7 +38,7 @@ public class Project extends AbstractLongIdEntity {
 		this.stub = stub;
 	}
 	
-	static String createRandomString() {
+	public static String createRandomString() {
 		SecureRandom random = new SecureRandom();
 		return new BigInteger(130, random).toString(32);
 	}

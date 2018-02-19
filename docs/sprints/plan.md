@@ -157,10 +157,12 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 [Sprint Notes](sprint_015.md)
 
-### Porting Javascript
+### Editor
 
 - We’re going to need a lot of the original app now.  So, we need to structure this a bit better, and use webpack / npm stuff.
 - Add in a javascript testing framework.
+
+[Sprint Notes](sprint_018.md)
 
 ### Undo / Redo Commands
 

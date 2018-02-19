@@ -52,8 +52,7 @@ public class CommandController {
 		createNewRevision(d, currentRevision, adl.getAsXMLString(), input.getAuthor());
 		return adl;
 	}
-	
-	
+		
 	public Revision createNewRevision(Document d, Revision old, String newXml, User author) {
 		Revision change = new Revision();
 		change.setAuthor(author);

@@ -24,10 +24,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kite9.framework.common.RepositoryHelp;
 import org.kite9.framework.common.TestingHelp;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -36,6 +38,7 @@ import org.xml.sax.SAXException;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfReader;
 import com.kite9.k9server.AbstractAuthenticatedIT;
+import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.MediaTypes;
 
@@ -46,23 +49,24 @@ import com.kite9.k9server.adl.format.MediaTypes;
  * @author robmoffat
  *
  */
-public class RestRenderingIT extends AbstractAuthenticatedIT {
+public class RestRenderingIT extends AbstractUserBasedTest {
 	
 	private static final int EXPECTED_HEIGHT = 400;
 	public static final int EXPECTED_WIDTH = 400;
 
 	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();
-		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_SVG, output);
-		RequestEntity<String> data = new RequestEntity<String>(xml, headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
-		byte[] back = getRestTemplate().exchange(data);
-		return back;
+		HttpHeaders headers = createKite9AuthHeaders(u.api, MediaTypes.ADL_SVG, output);
+		HttpEntity<String> postBody = new HttpEntity<String>(xml, headers);
+		
+		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
+		return back.getBody();
 	}
 	
 	protected byte[] withBytesFromFile(MediaType output) throws IOException, URISyntaxException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		StreamHelp.streamCopy(this.getClass().getResourceAsStream("/test-card.xml"), baos, true);
-		HttpHeaders headers = createKite9AuthHeaders(u.getApi(), MediaTypes.ADL_SVG, output);
+		HttpHeaders headers = createKite9AuthHeaders(u.api, MediaTypes.ADL_SVG, output);
 		RequestEntity<String> data = new RequestEntity<String>(new String(baos.toByteArray()), headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
 		byte[] back = getRestTemplate().exchange(data);
 		return back;
@@ -109,7 +113,6 @@ public class RestRenderingIT extends AbstractAuthenticatedIT {
 		Assert.assertEquals(EXPECTED_HEIGHT, (int) rect.getHeight());
 	}
 	
-	@Ignore("Sprint 17: Broken HTML format right now")
 	@Test
 	public void testHTMLRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaType.TEXT_HTML);

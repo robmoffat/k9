@@ -7,6 +7,8 @@ import javax.persistence.MappedSuperclass;
 
 import org.springframework.hateoas.ResourceSupport;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Since all K9 entities are keyed by a long id, this is abstracted to here.
  * 
@@ -20,11 +22,11 @@ public class AbstractLongIdEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	Long id;
 
-	public void setInternalId(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	} 
 
-	public Long getInternalId() {
+	public Long getId() {
 		return id;
 	}
 

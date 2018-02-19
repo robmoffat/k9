@@ -37,6 +37,10 @@ public class Revision extends AbstractLongIdEntity {
     @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
     Revision nextRevision;
 
+	public Revision() {
+		super();
+	}
+
 	public Document getDocument() {
 		return document;
 	}

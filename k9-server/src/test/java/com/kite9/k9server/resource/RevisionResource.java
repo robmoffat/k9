@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.resource;
 
 import java.util.Date;
 
@@ -6,14 +6,14 @@ import org.springframework.hateoas.ResourceSupport;
 
 public class RevisionResource extends ResourceSupport {
 
-    String document;
-	String inputXml;
-    String diagramHash;
-    Date dateCreated = new Date();
-    String author;
-    String renderedXml;
-    String previousRevision;
-    String nextRevision;
+	public String document;
+	public String inputXml;
+	public String diagramHash;
+	public Date dateCreated = new Date();
+	public String author;
+	public String renderedXml;
+	public String previousRevision;
+	public String nextRevision;
     
 	public RevisionResource() {
 		super();

@@ -13,8 +13,12 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
+import com.kite9.k9server.AbstractUserBasedTest;
+import com.kite9.k9server.resource.DocumentResource;
+import com.kite9.k9server.resource.ProjectResource;
+import com.kite9.k9server.resource.RevisionResource;
 
-public class DomainObjectResourceLifecycleTest extends AbstractAuthenticatedIT {
+public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	
 	protected String documentsUrl = urlBase + "/api/documents";
 	protected String projectUrl = urlBase + "/api/projects";
@@ -40,7 +44,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractAuthenticatedIT {
 	
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
 		RevisionResource r = new RevisionResource(forDocument.getLink(Link.REL_SELF).getHref(), "someXML", "abc123", new Date(), userUrl, "renderedXML", null, null);  
-		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createKite9AuthHeaders(u.getApi()), HttpMethod.POST, new URI(revisionsUrl));
+		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(revisionsUrl));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
 		Assert.assertEquals(r, rOut.getBody());
@@ -50,7 +54,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractAuthenticatedIT {
 	
 	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
 		DocumentResource d = new DocumentResource("My Document", "Some name for a document", forProject.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createKite9AuthHeaders(u.getApi()), HttpMethod.POST, new URI(documentsUrl));
+		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(documentsUrl));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
 		Assert.assertEquals(d, dOut.getBody());
@@ -59,7 +63,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractAuthenticatedIT {
 
 	public ProjectResource createAProjectResource() throws URISyntaxException {
 		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp2", "");
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders(u.getApi()), HttpMethod.POST, new URI(projectUrl));
+		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(projectUrl));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertEquals(pIn, pOut.getBody());
