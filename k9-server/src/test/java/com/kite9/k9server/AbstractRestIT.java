@@ -1,5 +1,6 @@
 package com.kite9.k9server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,15 +27,21 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.MailSender;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -67,17 +74,7 @@ public class AbstractRestIT {
 		Kite9Log.setLogging(false);
 		LoggingSystem.get(this.getClass().getClassLoader()).setLogLevel(LoggingFilter.class.getName(), LogLevel.DEBUG);
 	}
-	
-//	private MappingJackson2HttpMessageConverter getJacksonConverter(RestTemplate rt) {
-//		for (HttpMessageConverter<?> c : rt.getMessageConverters()) {
-//			if (c instanceof MappingJackson2HttpMessageConverter) {
-//				return (MappingJackson2HttpMessageConverter) c;
-//			}
-//		}
-//		
-//		throw new RuntimeException("Couldn't find Jackson converter!");
-//	}
-	
+
 	public static MappingJackson2HttpMessageConverter getHALMessageConverter(){
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    objectMapper.registerModule(new Jackson2HalModule());
@@ -95,6 +92,28 @@ public class AbstractRestIT {
 	    return halConverter;
 	}
 	
+	public static AbstractHttpMessageConverter<byte[]> getByteConverter() {
+		
+		return new AbstractHttpMessageConverter<byte[]>(MediaType.ALL) {
+
+			@Override
+			protected boolean supports(Class<?> clazz) {
+				return (clazz.equals(byte[].class));
+			}
+
+			@Override
+			protected byte[] readInternal(Class<? extends byte[]> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+				return StreamUtils.copyToByteArray(inputMessage.getBody());
+			}
+
+			@Override
+			protected void writeInternal(byte[] t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+				StreamUtils.copy(t, outputMessage.getBody());
+			}
+		};
+		
+	}
+	
 	/**
 	 * Provides a REST Template that supports HAL and logging.
 	 */
@@ -109,7 +128,7 @@ public class AbstractRestIT {
 		SimpleLog l = new SimpleLog("TEST");
 		l.setLevel(SimpleLog.LOG_LEVEL_DEBUG);
 		
-		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(adlMessageConverter, getHALMessageConverter()).build();
+		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(getByteConverter(), getHALMessageConverter()).build();
 		
 		return template;
 	}
