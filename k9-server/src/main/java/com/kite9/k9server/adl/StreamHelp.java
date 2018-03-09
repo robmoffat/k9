@@ -33,6 +33,7 @@ public class StreamHelp {
 				fos.write(buffer, 0, amt);
 				amt = zis.read(buffer);
 			}
+			fos.flush();
 		} finally {
 			try {
 				if (closeOs)

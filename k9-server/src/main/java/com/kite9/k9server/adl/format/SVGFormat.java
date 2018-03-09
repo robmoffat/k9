@@ -2,13 +2,11 @@ package com.kite9.k9server.adl.format;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 
-import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.TranscoderOutput;
 import org.springframework.http.MediaType;
 
-import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.StreamHelp;
 
 /**
  * Converts ADL to SVG.
@@ -22,11 +20,8 @@ public class SVGFormat implements Format {
 		return new MediaType[] { MediaTypes.SVG };
 	}
 
-	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		Transcoder transcoder = data.getTranscoder();
-		TranscoderInput in = new TranscoderInput(data.getAsDocument());
-		TranscoderOutput out = new TranscoderOutput(new OutputStreamWriter(baos));
-		transcoder.transcode(in, out);	
+	public void handleWrite(Formattable data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
+		StreamHelp.streamCopy(new StringReader(data.getOutput()), new OutputStreamWriter(baos), false);
 	}
 	
 }

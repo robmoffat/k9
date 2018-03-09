@@ -1,6 +1,4 @@
-package com.kite9.k9server.security.user_repo;
-
-import com.kite9.k9server.domain.User;
+package com.kite9.k9server.domain.user;
 
 /**
  * Custom repository method for saving & deleting.

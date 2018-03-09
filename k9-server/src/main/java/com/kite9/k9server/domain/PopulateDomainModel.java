@@ -5,7 +5,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.security.user_repo.UserRepository;
+import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.project.ProjectRepository;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
 
 /**
  * Populates the in-memory database with some test details.  

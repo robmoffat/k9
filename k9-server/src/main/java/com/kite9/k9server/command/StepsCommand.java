@@ -1,8 +1,8 @@
 package com.kite9.k9server.command;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.User;
+import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.user.User;
 
 /**
  * This command applies a bunch of {@link Step}s to a single revision of a diagram.

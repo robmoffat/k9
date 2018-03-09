@@ -9,7 +9,6 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.kite9.framework.dom.ADLExtensibleDOMImplementation;
 import org.kite9.framework.xml.ADLDocument;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -24,24 +23,47 @@ import org.w3c.dom.ls.LSSerializer;
  *
  */
 public class ADLImpl implements ADL {
-
+	
+	enum Mode { STRING, DOM };
+	
+	private Mode m;
+	private String xml;
 	private ADLDocument doc;
 	private String uri;
 	private Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
 
 	public ADLImpl(String content, String uri) {
-		this.doc = loadXMLDocument(content, uri);
+		this.xml = content;
 		this.uri = uri;
+		this.m = Mode.STRING;
 	}
 
 	public ADLImpl(ADLDocument doc) {
 		this.doc = doc;
+		this.m = Mode.DOM;
 	}
 
 	@Override
 	public String getAsXMLString() {
-		return toXMLString(doc);
+		if (m == Mode.DOM) {
+			xml = toXMLString(doc);
+			m = Mode.STRING;
+			doc = null;
+		}
+		
+		return xml;
 	}
+	
+	@Override
+	public ADLDocument getAsDocument() {
+		if (m == Mode.STRING) {
+			doc = loadXMLDocument(xml, uri);
+			m = Mode.DOM;
+			xml = null;
+		}
+		return doc;
+	}
+
 
 	public static String toXMLString(Node n) {
 		try {
@@ -52,11 +74,6 @@ public class ADLImpl implements ADL {
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
 		}
-	}
-
-	@Override
-	public ADLDocument getAsDocument() {
-		return doc;
 	}
 
 	public ADLDocument loadXMLDocument(String content, String uri2) {

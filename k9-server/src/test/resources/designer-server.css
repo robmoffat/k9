@@ -13,6 +13,11 @@
 	src: url('../fonts/opensans-regular-webfont.ttf') format('truetype');
 }
 
+@script {
+	type: "text/ecmascript";
+	src: url(some.js);
+}
+
 /*
  * Required so we can process old XML content
  */

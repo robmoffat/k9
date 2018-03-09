@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.kite9.k9server.domain.User;
+import com.kite9.k9server.domain.user.User;
 
 public class Kite9Authentication extends AbstractAuthenticationToken {
 

@@ -1,4 +1,4 @@
-package com.kite9.k9server.security.user_repo;
+package com.kite9.k9server.domain.user;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.auth.UserAuthenticationProvider;
 
 /**
@@ -23,7 +22,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	
 	/**
 	 * Used by the {@link UserAuthenticationProvider}.
-	 * Not to be exported, as it is not secure.
+	 * Not to be exported, as it is not secure. 
 	 */
 	@RestResource(exported=false)
 	public User findByApi(String api);

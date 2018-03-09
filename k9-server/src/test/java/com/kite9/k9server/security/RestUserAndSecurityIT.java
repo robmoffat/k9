@@ -28,10 +28,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
 import com.kite9.k9server.AbstractRestIT;
-import com.kite9.k9server.domain.Project;
-import com.kite9.k9server.domain.User;
+import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserController;
 import com.kite9.k9server.resource.UserResource;
-import com.kite9.k9server.security.user_repo.UserController;
 import com.kite9.k9server.web.NotificationResource;
 
 public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {

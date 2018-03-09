@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kite9.k9server.adl.format.AbstractFormattable;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.DocumentRepository;
-import com.kite9.k9server.domain.Revision;
-import com.kite9.k9server.domain.RevisionRepository;
-import com.kite9.k9server.domain.User;
+import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.domain.revision.Revision;
+import com.kite9.k9server.domain.revision.RevisionRepository;
+import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.security.Hash;
 
 /**
@@ -33,10 +33,10 @@ public class CommandController {
 	
 	@Autowired
 	RevisionRepository revisionRepo;
-
+	
 	@Transactional
 	@RequestMapping(path="/api/v1/command", consumes= {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaTypes.HAL_JSON_VALUE})
-	public @ResponseBody ADL applyCommand(@RequestBody Command input) throws CommandException {
+	public @ResponseBody Revision applyCommand(@RequestBody Command input) throws CommandException {
 		// commands are always applied to the active revision of the document (if possible)
 		Document d = input.getDocument();
 		
@@ -45,31 +45,24 @@ public class CommandController {
 		Revision currentRevision = d.getCurrentRevision();
 		ADL adl = null;
 		if (currentRevision != null) {
-			adl = new ADLImpl(currentRevision.getInputXml(), "somewhere");
+			adl = currentRevision.getInput();
 		}
-		adl = input.applyCommand(adl);
 		
-		createNewRevision(d, currentRevision, adl.getAsXMLString(), input.getAuthor());
-		return adl;
+		adl = input.applyCommand(adl);
+		return createNewRevision(d, currentRevision, adl.getAsXMLString(), null, input.getAuthor());
 	}
 		
-	public Revision createNewRevision(Document d, Revision old, String newXml, User author) {
+	public Revision createNewRevision(Document d, Revision old, String newXml, String renderedXml, User author) {
 		Revision change = new Revision();
 		change.setAuthor(author);
 		change.setDocument(d);
 		change.setPreviousRevision(old);
 		change.setInputXml(newXml);
+		change.setOutputXml(renderedXml);
 		change.setDiagramHash(Hash.generateHash(newXml));
 		
 		// commit changes
 		Revision saved = revisionRepo.save(change);
-//		if (old != null) {
-//			old.setNextRevision(saved);
-//			revisionRepo.save(old);
-//		}
-		
-		d.setCurrentRevision(saved);
-		docRepo.save(d);
-		return change;
+		return saved;
 	}
 }

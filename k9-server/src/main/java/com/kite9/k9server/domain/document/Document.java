@@ -1,11 +1,16 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.document;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+
+import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.revision.Revision;
 
 @Entity
 public class Document extends AbstractLongIdEntity {
@@ -26,13 +31,13 @@ public class Document extends AbstractLongIdEntity {
 		this.project = project;
 	}
 
-    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
+    @ManyToOne(targetEntity=Revision.class, optional=true)
 	private Revision currentRevision = null;
     
     private Date dateCreated = new Date();
     private Date lastUpdated;
 	
-    @ManyToOne(targetEntity=Project.class, optional=false)
+    @ManyToOne(targetEntity=Project.class, optional=false, cascade=CascadeType.ALL)
     private Project project;
 
 	public String getTitle() {

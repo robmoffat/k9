@@ -22,14 +22,14 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DOMDifferenceEngine;
 
-import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.DocumentRepository;
-import com.kite9.k9server.domain.Project;
-import com.kite9.k9server.domain.ProjectRepository;
-import com.kite9.k9server.domain.RevisionRepository;
-import com.kite9.k9server.domain.User;
-import com.kite9.k9server.security.user_repo.UserRepository;
+import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.project.ProjectRepository;
+import com.kite9.k9server.domain.revision.Revision;
+import com.kite9.k9server.domain.revision.RevisionRepository;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -91,7 +91,7 @@ public class TestModifyCommand {
 	@Test
 	public void testCommandLifecycle() throws Exception {
 
-		ADL out = testCreateCommand();
+		Revision out = testCreateCommand();
 		
 		// step 2: insert content (add a stereotype)
 		String before = START_SVG_DOCUMENT+ "<glyph id=\"two\"><label id=\"two-label\" /></glyph>" + END_SVG_DOCUMENT;
@@ -114,45 +114,45 @@ public class TestModifyCommand {
 		
 	}
 	
-	public ADL testDeleteCommand() throws CommandException, IOException {
-		ADL out;
+	public Revision testDeleteCommand() throws CommandException, IOException {
+		Revision out;
 		String oldState = START_SVG_DOCUMENT + "<glyph id=\"two\"><label id=\"two-label\">Two</label><stereo id=\"two-stereo\"/></glyph>" + END_SVG_DOCUMENT;
 		StepsCommand delete = new StepsCommand(d, u, new Step(StepType.DELETE, null, null, "two", oldState, null));
 		out = commandController.applyCommand(delete);
-		String result = out.getAsXMLString();
+		String result = out.getInputXml();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "4.xml", result);
 		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command4.xml"), Charset.forName("UTF-8"));
 		compareXML(expected4, result);
 		return out;
 	}
 
-	public ADL testMoveCommand(String before) throws CommandException, IOException {
-		ADL out;
+	public Revision testMoveCommand(String before) throws CommandException, IOException {
+		Revision out;
 		StepsCommand move = new StepsCommand(d, u, new Step(StepType.MOVE, "two-stereo", "two", "two-label", before, null));
 		out = commandController.applyCommand(move);
-		String result = out.getAsXMLString();
+		String result = out.getInputXml();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "3.xml", result);
 		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command3.xml"), Charset.forName("UTF-8"));
 		compareXML(expected3, result);
 		return out;
 	}
 
-	public ADL testModifyCommand(String before, String after) throws CommandException, IOException {
+	public Revision testModifyCommand(String before, String after) throws CommandException, IOException {
 		StepsCommand modify = new StepsCommand(d, u, new Step(StepType.MODIFY, null, null, "two", before, after));
-		ADL out = commandController.applyCommand(modify);
-		String result = out.getAsXMLString();
+		Revision out = commandController.applyCommand(modify);
+		String result = out.getInputXml();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
 		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command2.xml"), Charset.forName("UTF-8"));
 		compareXML(expected2, result);
 		return out;
 	}
 
-	public ADL testCreateCommand() throws IOException, CommandException {
+	public Revision testCreateCommand() throws IOException, CommandException {
 		// step 1: create
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command1.xml"), Charset.forName("UTF-8"));
 		StepsCommand create = new StepsCommand(d, u, new Step(StepType.CREATE_DOC, null, null, null, null, xml));
-		ADL out = commandController.applyCommand(create);
-		String result = out.getAsXMLString();
+		Revision out = commandController.applyCommand(create);
+		String result = out.getInputXml();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "1.xml", result);
 		compareXML(xml, result);
 		return out;

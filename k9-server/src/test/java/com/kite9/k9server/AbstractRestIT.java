@@ -1,6 +1,5 @@
 package com.kite9.k9server;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,7 +10,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kite9.framework.logging.Kite9Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +46,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.kite9.k9server.adl.ADLMessageConverter;
 import com.kite9.k9server.resource.UserResource;
 import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
@@ -59,9 +56,6 @@ public class AbstractRestIT {
 	@MockBean
 	protected MailSender mailSender;
 	
-	@Autowired
-	private ADLMessageConverter adlMessageConverter;
-
 	protected String urlBase = "http://localhost:8080";
 	public static TypeReferences.ResourcesType<UserResource> USER_RESOURCES_TYPE = new TypeReferences.ResourcesType<UserResource>() {};
 
@@ -80,7 +74,7 @@ public class AbstractRestIT {
 	    objectMapper.registerModule(new Jackson2HalModule());
 
 	    //TODO: need to figure out this curie provider stuff...more in production mode
-	    DefaultCurieProvider curieProvider = new DefaultCurieProvider("a", new UriTemplate("http://localhost:8080/myapp/rels/{rel}"));
+	    DefaultCurieProvider curieProvider = new DefaultCurieProvider("a", new UriTemplate("http://localhost:8080/{rel}"));
 	    DefaultRelProvider relProvider = new DefaultRelProvider();
 
 	    objectMapper.setHandlerInstantiator(new Jackson2HalModule.HalHandlerInstantiator(relProvider, curieProvider, null));
@@ -158,7 +152,9 @@ public class AbstractRestIT {
 	protected HttpHeaders createKite9AuthHeaders(String apiKey, MediaType in, MediaType... accept) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(accept));
-		headers.setContentType(in);
+		if (in != null) {
+			headers.setContentType(in);
+		}
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
 		return headers;
 	}

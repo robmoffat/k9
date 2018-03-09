@@ -1,8 +1,10 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.user;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
 @Entity

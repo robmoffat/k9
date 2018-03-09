@@ -20,7 +20,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.kite9.k9server.domain.Project;
+import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.resource.UserResource;
 
 /**

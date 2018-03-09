@@ -11,7 +11,7 @@ public class RevisionResource extends ResourceSupport {
 	public String diagramHash;
 	public Date dateCreated = new Date();
 	public String author;
-	public String renderedXml;
+	public String outputXml;
 	public String previousRevision;
 	public String nextRevision;
     
@@ -26,7 +26,7 @@ public class RevisionResource extends ResourceSupport {
 		this.diagramHash = diagramHash;
 		this.dateCreated = dateCreated;
 		this.author = author;
-		this.renderedXml = renderedXml;
+		this.outputXml = renderedXml;
 		this.previousRevision = previousRevision;
 		this.nextRevision = nextRevision;
 	}
@@ -42,7 +42,7 @@ public class RevisionResource extends ResourceSupport {
 		result = prime * result + ((inputXml == null) ? 0 : inputXml.hashCode());
 		result = prime * result + ((nextRevision == null) ? 0 : nextRevision.hashCode());
 		result = prime * result + ((previousRevision == null) ? 0 : previousRevision.hashCode());
-		result = prime * result + ((renderedXml == null) ? 0 : renderedXml.hashCode());
+		result = prime * result + ((outputXml == null) ? 0 : outputXml.hashCode());
 		return result;
 	}
 
@@ -83,10 +83,10 @@ public class RevisionResource extends ResourceSupport {
 				return false;
 		} else if (!previousRevision.equals(other.previousRevision))
 			return false;
-		if (renderedXml == null) {
-			if (other.renderedXml != null)
+		if (outputXml == null) {
+			if (other.outputXml != null)
 				return false;
-		} else if (!renderedXml.equals(other.renderedXml))
+		} else if (!outputXml.equals(other.outputXml))
 			return false;
 		return true;
 	}

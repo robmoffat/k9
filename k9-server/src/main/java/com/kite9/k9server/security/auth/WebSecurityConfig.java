@@ -16,8 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.kite9.k9server.domain.User;
-import com.kite9.k9server.security.user_repo.UserRepository;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
 
 /**
  * Configuration of security protocols and the url patterns to match them.
@@ -54,6 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.formLogin();
 		http.httpBasic();
+		http.csrf().disable();
+		http.headers().frameOptions().disable();
 		http.authorizeRequests()
 			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
 			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
@@ -62,7 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api").permitAll()
 			.antMatchers("/stylesheet.js").permitAll()
 			.antMatchers("/stylesheet.css").permitAll()
-			
+			.antMatchers("/console/**").permitAll()
+
 			.antMatchers("/**").authenticated();
 	}
 
@@ -90,4 +93,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public SecurityEvaluationContextExtension usePrincipalInQueries() {
 		return new SecurityEvaluationContextExtension();
 	}
+	
 }

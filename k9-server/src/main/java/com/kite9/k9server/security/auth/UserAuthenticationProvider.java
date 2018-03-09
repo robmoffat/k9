@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.domain.User;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.security.Hash;
-import com.kite9.k9server.security.user_repo.UserRepository;
 
 /**
  * Provides all authentication against our own internal UserRepository.

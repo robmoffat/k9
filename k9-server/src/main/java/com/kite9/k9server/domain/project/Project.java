@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.project;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -9,6 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+
+import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.document.Document;
 
 @Entity
 public class Project extends AbstractLongIdEntity {
@@ -25,7 +28,7 @@ public class Project extends AbstractLongIdEntity {
 	@Column(length=32,nullable=false)
 	private String secret = createRandomString();
 	
-	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<Document> documents;
 
 	public Project() {

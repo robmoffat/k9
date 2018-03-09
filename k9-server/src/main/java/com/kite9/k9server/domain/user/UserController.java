@@ -1,4 +1,4 @@
-package com.kite9.k9server.security.user_repo;
+package com.kite9.k9server.domain.user;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.Hash;
 import com.kite9.k9server.security.auth.WebSecurityConfig;
 import com.kite9.k9server.web.HttpException;

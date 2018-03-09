@@ -64,15 +64,15 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
 		return back.getBody();
 	}
-	
-	protected String withBytesFromFile(MediaType output) throws IOException, URISyntaxException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		StreamHelp.streamCopy(this.getClass().getResourceAsStream("/test-card.xml"), baos, true);
-		HttpHeaders headers = createKite9AuthHeaders(u.api, MediaTypes.ADL_SVG, output);
-		RequestEntity<ADL> data = new RequestEntity<ADL>(new String(baos.toByteArray()), headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
-		ResponseEntity<ADL> back= getRestTemplate().exchange(data);
-		return back.getBody().getAsXMLString();
-	}
+//	
+//	protected String withBytesFromFile(MediaType output) throws IOException, URISyntaxException {
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		StreamHelp.streamCopy(this.getClass().getResourceAsStream("/test-card.xml"), baos, true);
+//		HttpHeaders headers = createKite9AuthHeaders(u.api, MediaTypes.ADL_SVG, output);
+//		RequestEntity<String> data = new RequestEntity<String>(new String(baos.toByteArray()), headers, HttpMethod.POST, new URI(urlBase+"/api/renderer"));
+//		ResponseEntity<String> back= getRestTemplate().exchange(data, String.class);
+//		return back.getBody();
+//	}
 
 //	@Test
 //	@Ignore("No working PNG renderer right now")
@@ -149,7 +149,7 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 		
 		Element e = d.getDocumentElement();
 		Assert.assertEquals("svg", e.getTagName());
-		Assert.assertEquals(3, e.getChildNodes().getLength());
+		Assert.assertEquals(4, e.getChildNodes().getLength());
 	}
 
 	public Document parseBytesToXML(byte[] back) throws ParserConfigurationException, SAXException, IOException {
@@ -167,13 +167,19 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 		URL u = this.getClass().getResource("/stylesheets/designer.css");
 		return "<svg:defs><svg:style type=\"text/css\"> @import url(\""+u+"\");</svg:style></svg:defs>";
 	}
+	
+	public String getJavascriptReference() {
+		URL u = this.getClass().getResource("/some.js");
+		return "<svg:script type=\"text/ecmascript\" xlink:href=\""+u.toString()+"\"/>";
+	}
 
 	protected String addSVGFurniture(String xml) {
 		String prefix = "<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>";
 		String style = getDesignerStylesheetReference();
+		String javascript = getJavascriptReference();
 		String suffix = "</svg:svg>";
 		xml = xml.replaceFirst("<\\?.*\\?>","");
-		String full = prefix + style + xml + suffix;
+		String full = prefix + style + javascript+ xml + suffix;
 		return full;
 	}
 	

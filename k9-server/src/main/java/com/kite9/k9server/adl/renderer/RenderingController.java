@@ -1,4 +1,4 @@
-package com.kite9.k9server.adl;
+package com.kite9.k9server.adl.renderer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kite9.k9server.adl.format.Formattable;
 import com.kite9.k9server.adl.format.MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
@@ -24,7 +25,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class RenderingController {
 	
 	@RequestMapping(path="/api/renderer", consumes= {MediaTypes.ADL_SVG_VALUE, MediaTypes.SVG_VALUE})
-	public @ResponseBody ADL echo(@RequestBody ADL input) {
+	public @ResponseBody Formattable echo(@RequestBody Formattable input) {
 		return input;
 	}
 	

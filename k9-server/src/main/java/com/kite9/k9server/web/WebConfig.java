@@ -18,7 +18,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.kite9.k9server.adl.ADLMessageConverter;
+import com.kite9.k9server.adl.format.FormattableMessageConverter;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
@@ -58,7 +58,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public HttpMessageConverter<?> adlMessageConverter() {
-		return new ADLMessageConverter();
+		return new FormattableMessageConverter();
 	}
 	
 	public class LoggingFilter extends CommonsRequestLoggingFilter {

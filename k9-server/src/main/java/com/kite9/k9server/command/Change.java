@@ -1,7 +1,7 @@
 package com.kite9.k9server.command;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.Revision;
+import com.kite9.k9server.domain.revision.Revision;
 
 public class Change {
 	

@@ -1,20 +1,30 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.revision;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kite9.k9server.adl.format.AbstractFormattable;
+import com.kite9.k9server.adl.format.Formattable;
+import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.user.User;
 
 
 /**
  * Contains a single diagram revision.  
  */
 @Entity
-public class Revision extends AbstractLongIdEntity {
+public class Revision extends AbstractLongIdEntity implements Formattable {
 
-	@ManyToOne(targetEntity=Document.class, optional=false)
+	@ManyToOne(targetEntity=Document.class, optional=false, cascade=CascadeType.ALL)
     Document document;
     
 	@Column(columnDefinition="TEXT")
@@ -29,14 +39,14 @@ public class Revision extends AbstractLongIdEntity {
     User author;
     
 	@Column(columnDefinition="TEXT")
-    String renderedXml;
+    String outputXml;
     
     @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
     Revision previousRevision;
     
     @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.LAZY)
     Revision nextRevision;
-
+    
 	public Revision() {
 		super();
 	}
@@ -81,12 +91,12 @@ public class Revision extends AbstractLongIdEntity {
 		this.author = author;
 	}
 
-	public String getRenderedXml() {
-		return renderedXml;
+	public String getOutputXml() {
+		return outputXml;
 	}
 
-	public void setRenderedXml(String renderedXml) {
-		this.renderedXml = renderedXml;
+	public void setOutputXml(String renderedXml) {
+		this.outputXml = renderedXml;
 	}
 
 	public Revision getPreviousRevision() {
@@ -104,6 +114,37 @@ public class Revision extends AbstractLongIdEntity {
 	public void setNextRevision(Revision nextRevision) {
 		this.nextRevision = nextRevision;
 	}
-    
-    
+	
+	private transient ADL adl;
+	
+	private transient boolean requiresSave = false;
+
+	@Override
+	@JsonIgnore
+	public ADL getInput() {
+		if (adl == null) {
+			adl = new ADLImpl(inputXml, null);
+		}
+		
+		return adl;
+	}
+
+	@Override
+	@JsonIgnore
+	public String getOutput() {
+		if (outputXml == null) {
+			outputXml = AbstractFormattable.render(getInput());
+			requiresSave = true;
+		}
+		
+		return outputXml;
+	}
+
+	@Override
+	@JsonIgnore
+	public boolean requiresSave() {
+		return requiresSave;
+	}
+
+	
 }

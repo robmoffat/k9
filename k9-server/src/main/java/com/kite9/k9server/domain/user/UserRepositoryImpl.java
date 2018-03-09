@@ -1,4 +1,4 @@
-package com.kite9.k9server.security.user_repo;
+package com.kite9.k9server.domain.user;
 
 import java.util.Collections;
 
@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.Hash;
 import com.kite9.k9server.web.HttpException;
 
