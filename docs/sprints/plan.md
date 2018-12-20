@@ -153,7 +153,6 @@ Each release would be to “production”, which would be an amazon EC2 instance
 - All basically stuff that allows you to manipulate XML (this allows palettes to work).
 - After posting the command, it should return the new JSON (for react), or an error message should pop up. redux can handle that.
 - Commands should attempt to apply to the active diagram.
-- Load
 
 [Sprint Notes](sprint_015.md)
 
@@ -161,42 +160,11 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - We’re going to need a lot of the original app now.  So, we need to structure this a bit better, and use webpack / npm stuff.
 - Add in a javascript testing framework.
-
-[Sprint Notes](sprint_018.md)
-
-### Undo / Redo Commands
-
-- These are going to simply take you back and forth through the diagram history and choose the “active” diagram.  Revisions will still be in numbered / timestamped order, but when you undo, you undo for everyone.  But nothing is lost.  NAILED IT.
-- You should be able to head back to any previous version in the diagram history and say, “this is the active version”.  We should have some marker record somewhere to do this.  i.e in Document.
-- All other commands end up creating a new revision, and setting the active document to that.
-
-
-### BPML:  Write a stylesheet for this in CSS
-
-- Include most of the basic entities, render a diagram using it.
-
-
-### Object Model Part 2 - Links/Ports/Terminators/Labels
-
-- Ports
-- Aligns (allowed arriving edges)
-- Links as “straight” rather than LEFT, RIGHT etc.
-- STRAIGHT directive.
-- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
-- Allow gridded containers to have links leaving them.
-
-[Sprint Notes](sprint_010.md)
-
-### Select Behaviour
-
+- Ideally, we should be able to load a document and have behaviours on the document to allow you to select elements.
 - Some stylesheet should define the GUI behaviours.
-- React has some callback that can modify the SVG as it’s being rendered, and add behaviours (this is how we plug in)
-- We should see that React correctly loads the right javascript files that are mentioned in the stylesheets.
-- We have a single GUI behaviour for now called select:
-    - This is an onClick event for shapes, which fires a redux event to add the element to the selected state.  Also, I guess it should add a selected class to the SVG element, so that we can see the selected elements.
 - We need some tests for this in the Javascript.  Clicking on containers, clicking on parts, clicking on links.
-- JSON should already contain selection outline and line details.
 - Somehow, select should extend the react layout to include the shapes needed to make select work… (not sure we will need these anymore though?)
+[Sprint Notes](sprint_018.md)
 
 ### Context Menu
 
@@ -253,6 +221,31 @@ Each release would be to “production”, which would be an amazon EC2 instance
 
 - Draws a link, but puts a new element down again (the last one from the palette).  So again, we need to create some kind of event that draws to the mouse pointer, recognises the container we’re under, etc.  And then adds an element to the container.   This is a combination of the palette-drop plus link functionality.
 - Must add a test.  Redux must be able to have the state of what is going on, what is being dragged, etc.
+
+
+### Undo / Redo Commands
+
+- These are going to simply take you back and forth through the diagram history and choose the “active” diagram.  Revisions will still be in numbered / timestamped order, but when you undo, you undo for everyone.  But nothing is lost.  NAILED IT.
+- You should be able to head back to any previous version in the diagram history and say, “this is the active version”.  We should have some marker record somewhere to do this.  i.e in Document.
+- All other commands end up creating a new revision, and setting the active document to that.
+
+
+### BPML:  Write a stylesheet for this in CSS
+
+- Include most of the basic entities, render a diagram using it.
+
+
+### Object Model Part 2 - Links/Ports/Terminators/Labels
+
+- Ports
+- Aligns (allowed arriving edges)
+- Links as “straight” rather than LEFT, RIGHT etc.
+- STRAIGHT directive.
+- Ability to join links to other links/edges rather than just vertices (deprecate side vertex stuff, ContainerCornerTransform stuff)
+- Allow gridded containers to have links leaving them.
+
+[Sprint Notes](sprint_010.md)
+
 
 ### Fix aligns.
 

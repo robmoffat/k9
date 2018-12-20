@@ -29,7 +29,7 @@ import com.kite9.k9server.resource.UserResource;
  * @author robmoffat
  *
  */
-public class AbstractAuthenticatedIT extends AbstractRestIT {
+public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 
 	protected RestTemplate restTemplate;
 	

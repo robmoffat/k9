@@ -3,7 +3,7 @@ package com.kite9.k9server.command;
 import org.apache.batik.anim.dom.SVGOMSVGElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.kite9.framework.xml.ADLDocument;
+import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

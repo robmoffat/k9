@@ -21,7 +21,8 @@ import com.kite9.k9server.adl.holder.ADLImpl;
  * @author robmoffat
  *
  */
-@Controller
+@Controller()
+@RequestMapping()
 public class RenderingController {
 	
 	@RequestMapping(path="/api/renderer", consumes= {MediaTypes.ADL_SVG_VALUE, MediaTypes.SVG_VALUE})

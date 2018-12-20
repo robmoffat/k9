@@ -8,7 +8,7 @@ import org.springframework.hateoas.Link;
 
 import com.kite9.k9server.resource.UserResource;
 
-public class AbstractUserBasedTest extends AbstractAuthenticatedIT {
+public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 
 	protected UserResource u;
 	protected String userUrl;

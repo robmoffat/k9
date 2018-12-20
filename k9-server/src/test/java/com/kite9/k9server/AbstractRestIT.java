@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.core.DefaultRelProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
@@ -51,7 +50,7 @@ import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
-public class AbstractRestIT {
+public abstract class AbstractRestIT {
 	
 	@MockBean
 	protected MailSender mailSender;
@@ -127,9 +126,9 @@ public class AbstractRestIT {
 		return template;
 	}
 	
-	protected <X> Resource<X> retrieveResource(RestTemplate restTemplate, UserResource u, String url, Class<X> outClass) throws URISyntaxException {
+	protected <X> X retrieveResource(RestTemplate restTemplate, UserResource u, String url, Class<X> outClass) throws URISyntaxException {
 		RequestEntity<Void> in = new RequestEntity<Void>(createKite9AuthHeaders(u.api), HttpMethod.GET, new URI(url));
-		ResponseEntity<Resource<X>> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
+		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
 		return out.getBody();
 	}
 	
@@ -171,6 +170,8 @@ public class AbstractRestIT {
 		try {
 			retrieveResource(restTemplate, u, url, c);
 			Assert.fail();
+		} catch (AssertionError ae) {
+			throw ae;
 		} catch (Throwable e) {
 			// should throw this.
 			e.printStackTrace();
