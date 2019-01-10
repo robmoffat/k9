@@ -1,0 +1,58 @@
+@font-face {
+	font-family: "metropolis";
+	src: url('../fonts/metropolis/Metropolis-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: "metropolis";
+	font-weight: bold;
+	src: url('../fonts/metropolis/Metropolis-Bold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: "metropolis";
+	font-style: italic;
+	src: url('../fonts/metropolis/Metropolis-RegularItalic.ttf') format('truetype');
+}
+
+diagram {
+	kite9-type: diagram;
+	kite9-padding: 15pt;
+	kite9-traversal: none;
+	kite9-template: url(template.xml#diagram);
+	background-color: white;
+}
+
+group {
+	kite9-type: container;
+	kite9-sizing: maximize;
+	kite9-traversal: always;
+}
+
+button {
+	kite9-type: container;
+	kite9-template: url(template.xml#button)
+}
+
+.button-back {
+	stroke-width: 1pt; 
+	fill: green;
+	stroke: black;
+}
+
+.mouseover .button-back {
+	fill: yellow;
+}
+
+bigtext {
+	kite9-type: text;
+	kite9-margin: 4pt;
+	kite9-vertical-align: top;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: left;
+	stroke: black;
+	fill: red;
+	font-family: "metropolis";
+	text-align: start;	
+	font-size: 50px;
+}
