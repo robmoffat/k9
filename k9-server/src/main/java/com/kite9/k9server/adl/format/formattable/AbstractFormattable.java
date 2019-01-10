@@ -1,4 +1,4 @@
-package com.kite9.k9server.adl.format;
+package com.kite9.k9server.adl.format.formattable;
 
 import java.io.StringWriter;
 
@@ -19,23 +19,5 @@ import com.kite9.k9server.adl.holder.ADL;
  */
 public abstract class AbstractFormattable implements Formattable {
 
-	@Override
-	public String getOutput() {
-		return render(getInput());
-	}
-	
-	public static String render(ADL data) {
-		try {
-			Transcoder transcoder = data.getTranscoder();
-			TranscoderInput in = new TranscoderInput(data.getAsDocument());
-			StringWriter sw = new StringWriter();
-			TranscoderOutput out = new TranscoderOutput(sw);
-			transcoder.transcode(in, out);
-			return sw.toString();
-		} catch (TranscoderException e) {
-			throw new Kite9ProcessingException(e);
-		}	
-		
-	}
-	
+
 }

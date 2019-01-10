@@ -1,4 +1,4 @@
-package com.kite9.k9server.adl.format;
+package com.kite9.k9server.adl.format.formattable;
 
 import com.kite9.k9server.adl.holder.ADL;
 
@@ -12,9 +12,5 @@ import com.kite9.k9server.adl.holder.ADL;
 public interface Formattable {
 
 	ADL getInput();
-	
-	String getOutput();
-	
-	boolean requiresSave();
 	
 }

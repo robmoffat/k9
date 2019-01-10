@@ -11,11 +11,11 @@
 	<name>Kite9 Server</name>
 	<description>Kite9 Redux Server</description>
 
-	<parent>
+    <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.10.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<version>2.1.1.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>

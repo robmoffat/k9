@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kite9.k9server.adl.format.AbstractFormattable;
+import com.kite9.k9server.adl.format.formattable.AbstractFormattable;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;

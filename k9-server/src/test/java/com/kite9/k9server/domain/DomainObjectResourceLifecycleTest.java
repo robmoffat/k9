@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 
 import com.kite9.k9server.AbstractUserBasedTest;
-import com.kite9.k9server.adl.format.MediaTypes;
+import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.domain.revision.RevisionController;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;

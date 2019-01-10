@@ -2,11 +2,6 @@ package com.kite9.k9server.resource;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-
 import org.springframework.hateoas.ResourceSupport;
 
 

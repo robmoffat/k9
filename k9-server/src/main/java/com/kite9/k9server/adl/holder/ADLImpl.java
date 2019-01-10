@@ -81,6 +81,7 @@ public class ADLImpl implements ADL {
 		StringReader sr = new StringReader(content);
 		try {
 			ADLDocument document = (ADLDocument) f.createDocument(ADLExtensibleDOMImplementation.SVG_NAMESPACE_URI, SVG12Constants.SVG_SVG_TAG, uri2, sr);
+			document.setDocumentURI(uri2);
 			return document;
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't load XML into DOM: ", e);
@@ -101,7 +102,5 @@ public class ADLImpl implements ADL {
 	public String getAsXMLString(Node n) {
 		return toXMLString(n);
 	}
-	
-	
 	
 }

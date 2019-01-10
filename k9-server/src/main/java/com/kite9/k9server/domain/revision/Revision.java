@@ -9,8 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.adl.format.AbstractFormattable;
-import com.kite9.k9server.adl.format.Formattable;
+import com.kite9.k9server.adl.format.formattable.AbstractFormattable;
+import com.kite9.k9server.adl.format.formattable.Formattable;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
@@ -131,7 +131,7 @@ public class Revision extends AbstractLongIdEntity implements Formattable {
 
 	@Override
 	@JsonIgnore
-	public String getOutput() {
+	public String getSVG() {
 		if (outputXml == null) {
 			outputXml = AbstractFormattable.render(getInput());
 			requiresSave = true;

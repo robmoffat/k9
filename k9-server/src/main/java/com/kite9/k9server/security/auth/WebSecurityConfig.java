@@ -65,8 +65,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/stylesheet.js").permitAll()
 			.antMatchers("/stylesheet.css").permitAll()
 			.antMatchers("/console/**").permitAll()
-
+			.antMatchers("/public/**").permitAll()
 			.antMatchers("/**").authenticated();
+		
 	}
 
 	@Autowired

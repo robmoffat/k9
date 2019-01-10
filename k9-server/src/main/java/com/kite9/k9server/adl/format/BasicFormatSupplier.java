@@ -6,6 +6,13 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
+import com.kite9.k9server.adl.format.media.ADLAndSVGFormat;
+import com.kite9.k9server.adl.format.media.Format;
+import com.kite9.k9server.adl.format.media.HTMLFormat;
+import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.PNGFormat;
+import com.kite9.k9server.adl.format.media.SVGFormat;
+
 @Component
 public class BasicFormatSupplier implements FormatSupplier {
 	
@@ -13,12 +20,10 @@ public class BasicFormatSupplier implements FormatSupplier {
 	 * Ordered most specific to least.
 	 */
 	public static Format[] FORMATS = new Format[] {
-//			new PDFFormat(),
-//			new ClientSideMapFormat(),
 			new PNGFormat(),
 			new SVGFormat(),
 			new ADLAndSVGFormat(),
-//			new HTMLFormat(),
+			new HTMLFormat(),
 		} ;
 	
 	

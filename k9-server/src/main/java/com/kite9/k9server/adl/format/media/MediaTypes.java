@@ -1,4 +1,4 @@
-package com.kite9.k9server.adl.format;
+package com.kite9.k9server.adl.format.media;
 
 import org.springframework.http.MediaType;
 
