@@ -3,8 +3,6 @@ package com.kite9.k9server.web;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,12 +14,13 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.kite9.k9server.adl.format.formattable.FormattableMessageConverter;
 
 @Configuration
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
 	private static final Log LOG = LogFactory.getLog(WebConfig.class);
 
@@ -30,7 +29,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	 */
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		super.configureHandlerExceptionResolvers(exceptionResolvers);
 		exceptionResolvers.add(new HandlerExceptionResolver() {
 
 			@Override
@@ -52,7 +50,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		super.configureMessageConverters(converters);
 		converters.add(adlMessageConverter());
 	}
 
@@ -82,4 +79,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public CommonsRequestLoggingFilter requestLoggingFilter() {
 	   return new LoggingFilter();
 	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+	}
+	
+	
 }

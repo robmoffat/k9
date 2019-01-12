@@ -23,15 +23,20 @@ diagram {
 	background-color: white;
 }
 
-group {
+g.group {
 	kite9-type: container;
 	kite9-sizing: maximize;
 	kite9-traversal: always;
 }
 
-button {
+g.button {
 	kite9-type: container;
 	kite9-template: url(template.xml#button)
+}
+
+g.field {
+	kite9-type: container;
+	kite9-template: url(template.xml#field)
 }
 
 .button-back {
@@ -40,11 +45,33 @@ button {
 	stroke: black;
 }
 
+.field-back {
+	fill: purple;
+	stroke: none;
+}
+
 .mouseover .button-back {
 	fill: yellow;
 }
 
-bigtext {
+.hoverable {
+	cursor: pointer;
+}
+
+g.bigtext {
+	kite9-type: text;
+	kite9-margin: 4pt;
+	kite9-vertical-align: top;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: left;
+	stroke: black;
+	fill: red;
+	font-family: "metropolis";
+	text-align: start;	
+	font-size: 50px;
+}
+
+g.editbox {
 	kite9-type: text;
 	kite9-margin: 4pt;
 	kite9-vertical-align: top;

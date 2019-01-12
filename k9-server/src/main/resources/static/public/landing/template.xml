@@ -1,25 +1,32 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl'>
   <svg:defs>
 
-    <svg:script type="text/ecmascript" xlink:href="../scripts/hover.js">
+    <svg:script type="module">
+      import "../scripts/navigable.js";
+      import "../scripts/hoverable.js";
     </svg:script>
 
   </svg:defs>
-  
+
   <template id="diagram">
     <back style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' class="diagram-back" />
     </back>
     <contents />
   </template>
-  
-  <template id="button">
-    <svg:g class="hover selectable">
-      <back style='kite9-usage: decal; kite9-type: svg; '>
-        <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8pt' ry='8pt' class="button-back" />
-      </back>
-      <contents />
-    </svg:g>
+
+  <template id="button" a="b">
+    <back style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8pt' ry='8pt' class="button-back" />
+    </back>
+    <contents />
+  </template>
+
+  <template id="field" name="#{../@name}">
+    <back style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="field-back" />
+    </back>
+    <contents />
   </template>
 
 </svg:svg>

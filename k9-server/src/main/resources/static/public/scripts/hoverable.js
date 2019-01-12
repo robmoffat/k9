@@ -3,7 +3,7 @@ window.addEventListener('load', function() {
     
     var selectedElement;
     
-    document.querySelectorAll(".hover").forEach(function(v) {
+    document.querySelectorAll(".hoverable").forEach(function(v) {
 		var classes = v.classList;
     	v.addEventListener("mouseover", function() {
     		if (!classes.contains("mouseover")) {
