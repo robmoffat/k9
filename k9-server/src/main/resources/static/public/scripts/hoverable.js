@@ -1,26 +1,35 @@
+
+
+var selectedElement;
+
+function mouseover(event) {
+	var v = event.currentTarget;
+	var classes = v.classList;
+	if (!classes.contains("mouseover")) {
+		classes.add("mouseover");
+		
+		if (selectedElement != undefined) {
+			selectedElement.classList.remove("mouseover")
+			selectedElement = v;
+		}
+	 }
+}
+
+function mouseout(event) {
+	var v = event.currentTarget;
+	var classes = v.classList;
+	classes.remove("mouseover");
+	if (selectedElement == v) {
+		selectedElement = undefined;
+	}
+}
+
 window.addEventListener('load', function() {
-    console.log('All assets are loaded')
-    
-    var selectedElement;
     
     document.querySelectorAll(".hoverable").forEach(function(v) {
-		var classes = v.classList;
-    	v.addEventListener("mouseover", function() {
-    		if (!classes.contains("mouseover")) {
-    			classes.add("mouseover");
-    			
-    			if (selectedElement != undefined) {
-    				selectedElement.classList.remove("mouseover")
-    				selectedElement = v;
-    			}
-    		 }
-    	})
-    	
-    	v.addEventListener("mouseout", function() {
-    		classes.remove("mouseover");
-    		if (selectedElement == v) {
-    			selectedElement = undefined;
-    		}
-    	})
+    	v.removeEventListener("mouseover", mouseover);
+    	v.addEventListener("mouseover", mouseover);
+    	v.removeEventListener("mouseout", mouseout);
+    	v.addEventListener("mouseout", mouseout);
     })
 })
