@@ -28,8 +28,6 @@ function onClick(event) {
 }
 
 window.addEventListener('load', function() {
-    var selectedElement;
-    
     document.querySelectorAll(".navigable").forEach(function(v) {
 		v.removeEventListener("click", onClick);
 		v.addEventListener("click", onClick);
