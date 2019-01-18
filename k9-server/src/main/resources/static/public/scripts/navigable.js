@@ -1,20 +1,13 @@
-//var fromNodes = document.querySelectorAll("*[id]");
-//			var fromIds = Array.from(fromNodes).map(o => o.getAttribute("id"));
-//			
-//			var toNodes = ob.querySelectorAll("*[id]");
-//			var toIds = Array.from(toNodes).map(o => o.getAttribute("id"));
-//			
-//			var transformIds = fromIds.filter(id => -1 != toIds.indexOf(id));
-//			var enteredIds = toIds.filter(id => -1 == fromIds.indexOf(id));
-//			var exitedIds = fromIds.filter(id => -1 == fromIds.indexOf(id));
 
-
-import { transition } from './transition.js' 
+import '../libraries/jquery.min.js'
+import {transition} from '../bundles/transition.js'
+import {a, b} from '../bundles/test.js'
 
 function navigate(url) {
 	$.get({
 		url: url,
 		success: function(ob, status, jqXHR) {
+			a(5);
 			transition(ob.documentElement);
 		}
 	

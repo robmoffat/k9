@@ -1,0 +1,23 @@
+{
+  "name": "k9-transition",
+  "version": "0.0.1",
+  "description": "Allows transitioning between two svg diagrams, based on ids",
+  "license": "N/A",
+  "README": "N/A",
+  "dependencies": {
+    "wilderness": "5.1.2"
+  },
+  "devDependencies": {
+    "rollup": "^1.1.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "ts-loader": "^5.3.3",
+    "tslib": "^1.9.3",
+    "typescript": "^3.2.4"
+  },
+  "scripts": {
+    "rollup": "rollup -c --environment INCLUDE_DEPS,BUILD:development"
+  }
+}

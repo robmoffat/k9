@@ -409,7 +409,7 @@ var limit = function limit(num, min, max) {
 
 var colorMiddleware = { name: name, input: input, output: output };
 
-var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * A naive, but small, clone function.
@@ -422,7 +422,7 @@ var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symb
  * clone('hello world')
  */
 var clone = function clone(value) {
-  if ((typeof value === 'undefined' ? 'undefined' : _typeof$2(value)) !== 'object') {
+  if ((typeof value === 'undefined' ? 'undefined' : _typeof$1(value)) !== 'object') {
     return value;
   } else if (Array.isArray(value)) {
     var arr = [];
@@ -445,7 +445,7 @@ var clone = function clone(value) {
   return value;
 };
 
-var _typeof$3 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * A tweenable unit.
@@ -506,7 +506,7 @@ var input$1 = function input(x) {
  * output(unit)
  */
 var output$1 = function output(x) {
-  if ((typeof x === 'undefined' ? 'undefined' : _typeof$3(x)) === 'object' && x.middleware === name$1) {
+  if ((typeof x === 'undefined' ? 'undefined' : _typeof$2(x)) === 'object' && x.middleware === name$1) {
     var values = x.values;
     var result = [];
 
@@ -542,7 +542,7 @@ var config = {
   }
 };
 
-var _typeof$4 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$3 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * A group of functions to transform/untransform a value.
@@ -565,10 +565,10 @@ var _typeof$4 = typeof Symbol === "function" && typeof Symbol.iterator === "symb
  * @example
  * apply(2, n => n * 2)
  */
-var apply$1 = function apply(value, func) {
+var apply = function apply(value, func) {
   var v = func(value);
 
-  if ((typeof v === 'undefined' ? 'undefined' : _typeof$4(v)) !== 'object') {
+  if ((typeof v === 'undefined' ? 'undefined' : _typeof$3(v)) !== 'object') {
     return v;
   } else if (Array.isArray(v)) {
     var arr = [];
@@ -606,7 +606,7 @@ var input$2 = function input(value, middleware) {
   var v = value;
 
   for (var i = 0, l = middleware.length; i < l; i++) {
-    v = apply$1(v, middleware[i].input);
+    v = apply(v, middleware[i].input);
   }
 
   return v;
@@ -627,19 +627,17 @@ var output$2 = function output(value, middleware) {
   var v = value;
 
   for (var i = middleware.length - 1; i >= 0; i--) {
-    v = apply$1(v, middleware[i].output);
+    v = apply(v, middleware[i].output);
   }
 
   return v;
 };
 
-var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _typeof$1 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$4 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _slicedToArray$1 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-/* globals true */
 
 /**
  * The position of an object on a Timeline
@@ -751,7 +749,7 @@ var _slicedToArray$1 = function () { function sliceIterator(arr, i) { var _arr =
  * @example
  * apply(shape, middleware)
  */
-var apply = function apply(_ref, middleware) {
+var apply$1 = function apply(_ref, middleware) {
   var keyframes = _ref.keyframes;
 
   for (var i = 0, l = keyframes.length; i < l; i++) {
@@ -812,42 +810,6 @@ var iterationsComplete = function iterationsComplete(playbackOptions, at) {
   }
 
   return ms / duration;
-};
-
-/**
- * Stops playback of a Timeline.
- *
- * @param {Timeline} timeline
- * @param {PlaybackOptions} playbackOptions
- * @param {number} [at]
- *
- * @example
- * pause(timeline)
- */
-var pause = function pause(timeline) {
-  var playbackOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var at = arguments[2];
-
-  timeline.playbackOptions = updatePlaybackOptions({ at: at, timeline: timeline, pause: true, playbackOptions: playbackOptions });
-  updateState(timeline, at);
-};
-
-/**
- * Starts playback of a Timeline.
- *
- * @param {Timeline} timeline
- * @param {PlaybackOptions} playbackOptions
- * @param {number} [at]
- *
- * @example
- * play(timeline, { initialIterations: 0 })
- */
-var play = function play(timeline) {
-  var playbackOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var at = arguments[2];
-
-  timeline.playbackOptions = updatePlaybackOptions({ at: at, timeline: timeline, playbackOptions: playbackOptions });
-  updateState(timeline, at);
 };
 
 /**
@@ -953,11 +915,11 @@ var shapeWithOptionsFromArray = function shapeWithOptionsFromArray(_ref3, i) {
       shape = _ref4[0],
       options = _ref4[1];
 
-  if (true && ((typeof shape === 'undefined' ? 'undefined' : _typeof$1(shape)) !== 'object' || !shape.keyframes)) {
+  if ((typeof shape === 'undefined' ? 'undefined' : _typeof$4(shape)) !== 'object' || !shape.keyframes) {
     throw new TypeError('When an array is passed to the timeline function the first item must be a Shape');
   }
 
-  if (true && (typeof options === 'undefined' ? 'undefined' : _typeof$1(options)) !== 'object') {
+  if ((typeof options === 'undefined' ? 'undefined' : _typeof$4(options)) !== 'object') {
     throw new TypeError('When an array is passed to the timeline function the second item must be an object');
   }
 
@@ -967,30 +929,30 @@ var shapeWithOptionsFromArray = function shapeWithOptionsFromArray(_ref3, i) {
       queue = _options$queue === undefined ? config.defaults.timeline.queue : _options$queue;
 
 
-  if (true && typeof name !== 'string' && typeof name !== 'number') {
+  if (typeof name !== 'string' && typeof name !== 'number') {
     throw new TypeError('The name prop must be of type string or number');
   }
 
-  if ((typeof queue === 'undefined' ? 'undefined' : _typeof$1(queue)) === 'object' && !Array.isArray(queue) && queue !== null) {
+  if ((typeof queue === 'undefined' ? 'undefined' : _typeof$4(queue)) === 'object' && !Array.isArray(queue) && queue !== null) {
     var after = queue.after,
         at = queue.at,
         _queue$offset = queue.offset,
         offset = _queue$offset === undefined ? 0 : _queue$offset;
 
 
-    if (true && typeof offset !== 'undefined' && typeof offset !== 'number') {
+    if (typeof offset !== 'undefined' && typeof offset !== 'number') {
       throw new TypeError('The queue.offset prop must be of type number');
     }
 
-    if (true && typeof at !== 'undefined' && typeof after !== 'undefined') {
+    if (typeof at !== 'undefined' && typeof after !== 'undefined') {
       throw new TypeError('You cannot pass both queue.at and queue.after props');
     }
 
-    if (true && typeof at !== 'undefined' && typeof at !== 'string' && typeof at !== 'number') {
+    if (typeof at !== 'undefined' && typeof at !== 'string' && typeof at !== 'number') {
       throw new TypeError('The queue.at prop must be of type string or number');
     }
 
-    if (true && typeof after !== 'undefined' && typeof after !== 'string' && typeof after !== 'number') {
+    if (typeof after !== 'undefined' && typeof after !== 'string' && typeof after !== 'number') {
       throw new TypeError('The queue.after prop must be of type string or number');
     }
 
@@ -1027,7 +989,7 @@ var shapeWithOptionsFromArray = function shapeWithOptionsFromArray(_ref3, i) {
  * sort(props)
  */
 var sort = function sort(props) {
-  if (true && props.length === 0) {
+  if (props.length === 0) {
     throw new TypeError('The timeline function must be passed at least one Shape');
   }
 
@@ -1041,7 +1003,7 @@ var sort = function sort(props) {
     if (Array.isArray(prop)) {
       shapesWithOptions.push(shapeWithOptionsFromArray(prop, i));
     } else {
-      if (true && (typeof prop === 'undefined' ? 'undefined' : _typeof$1(prop)) !== 'object') {
+      if ((typeof prop === 'undefined' ? 'undefined' : _typeof$4(prop)) !== 'object') {
         throw new TypeError('The timeline function must only be passed objects and arrays');
       }
 
@@ -1182,13 +1144,13 @@ var timelineShapesAndDuration = function timelineShapesAndDuration(shapesWithOpt
         shape = _shapesWithOptions$i.shape;
 
 
-    if (true && typeof shape.timeline !== 'undefined') {
+    if (typeof shape.timeline !== 'undefined') {
       throw new Error('A Shape can only be added to one timeline');
     }
 
     shape.name = name;
 
-    apply(shape, middleware);
+    apply$1(shape, middleware);
 
     var start = shapeStart({
       after: after,
@@ -1216,80 +1178,6 @@ var timelineShapesAndDuration = function timelineShapesAndDuration(shapesWithOpt
       start: timelineStart
     })
   };
-};
-
-/**
- * Updates the PlaybackOptions of a Timeline.
- *
- * @param {Object} opts
- * @param {number} [opts.at]
- * @param {PlaybackOptions} opts.playbackOptions
- * @param {Timeline} opts.timeline
- *
- * @example
- * updatePlaybackOptions({ timeline, playbackOptions })
- */
-var updatePlaybackOptions = function updatePlaybackOptions(_ref6) {
-  var at = _ref6.at,
-      _ref6$pause = _ref6.pause,
-      pause = _ref6$pause === undefined ? false : _ref6$pause,
-      playbackOptions = _ref6.playbackOptions,
-      timeline = _ref6.timeline;
-
-  if (true && ((typeof timeline === 'undefined' ? 'undefined' : _typeof$1(timeline)) !== 'object' || !timeline.timelineShapes || !timeline.playbackOptions)) {
-    throw new TypeError('The updatePlaybackOptions function must be passed a Timeline');
-  }
-
-  if (true && typeof at !== 'undefined' && typeof at !== 'number') {
-    throw new TypeError('The updatePlaybackOptions function at property must be of type number');
-  }
-
-  var previous = timeline.playbackOptions;
-
-  var next = validPlaybackOptions(_extends$1({}, previous, playbackOptions, {
-    started: typeof at !== 'undefined' ? at : Date.now()
-  }));
-
-  if (typeof playbackOptions.initialIterations !== 'undefined') {
-    if (typeof playbackOptions.reverse === 'undefined') {
-      next.reverse = currentReverse(previous, next.initialIterations - previous.initialIterations);
-    }
-
-    if (typeof playbackOptions.iterations === 'undefined' && previous.iterations !== Infinity) {
-      next.iterations = Math.max(0, previous.initialIterations + previous.iterations - next.initialIterations);
-    }
-  } else {
-    var complete = iterationsComplete(previous, next.started);
-    var reverse = currentReverse(previous, complete);
-
-    next.initialIterations = previous.initialIterations + complete;
-
-    if (typeof playbackOptions.iterations === 'undefined') {
-      next.iterations = previous.iterations - complete;
-
-      if (typeof playbackOptions.reverse !== 'undefined' && next.reverse !== previous.reverse && next.iterations !== Infinity) {
-        var nextIterations = next.initialIterations;
-        next.initialIterations = next.iterations;
-        next.iterations = nextIterations;
-      }
-    } else {
-      if (typeof playbackOptions.reverse !== 'undefined' && playbackOptions.reverse !== reverse && next.iterations !== Infinity) {
-        next.initialIterations = previous.iterations - complete;
-      }
-    }
-
-    if (typeof playbackOptions.reverse === 'undefined') {
-      next.reverse = reverse;
-    } else if (next.iterations === Infinity) {
-      next.initialIterations = playbackOptions.reverse === reverse ? next.initialIterations % 1 : 1 - next.initialIterations % 1;
-    }
-  }
-
-  if (pause) {
-    delete next.started;
-  }
-
-  return next;
 };
 
 /**
@@ -1379,7 +1267,7 @@ var validPlaybackOptions = function validPlaybackOptions(_ref8) {
   var playbackOptions = {};
 
   if (typeof duration !== 'undefined') {
-    if (true && (typeof duration !== 'number' || duration < 0)) {
+    if (typeof duration !== 'number' || duration < 0) {
       throw new TypeError('The timeline function duration option must be a positive number or zero');
     }
 
@@ -1405,14 +1293,14 @@ var validPlaybackOptions = function validPlaybackOptions(_ref8) {
   }
 
   if (typeof started !== 'undefined') {
-    if (true && (typeof started !== 'number' || started < 0)) {
+    if (typeof started !== 'number' || started < 0) {
       throw new TypeError('The timeline function started option must be a positive number or zero');
     }
 
     playbackOptions.started = started;
   }
 
-  return _extends$1({}, playbackOptions, {
+  return _extends({}, playbackOptions, {
     alternate: alternate,
     initialIterations: initialIterations,
     iterations: iterations,
@@ -1420,9 +1308,7 @@ var validPlaybackOptions = function validPlaybackOptions(_ref8) {
   });
 };
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-/* globals true */
+var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
  * An event.
@@ -1476,13 +1362,13 @@ var acceptedEventNames = ['timeline.start', 'timeline.finish', 'shape.start', 's
  * @example
  * event(timeline)
  */
-var event = function event(timeline) {
+var event = function event(timeline$$1) {
   return {
     previousPlaybackOptions: {},
     previousState: {},
-    subscribe: subscribe(timeline),
+    subscribe: subscribe(timeline$$1),
     subscriptions: [],
-    unsubscribe: unsubscribe(timeline)
+    unsubscribe: unsubscribe(timeline$$1)
   };
 };
 
@@ -1536,17 +1422,17 @@ var activeEventNames = function activeEventNames(_ref2) {
  * @example
  * events(timeline)
  */
-var events = function events(timeline) {
-  if (playbackOptionsChanged(timeline)) {
-    timeline.event.previousPlaybackOptions = {};
-    timeline.event.previousState = {};
+var events = function events(timeline$$1) {
+  if (playbackOptionsChanged(timeline$$1)) {
+    timeline$$1.event.previousPlaybackOptions = {};
+    timeline$$1.event.previousState = {};
   }
 
-  var subscriptions = timeline.event.subscriptions;
+  var subscriptions = timeline$$1.event.subscriptions;
 
-  if (subscriptions.length && active(timeline)) {
-    var eventNames = activeEventNames(timeline);
-    var queue = eventQueue(timeline, eventNames);
+  if (subscriptions.length && active(timeline$$1)) {
+    var eventNames = activeEventNames(timeline$$1);
+    var queue = eventQueue(timeline$$1, eventNames);
 
     for (var i = 0, l = queue.length; i < l; i++) {
       var _event = queue[i];
@@ -1563,8 +1449,8 @@ var events = function events(timeline) {
     }
   }
 
-  timeline.event.previousPlaybackOptions = _extends({}, timeline.playbackOptions);
-  timeline.event.previousState = _extends({}, timeline.state);
+  timeline$$1.event.previousPlaybackOptions = _extends$1({}, timeline$$1.playbackOptions);
+  timeline$$1.event.previousState = _extends$1({}, timeline$$1.state);
 };
 
 /**
@@ -1712,8 +1598,8 @@ var oldest = function oldest(a, b) {
  * @example
  * playbackOptionsChanged(timeline)
  */
-var playbackOptionsChanged = function playbackOptionsChanged(timeline) {
-  return JSON.stringify(timeline.playbackOptions) !== JSON.stringify(timeline.event.previousPlaybackOptions);
+var playbackOptionsChanged = function playbackOptionsChanged(timeline$$1) {
+  return JSON.stringify(timeline$$1.playbackOptions) !== JSON.stringify(timeline$$1.event.previousPlaybackOptions);
 };
 
 /**
@@ -1844,16 +1730,16 @@ var timeToSamePosition = function timeToSamePosition(_ref6) {
  * @example
  * subscribe(timeline)('timeline.start', () => console.log('timeline.start'))
  */
-var subscribe = function subscribe(timeline) {
+var subscribe = function subscribe(timeline$$1) {
   return function (name, callback) {
     if (validEventName(name)) {
-      if (true && typeof callback !== 'function') {
+      if (typeof callback !== 'function') {
         throw new TypeError('The subscribe functions second argument must be of type function');
       }
 
       var token = ++t;
 
-      timeline.event.subscriptions.push({ name: name, callback: callback, token: token });
+      timeline$$1.event.subscriptions.push({ name: name, callback: callback, token: token });
 
       return token;
     }
@@ -1898,9 +1784,9 @@ var validEventName = function validEventName(name) {
  * @example
  * unsubscribe(timeline)(token)
  */
-var unsubscribe = function unsubscribe(timeline) {
+var unsubscribe = function unsubscribe(timeline$$1) {
   return function (token) {
-    var subscriptions = timeline.event.subscriptions;
+    var subscriptions = timeline$$1.event.subscriptions;
 
     var matchIndex = void 0;
 
@@ -1911,7 +1797,7 @@ var unsubscribe = function unsubscribe(timeline) {
     }
 
     if (typeof matchIndex !== 'undefined') {
-      timeline.event.subscriptions.splice(matchIndex, 1);
+      timeline$$1.event.subscriptions.splice(matchIndex, 1);
       return true;
     }
 
@@ -1919,7 +1805,7 @@ var unsubscribe = function unsubscribe(timeline) {
   };
 };
 
-var _slicedToArray$3 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray$2 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 // I extracted this from the a2c function from
 // SVG path – https://github.com/fontello/svgpath
@@ -2068,7 +1954,7 @@ var arcToBezier = function arcToBezier(_ref2) {
   }
 
   var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
-      _getArcCenter2 = _slicedToArray$3(_getArcCenter, 4),
+      _getArcCenter2 = _slicedToArray$2(_getArcCenter, 4),
       centerx = _getArcCenter2[0],
       centery = _getArcCenter2[1],
       ang1 = _getArcCenter2[2],
@@ -2190,9 +2076,9 @@ var cubify = function cubify(s) {
   return applyFuncToShapes(cubifyShape, s);
 };
 
-var _slicedToArray$2 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray$3 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-function _toConsumableArray$1(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var linearPoints = function linearPoints(from, to) {
   return [{
@@ -2232,7 +2118,7 @@ var addPoints = function addPoints(shape, pointsRequired) {
     throw Error('`add` function must be passed a number as the second argument');
   }
 
-  var nextShape = [].concat(_toConsumableArray$1(shape));
+  var nextShape = [].concat(_toConsumableArray(shape));
 
   for (var i = 1; i < nextShape.length;) {
     if (nextShape.length >= pointsRequired) {
@@ -2247,7 +2133,7 @@ var addPoints = function addPoints(shape, pointsRequired) {
       var from = nextShape[i - 1];
 
       var _points = points(from, to),
-          _points2 = _slicedToArray$2(_points, 2),
+          _points2 = _slicedToArray$3(_points, 2),
           midPoint = _points2[0],
           replacementPoint = _points2[1];
 
@@ -2290,7 +2176,7 @@ var linearLength = function linearLength(x1, y1, x2, y2) {
 
 var _slicedToArray$4 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-function _toConsumableArray$2(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray$1(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var angle = function angle(triangle) {
   var _triangle$ = _slicedToArray$4(triangle[0], 2),
@@ -2370,7 +2256,7 @@ var straighten = function straighten(prevPoint, point, accuracy) {
       midPoint = _curvedPoints2[0],
       lastPoint = _curvedPoints2[1];
 
-  return [].concat(_toConsumableArray$2(straighten(prevPoint, midPoint, accuracy)), _toConsumableArray$2(straighten(midPoint, lastPoint, accuracy)));
+  return [].concat(_toConsumableArray$1(straighten(prevPoint, midPoint, accuracy)), _toConsumableArray$1(straighten(midPoint, lastPoint, accuracy)));
 };
 
 var boundingBox = function boundingBox(s) {
@@ -2416,7 +2302,7 @@ var boundingBox = function boundingBox(s) {
   };
 };
 
-function _toConsumableArray$3(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray$2(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var countLinePoints = function countLinePoints(lines) {
   return lines.reduce(function (count, points) {
@@ -2434,9 +2320,9 @@ var isJoined = function isJoined(points) {
   return firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y;
 };
 
-var joinLines$1 = function joinLines(lines) {
+var joinLines = function joinLines(lines) {
   return lines.reduce(function (shape, line) {
-    return [].concat(_toConsumableArray$3(shape), _toConsumableArray$3(line));
+    return [].concat(_toConsumableArray$2(shape), _toConsumableArray$2(line));
   }, []);
 };
 
@@ -2445,7 +2331,7 @@ var moveIndex = function moveIndex(s, offset) {
 };
 
 var movePointsIndex = function movePointsIndex(shape, offset) {
-  var lines = splitLines$1(shape);
+  var lines = splitLines(shape);
   var count = countLinePoints(lines);
   var normalisedOffset = (offset % count + count) % count;
 
@@ -2459,9 +2345,9 @@ var movePointsIndex = function movePointsIndex(shape, offset) {
 
   var reorderedLines = reorderLines(lines, lineIndex);
   var firstLine = reorderPoints(reorderedLines[0], pointIndex);
-  var restOfLines = [].concat(_toConsumableArray$3(reorderedLines)).splice(1);
+  var restOfLines = [].concat(_toConsumableArray$2(reorderedLines)).splice(1);
 
-  return joinLines$1([firstLine].concat(_toConsumableArray$3(restOfLines)));
+  return joinLines([firstLine].concat(_toConsumableArray$2(restOfLines)));
 };
 
 var nextIndex = function nextIndex(lines, offset) {
@@ -2480,7 +2366,7 @@ var nextIndex = function nextIndex(lines, offset) {
 };
 
 var reorderLines = function reorderLines(lines, offset) {
-  return [].concat(_toConsumableArray$3(lines)).splice(offset).concat([].concat(_toConsumableArray$3(lines)).splice(0, offset));
+  return [].concat(_toConsumableArray$2(lines)).splice(offset).concat([].concat(_toConsumableArray$2(lines)).splice(0, offset));
 };
 
 var reorderPoints = function reorderPoints(points, offset) {
@@ -2488,16 +2374,16 @@ var reorderPoints = function reorderPoints(points, offset) {
     return points;
   }
 
-  var nextPoints = [{ x: points[offset].x, y: points[offset].y, moveTo: true }].concat(_toConsumableArray$3([].concat(_toConsumableArray$3(points)).splice(offset + 1)));
+  var nextPoints = [{ x: points[offset].x, y: points[offset].y, moveTo: true }].concat(_toConsumableArray$2([].concat(_toConsumableArray$2(points)).splice(offset + 1)));
 
   if (isJoined(points)) {
-    return [].concat(_toConsumableArray$3(nextPoints), _toConsumableArray$3([].concat(_toConsumableArray$3(points)).splice(1, offset)));
+    return [].concat(_toConsumableArray$2(nextPoints), _toConsumableArray$2([].concat(_toConsumableArray$2(points)).splice(1, offset)));
   }
 
-  return [].concat(_toConsumableArray$3(nextPoints), _toConsumableArray$3([].concat(_toConsumableArray$3(points)).splice(0, offset + 1)));
+  return [].concat(_toConsumableArray$2(nextPoints), _toConsumableArray$2([].concat(_toConsumableArray$2(points)).splice(0, offset + 1)));
 };
 
-var splitLines$1 = function splitLines(shape) {
+var splitLines = function splitLines(shape) {
   return shape.reduce(function (lines, point) {
     if (point.moveTo) {
       lines.push([]);
@@ -2509,17 +2395,17 @@ var splitLines$1 = function splitLines(shape) {
   }, []);
 };
 
-var _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var offsetPoints = function offsetPoints(shape, x, y) {
   return shape.map(function (point) {
-    var p = _extends$3({}, point);
+    var p = _extends$2({}, point);
 
     p.x += x;
     p.y += y;
 
     if (p.curve) {
-      p.curve = _extends$3({}, p.curve);
+      p.curve = _extends$2({}, p.curve);
 
       if (p.curve.type === 'quadratic' || p.curve.type === 'cubic') {
         p.curve.x1 += x;
@@ -2712,7 +2598,7 @@ var reverse = function reverse(s) {
   return applyFuncToShapes(reversePoints, cubify(s));
 };
 
-var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$3 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _slicedToArray$5 = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
@@ -2737,7 +2623,7 @@ var rotatePoints = function rotatePoints(shape, angle, about) {
         x = _rotatePoint2[0],
         y = _rotatePoint2[1];
 
-    var p = _extends$4({}, point, { x: x, y: y });
+    var p = _extends$3({}, point, { x: x, y: y });
 
     if (p.curve) {
       if (p.curve.type === 'quadratic' || p.curve.type === 'cubic') {
@@ -2746,7 +2632,7 @@ var rotatePoints = function rotatePoints(shape, angle, about) {
             x1 = _rotatePoint4[0],
             y1 = _rotatePoint4[1];
 
-        p.curve = _extends$4({}, p.curve, { x1: x1, y1: y1 });
+        p.curve = _extends$3({}, p.curve, { x1: x1, y1: y1 });
       }
 
       if (p.curve.type === 'cubic') {
@@ -2755,7 +2641,7 @@ var rotatePoints = function rotatePoints(shape, angle, about) {
             x2 = _rotatePoint6[0],
             y2 = _rotatePoint6[1];
 
-        p.curve = _extends$4({}, p.curve, { x2: x2, y2: y2 });
+        p.curve = _extends$3({}, p.curve, { x2: x2, y2: y2 });
       }
     }
 
@@ -2770,16 +2656,16 @@ var rotate = function rotate(s, angle) {
   return applyFuncToShapes(rotatePoints, s, angle, about);
 };
 
-var _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$4 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var scalePoint = function scalePoint(point, scaleFactor, anchorX, anchorY) {
-  var p = _extends$5({}, point);
+  var p = _extends$4({}, point);
 
   p.x = anchorX - (anchorX - p.x) * scaleFactor;
   p.y = anchorY - (anchorY - p.y) * scaleFactor;
 
   if (point.curve) {
-    p.curve = _extends$5({}, p.curve);
+    p.curve = _extends$4({}, p.curve);
 
     if (p.curve.type === 'arc') {
       if (p.curve.rx) {
@@ -2844,27 +2730,27 @@ var scale = function scale(s, scaleFactor) {
 
 
 
-var transformFunctions = Object.freeze({
-	add: add,
-	boundingBox: boundingBox,
-	cubify: cubify,
-	length: length,
-	moveIndex: moveIndex,
-	offset: offset,
-	position: position$1,
-	remove: remove,
-	reverse: reverse,
-	rotate: rotate,
-	scale: scale
+var transformFunctions = /*#__PURE__*/Object.freeze({
+  add: add,
+  boundingBox: boundingBox,
+  cubify: cubify,
+  length: length,
+  moveIndex: moveIndex,
+  offset: offset,
+  position: position$1,
+  remove: remove,
+  reverse: reverse,
+  rotate: rotate,
+  scale: scale
 });
 
-var _extends$6 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$5 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _objectWithoutProperties$1(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var toPoints = function toPoints(_ref) {
   var type = _ref.type,
-      props = _objectWithoutProperties$1(_ref, ['type']);
+      props = _objectWithoutProperties(_ref, ['type']);
 
   switch (type) {
     case 'circle':
@@ -2976,21 +2862,25 @@ var getPointsFromPath = function getPointsFromPath(_ref5) {
     var upperCaseCommand = command.toUpperCase();
     var commandLength = commandLengths[upperCaseCommand];
     var relative = isRelative(command);
-    var prevPoint = i === 0 ? null : points[points.length - 1];
 
     if (commandLength > 0) {
       var commandParams = params.shift();
       var iterations = commandParams.length / commandLength;
 
       for (var j = 0; j < iterations; j++) {
+        var prevPoint = points[points.length - 1] || { x: 0, y: 0 };
+
         switch (upperCaseCommand) {
           case 'M':
-            var x = (relative && prevPoint ? prevPoint.x : 0) + commandParams.shift();
-            var y = (relative && prevPoint ? prevPoint.y : 0) + commandParams.shift();
+            var x = (relative ? prevPoint.x : 0) + commandParams.shift();
+            var y = (relative ? prevPoint.y : 0) + commandParams.shift();
 
-            moveTo = { x: x, y: y };
-
-            points.push({ x: x, y: y, moveTo: true });
+            if (j === 0) {
+              moveTo = { x: x, y: y };
+              points.push({ x: x, y: y, moveTo: true });
+            } else {
+              points.push({ x: x, y: y });
+            }
 
             break;
 
@@ -3142,7 +3032,9 @@ var getPointsFromPath = function getPointsFromPath(_ref5) {
         }
       }
     } else {
-      if (prevPoint.x !== moveTo.x || prevPoint.y !== moveTo.y) {
+      var _prevPoint = points[points.length - 1] || { x: 0, y: 0 };
+
+      if (_prevPoint.x !== moveTo.x || _prevPoint.y !== moveTo.y) {
         points.push({ x: moveTo.x, y: moveTo.y });
       }
     }
@@ -3182,7 +3074,7 @@ var getPointsFromPoints = function getPointsFromPoints(_ref8) {
   }, []);
 
   if (closed) {
-    p.push(_extends$6({}, p[0]));
+    p.push(_extends$5({}, p[0]));
   }
 
   p[0].moveTo = true;
@@ -3351,7 +3243,7 @@ var toPath = function toPath(s) {
   return pointsToD(points);
 };
 
-var _typeof$6 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$5 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var getErrors = function getErrors(shape) {
   var rules = getRules(shape);
@@ -3373,7 +3265,7 @@ var getErrors = function getErrors(shape) {
           if (!Array.isArray(shape[prop])) {
             errors.push(prop + ' prop must be of type array');
           }
-        } else if (_typeof$6(shape[prop]) !== type) {
+        } else if (_typeof$5(shape[prop]) !== type) {
           // eslint-disable-line valid-typeof
           errors.push(prop + ' prop must be of type ' + type);
         }
@@ -3461,15 +3353,13 @@ var valid = function valid(shape) {
   };
 };
 
-var _typeof$5 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$6 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _extends$2 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$6 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray$3(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-/* globals true */
+function _objectWithoutProperties$1(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 /**
  * Shape data as specified by the
@@ -3556,7 +3446,7 @@ var applyCurveStructure = function applyCurveStructure(frameShape, structure) {
         var point = cubifiedPoints[_i3];
 
         if (structure[_i3] && !point.curve) {
-          nextPoints.push(_extends$2({}, point, {
+          nextPoints.push(_extends$6({}, point, {
             curve: {
               type: 'cubic',
               x1: points[_i3 - 1].x,
@@ -3602,7 +3492,7 @@ var applyPointStructure = function applyPointStructure(frameShape, structure) {
 
           frameShape.childFrameShapes.push({
             attributes: clone(frameShape.attributes),
-            points: [_extends$2({}, clone(previous[previous.length - 1]), { moveTo: true }), clone(previous[previous.length - 1])]
+            points: [_extends$6({}, clone(previous[previous.length - 1]), { moveTo: true }), clone(previous[previous.length - 1])]
           });
         }
       }
@@ -3616,7 +3506,7 @@ var applyPointStructure = function applyPointStructure(frameShape, structure) {
 
     frameShape.childFrameShapes = nextChildFrameShapes;
   } else {
-    var lines = splitLines(frameShape.points);
+    var lines = splitLines$1(frameShape.points);
 
     for (var _i5 = 0, _l5 = structure.length; _i5 < _l5; _i5++) {
       var desiredPoints = structure[_i5];
@@ -3624,7 +3514,7 @@ var applyPointStructure = function applyPointStructure(frameShape, structure) {
       if (!lines[_i5]) {
         var previousLine = lines[_i5 - 1];
 
-        lines[_i5] = [_extends$2({}, clone(previousLine[previousLine.length - 1]), { moveTo: true }), clone(previousLine[previousLine.length - 1])];
+        lines[_i5] = [_extends$6({}, clone(previousLine[previousLine.length - 1]), { moveTo: true }), clone(previousLine[previousLine.length - 1])];
       }
 
       if (desiredPoints > lines[_i5].length) {
@@ -3632,7 +3522,7 @@ var applyPointStructure = function applyPointStructure(frameShape, structure) {
       }
     }
 
-    frameShape.points = joinLines(lines);
+    frameShape.points = joinLines$1(lines);
   }
 
   return frameShape;
@@ -3737,11 +3627,11 @@ var commonPointStructure = function commonPointStructure(structures) {
  * frame(timeline)
  */
 var frame = function frame(timeline$$1, at) {
-  if (true && ((typeof timeline$$1 === 'undefined' ? 'undefined' : _typeof$5(timeline$$1)) !== 'object' || !timeline$$1.timelineShapes || !timeline$$1.playbackOptions)) {
+  if ((typeof timeline$$1 === 'undefined' ? 'undefined' : _typeof$6(timeline$$1)) !== 'object' || !timeline$$1.timelineShapes || !timeline$$1.playbackOptions) {
     throw new TypeError('The frame function\'s first argument must be a Timeline');
   }
 
-  if (true && typeof at !== 'undefined' && typeof at !== 'number') {
+  if (typeof at !== 'undefined' && typeof at !== 'number') {
     throw new TypeError('The frame function\'s second argument must be of type number');
   }
 
@@ -3784,26 +3674,9 @@ var frame = function frame(timeline$$1, at) {
  */
 var frameShapeFromPlainShapeObject = function frameShapeFromPlainShapeObject(_ref) {
   var childPlainShapeObjects = _ref.shapes,
-      plainShapeObject = _objectWithoutProperties(_ref, ['shapes']);
+      plainShapeObject = _objectWithoutProperties$1(_ref, ['shapes']);
 
-  var type = plainShapeObject.type,
-      height = plainShapeObject.height,
-      width = plainShapeObject.width,
-      x = plainShapeObject.x,
-      y = plainShapeObject.y,
-      cx = plainShapeObject.cx,
-      cy = plainShapeObject.cy,
-      r = plainShapeObject.r,
-      rx = plainShapeObject.rx,
-      ry = plainShapeObject.ry,
-      x1 = plainShapeObject.x1,
-      x2 = plainShapeObject.x2,
-      y1 = plainShapeObject.y1,
-      y2 = plainShapeObject.y2,
-      d = plainShapeObject.d,
-      points = plainShapeObject.points,
-      shapes = plainShapeObject.shapes,
-      attributes = _objectWithoutProperties(plainShapeObject, ['type', 'height', 'width', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry', 'x1', 'x2', 'y1', 'y2', 'd', 'points', 'shapes']);
+  var attributes = _objectWithoutProperties$1(plainShapeObject, ['type', 'height', 'width', 'x', 'y', 'cx', 'cy', 'r', 'rx', 'ry', 'x1', 'x2', 'y1', 'y2', 'd', 'points', 'shapes']);
 
   if (plainShapeObject.type === 'g' && childPlainShapeObjects) {
     var childFrameShapes = [];
@@ -3871,10 +3744,10 @@ var frameShapeFromShape = function frameShapeFromShape(shape, position$$1, middl
  * @example
  * joinLines([ shape1, shape2 ])
  */
-var joinLines = function joinLines(lines) {
+var joinLines$1 = function joinLines(lines) {
   var _ref2;
 
-  return (_ref2 = []).concat.apply(_ref2, _toConsumableArray(lines));
+  return (_ref2 = []).concat.apply(_ref2, _toConsumableArray$3(lines));
 };
 
 /**
@@ -3953,7 +3826,7 @@ var pointStructure = function pointStructure(_ref4) {
  * @example
  * splitLines(points)
  */
-var splitLines = function splitLines(points) {
+var splitLines$1 = function splitLines(points) {
   var lines = [];
 
   for (var i = 0, l = points.length; i < l; i++) {
@@ -3984,7 +3857,7 @@ var splitLines = function splitLines(points) {
  */
 var tween = function tween(from, to, easing, position$$1) {
   if (typeof from === 'number') {
-    if (true && typeof to !== 'number') {
+    if (typeof to !== 'number') {
       throw new TypeError('The tween function\'s from and to arguments must be of an identicle structure');
     }
 
@@ -3994,7 +3867,7 @@ var tween = function tween(from, to, easing, position$$1) {
 
     return easing(position$$1, from, to, 1);
   } else if (Array.isArray(from)) {
-    if (true && !Array.isArray(to)) {
+    if (!Array.isArray(to)) {
       throw new TypeError('The tween function\'s from and to arguments must be of an identicle structure');
     }
 
@@ -4005,8 +3878,8 @@ var tween = function tween(from, to, easing, position$$1) {
     }
 
     return arr;
-  } else if (from !== null && (typeof from === 'undefined' ? 'undefined' : _typeof$5(from)) === 'object') {
-    if (true && to !== null && (typeof to === 'undefined' ? 'undefined' : _typeof$5(to)) !== 'object') {
+  } else if (from !== null && (typeof from === 'undefined' ? 'undefined' : _typeof$6(from)) === 'object') {
+    if (to !== null && (typeof to === 'undefined' ? 'undefined' : _typeof$6(to)) !== 'object') {
       throw new TypeError('The tween function\'s from and to arguments must be of an identicle structure');
     }
 
@@ -4021,8 +3894,6 @@ var tween = function tween(from, to, easing, position$$1) {
 
   return from;
 };
-
-'use strict';
 
 // t: current time, b: beginning value, _c: final value, d: total duration
 var tweenFunctions = {
@@ -4274,8 +4145,6 @@ var tweenFunctions_1 = tweenFunctions;
 
 var _typeof$7 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* globals true */
-
 /**
  * An easing function.
  *
@@ -4435,36 +4304,7 @@ var transform = function transform(frameShape, transforms) {
   return frameShape;
 };
 
-/**
- * Applies an array of transforms to Points.
- *
- * @param {Points} points
- * @param {(string|number)[][]} transforms
- *
- * @return {Points}
- *
- * @example
- * transform(points, [[ 'rotate', 45 ]])
- */
-var transformPoints = function transformPoints(points, transforms) {
-  for (var i = 0, l = transforms.length; i < l; i++) {
-    var _transforms$i = _toArray(transforms[i]),
-        name = _transforms$i[0],
-        args = _transforms$i.slice(1);
-
-    points = transformFunctions[name].apply(transformFunctions, [points].concat(_toConsumableArray$4(args)));
-  }
-
-  return points;
-};
-
-var _extends$7 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _typeof$8 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 function _toArray$1(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
-
-/* globals true */
 
 /**
  * An SVG shape as defined by https://github.com/colinmeinke/svg-points.
@@ -4666,65 +4506,6 @@ var namePropValid = function namePropValid(plainShapeObjects) {
 };
 
 /**
- * Creates a PlainShapeObject from a Shape.
- *
- * @param {Shape} shape
- * @param {number} [at]
- *
- * @returns {PlainShapeObject}
- *
- * @example
- * plainShapeObject(circle)
- */
-var plainShapeObject = function plainShapeObject(shape, at) {
-  if (true && ((typeof shape === 'undefined' ? 'undefined' : _typeof$8(shape)) !== 'object' || !shape.keyframes)) {
-    throw new Error('The plainShapeObject function\'s first argument must be a Shape');
-  }
-
-  if (true && typeof at !== 'undefined' && typeof at !== 'number') {
-    throw new TypeError('The plainShapeObject function\'s second argument must be of type number');
-  }
-
-  var frameShape = typeof shape.timeline === 'undefined' ? shape.keyframes[0].frameShape : frame(shape.timeline, at)[shape.timelineIndex];
-
-  return plainShapeObjectFromFrameShape(frameShape);
-};
-
-/**
- * Creates a PlainShapeObject from a FrameShape.
- *
- * @param {FrameShape} frameShape
- *
- * @returns {PlainShapeObject}
- *
- * @example
- * plainShapeObjectFromFrameShape(frameShape)
- */
-var plainShapeObjectFromFrameShape = function plainShapeObjectFromFrameShape(_ref) {
-  var attributes = _ref.attributes,
-      points = _ref.points,
-      childFrameShapes = _ref.childFrameShapes;
-
-  if (childFrameShapes) {
-    var shapes = [];
-
-    for (var i = 0, l = childFrameShapes.length; i < l; i++) {
-      shapes.push(plainShapeObjectFromFrameShape(childFrameShapes[i]));
-    }
-
-    return _extends$7({}, attributes, {
-      type: 'g',
-      shapes: shapes
-    });
-  }
-
-  return _extends$7({}, attributes, {
-    type: 'path',
-    d: toPath(points)
-  });
-};
-
-/**
  * Validates transforms prop.
  *
  * @param {PlainShapeObject[]} plainShapeObjects
@@ -4878,95 +4659,6 @@ var valid$1 = function valid$$1() {
   }
 
   return namePropValid(plainShapeObjects) && corePropsValid(plainShapeObjects) && forcesPropValid(plainShapeObjects) && transformsPropValid(plainShapeObjects) && tweenPropsValid(plainShapeObjects) && motionPathPropsValid(plainShapeObjects);
-};
-
-function _objectWithoutProperties$2(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-/* globals true */
-
-/**
- * Applies a motion path's offset and rotation to a FrameShape.
- *
- * @param {Object} opts
- * @param {number} opts.angle - The angle to rotate the FrameShape
- * @param {FrameShape} opts.frameShape
- * @param {number} opts.x - The value to offset the FrameShape on the x axis
- * @param {number} opts.x - The value to offset the FrameShape on the x axis
- *
- * @returns {FrameShape}
- *
- * @example
- * applyMotionPath({ angle, frameShape, x, y })
- */
-var applyMotionPath = function applyMotionPath(_ref) {
-  var angle = _ref.angle,
-      frameShape = _ref.frameShape,
-      x = _ref.x,
-      y = _ref.y;
-
-  var _flattenPoints = flattenPoints(frameShape),
-      points = _flattenPoints.points,
-      pointsMap = _flattenPoints.pointsMap;
-
-  var offsetPoints = offset(points, x, y);
-  var rotatedPoints = angle ? rotate(offsetPoints, angle) : offsetPoints;
-
-  return pointsToFrameShape({
-    frameShape: frameShape,
-    points: rotatedPoints,
-    pointsMap: pointsMap
-  });
-};
-
-/**
- * Creates a motion path force function from a PlainShapeObject.
- *
- * @param {PlainShapeObject} plainShapeObject
- *
- * @returns {function}
- *
- * @example
- * motionPath({ ...plainShapeObject, accuracy: 0.1, rotate: true })
- */
-var motionPath = function motionPath(plainShapeObject) {
-  if (true && valid$1(plainShapeObject)) {
-    if (plainShapeObject.type === 'g') {
-      throw new TypeError('A motion path cannot be a group shape');
-    }
-  }
-
-  var _plainShapeObject$acc = plainShapeObject.accuracy,
-      accuracy = _plainShapeObject$acc === undefined ? 1 : _plainShapeObject$acc,
-      _plainShapeObject$eas = plainShapeObject.easing,
-      motionPathEasing = _plainShapeObject$eas === undefined ? config.defaults.motionPath.easing : _plainShapeObject$eas,
-      _plainShapeObject$rot = plainShapeObject.rotate,
-      r = _plainShapeObject$rot === undefined ? false : _plainShapeObject$rot,
-      _plainShapeObject$tra = plainShapeObject.transforms,
-      transforms = _plainShapeObject$tra === undefined ? [] : _plainShapeObject$tra,
-      coreProps = _objectWithoutProperties$2(plainShapeObject, ['accuracy', 'easing', 'rotate', 'transforms']);
-
-  var motionPathPoints = transformPoints(toPoints(coreProps), transforms);
-  var easing = easingFunction(motionPathEasing);
-
-  return function (frameShape, framePosition) {
-    var motionPathPosition = easing(framePosition, 0, 1, 1);
-
-    var _position = position$1(motionPathPoints, motionPathPosition, accuracy),
-        angle = _position.angle,
-        x = _position.x,
-        y = _position.y;
-
-    if (!x && !y) {
-      return frameShape;
-    }
-
-    return applyMotionPath({
-      angle: typeof r === 'number' ? (angle + r) % 360 : r === true ? angle : 0,
-      frameShape: frameShape,
-      x: x,
-      y: y
-    });
-  };
 };
 
 var _extends$8 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -5163,8 +4855,6 @@ var _typeof$9 = typeof Symbol === "function" && typeof Symbol.iterator === "symb
 
 function _toConsumableArray$5(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-/* globals true */
-
 /**
  * A sequence of static shapes.
  *
@@ -5228,7 +4918,7 @@ var shape = function shape() {
  */
 var sort$1 = function sort(props) {
   var plainShapeObjects = props.filter(function (prop) {
-    if (true && (typeof prop === 'undefined' ? 'undefined' : _typeof$9(prop)) !== 'object') {
+    if ((typeof prop === 'undefined' ? 'undefined' : _typeof$9(prop)) !== 'object') {
       throw new TypeError('The shape function must only be passed objects');
     }
 
@@ -5260,11 +4950,11 @@ var validProps = function validProps(_ref) {
   var plainShapeObjects = _ref.plainShapeObjects,
       name = _ref.options.name;
 
-  if (true && plainShapeObjects.length === 0) {
+  if (plainShapeObjects.length === 0) {
     throw new TypeError('The shape function must be passed at least one Plain Shape Object');
   }
 
-  if (true && valid$1.apply(undefined, _toConsumableArray$5(plainShapeObjects))) {
+  if (valid$1.apply(undefined, _toConsumableArray$5(plainShapeObjects))) {
     if (typeof name !== 'undefined' && typeof name !== 'string' && typeof name !== 'number') {
       throw new TypeError('The name option passed to the shape function must be of type string or number');
     }
@@ -5273,13 +4963,11 @@ var validProps = function validProps(_ref) {
   return true;
 };
 
-var _typeof$10 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof$a = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends$9 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _toConsumableArray$6(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-/* globals true */
 
 /**
  * A DOM node.
@@ -5481,7 +5169,7 @@ var pathNode = function pathNode(points) {
  * @example
  * plainShapeObject(el)
  */
-var plainShapeObject$2 = function plainShapeObject(el) {
+var plainShapeObject$1 = function plainShapeObject(el) {
   if (validNode(el)) {
     var data = nodeData(el);
     var attributes = data.attributes;
@@ -5547,13 +5235,9 @@ var updateNode = function updateNode(el, frameShp) {
   var changes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   {
-    if (!validNode(el)) {
-      throw new TypeError('The first argument of the updateNode function must be a valid DOM node');
-    }
+    if (!validNode(el)) ;
 
-    if (!validFrameShape(frameShp)) {
-      throw new TypeError('The second argument of the updateNode function must be a valid frameShape');
-    }
+    if (!validFrameShape(frameShp)) ;
   }
 
   var shouldApplyChanges = changes.length === 0;
@@ -5634,7 +5318,7 @@ var updateNode = function updateNode(el, frameShp) {
  */
 var validFrameShape = function validFrameShape(frameShp) {
   {
-    if ((typeof frameShp === 'undefined' ? 'undefined' : _typeof$10(frameShp)) !== 'object' || Array.isArray(frameShp)) {
+    if ((typeof frameShp === 'undefined' ? 'undefined' : _typeof$a(frameShp)) !== 'object' || Array.isArray(frameShp)) {
       throw new TypeError('frameShape must be of type object');
     }
 
@@ -5646,7 +5330,7 @@ var validFrameShape = function validFrameShape(frameShp) {
       throw new TypeError('frameShape must include an attributes property');
     }
 
-    if ((typeof attributes === 'undefined' ? 'undefined' : _typeof$10(attributes)) !== 'object' || Array.isArray(attributes)) {
+    if ((typeof attributes === 'undefined' ? 'undefined' : _typeof$a(attributes)) !== 'object' || Array.isArray(attributes)) {
       throw new TypeError('frameShape attributes property must be of type object');
     }
 
@@ -5666,7 +5350,7 @@ var validFrameShape = function validFrameShape(frameShp) {
       for (var i = 0, l = childFrameShapes.length; i < l; i++) {
         var childFrameShape = childFrameShapes[i];
 
-        if ((typeof childFrameShape === 'undefined' ? 'undefined' : _typeof$10(childFrameShape)) !== 'object' || _typeof$10(childFrameShape.attributes) !== 'object') {
+        if ((typeof childFrameShape === 'undefined' ? 'undefined' : _typeof$a(childFrameShape)) !== 'object' || _typeof$a(childFrameShape.attributes) !== 'object') {
           throw new TypeError('frameShape childFrameShapes property must be array of frameShapes');
         }
       }
@@ -5690,7 +5374,7 @@ var validFrameShape = function validFrameShape(frameShp) {
  */
 var validNode = function validNode(el) {
   {
-    if ((typeof el === 'undefined' ? 'undefined' : _typeof$10(el)) !== 'object' || !el.nodeName) {
+    if ((typeof el === 'undefined' ? 'undefined' : _typeof$a(el)) !== 'object' || !el.nodeName) {
       throw new TypeError('el must be a DOM node');
     }
 
@@ -5716,25 +5400,12 @@ var validNodeType = function validNodeType(nodeName) {
   return nodeTypes.indexOf(nodeName) !== -1;
 };
 
-/* globals true */
+/* globals __DEV__ */
 
 /**
  * Is the tick function running?
  */
 var ticks = 0;
-
-/**
- * Extends the Wilderness core play function.
- * Adds a call to the tick function.
- *
- * @param {Timeline} t
- * @param {PlaybackOptions} playbackOptions
- * @param {number} [at]
- */
-var play$1 = function play$$1(t, playbackOptions, at) {
-  play(t, playbackOptions, at);
-  tick();
-};
 
 /**
  * Calculate the active Timeline Shapes and update the corresponding Nodes.
@@ -5747,7 +5418,7 @@ var play$1 = function play$$1(t, playbackOptions, at) {
  */
 var tick = function tick(at) {
   if (!ticks) {
-    if (true && typeof at !== 'undefined' && typeof at !== 'number') {
+    if (typeof at !== 'undefined' && typeof at !== 'number') {
       throw new TypeError('The tick functions at option must be of type number');
     }
 
@@ -5807,197 +5478,7 @@ var timeline$1 = function timeline$$1() {
  */
 var timelines = [];
 
-var babelHelpers = {};
-var _typeof$11 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _extends$10 = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-babelHelpers;
-
-/* globals true */
+var _typeof$b = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * An object holding both Shapes and Timelines.
@@ -6023,7 +5504,7 @@ var render = function render(container) {
   }
 
   {
-    if ((typeof container === 'undefined' ? 'undefined' : _typeof$11(container)) !== 'object' || !container.nodeName) {
+    if ((typeof container === 'undefined' ? 'undefined' : _typeof$b(container)) !== 'object' || !container.nodeName) {
       throw new TypeError('The render function must be a DOM node as first argument');
     }
   }
@@ -6034,16 +5515,16 @@ var render = function render(container) {
   var timelines = result.timelines;
 
   for (var i = 0, l = shapes.length; i < l; i++) {
-    var shape = shapes[i];
-    shape.node = node(shape.keyframes[0].frameShape);
-    shapesToRender.push(shape);
-    shape.rendered = true;
+    var shape$$1 = shapes[i];
+    shape$$1.node = node(shape$$1.keyframes[0].frameShape);
+    shapesToRender.push(shape$$1);
+    shape$$1.rendered = true;
   }
 
   for (var _i2 = 0, _l2 = timelines.length; _i2 < _l2; _i2++) {
-    var timeline = timelines[_i2];
-    var timelineShapes = timeline.timelineShapes;
-    var frameShapes = frame(timeline);
+    var timeline$$1 = timelines[_i2];
+    var timelineShapes = timeline$$1.timelineShapes;
+    var frameShapes = frame(timeline$$1);
 
     for (var _i = 0, _l = timelineShapes.length; _i < _l; _i++) {
       var _shape = timelineShapes[_i].shape;
@@ -6051,7 +5532,7 @@ var render = function render(container) {
       shapesToRender.push(_shape);
     }
 
-    timeline.state.rendered = true;
+    timeline$$1.state.rendered = true;
   }
 
   for (var _i3 = 0, _l3 = shapesToRender.length; _i3 < _l3; _i3++) {
@@ -6084,7 +5565,7 @@ var split = function split(shapesAndTimelines) {
   for (var i = 0, l = shapesAndTimelines.length; i < l; i++) {
     var x = shapesAndTimelines[i];
 
-    if ((typeof x === 'undefined' ? 'undefined' : _typeof$11(x)) === 'object' && x.keyframes) {
+    if ((typeof x === 'undefined' ? 'undefined' : _typeof$b(x)) === 'object' && x.keyframes) {
       {
         if (x.timeline) {
           throw new Error('You cannot render a shape that has been placed on a timeline, instead render the timeline');
@@ -6096,8 +5577,8 @@ var split = function split(shapesAndTimelines) {
       }
 
       result.shapes.push(x);
-    } else if ((typeof x === 'undefined' ? 'undefined' : _typeof$11(x)) === 'object' && x.middleware && x.playbackOptions && x.state && x.timelineShapes) {
-      if (true && x.state.rendered) {
+    } else if ((typeof x === 'undefined' ? 'undefined' : _typeof$b(x)) === 'object' && x.middleware && x.playbackOptions && x.state && x.timelineShapes) {
+      if (x.state.rendered) {
         throw new Error('You cannot render the same timeline twice');
       }
 
@@ -6110,7 +5591,9 @@ var split = function split(shapesAndTimelines) {
   return result;
 };
 
-/* globals true */
+var _typeof$c = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _extends$a = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
  * Extends the Wilderness core shape function.
@@ -6135,7 +5618,7 @@ var shape$1 = function shape$$1() {
     var prop = props[i];
 
     if (prop.el) {
-      var p = _extends$10({}, plainShapeObject$2(prop.el), prop);
+      var p = _extends$a({}, plainShapeObject$1(prop.el), prop);
 
       delete p.el;
 
@@ -6152,7 +5635,7 @@ var shape$1 = function shape$$1() {
   var replace = options.replace;
 
   if (replace) {
-    if (true && ((typeof replace === 'undefined' ? 'undefined' : _typeof$11(replace)) !== 'object' || !replace.nodeName)) {
+    if ((typeof replace === 'undefined' ? 'undefined' : _typeof$c(replace)) !== 'object' || !replace.nodeName) {
       throw new TypeError('The replace option must be a DOM node');
     }
 
@@ -6162,4 +5645,81 @@ var shape$1 = function shape$$1() {
   return s;
 };
 
-export {shape, render, timeline, play}
+/**
+ * This file contains basic functionality to allow SVG diagrams to have behaviours and
+ * animate between different versions.
+ */
+function reconcileAttributes(fromElement, toElement) {
+    var toAtts = Array.from(toElement.attributes).map(a => a.name);
+    var fromAtts = Array.from(fromElement.attributes).map(a => a.name);
+    var toRemove = fromAtts.filter(a => -1 == toAtts.indexOf(a));
+    toRemove.forEach(a => fromElement.removeAttribute(a));
+    toAtts.forEach(a => {
+        fromElement.setAttribute(a, toElement.getAttribute(a));
+    });
+}
+function reconcileText(fromElement, toElement) {
+    fromElement.textContent = toElement.textContent;
+}
+const canMorph = ["rect", "path"];
+function merge(fromElement, toElement) {
+    if (-1 != canMorph.indexOf(fromElement.tagName)) {
+        const kf1 = { fromElement };
+        const kf2 = { toElement };
+        const shapeOptions = { replace: fromElement };
+        const morph = shape$1(kf1, kf2, shapeOptions);
+        const playbackOptions = {
+            alternate: true,
+            duration: 2000,
+            iterations: Infinity
+        };
+        const animation = timeline$1(morph, playbackOptions);
+        render(document.querySelector('svg'), animation);
+        return;
+    }
+    reconcileAttributes(fromElement, toElement);
+    var fi = 0;
+    var ti = 0;
+    while (fromElement.childElementCount > toElement.childElementCount) {
+        fromElement.children[fromElement.childElementCount - 1].remove();
+    }
+    if (toElement.childElementCount == 0) {
+        reconcileText(fromElement, toElement);
+    }
+    while (ti < toElement.childElementCount) {
+        if (fi < fromElement.childElementCount) {
+            // element on both sides.
+            var newFromElement = fromElement.children[fi];
+            var newToElement = toElement.children[ti];
+            if (newFromElement.tagName == newToElement.tagName) {
+                merge(newFromElement, newToElement);
+                fi++;
+                ti++;
+            }
+            else {
+                console.log("Replacing: " + newFromElement.tagName + " " + newToElement);
+                fromElement.insertBefore(newToElement, newFromElement);
+                newFromElement.remove();
+                fi++;
+            }
+        }
+        else {
+            const newToElement = toElement.children[ti];
+            const newFromElement = document.createElementNS(newToElement.namespaceURI, newToElement.tagName);
+            fromElement.appendChild(newFromElement);
+            merge(newFromElement, newToElement);
+        }
+    }
+}
+function transition(documentElement) {
+    merge(document.querySelector("body svg"), documentElement);
+    // force the load event to occur again
+    var evt = document.createEvent('Event');
+    evt.initEvent('load', false, false);
+    window.dispatchEvent(evt);
+}
+function tb() {
+    return "does nothing";
+}
+
+export { transition, tb };

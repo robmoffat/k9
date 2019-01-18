@@ -3,9 +3,7 @@
  * animate between different versions.
  */
 
-import { shape, render, timeline, play } from '../libraries/wilderness.js' 
-import "../libraries/jquery.min.js";
-
+import { shape, render, timeline, play } from 'wilderness' 
 
 function reconcileAttributes(fromElement, toElement) {
 	
@@ -26,7 +24,33 @@ function reconcileText(fromElement, toElement) {
 	
 }
 
+const canMorph = ["rect", "path"];
+
 function merge(fromElement, toElement) {
+	
+	if (-1 != canMorph.indexOf(fromElement.tagName)) {
+		
+		
+		const kf1 = { fromElement }
+		const kf2 = { toElement }
+		const shapeOptions = { replace: fromElement }
+	
+		const morph = shape(kf1, kf2, shapeOptions)
+		
+		const playbackOptions = {
+			alternate: true,
+			duration: 2000,
+			iterations: Infinity
+		}
+		
+		const animation = timeline(morph, playbackOptions)
+		
+		render(document.querySelector('svg'), animation)
+		
+		return 
+	}
+	
+	
 	reconcileAttributes(fromElement, toElement);
 	
 	var fi = 0;
