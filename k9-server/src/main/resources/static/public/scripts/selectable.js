@@ -24,14 +24,14 @@ function mousedown(event) {
 	} else {
 		classes.remove("selected")
 	}
+	
 	event.stopPropagation();
 }
 
 window.addEventListener('load', function() {
 	
-	// elements that have no fill won't be selectable, so we are going to shade those everso
-	    
     document.querySelectorAll("[id]").forEach(function(v) {
+    	// set up mousedown listeners.
     	v.removeEventListener("mousedown", mousedown);
     	v.addEventListener("mousedown", mousedown);
     })

@@ -13,6 +13,9 @@ function mouseover(event) {
 			selectedElement = v;
 		}
 	 }
+	
+	// prevents parent elements from highlighting too.
+	event.stopPropagation();
 }
 
 function mouseout(event) {

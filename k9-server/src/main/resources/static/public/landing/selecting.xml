@@ -16,14 +16,14 @@
      </g>
 
      
-     <g class="link">
-      <from reference="b1"></from>
-      <to reference="b2"></to>
+     <g class="link" id="link1">
+      <from id="link1-from" reference="b1"></from>
+      <to id="link1-to" reference="b2"></to>
      </g>
 
-     <g class="link">
-      <from reference="b1"></from>
-      <to reference="b3"></to>
+     <g class="link" id="link2">
+      <from id="link2-from" reference="b1" class="arrow"></from>
+      <to id="link2-to" reference="b3"></to>
      </g>
 
   </diagram>

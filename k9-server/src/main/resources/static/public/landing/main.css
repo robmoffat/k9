@@ -22,7 +22,7 @@ rect, path, text {
 
 diagram {
 	kite9-type: diagram;
-	kite9-padding: 15pt;
+	kite9-padding: 15px;
 	kite9-traversal: none;
 	kite9-template: url(template.xml#diagram);
 	background-color: white;
@@ -36,14 +36,15 @@ g.group {
 
 g.box {
 	kite9-template: url(template.xml#box);
-	fill: blue;
+	fill: white;
 	stroke: cyan;
+	kite9-padding: 10px;
 }
 
 g.button {
 	kite9-type: container;
 	kite9-template: url(template.xml#button);
-	stroke-width: 1pt; 
+	stroke-width: 1px; 
 	fill: green;
 	stroke: black;
 }
@@ -59,8 +60,16 @@ g.field {
 	fill: yellow;
 }
 
+.mouseover > .kite9-line {
+	stroke: yellow;
+}
+
 .selected > .kite9-back {
 	fill: orange;
+}
+
+.selected > .kite9-line {
+	stroke: orange;
 }
 
 *[id] {
@@ -69,7 +78,7 @@ g.field {
 
 g.bigtext {
 	kite9-type: text;
-	kite9-margin: 4pt;
+	kite9-margin: 4px;
 	kite9-vertical-align: top;
 	kite9-connection-align: 50%;
 	kite9-horizontal-align: left;
@@ -82,7 +91,7 @@ g.bigtext {
 
 g.editbox {
 	kite9-type: text;
-	kite9-margin: 4pt;
+	kite9-margin: 4px;
 	kite9-vertical-align: top;
 	kite9-connection-align: 50%;
 	kite9-horizontal-align: left;
@@ -93,27 +102,35 @@ g.editbox {
 	font-size: 50px;
 }
 
+/* Links */
+
 g.link {
 	kite9-type: link;
 	kite9-template: url(template.xml#link);
-	kite9-link-minimum-length: 15pt;
-	kite9-link-corner-radius: 10pt;
+	kite9-link-minimum-length: 20px;
+	kite9-link-corner-radius: 20px;
 	stroke: black;
-	stroke-width: 2px;
+	stroke-width: 3px;
 	fill: none;
+}
+
+rect.terminator {
+	fill: white;
+	stroke: none;
 }
 
 from,
 to {
 	kite9-type: link-end;
-	kite9-template: url(template.xml#empty-terminator);
-	kite9-padding: 5pt; 
+	kite9-template: url(template.xml#terminator);
+	kite9-padding: 5px; 
 } 
 
 from.arrow,
 to.arrow {
 	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
 	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
-	kite9-padding: 5pt 12pt 5pt 1pt;
-	kite9-marker-reserve: 1pt;
+	kite9-padding: 5px 12px 5px 1px;
+	kite9-marker-reserve: 1px;
 }
+

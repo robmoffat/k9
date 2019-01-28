@@ -17,7 +17,7 @@
  * Required so we can process old XML content
  */
 renderingInformation,
-fromDecoration,
+fromDecoration, 
 toDecoration, 
 position,
 size,
