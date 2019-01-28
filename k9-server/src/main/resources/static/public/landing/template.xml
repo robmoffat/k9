@@ -4,29 +4,56 @@
     <svg:script type="module">
       import "../scripts/navigable.js";
       import "../scripts/hoverable.js";
+      import "../scripts/selectable.js";
     </svg:script>
-
+   
   </svg:defs>
 
   <template id="diagram">
     <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' class="diagram-back" />
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' />
+    </back>
+    <contents />
+  </template>
+  
+  <template id='box'>
+    <back style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12pt' ry='12pt' />
     </back>
     <contents />
   </template>
 
   <template id="button" a="b">
     <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8pt' ry='8pt' class="button-back" />
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8' ry='8' />
     </back>
     <contents />
   </template>
 
   <template id="field" name="#{../@name}">
     <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="field-back" />
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
     </back>
     <contents />
   </template>
+  
+  <template id="link">
+    <contents />
+    <back style="kite9-type: svg; kite9-usage: decal;">
+      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
+    </back>
+  </template>
+
+  <template id='empty-terminator'>
+    <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="back" style='fill: none; stroke: none ' />
+  </template>
+
+  <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="6" refY="4" orient="auto">
+    <svg:path d="M2,2 L6,4 L2,6" class="back"></svg:path>
+  </svg:marker>
+
+  <svg:marker id="arrow-start-marker" markerWidth="7" markerHeight="7" refX="2" refY="4" orient="auto">
+    <svg:path d="M6,2 L2,4 L6,6" class="back"></svg:path>
+  </svg:marker>
 
 </svg:svg>

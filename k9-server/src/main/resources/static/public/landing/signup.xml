@@ -5,12 +5,12 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="button hoverable navigable" href="index.svg"><g class="bigtext">Back</g></g>
+     <g id="b1" class="button hoverable navigable animatable" href="index.svg"><g class="bigtext">Back</g></g>
 
-     <g id="f1" class="field hoverable"><g class="editbox editable" name="name">Enter Your Name</g></g>
+     <g id="f1" class="field hoverable animatable"><g class="editbox editable" name="name">Enter Your Name</g></g>
      
-     <g id="f2" class="field hoverable"><g class="editbox editable" name="password">Enter Your Password</g></g> 
+     <g id="f2" class="field hoverable animatable"><g class="editbox editable" name="password">Enter Your Password</g></g> 
 
-    <g id="bs" class="button hoverable"><g class="bigtext">Submit</g></g>
+    <g id="bs" class="button hoverable animatable"><g class="bigtext">Submit</g></g>
   </diagram>
 </svg:svg>

@@ -882,4 +882,14 @@ fromLabel {
 	kite9-margin: 4px;	
 }
 
+* {
+	transition-duration: 1s;
+}
 
+.mouseover.glyph-back {
+	fill: yellow !important;
+}
+
+.selected .glyph-back {
+	fill: green !important;
+}

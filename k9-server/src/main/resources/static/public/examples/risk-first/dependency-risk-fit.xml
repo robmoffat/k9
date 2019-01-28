@@ -8,51 +8,55 @@
     <group style="kite9-horizontal-align: center; kite9-sizing: minimize;">
 
 
-      <glyph id="1">
+      <glyph class="navigable hoverable" href="dependency-risk-fit2.svg" id="1">
         <label>Perfect Bus</label>
       </glyph>
 
-      <glyph id="2">
+      <glyph id="2" class="selectable">
         <stereotype>Feature Fit Risk</stereotype>
-        <label>Not Leaving at exactly 
-        the time you want
+        <label class="navigable hoverable">Not Leaving at exactly
+          the time you want
         </label>
       </glyph>
 
-      <glyph id="3">
-        <stereotype>Conceptual Integrity Risk</stereotype>
-        <label>Stopping at too many places
-        </label>
-      </glyph>
 
-      <glyph id="4">
-        <stereotype>Conceptual Integrity Risk
-          Feature Fit Risk
-        </stereotype>
+      <context id="c1" class="selectable">
+        <glyph id="3" class="selectable">
+          <stereotype>Conceptual Integrity Risk</stereotype>
+          <label>Stopping at too many places
+          </label>
+        </glyph>
 
-        <label>Real Bus</label>
-      </glyph>
-      </group>
+        <glyph id="4" class="selectable">
+          <stereotype class="selectable">Conceptual Integrity Risk
+            Feature Fit Risk
+          </stereotype>
 
-      <link>
-        <from reference="1" />
-        <to reference="2" class="arrow" />
-      </link>
+          <label class="selectable">Real Bus</label>
+        </glyph>
 
-      <link>
-        <from reference="2" />
-        <to reference="4" class="arrow" />
-      </link>
+      </context>
+    </group>
 
-      <link>
-        <from reference="1" />
-        <to reference="3" class="arrow" />
-      </link>
+    <link id="l1" class="selectable">
+      <from reference="1" />
+      <to reference="2" class="arrow" />
+    </link>
 
-      <link>
-        <from reference="3" />
-        <to reference="4" class="arrow" />
-      </link>
+    <link id="l2" class="selectable">
+      <from reference="2" />
+      <to reference="4" class="arrow" />
+    </link>
+
+    <link id="l3" class="selectable">
+      <from reference="1" />
+      <to reference="3" class="arrow" />
+    </link>
+
+    <link id="l4" class="selectable">
+      <from reference="3" />
+      <to reference="4" class="arrow" />
+    </link>
 
 
   </diagram>

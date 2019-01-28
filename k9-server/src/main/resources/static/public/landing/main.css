@@ -15,6 +15,11 @@
 	src: url('../fonts/metropolis/Metropolis-RegularItalic.ttf') format('truetype');
 }
 
+
+rect, path, text {
+	transition-duration: .3s;
+}
+
 diagram {
 	kite9-type: diagram;
 	kite9-padding: 15pt;
@@ -29,32 +34,36 @@ g.group {
 	kite9-traversal: always;
 }
 
+g.box {
+	kite9-template: url(template.xml#box);
+	fill: blue;
+	stroke: cyan;
+}
+
 g.button {
 	kite9-type: container;
-	kite9-template: url(template.xml#button)
-}
-
-g.field {
-	kite9-type: container;
-	kite9-template: url(template.xml#field)
-}
-
-.button-back {
+	kite9-template: url(template.xml#button);
 	stroke-width: 1pt; 
 	fill: green;
 	stroke: black;
 }
 
-.field-back {
+g.field {
+	kite9-type: container;
+	kite9-template: url(template.xml#field);
 	fill: purple;
 	stroke: none;
 }
 
-.mouseover .button-back {
+.mouseover > .kite9-back {
 	fill: yellow;
 }
 
-.hoverable {
+.selected > .kite9-back {
+	fill: orange;
+}
+
+*[id] {
 	cursor: pointer;
 }
 
@@ -82,4 +91,29 @@ g.editbox {
 	font-family: "metropolis";
 	text-align: start;	
 	font-size: 50px;
+}
+
+g.link {
+	kite9-type: link;
+	kite9-template: url(template.xml#link);
+	kite9-link-minimum-length: 15pt;
+	kite9-link-corner-radius: 10pt;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}
+
+from,
+to {
+	kite9-type: link-end;
+	kite9-template: url(template.xml#empty-terminator);
+	kite9-padding: 5pt; 
+} 
+
+from.arrow,
+to.arrow {
+	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
+	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
+	kite9-padding: 5pt 12pt 5pt 1pt;
+	kite9-marker-reserve: 1pt;
 }

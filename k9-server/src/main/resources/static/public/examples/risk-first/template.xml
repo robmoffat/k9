@@ -4,6 +4,12 @@
       <svg:stop offset='0%' stop-color='#FFF' />
       <svg:stop offset='100%' stop-color='#DDD' />
     </svg:linearGradient>
+    
+    <svg:script type="module">
+      import "../../scripts/navigable.js";
+      import "../../scripts/hoverable.js";
+      import "../../scripts/selectable.js";
+    </svg:script>
 
     <svg:filter id="dropshadow" height="130%">
       <svg:feGaussianBlur in="SourceAlpha" stdDeviation="1" />

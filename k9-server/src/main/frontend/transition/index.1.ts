@@ -3,18 +3,10 @@
  * animate between different versions.
  */
 
-function reconcileAttributes(fromElement, toElement) {
-	
-	var toAtts = Array.from(toElement.attributes).map(a => a.name);
-	var fromAtts = Array.from(fromElement.attributes).map(a => a.name);
-	var toRemove = fromAtts.filter(a => -1 == toAtts.indexOf(a));
-	
-	toRemove.forEach(a => fromElement.removeAttribute(a));
-	
-	toAtts.forEach(a => {
-		fromElement.setAttribute(a, toElement.getAttribute(a));
-	});
-}
+import { shape, render, timeline, play } from 'wilderness';
+import { plainShapeObject } from 'wilderness-dom-node';
+
+f
 
 function reconcileText(fromElement: any, toElement: any) {
 	
@@ -46,7 +38,7 @@ function reconcileElement(fromElement: any, toElement: any) {
 			var newToElement = toElement.children[ti];
 			
 			if (newFromElement.tagName == newToElement.tagName) {
-				reconcileElement(newFromElement, newToElement);
+				merge(newFromElement, newToElement);
 				fi++;
 				ti++;
 			} else {
@@ -65,8 +57,37 @@ function reconcileElement(fromElement: any, toElement: any) {
 	}
 }
 
+const canMorph = ["rect", "path","g"];
+
+function merge(fromElement: any, toElement:any) {
+	
+	if (-1 != canMorph.indexOf(toElement.tagName)) {
+		
+		
+		const kf1 = plainShapeObject(fromElement)
+		const kf2 = plainShapeObject(toElement)
+		const shapeOptions = { replace: fromElement }
+	
+		const morph = shape(kf1, kf2, shapeOptions)
+		
+		const playbackOptions = {
+			alternate: true,
+			duration: 50000,
+			iterations: 1
+		}
+		
+		const animation = timeline(morph, playbackOptions)
+		
+		render(document.querySelector('svg'), animation)
+		
+		return 
+	} else {
+		//reconcileElement(fromElement, toElement);
+	}
+}
+
 export function transition(documentElement) {
-	reconcileElement(document.querySelector("body svg"), documentElement);
+	merge(document.querySelector("body svg"), documentElement);
 	
 	// force the load event to occur again
 	var evt = document.createEvent('Event');  

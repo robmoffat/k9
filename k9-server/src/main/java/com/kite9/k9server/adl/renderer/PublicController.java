@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
@@ -52,6 +53,10 @@ public class PublicController {
 		
 		if (resourceAsStream == null) {
 			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ "/index.xml");
+		}
+		
+		if (resourceAsStream == null) {
+			throw new ResourceNotFoundException(resourceName);
 		}
 		return StreamUtils.copyToString(resourceAsStream, Charset.defaultCharset());
 	}

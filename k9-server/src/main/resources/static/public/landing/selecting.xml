@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' zoomAndPan="magnify" preserveAspectRatio="xMidYMid" xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> @import url("main.css");</svg:style>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl">
+
+     <g id="b1" class="button"><g class="bigtext">From Side</g></g>
+     
+     <g class="group box" id="bigbox">
+       <g id="b2" class="button"><g class="bigtext">To Side 1</g></g>
+       
+       <g id="b3" class="button"><g class="bigtext">To Side 2</g></g>
+       
+       <g id="f2" class="field"><g class="editbox editable" name="password">Enter Your Password</g></g> 
+     </g>
+
+     
+     <g class="link">
+      <from reference="b1"></from>
+      <to reference="b2"></to>
+     </g>
+
+     <g class="link">
+      <from reference="b1"></from>
+      <to reference="b3"></to>
+     </g>
+
+  </diagram>
+</svg:svg>
