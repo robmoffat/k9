@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.Converter;
-import com.kite9.k9server.adl.format.formattable.Formattable;
+import com.kite9.k9server.adl.holder.ADL;
 
 /**
  * Outputs the untransformed input xml.
@@ -22,7 +22,7 @@ public class ADLAndSVGFormat implements Format {
 		return new MediaType[] { MediaTypes.ADL_SVG };
 	}
 
-	public void handleWrite(Formattable data, OutputStream baos, Converter c, boolean watermark, Integer width, Integer height) throws Exception {
-		StreamHelp.streamCopy(new StringReader(data.getInput().getAsXMLString()), new OutputStreamWriter(baos), false);
+	public void handleWrite(ADL data, OutputStream baos, Converter c, boolean watermark, Integer width, Integer height) throws Exception {
+		StreamHelp.streamCopy(new StringReader(data.getAsXMLString()), new OutputStreamWriter(baos), false);
 	}
 }

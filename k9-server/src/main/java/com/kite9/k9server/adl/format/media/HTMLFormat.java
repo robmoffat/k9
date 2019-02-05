@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.adl.format.Converter;
-import com.kite9.k9server.adl.format.formattable.Formattable;
+import com.kite9.k9server.adl.holder.ADL;
 
 /**
  * Will eventually render the GUI, I guess?  Although, maybe we won't do it this way.
@@ -41,9 +41,9 @@ public class HTMLFormat extends SVGFormat {
 	}
 	
 	@Override
-	public void handleWrite(Formattable xml, OutputStream baos, Converter c, boolean watermark, Integer width, Integer height) throws Exception {
+	public void handleWrite(ADL adl, OutputStream baos, Converter c, boolean watermark, Integer width, Integer height) throws Exception {
 		baos.write(pageTemplateStart.getBytes());
-		super.handleWrite(xml, baos, c, watermark, width, height);
+		super.handleWrite(adl, baos, c, watermark, width, height);
 		baos.write(pageTemplateEnd.getBytes());
 	}
 

@@ -46,9 +46,8 @@ public class Step {
 			return modify(c, adl, this.nodeId, this.existingState, this.newState);
 		case MOVE:
 			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
-		case CREATE_DOC:
 		default:
-			return createDoc(c, newState, adl);
+			throw new CommandException("Unknown Command", c);
 		}
 	}
 

@@ -41,7 +41,7 @@ public class RevisionRepositoryImpl implements RevisionRepositoryCustom {
 
 	@Override
 	public Revision saveInternal(Revision entity) {
-		return revisionRepository.save(Collections.singleton(entity)).iterator().next();
+		return revisionRepository.saveAll(Collections.singleton(entity)).iterator().next();
 	}
 
 }

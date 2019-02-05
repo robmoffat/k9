@@ -1,6 +1,7 @@
 @font-face {
 	font-family: "metropolis";
-	src: url('../fonts/metropolis/Metropolis-Regular.ttf') format('truetype');
+	src: url('../fonts/metropolis/Metropolis-Regular.ttf')
+		format('truetype');
 }
 
 @font-face {
@@ -12,9 +13,9 @@
 @font-face {
 	font-family: "metropolis";
 	font-style: italic;
-	src: url('../fonts/metropolis/Metropolis-RegularItalic.ttf') format('truetype');
+	src: url('../fonts/metropolis/Metropolis-RegularItalic.ttf')
+		format('truetype');
 }
-
 
 rect, path, text {
 	transition-duration: .3s;
@@ -44,7 +45,7 @@ g.box {
 g.button {
 	kite9-type: container;
 	kite9-template: url(template.xml#button);
-	stroke-width: 1px; 
+	stroke-width: 1px;
 	fill: green;
 	stroke: black;
 }
@@ -56,26 +57,6 @@ g.field {
 	stroke: none;
 }
 
-.mouseover > .kite9-back {
-	fill: yellow;
-}
-
-.mouseover > .kite9-line {
-	stroke: yellow;
-}
-
-.selected > .kite9-back {
-	fill: orange;
-}
-
-.selected > .kite9-line {
-	stroke: orange;
-}
-
-*[id] {
-	cursor: pointer;
-}
-
 g.bigtext {
 	kite9-type: text;
 	kite9-margin: 4px;
@@ -85,7 +66,7 @@ g.bigtext {
 	stroke: black;
 	fill: red;
 	font-family: "metropolis";
-	text-align: start;	
+	text-align: start;
 	font-size: 50px;
 }
 
@@ -98,12 +79,11 @@ g.editbox {
 	stroke: black;
 	fill: red;
 	font-family: "metropolis";
-	text-align: start;	
+	text-align: start;
 	font-size: 50px;
 }
 
 /* Links */
-
 g.link {
 	kite9-type: link;
 	kite9-template: url(template.xml#link);
@@ -119,18 +99,81 @@ rect.terminator {
 	stroke: none;
 }
 
-from,
-to {
+from, to {
 	kite9-type: link-end;
 	kite9-template: url(template.xml#terminator);
-	kite9-padding: 5px; 
-} 
+	kite9-padding: 5px;
+}
 
-from.arrow,
-to.arrow {
+from.arrow, to.arrow {
 	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
 	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
 	kite9-padding: 5px 12px 5px 1px;
 	kite9-marker-reserve: 1px;
 }
 
+/** Interactive Stuff */
+.mouseover>.kite9-back {
+	fill: yellow;
+}
+
+.mouseover>.kite9-line {
+	stroke: yellow;
+}
+
+.selected>.kite9-back {
+	fill: orange;
+}
+
+.selected>.kite9-line {
+	stroke: orange;
+}
+
+*[id] {
+	cursor: pointer;
+}
+
+.contextMenu {
+	background-color: grey;
+	position: absolute;
+	color: #333;
+	background: #fff;
+	padding: 15px;
+	margin: 1em 0 3em;
+	border: 5px solid #5a8f00;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background: #fff;
+}
+
+.contextMenu:after {
+	top: 16px;
+	bottom: auto;
+	left: -20px;
+	border-width: 9px 21px 9px 0;
+	border-color: transparent #fff;
+	content: "";
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+}
+
+.contextMenu:before {
+	top: 10px;
+	bottom: auto;
+	left: -30px;
+	border-width: 15px 30px 15px 0;
+	border-color: transparent #5a8f00;
+	content: "";
+	position: absolute;
+	border-style: solid;
+	display: block;
+	width: 0;
+}
+
+.contextMenu img {
+	width: 20px;
+	height: 20px;
+}

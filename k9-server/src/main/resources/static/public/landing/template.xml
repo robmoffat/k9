@@ -5,6 +5,8 @@
       import "../scripts/navigable.js";
       import "../scripts/hoverable.js";
       import "../scripts/selectable.js";
+      import "../scripts/commands/context-menu.js";
+      import "../scripts/commands/delete/delete.js";
     </svg:script>
 
     <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="6" refY="4" orient="auto">
@@ -14,6 +16,16 @@
     <svg:marker id="arrow-start-marker" markerWidth="7" markerHeight="7" refX="2" refY="4" orient="auto">
       <svg:path d="M6,2 L2,4 L6,6" class="kite9-back"></svg:path>
     </svg:marker>
+
+    <svg:filter id="feather" x="-1%" y="-100%" width="102%" height="300%">
+        <svg:feMorphology result="offset" in="SourceGraphic" operator="dilate" radius="6"/>
+        <svg:feColorMatrix result="drop" in="offset" type="matrix"
+                       values="1 1 1 1 1
+                               1 1 1 1 1
+                               0 0 0 0 0
+                               0 0 0 1 0" />
+        <svg:feBlend in="SourceGraphic" in2="drop" mode="normal" />
+    </svg:filter>
   </svg:defs>
 
   <template id="diagram">
@@ -47,12 +59,12 @@
   <template id="link">
     <contents />
     <line style="kite9-type: svg; kite9-usage: decal;">
-      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
+      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" filter="url(#feather)" />
     </line>
   </template>
 
   <template id='terminator'>
-    <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="kite9-back terminator" />
+    <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' filter="url(#feather)" class="kite9-back terminator" />
   </template>
 
 

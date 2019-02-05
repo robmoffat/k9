@@ -49,6 +49,10 @@ public class PublicController {
 		
 		if (resourceAsStream == null) {
 			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ ".xml");
+		}
+		
+		if (resourceAsStream == null) {
+			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ ".svg");
 		} 
 		
 		if (resourceAsStream == null) {

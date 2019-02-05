@@ -1,7 +1,5 @@
 // Adds .selected class when the user mousedowns over an element.
 
-
-
 function mousedown(event) {
 	var v = event.currentTarget;
 	var classes = v.classList;
