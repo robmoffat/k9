@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -34,6 +35,11 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 	@Override
 	protected boolean canRead(MediaType mediaType) {
 		return MediaTypes.SVG.includes(mediaType) || MediaTypes.ADL_SVG.includes(mediaType);
+	}
+
+	@Override
+	public List<MediaType> getSupportedMediaTypes() {
+		return super.getSupportedMediaTypes();
 	}
 
 	@Override

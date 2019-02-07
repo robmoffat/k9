@@ -11,9 +11,12 @@ import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.ComparisonControllers;
 import org.xmlunit.diff.Diff;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class Step {
 	
 	private static final Log LOG = LogFactory.getLog(Step.class);
@@ -28,6 +31,9 @@ public class Step {
 	String existingState;
 	String newState;
 	
+	public Step() {
+	}
+	
 	public Step(StepType type, String beforeNodeId, String insideNodeId, String nodeId, String existingState, String newState) {
 		super();
 		this.type = type;
@@ -40,6 +46,8 @@ public class Step {
 
 	public ADL apply(Command c, ADL adl) throws CommandException {
 		switch (this.type) {
+		case CREATE_DOC:
+			return createDoc(c, this.newState, adl);
 		case DELETE:
 			return delete(c, adl, this.nodeId, this.existingState);
 		case MODIFY:

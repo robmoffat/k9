@@ -1,6 +1,10 @@
 package com.kite9.k9server.adl.holder;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.transcoder.Transcoder;
@@ -9,62 +13,100 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.springframework.util.StreamUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Holds XML (either rendered (SVG) or unrendered (ADL) which will be output
- * from other Controllers in the system.  This can then be rendered into a given
- * content-type.  Also handles conversion to DOM Document format and back again if necessary.
+ * from other Controllers in the system. This can then be rendered into a given
+ * content-type. Also handles conversion to DOM Document format and back again
+ * if necessary, and loading from a uri, if that's all that's provided.
  * 
  * @author robmoffat
  *
  */
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class ADLImpl implements ADL {
-	
-	enum Mode { STRING, DOM };
-	
-	private Mode m;
+
+	enum Mode {
+		STRING, DOM, URI
+	};
+
 	private String xml;
-	private ADLDocument doc;
 	private String uri;
+
+	@JsonIgnore
+	private ADLDocument doc;
+	
+	@JsonIgnore
 	private Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
+	
+	public ADLImpl() {
+	}
+
+	public ADLImpl(String uri) {
+		this.uri = uri;
+	}
 
 	public ADLImpl(String content, String uri) {
 		this.xml = content;
 		this.uri = uri;
-		this.m = Mode.STRING;
 	}
 
 	public ADLImpl(ADLDocument doc) {
 		this.doc = doc;
-		this.m = Mode.DOM;
 	}
 
 	@Override
 	public String getAsXMLString() {
-		if (m == Mode.DOM) {
+		if (getMode() == Mode.URI) {
+			xml = toXMLString(uri);
+		} else if (getMode() == Mode.DOM) {
 			xml = toXMLString(doc);
-			m = Mode.STRING;
 			doc = null;
 		}
-		
+
 		return xml;
 	}
-	
+
+	private Mode getMode() {
+		if (doc != null) {
+			return Mode.DOM;
+		} else if (xml != null) {
+			return Mode.STRING;
+		} else {
+			return Mode.URI;
+		}
+	}
+
 	@Override
 	public ADLDocument getAsDocument() {
-		if (m == Mode.STRING) {
+		if (getMode() == Mode.URI) {
+			xml = toXMLString(uri);
+		}
+		
+		if (getMode() == Mode.STRING) {
 			doc = loadXMLDocument(xml, uri);
-			m = Mode.DOM;
 			xml = null;
 		}
 		return doc;
 	}
 
-
+	public static String toXMLString(String uri) {
+		try {
+			InputStream in = new URL(uri).openStream();
+			return StreamUtils.copyToString(in, Charset.forName("UTF-8"));
+		} catch (IOException e) {
+			throw new Kite9ProcessingException("Couldn't get content from: " + uri, e);
+		}
+	}
+	
 	public static String toXMLString(Node n) {
 		try {
 			ADLDocument owner = (ADLDocument) (n instanceof ADLDocument ? n : n.getOwnerDocument());
@@ -92,6 +134,8 @@ public class ADLImpl implements ADL {
 	public String getUri() {
 		return uri;
 	}
+	
+	
 
 	@Override
 	public Transcoder getTranscoder() {
@@ -102,5 +146,5 @@ public class ADLImpl implements ADL {
 	public String getAsXMLString(Node n) {
 		return toXMLString(n);
 	}
-	
+
 }

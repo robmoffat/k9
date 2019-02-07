@@ -1,0 +1,7 @@
+<svg:svg 
+  xmlns="http://www.kite9.org/schema/adl"
+  xmlns:svg='http://www.w3.org/2000/svg'>
+  
+  <label id="two-label">Three</label>
+
+</svg:svg>

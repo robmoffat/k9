@@ -56,18 +56,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
-		http.authorizeRequests()
-			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
-			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
-			.antMatchers("/api/users/**").permitAll()
-			.antMatchers("/api/profile/**").permitAll()
-			.antMatchers("/api").permitAll()
-			.antMatchers("/stylesheet.js").permitAll()
-			.antMatchers("/stylesheet.css").permitAll()
-			.antMatchers("/console/**").permitAll()
-			.antMatchers("/public/**").permitAll()
-			.antMatchers("/examples/**").permitAll()
-			.antMatchers("/**").authenticated();
+		http.authorizeRequests().antMatchers("/**").permitAll();
+//			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
+//			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
+//			.antMatchers("/api/users/**").permitAll()
+//			.antMatchers("/api/profile/**").permitAll()
+//			.antMatchers("/api").permitAll()
+//			.antMatchers("/stylesheet.js").permitAll()
+//			.antMatchers("/stylesheet.css").permitAll()
+//			.antMatchers("/console/**").permitAll()
+//			.antMatchers("/public/**").permitAll()
+//			.antMatchers("/examples/**").permitAll()
+//			.antMatchers("/**").authenticated();
 		
 	}
 
