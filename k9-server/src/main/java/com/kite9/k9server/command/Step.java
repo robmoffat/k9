@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.security.Hash;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class Step {
@@ -23,37 +24,24 @@ public class Step {
 
 	StepType type;
 	
-	String beforeNodeId;
-	String insideNodeId;
-	String nodeId;
-	boolean deep;
-	
-	String existingState;
-	String newState;
+	String arg1;
+	String arg2;
+	String existingStateHash;
 	
 	public Step() {
 	}
 	
-	public Step(StepType type, String beforeNodeId, String insideNodeId, String nodeId, String existingState, String newState) {
-		super();
-		this.type = type;
-		this.beforeNodeId = beforeNodeId;
-		this.insideNodeId = insideNodeId;
-		this.nodeId = nodeId;
-		this.existingState = existingState;
-		this.newState = newState;
-	}
 
 	public ADL apply(Command c, ADL adl) throws CommandException {
 		switch (this.type) {
-		case CREATE_DOC:
-			return createDoc(c, this.newState, adl);
+//		case CREATE_DOC:
+//			return createDoc(c, this.newState, adl);
 		case DELETE:
-			return delete(c, adl, this.nodeId, this.existingState);
-		case MODIFY:
-			return modify(c, adl, this.nodeId, this.existingState, this.newState);
-		case MOVE:
-			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
+			return delete(c, adl, this.arg1, this.existingStateHash);
+//		case MODIFY:
+//			return modify(c, adl, this.nodeId, this.existingState, this.newState);
+//		case MOVE:
+//			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
 		default:
 			throw new CommandException("Unknown Command", c);
 		}
@@ -105,21 +93,22 @@ public class Step {
 		}
 	}
 	
-	public static ADL delete(Command c, ADL adl, String nodeId, String oldState) throws CommandException {
-		ensureNotNull(c, "delete", "nodeId", nodeId);
-		ensureNotNull(c, "delete", "oldState", oldState);
+	public static ADL delete(Command c, ADL adl, String fragment, String hash) throws CommandException {
+		ensureNotNull(c, "delete", "fragment", fragment);
+		ensureNotNull(c, "delete", "hash", hash);
 		
 		ADLDocument doc = adl.getAsDocument();
-		Element e = doc.getElementById(nodeId);
+		Element e = doc.getElementById(fragment);
+		String actualHash = Hash.generateHash(e);
 		
-		ADLDocument oDoc = adl.loadXMLDocument(oldState, adl.getUri());
-		Element o = getSingleContentElement(oDoc, c);
-		compareElements(c, nodeId, e, o);
+		if (!actualHash.equals(hash)) {
+			throw new CommandException("Hashes don't match.  \nExpected: "+hash+"\nActual:  "+actualHash, c);
+		}
 		
 		Node parent = e.getParentNode();
 		parent.removeChild(e);
 		
-		LOG.info("Processed delete of "+nodeId);
+		LOG.info("Processed delete of "+fragment);
 		return adl;
 	}
 	
@@ -185,7 +174,7 @@ public class Step {
 			} 
 		}
 	}
-
+	
 	public static void compareElements(Command c, String nodeId, Element e, Element o) throws CommandException {
 		Diff diff = DiffBuilder.compare(o).withTest(e)
 			.ignoreWhitespace()

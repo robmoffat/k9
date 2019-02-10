@@ -1,13 +1,23 @@
 package com.kite9.k9server.security;
 
+import java.io.StringWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.w3c.dom.Node;
 
 public class Hash {
 
 	private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+	private static TransformerFactory tf = TransformerFactory.newInstance();
 
 	
 	/**
@@ -28,6 +38,21 @@ public class Hash {
 			return sb.toString();
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException("Algorithm doesn't exist!", e);
+		}
+	}
+	
+	/**
+	 * Generates a hash of an xml node by converting it to a string first.
+	 */
+	public static String generateHash(Node in) {
+	    try {
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(in), new StreamResult(writer));
+			return generateHash(writer.toString());
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't generate hash: ", e);
 		}
 	}
 	

@@ -58,4 +58,26 @@ public class CommandControllerIT {
 	    		.andExpect(MockMvcResultMatchers.content().string(StringContains.containsString("<label id=\"two-label\">Three</label>")))
 	    		.andReturn();
 	}
+	
+	@Test
+	public void testDeleteCommand() throws Exception {
+			
+		String docUrl = this.getClass().getResource("/test_command1.xml").toExternalForm();				
+		String hash = "\"0d168968280ce460f11629f27fbd21156c7bc6cf\"";
+				
+		String step = "{\"type\": \"DELETE\", \"arg1\": \"two-label\", \"existingStateHash\":" + hash + "}";
+		
+		mockMvc.perform(
+	        post("/api/v1/command")
+	        	.content("{\"input\": {\"uri\": \""+docUrl+"\"}, \"steps\": ["+step+"]}")
+	        	.contentType(MediaType.APPLICATION_JSON_VALUE)
+	            .accept(MediaTypes.ADL_SVG_VALUE))
+	    		.andDo(print())
+	    		.andExpect(status().isOk())
+	    		.andExpect(MockMvcResultMatchers.content().string(StringContains.containsString("    <glyph id=\"two\">\n" + 
+	    				"      \n" + 
+	    				"    </glyph>")))
+	    		.andReturn();
+	}
 }
+

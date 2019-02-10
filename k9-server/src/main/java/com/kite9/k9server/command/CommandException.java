@@ -1,9 +1,16 @@
 package com.kite9.k9server.command;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class CommandException extends Exception {
+/**
+ * This is thrown when something goes wrong in command processing.
+ */
+@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+public class CommandException extends RuntimeException {
 
 	private Command c;
 	
