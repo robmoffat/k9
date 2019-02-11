@@ -13,8 +13,6 @@ var callbacks = [];
 /**
  * Call this function to register a plugin menu-item.
  * Context Menu only works if the SVG is embedded in an HTML page.
- * 
- * - needs an icon and a callback.  
  */
 export function registerContextMenuCallback(p) {
 		

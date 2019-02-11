@@ -43,7 +43,7 @@ public class PublicController {
 		String xml = loadXML(resourceName);
 		return new ADLImpl(xml, url);
 	}
-	
+
 	private String loadXML(String resourceName) throws IOException {
 		InputStream resourceAsStream = this.getClass().getResourceAsStream(resourceName);
 		

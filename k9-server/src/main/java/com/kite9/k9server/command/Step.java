@@ -26,7 +26,6 @@ public class Step {
 	
 	String arg1;
 	String arg2;
-	String existingStateHash;
 	
 	public Step() {
 	}
@@ -37,7 +36,7 @@ public class Step {
 //		case CREATE_DOC:
 //			return createDoc(c, this.newState, adl);
 		case DELETE:
-			return delete(c, adl, this.arg1, this.existingStateHash);
+			return delete(c, adl, this.arg1);
 //		case MODIFY:
 //			return modify(c, adl, this.nodeId, this.existingState, this.newState);
 //		case MOVE:
@@ -93,17 +92,16 @@ public class Step {
 		}
 	}
 	
-	public static ADL delete(Command c, ADL adl, String fragment, String hash) throws CommandException {
+	public static ADL delete(Command c, ADL adl, String fragment) throws CommandException {
 		ensureNotNull(c, "delete", "fragment", fragment);
-		ensureNotNull(c, "delete", "hash", hash);
 		
 		ADLDocument doc = adl.getAsDocument();
 		Element e = doc.getElementById(fragment);
-		String actualHash = Hash.generateHash(e);
-		
-		if (!actualHash.equals(hash)) {
-			throw new CommandException("Hashes don't match.  \nExpected: "+hash+"\nActual:  "+actualHash, c);
-		}
+//		String actualHash = Hash.generateHash(e);
+//		
+//		if (!actualHash.equals(hash)) {
+//			throw new CommandException("Hashes don't match.  \nExpected: "+hash+"\nActual:  "+actualHash, c);
+//		}
 		
 		Node parent = e.getParentNode();
 		parent.removeChild(e);
