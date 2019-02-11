@@ -7,6 +7,7 @@
       import "../scripts/selectable.js";
       import "../scripts/commands/context-menu.js";
       import "../scripts/commands/delete/delete.js";
+      import "../scripts/commands/edit/edit.js";
     </svg:script>
 
     <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="6" refY="4" orient="auto">

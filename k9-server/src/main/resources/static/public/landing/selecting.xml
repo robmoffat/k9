@@ -5,14 +5,14 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="button"><g class="bigtext">From Side</g></g>
+     <g id="b1" class="button"><g id="fs1" class="bigtext editable">From Side</g></g>
      
      <g class="group box" id="bigbox">
-       <g id="b2" class="button"><g class="bigtext">To Side 1</g></g>
+       <g id="b2" class="textbutton editable">To Side 1</g>
        
-       <g id="b3" class="button"><g class="bigtext">To Side 2</g></g>
+       <g id="b3" class="button"><g id="fs3" class="bigtext editable">To Side 2</g></g>
        
-       <g id="f2" class="field"><g class="editbox editable" name="password">Enter Your Password</g></g> 
+       <g id="f2" class="field"><g id="fs4"  class="editbox editable" name="password">Enter Your Password</g></g> 
      </g>
 
      

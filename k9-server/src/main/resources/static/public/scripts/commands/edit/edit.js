@@ -1,10 +1,11 @@
 import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "../context-menu.js";
 import { transition } from "../../../bundles/transition.js"
 
-function createDeleteStep(e) {
+function createEditStep(e, text) {
 	return {
-		"type": 'DELETE',
-		"arg1": e.getAttribute('id')
+		"type": 'EDIT',
+		"arg1": e.getAttribute('id'),
+		"arg2": text
 	}
 }
 
@@ -18,7 +19,7 @@ function getUri() {
  */
 registerContextMenuCallback(function(event) {
 	
-	const selectedElements = document.querySelectorAll("[id].selected");
+	const selectedElements = document.querySelectorAll("[id].selected.editable");
 	
 	if (selectedElements.length > 0) {
 	
@@ -27,10 +28,13 @@ registerContextMenuCallback(function(event) {
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);
 		
-		img.setAttribute("title", "Delete");
-		img.setAttribute("src", "../scripts/commands/delete/delete.svg");
+		img.setAttribute("title", "Edit");
+		img.setAttribute("src", "../scripts/commands/edit/edit.svg");
 		img.addEventListener("click", function(event) {
-			const steps = Array.from(selectedElements).map(e => createDeleteStep(e));
+			
+			const newText = prompt("Enter New Text", event.textContent)
+			
+			const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
 			
 			const data = {
 				input: {
@@ -54,7 +58,7 @@ registerContextMenuCallback(function(event) {
 			
 			});
 			
-			console.log("delete complete");
+			console.log("edit complete");
 		});
 	}
 });

@@ -41,6 +41,8 @@ public class Step {
 //			return modify(c, adl, this.nodeId, this.existingState, this.newState);
 //		case MOVE:
 //			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
+		case EDIT:
+			return edit(c, adl, this.arg1, this.arg2);
 		default:
 			throw new CommandException("Unknown Command", c);
 		}
@@ -107,6 +109,16 @@ public class Step {
 		parent.removeChild(e);
 		
 		LOG.info("Processed delete of "+fragment);
+		return adl;
+	}
+	
+	public static ADL edit(Command c, ADL adl, String fragment, String newText) throws CommandException {
+		ensureNotNull(c, "edit", "fragment", fragment);
+		ensureNotNull(c, "edit", "newText", newText);
+		ADLDocument doc = adl.getAsDocument();
+		Element e = doc.getElementById(fragment);
+		e.setTextContent(newText);
+		LOG.info("Processed edit of "+fragment);
 		return adl;
 	}
 	

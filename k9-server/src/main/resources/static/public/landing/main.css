@@ -50,6 +50,22 @@ g.button {
 	stroke: black;
 }
 
+g.textbutton {
+	kite9-template: url(template.xml#button);
+	stroke-width: 1px;
+	fill: green;
+	kite9-type: text;
+	kite9-margin: 4px;
+	kite9-vertical-align: top;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: left;
+	stroke: black;
+	fill: red;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 50px;
+}
+
 g.field {
 	kite9-type: container;
 	kite9-template: url(template.xml#field);
