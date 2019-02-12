@@ -20,6 +20,9 @@ target
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# Javascript node modules, generally
+node_modules
+
 # Jekyll
 _site
 
@@ -31,4 +34,4 @@ k9-server/src/main/frontend/node_modules/
 k9-server/merges.txt
 k9-server/plan.txt
 k9-server/ssp.info
-
+k9-server/kite9.log
