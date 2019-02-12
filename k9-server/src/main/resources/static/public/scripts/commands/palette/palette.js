@@ -1,13 +1,14 @@
 import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "../context-menu.js";
+import { mouseover, mouseout } from "../../hoverable.js";
 import { transition } from "../../../bundles/transition.js"
 import '../../../libraries/jquery.min.js'
 
 
-function createInsertStep(e, url) {
+function createInsertStep(e, id) {
 	return {
 		"type": 'INSERT',
 		"arg1": e.getAttribute('id'),
-		"arg2": url
+		"arg2": "http://localhost:8080/public/landing/one.xml#"+id
 	}
 }
 
@@ -29,26 +30,55 @@ function getPalette(event) {
 		palette.setAttribute("id", "palette");
 		palette.setAttribute("class", "palette");
 		document.querySelector("body").appendChild(palette);
-		
-		$(palette).load("http://localhost:8080/public/landing/one.svg", function(rt, textStatus, request) {
-			
-			
-			
-			
-		});
-		
-		return palette;
+
+		$(palette).load("http://localhost:8080/public/landing/one.svg", function (rt, textStatus, request) {
+			document.querySelector("div.palette").querySelectorAll("[id]").forEach(function (v) {
+				v.addEventListener("click", dropIn);
+				v.addEventListener("mouseover", mouseover)
+				v.addEventListener("mouseout", mouseout)
+			});
+		})
+
 	}
-	
+	return palette;	
 }
 
+/**
+ * Performs the function of dropping the palette element into the diagram.
+ */
+function dropIn(event) {
+	const selectedElements = document.querySelectorAll("[id].selected.insertable");
+	const droppingElement = document.querySelector("[id].mouseover")
+	const steps = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement.getAttribute("id")));
+	const data = {
+		input: {
+			uri: getUri()
+		},
+		steps: steps
+	}; 
+			
+	destroyContextMenu();
+	$.post({
+		url: '/api/v1/command',
+		data: JSON.stringify(data),
+		dataType: 'xml',
+		headers: {
+			"Accept": "image/svg+xml"
+		},
+		contentType:"application/json; charset=utf-8",
+		success: function(ob, status, jqXHR) {
+			transition(ob.documentElement);
+		}
+	
+	});
+}
 
 /**
  * Provides a delete option for the context menu
  */
 registerContextMenuCallback(function(event) {
 	
-	const selectedElements = document.querySelectorAll("[id].selected.editable");
+	const selectedElements = document.querySelectorAll("[id].lastSelected.insertable");
 	
 	if (selectedElements.length > 0) {
 	
@@ -60,10 +90,7 @@ registerContextMenuCallback(function(event) {
 		img.setAttribute("title", "Edit");
 		img.setAttribute("src", "../scripts/commands/palette/palette.svg");
 		img.addEventListener("click", function(event) {
-			
 			getPalette(event);
-			
-			
 		});
 	}
 });

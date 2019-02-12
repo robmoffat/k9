@@ -2,7 +2,7 @@
 
 var selectedElement;
 
-function mouseover(event) {
+export function mouseover(event) {
 	var v = event.currentTarget;
 	var classes = v.classList;
 	if (!classes.contains("mouseover")) {
@@ -18,7 +18,7 @@ function mouseover(event) {
 	event.stopPropagation();
 }
 
-function mouseout(event) {
+export function mouseout(event) {
 	var v = event.currentTarget;
 	var classes = v.classList;
 	classes.remove("mouseover");

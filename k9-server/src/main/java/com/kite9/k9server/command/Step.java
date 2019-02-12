@@ -1,5 +1,8 @@
 package com.kite9.k9server.command;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.batik.anim.dom.SVGOMSVGElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.security.Hash;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class Step {
@@ -43,6 +45,8 @@ public class Step {
 //			return move(c, adl, this.nodeId, this.beforeNodeId, this.insideNodeId, this.existingState);
 		case EDIT:
 			return edit(c, adl, this.arg1, this.arg2);
+		case INSERT:
+			return insert(c, adl, this.arg1, this.arg2);
 		default:
 			throw new CommandException("Unknown Command", c);
 		}
@@ -110,6 +114,55 @@ public class Step {
 		
 		LOG.info("Processed delete of "+fragment);
 		return adl;
+	}
+	
+	public static ADL insert(Command c, ADL adl, String fragment, String uriStr) throws CommandException {
+		ensureNotNull(c, "insert", "fragment", fragment);
+		ensureNotNull(c, "insert", "uri", uriStr);
+		
+		
+		try {
+			ADLDocument doc = adl.getAsDocument();
+			Element into = doc.getElementById(fragment);
+
+			Element insert = getElementToInsert(uriStr);
+			
+			doc.adoptNode(insert);
+			into.appendChild(insert);
+			replaceIds(insert);
+		} catch (Exception e) {
+			throw new CommandException("Couldn't insert", e, c);
+		}
+		
+		LOG.info("Processed insert into "+fragment);
+		return adl;
+	}
+
+
+	private static void replaceIds(Element insert) {
+		if (insert.hasAttribute("id")) {
+			insert.setAttribute("id", ((ADLDocument) insert.getOwnerDocument()).createUniqueId()); 
+		}
+		
+		NodeList children = insert.getChildNodes();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node n = children.item(i);
+			if (n instanceof Element) {
+				replaceIds((Element) n);
+			}
+		}
+	}
+
+
+	public static Element getElementToInsert(String uriStr) throws URISyntaxException {
+		URI uri = new URI(uriStr);
+		String documentUri = uri.toString();
+		String id = uri.getFragment();
+		documentUri.substring(0, documentUri.length() - id.length());
+		
+		ADLDocument toInsert = new ADLImpl(documentUri).getAsDocument();
+		Element out = toInsert.getElementById(id);
+		return out;
 	}
 	
 	public static ADL edit(Command c, ADL adl, String fragment, String newText) throws CommandException {

@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -46,14 +48,19 @@ public class Hash {
 	 */
 	public static String generateHash(Node in) {
 	    try {
-			Transformer transformer = tf.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			StringWriter writer = new StringWriter();
-			transformer.transform(new DOMSource(in), new StreamResult(writer));
-			return generateHash(writer.toString());
+			String w = nodeToString(in);
+			return generateHash(w);
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't generate hash: ", e);
 		}
+	}
+
+	public static String nodeToString(Node in) throws Exception {
+		Transformer transformer = tf.newTransformer();
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		StringWriter writer = new StringWriter();
+		transformer.transform(new DOMSource(in), new StreamResult(writer));
+		return writer.toString();
 	}
 	
 	public static String generatePasswordHash(String password) {

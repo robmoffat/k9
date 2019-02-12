@@ -3,11 +3,11 @@
   <svg:defs>
     <svg:style type="text/css"> @import url("main.css");</svg:style>
   </svg:defs>
-  <diagram xmlns="http://www.kite9.org/schema/adl">
+  <diagram xmlns="http://www.kite9.org/schema/adl" class="insertable">
 
      <g id="b1" class="button"><g id="fs1" class="bigtext editable">From Side</g></g>
      
-     <g class="group box" id="bigbox">
+     <g class="group box insertable" id="bigbox">
        <g id="b2" class="textbutton editable">To Side 1</g>
        
        <g id="b3" class="button"><g id="fs3" class="bigtext editable">To Side 2</g></g>
