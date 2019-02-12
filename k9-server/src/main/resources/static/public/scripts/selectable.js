@@ -1,4 +1,5 @@
 // Adds .selected class when the user mousedowns over an element.
+// Adds .lastSelected class to a single element, which is the last one clicked on
 
 function mousedown(event) {
 	var v = event.currentTarget;
@@ -23,12 +24,18 @@ function mousedown(event) {
 		classes.remove("selected")
 	}
 	
+	document.querySelectorAll(".lastSelected").forEach(c => {
+		c.classList.remove("lastSelected")
+	})
+	
+	classes.add("lastSelected")
+	
 	event.stopPropagation();
 }
 
 window.addEventListener('load', function() {
 	
-    document.querySelectorAll("[id]").forEach(function(v) {
+    document.querySelector("div.main").querySelectorAll("[id]").forEach(function(v) {
     	// set up mousedown listeners.
     	v.removeEventListener("mousedown", mousedown);
     	v.addEventListener("mousedown", mousedown);

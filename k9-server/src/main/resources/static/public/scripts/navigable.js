@@ -19,7 +19,7 @@ function onClick(event) {
 }
 
 window.addEventListener('load', function() {
-    document.querySelectorAll("[href]").forEach(function(v) {
+	document.querySelector("div.main").querySelectorAll("[href]").forEach(function(v) {
 		v.removeEventListener("click", onClick);
 		v.addEventListener("click", onClick);
     })

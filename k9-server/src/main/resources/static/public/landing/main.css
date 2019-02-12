@@ -21,6 +21,10 @@ rect, path, text {
 	transition-duration: .3s;
 }
 
+* {
+	palette: url(http://localhost:8080/public/landing/one.svg)
+}
+
 diagram {
 	kite9-type: diagram;
 	kite9-padding: 15px;

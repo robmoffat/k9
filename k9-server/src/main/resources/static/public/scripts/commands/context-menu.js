@@ -58,7 +58,7 @@ export function destroyContextMenu() {
 
 window.addEventListener('load', function() {
 	
-    document.querySelectorAll("[id]").forEach(function(v) {
+	document.querySelector("div.main").querySelectorAll("[id]").forEach(function(v) {
     	// set up listeners
     	v.removeEventListener("click", click);
     	v.addEventListener("click", click);

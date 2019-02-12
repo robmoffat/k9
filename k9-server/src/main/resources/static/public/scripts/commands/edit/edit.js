@@ -32,7 +32,9 @@ registerContextMenuCallback(function(event) {
 		img.setAttribute("src", "../scripts/commands/edit/edit.svg");
 		img.addEventListener("click", function(event) {
 			
-			const newText = prompt("Enter New Text", event.textContent)
+			const defaultText = document.querySelector(".lastSelected text").textContent;
+						
+			const newText = prompt("Enter New Text", defaultText)
 			
 			const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
 			
