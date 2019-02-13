@@ -27,6 +27,6 @@ public interface UserRepositoryCustom {
 	 * If the user can't be deleted, their account is set to expired.
 	 * e.g. curl -v -H "Authorization: KITE9 some-code" -X "DELETE" http://localhost:8080/api/users/3
 	 */
-	public void delete(Long id);
-
+	public void deleteById(Long id);
+	
 }

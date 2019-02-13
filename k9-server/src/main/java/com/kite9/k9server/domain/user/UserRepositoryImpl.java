@@ -56,7 +56,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public void delete(Long id) {
+	public void deleteById(Long id) {
 		// this should always work
 		userRepository.expire(id);
 		try {
@@ -69,6 +69,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public User saveInternal(User entity) {
-		return userRepository.save(Collections.singleton(entity)).iterator().next();
+		return userRepository.saveAll(Collections.singleton(entity)).iterator().next();
 	}
 }

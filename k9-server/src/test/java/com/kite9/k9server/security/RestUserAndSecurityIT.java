@@ -4,12 +4,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -31,10 +33,15 @@ import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserController;
+import com.kite9.k9server.domain.user.UserRepository;
+import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.UserResource;
 import com.kite9.k9server.web.NotificationResource;
 
 public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
+	
+	@Autowired
+	UserRepository users;
 
 	@Test
 	public void testCreateUserRestAPI() throws URISyntaxException {
@@ -135,7 +142,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {
-				messages.add(invocation.getArgumentAt(0, SimpleMailMessage.class));
+				messages.add(invocation.getArgument(0));
 				return null;
 			}
 			
@@ -223,12 +230,11 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// first, create a user
 		String email = "test-user1@example.com";
 		String password = "1234";
-		ResponseEntity<Resource<User>> uOut = createUser(restTemplate, "Kite9TestUser", password, email);
-		Assert.assertEquals(HttpStatus.CREATED, uOut.getStatusCode());
+		UserResource uOut = createUser(restTemplate, "Kite9TestUser", password, email);
 		
 		// try to access a protected resource, should be automatically redirected to the login page
 		ResponseEntity<String> pOut = restTemplate.getForEntity(urlBase+ "/api/projects", String.class);
-		Assert.assertTrue(pOut.getBody().contains("<title>Login Page</title>"));
+		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));
 	
 		// try posting the login form information, 
 		pOut = formLogin(restTemplate, email, password);
@@ -239,27 +245,25 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// try to create a project with this cookie
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp2");
-		ResponseEntity<Project> projOut = exchangeUsingCookie(restTemplate, urlBase+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, Project.class);
+		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, urlBase+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
 		
 		// retrieve it again
-		ResponseEntity<Project> pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), "", HttpMethod.GET, Project.class);
-		Assert.assertEquals("Test Project", pGet.getBody().getTitle());
+		ResponseEntity<ProjectResource> pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+		Assert.assertEquals("Test Project", pGet.getBody().title);
 	
 		// try with "wrong" cookie
-		try {
-			String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
-			pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), wrongCookie, "", HttpMethod.GET, Project.class);
-			Assert.fail();
-		} catch (HttpClientErrorException e) {
-			Assert.assertTrue(e.getStatusCode().is4xxClientError());
-		}
+		String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
+		pOut = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), wrongCookie, "", HttpMethod.GET, String.class);
+		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));		
 		
 		// tidy up: delete project
-		delete(restTemplate, projOut.getHeaders().getLocation().toString(), uOut.getBody().getContent());
-		
+		pOut = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), null, HttpMethod.DELETE, String.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());
+
 		// remove user
-		delete(restTemplate, uOut.getHeaders().getLocation().toString(), uOut.getBody().getContent());
+		pOut = exchangeUsingCookie(restTemplate, uOut.getId().getHref(), cookie.get(0), null, HttpMethod.DELETE, String.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());
 	}
 	
 	

@@ -11,10 +11,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
@@ -28,16 +26,6 @@ import com.kite9.k9server.domain.user.UserRepository;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	public static final String KITE9_USER_AUTHORITY = "KITE9_USER";
-
-	public static final GrantedAuthority KITE9_USER = new GrantedAuthority() {
-
-		@Override
-		public String getAuthority() {
-			return KITE9_USER_AUTHORITY;
-		}
-	};
-	
 	@Autowired
 	UserAuthenticationProvider userAuthenticationProvider;
 		
@@ -47,27 +35,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		Kite9ApiKeyBasedAuthenticationFilter kite9ApiFilter = 
-				new Kite9ApiKeyBasedAuthenticationFilter(authenticationManager());
-		
-		http.addFilterAfter(kite9ApiFilter, BasicAuthenticationFilter.class);	//  API-key approach
-		http.csrf().disable();
 		http.formLogin();
 		http.httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/**").permitAll();
-//			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
-//			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
-//			.antMatchers("/api/users/**").permitAll()
-//			.antMatchers("/api/profile/**").permitAll()
-//			.antMatchers("/api").permitAll()
-//			.antMatchers("/stylesheet.js").permitAll()
-//			.antMatchers("/stylesheet.css").permitAll()
-//			.antMatchers("/console/**").permitAll()
-//			.antMatchers("/public/**").permitAll()
-//			.antMatchers("/examples/**").permitAll()
-//			.antMatchers("/**").authenticated();
+		http.authorizeRequests()
+			.antMatchers("/api/command/**").permitAll()	// commands can be used by anyone
+			.antMatchers("/dist/**").permitAll()		// allows rendering tests without logging in
+			.antMatchers("/api/renderer/**").permitAll()		// allows rendering tests without logging in
+			.antMatchers("/api/users/**").permitAll()
+			.antMatchers("/api/profile/**").permitAll()
+			.antMatchers("/api").permitAll()
+			.antMatchers("/stylesheet.js").permitAll()
+			.antMatchers("/stylesheet.css").permitAll()
+			.antMatchers("/console/**").permitAll()
+			.antMatchers("/public/**").permitAll()
+			.antMatchers("/examples/**").permitAll()
+			.antMatchers("/**").authenticated();
 		
 	}
 
@@ -91,6 +75,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 	}
 	
+	/**
+	 * This allows the user id to be used to define which projects/users etc we
+	 * can view when we do a "findAll"
+	 */
 	@Bean
 	public SecurityEvaluationContextExtension usePrincipalInQueries() {
 		return new SecurityEvaluationContextExtension();

@@ -125,7 +125,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 
 	public ProjectResource createAProjectResource() throws URISyntaxException {
 		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp2", "");
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(projectUrl));
+		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders("absc"), HttpMethod.POST, new URI(projectUrl));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertEquals(pIn, pOut.getBody());

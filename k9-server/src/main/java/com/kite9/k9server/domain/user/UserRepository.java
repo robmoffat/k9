@@ -1,5 +1,7 @@
 package com.kite9.k9server.domain.user;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -44,7 +46,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	 * Used internally only.
 	 */
 	@RestResource(exported=false)
-	Iterable<User> save(Iterable<User> entities);
+	Iterable<User> saveAll(Iterable<User> entities);
 		
 	/**
 	 * This returns just your (logged in) user
@@ -58,6 +60,12 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	@Query("select u from User u where u.id = :id and u.email = ?#{principal}")
 	public User findOne(@Param("id") Long id);
 
+	/**
+	 * Required for delete to work externally.
+	 */
+	@RestResource(exported=false)
+	Optional<User> findById(Long id);
+	
 	/**
 	 * Removes the user permanently.
 	 */
@@ -76,8 +84,6 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	@Query("update User u set u.accountExpired = true where id = :id and email = ?#{principal}")
 	void expire(@Param("id") Long id);
 	
-	/**
-	 * Re-declaration of the method from {@link UserRepositoryCustom}, to hook it up.
-	 */
-	public void delete(Long id);
+	void deleteById(Long id);
+
 }

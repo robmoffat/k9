@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 public class AbstractLongIdEntity {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	protected Long id;
 
 	public void setId(Long id) {

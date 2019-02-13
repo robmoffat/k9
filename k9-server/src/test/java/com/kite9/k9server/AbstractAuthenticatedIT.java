@@ -15,7 +15,6 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -73,7 +72,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		String url = urlBase + "/api/users";
 		HttpHeaders headers = new HttpHeaders();
 		String auth = email + ":" + password;
-		byte[] encodedAuth = Base64.encode(auth.getBytes(Charset.forName("US-ASCII")));
+		byte[] encodedAuth = java.util.Base64.getEncoder().encode(auth.getBytes(Charset.forName("US-ASCII")));
 		String authHeader = "Basic " + new String( encodedAuth );
 		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
 		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));

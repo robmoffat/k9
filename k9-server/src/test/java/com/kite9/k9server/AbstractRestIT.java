@@ -35,6 +35,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.MailSender;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -66,6 +67,10 @@ public abstract class AbstractRestIT {
 	public void logLevel() {
 		Kite9Log.setLogging(false);
 		LoggingSystem.get(this.getClass().getClassLoader()).setLogLevel(LoggingFilter.class.getName(), LogLevel.DEBUG);
+	}
+	
+	public static StringHttpMessageConverter getStringConverter() {
+		return new StringHttpMessageConverter();
 	}
 
 	public static MappingJackson2HttpMessageConverter getHALMessageConverter(){
@@ -121,7 +126,7 @@ public abstract class AbstractRestIT {
 		SimpleLog l = new SimpleLog("TEST");
 		l.setLevel(SimpleLog.LOG_LEVEL_DEBUG);
 		
-		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(getByteConverter(), getHALMessageConverter()).build();
+		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(getByteConverter(), getHALMessageConverter(), getStringConverter()).build();
 		
 		return template;
 	}
