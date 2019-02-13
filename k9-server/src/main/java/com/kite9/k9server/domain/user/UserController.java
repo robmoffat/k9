@@ -159,7 +159,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	/**
 	 * Handles the post of the password reset form.
 	 */
-	@RequestMapping(path = URL_PREFIX+PASSWORD_RESET_RESPONSE_URL, method= {RequestMethod.GET, RequestMethod.POST}) 
+	@RequestMapping(path = URL_PREFIX+PASSWORD_RESET_RESPONSE_URL, method= {RequestMethod.GET, RequestMethod.POST}, consumes= {MediaType.APPLICATION_FORM_URLENCODED_VALUE}) 
 	public @ResponseBody NotificationResource passwordResetResponse(@RequestParam("code") String code, @PathVariable("email") String email, @RequestParam("password") String newPassword) {
 		try {
 			User u = getUserAndValidateWithCode(code, email, PASSWORD_RESET_RESPONSE_URL);

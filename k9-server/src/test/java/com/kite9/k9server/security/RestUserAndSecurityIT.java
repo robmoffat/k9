@@ -177,6 +177,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		String url = messageText.substring(messageText.indexOf("http"));
 
 		ResponseEntity<String> formOut = restTemplate.getForEntity(url, String.class);
+		String code = url.substring(url.indexOf("=")+1);
 		Assert.assertEquals(HttpStatus.OK, formOut.getStatusCode());
 		Assert.assertTrue("Code not set correctly", formOut.getBody().contains(
 				"<tr style=\"display: none\"><td>Code:</td><td><input type='text' name='code' value='"+code+"'></td></tr>"));
@@ -195,6 +196,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		map.add("submit", "Change");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		
 		HttpEntity<MultiValueMap<String, String>> in = new HttpEntity<MultiValueMap<String,String>>(map, headers);
 		ResponseEntity<NotificationResource> cOut = restTemplate.postForEntity(postUrl, in, NotificationResource.class);
 		Assert.assertEquals("Password updated", cOut.getBody().getMessage());
@@ -219,7 +221,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertEquals(urlBase+"/login?error", s.getHeaders().getLocation().toString());
 		
 		// delete the user
-		delete(restTemplate, uOut.getHeaders().getLocation().toString(), u);
+		//delete(restTemplate, uOut.getId().getHref(), u);
 
 	}
 	

@@ -33,6 +33,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -71,6 +72,10 @@ public abstract class AbstractRestIT {
 	
 	public static StringHttpMessageConverter getStringConverter() {
 		return new StringHttpMessageConverter();
+	}
+	
+	public static FormHttpMessageConverter getFormConverter() {
+		return new FormHttpMessageConverter();
 	}
 
 	public static MappingJackson2HttpMessageConverter getHALMessageConverter(){
@@ -126,7 +131,7 @@ public abstract class AbstractRestIT {
 		SimpleLog l = new SimpleLog("TEST");
 		l.setLevel(SimpleLog.LOG_LEVEL_DEBUG);
 		
-		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(getByteConverter(), getHALMessageConverter(), getStringConverter()).build();
+		RestTemplate template = new RestTemplateBuilder(new LoggingCustomizer(l)).messageConverters(getByteConverter(), getHALMessageConverter(), getStringConverter(), getFormConverter()).build();
 		
 		return template;
 	}
