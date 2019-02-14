@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
@@ -48,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api").permitAll()
 			.antMatchers("/stylesheet.js").permitAll()
 			.antMatchers("/stylesheet.css").permitAll()
+			.antMatchers("/oauth/token").permitAll()
 			.antMatchers("/console/**").permitAll()
 			.antMatchers("/public/**").permitAll()
 			.antMatchers("/examples/**").permitAll()

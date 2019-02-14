@@ -70,11 +70,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 
 	protected Resources<UserResource> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) throws URISyntaxException {
 		String url = urlBase + "/api/users";
-		HttpHeaders headers = new HttpHeaders();
-		String auth = email + ":" + password;
-		byte[] encodedAuth = java.util.Base64.getEncoder().encode(auth.getBytes(Charset.forName("US-ASCII")));
-		String authHeader = "Basic " + new String( encodedAuth );
-		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
+		HttpHeaders headers = createBasicAuthHeaders(password, email);
 		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
 		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
 		return uOut.getBody(); 

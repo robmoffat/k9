@@ -3,7 +3,9 @@ package com.kite9.k9server;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Base64;
 
 import org.apache.commons.logging.impl.SimpleLog;
 import org.junit.Assert;
@@ -155,6 +157,15 @@ public abstract class AbstractRestIT {
 		headers.setAccept(Arrays.asList(MediaType.ALL));
 		headers.setContentType(MediaTypes.HAL_JSON);
 		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
+		return headers;
+	}
+	
+	protected HttpHeaders createBasicAuthHeaders(String password, String username) {
+		HttpHeaders headers = new HttpHeaders();
+		String auth = username + ":" + password;
+		byte[] encodedAuth = java.util.Base64.getEncoder().encode(auth.getBytes(Charset.forName("US-ASCII")));
+		String authHeader = "Basic " + new String( encodedAuth );
+		headers.set( HttpHeaders.AUTHORIZATION, authHeader );
 		return headers;
 	}
 

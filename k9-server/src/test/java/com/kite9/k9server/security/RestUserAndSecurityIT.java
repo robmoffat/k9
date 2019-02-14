@@ -4,7 +4,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,7 +12,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,17 +19,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
-import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.domain.project.Project;
-import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserController;
 import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.resource.ProjectResource;
@@ -40,9 +36,6 @@ import com.kite9.k9server.web.NotificationResource;
 
 public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 	
-	@Autowired
-	UserRepository users;
-
 	@Test
 	public void testCreateUserRestAPI() throws URISyntaxException {
 		RestTemplate restTemplate = getRestTemplate();
@@ -55,6 +48,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		String url = uOut.getLink(Link.REL_SELF).getHref();
 		Assert.assertEquals(username, uOut.username);
 		Assert.assertNotNull(uOut.api);
+		
 		
 		// try to create over the top
 		try {
@@ -71,10 +65,18 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// retrieve the user with the wrong password
 		try {
-			retrieveUserViaBasicAuth(restTemplate, "blah", email);
-		} catch (HttpClientErrorException e) {
-			Assert.assertTrue(e.getStatusCode().is4xxClientError());
+			uOuts = retrieveUserViaBasicAuth(restTemplate, "blah", email);
+			Assert.fail();
+		} catch (Exception e) {
+			// occurs when we try to parse html into a UserResource.
 		}
+		
+		// fetch a JWT token using the basic auth parameters
+		String href=urlBase+"/oauth/token";
+		HttpEntity<String> ent = new HttpEntity<>(createBasicAuthHeaders(password, email));
+		ResponseEntity<String> resp = restTemplate.exchange(href, HttpMethod.GET, ent, String.class);
+		
+		
 		
 		deleteAndCheckDeleted(restTemplate, url, uOut, UserResource.class);
 	}
