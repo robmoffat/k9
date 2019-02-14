@@ -59,13 +59,13 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	/**
 	 * This returns just your (logged in) user
 	 */
-	@Query("select u from User u where u.email = ?#{ principal }")
+	@Query("select u from User u where u.username = ?#{ principal }")
 	public Iterable<User> findAll();
 	
 	/**
 	 * Returns your (logged in) user only. 
 	 */
-	@Query("select u from User u where u.id = :id and u.email = ?#{principal}")
+	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
 	public User findOne(@Param("id") Long id);
 
 	/**
@@ -80,7 +80,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	@Transactional
 	@RestResource(exported=false)
 	@Modifying(clearAutomatically=true)
-	@Query("delete from User where id = :id  and email = ?#{principal}")
+	@Query("delete from User where id = :id  and username = ?#{principal}")
 	void remove(@Param("id") Long id);
 	
 	/**
@@ -89,7 +89,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	@Transactional
 	@RestResource(exported=true)
 	@Modifying(clearAutomatically=true)
-	@Query("update User u set u.accountExpired = true where id = :id and email = ?#{principal}")
+	@Query("update User u set u.accountExpired = true where id = :id and username = ?#{principal}")
 	void expire(@Param("id") Long id);
 	
 	void deleteById(Long id);

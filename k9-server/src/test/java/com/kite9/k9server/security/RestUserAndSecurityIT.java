@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -73,12 +74,17 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// fetch a JWT token using the basic auth parameters
 		String href=urlBase+"/oauth/token";
-		HttpEntity<String> ent = new HttpEntity<>(createBasicAuthHeaders(password, username));
-		ResponseEntity<String> resp = restTemplate.exchange(href, HttpMethod.GET, ent, String.class);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", "client_credentials");
+		HttpHeaders headers = createBasicAuthHeaders(password, username);
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		
+		HttpEntity<MultiValueMap<String, String>> ent = new HttpEntity<>(map, headers);
+		ResponseEntity<String> resp = restTemplate.exchange(href, HttpMethod.POST, ent, String.class);
 		
 		
 		
-		deleteAndCheckDeleted(restTemplate, url, uOut, UserResource.class);
+		deleteAndCheckDeleted(restTemplate, url, username, password, UserResource.class);
 	}
 	
 	@Test
@@ -90,7 +96,8 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// first, create a user
 		String email = "test-user3@example.com";
 		String password = "1234";
-		UserResource uOut = createUser(restTemplate, "Kite9TestUser", password, email);
+		String username = "Kite9TestUser";
+		UserResource uOut = createUser(restTemplate, username, password, email);
 		Assert.assertFalse(uOut.emailVerified);
 		
 		// make sure that the api can be called to email them
@@ -126,12 +133,12 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertTrue(uOut.emailVerified);
 		
 		// remove the user
-		delete(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), uOut);
+		deleteAndCheckDeleted(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, password, UserResource.class);
 		messages.clear();
 
 		// check access is revoked
 		try {
-			retrieveResource(restTemplate, uOut, url, Void.class);
+			retrieveResource(restTemplate, username, password, url, Void.class);
 			Assert.fail();
 		} catch (Throwable e) {
 		}
@@ -166,7 +173,8 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// first, create a user
 		String email = "test-user2@example.com";
 		String password = "12345";
-		UserResource uOut = createUser(restTemplate, "Kite9TestUser2", password, email);
+		String username = "Kite9TestUser2";
+		UserResource uOut = createUser(restTemplate, username, password, email);
 
 		// ask for a password reset form
 		String href = uOut.getLink(UserController.PASSWORD_RESET_REL).getHref();
@@ -223,7 +231,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertEquals(urlBase+"/login?error", s.getHeaders().getLocation().toString());
 		
 		// delete the user
-		//delete(restTemplate, uOut.getId().getHref(), u);
+		delete(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);
 
 	}
 	

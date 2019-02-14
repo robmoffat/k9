@@ -138,8 +138,8 @@ public abstract class AbstractRestIT {
 		return template;
 	}
 	
-	protected <X> X retrieveResource(RestTemplate restTemplate, UserResource u, String url, Class<X> outClass) throws URISyntaxException {
-		RequestEntity<Void> in = new RequestEntity<Void>(createKite9AuthHeaders(u.api), HttpMethod.GET, new URI(url));
+	protected <X> X retrieveResource(RestTemplate restTemplate, String username, String password, String url, Class<X> outClass) throws URISyntaxException {
+		RequestEntity<Void> in = new RequestEntity<Void>(createBasicAuthHeaders(password, username), HttpMethod.GET, new URI(url));
 		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
 		return out.getBody();
 	}
@@ -152,14 +152,6 @@ public abstract class AbstractRestIT {
 		return pOut;
 	}
 
-	protected HttpHeaders createKite9AuthHeaders(String apiKey) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaType.ALL));
-		headers.setContentType(MediaTypes.HAL_JSON);
-		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
-		return headers;
-	}
-	
 	protected HttpHeaders createBasicAuthHeaders(String password, String username) {
 		HttpHeaders headers = new HttpHeaders();
 		String auth = username + ":" + password;
@@ -179,17 +171,17 @@ public abstract class AbstractRestIT {
 		return headers;
 	}
 	
-	protected void delete(RestTemplate restTemplate, String url, UserResource u) throws URISyntaxException {
-		HttpHeaders h = createKite9AuthHeaders(u.api);
+	protected void delete(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
+		HttpHeaders h = createBasicAuthHeaders(password, username);
 		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
 	}
 	
-	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, UserResource u, Class<X> c) throws URISyntaxException {
-		delete(restTemplate, url, u);
+	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String username, String password, Class<X> c) throws URISyntaxException {
+		delete(restTemplate, url, username, password);
 		try {
-			retrieveResource(restTemplate, u, url, c);
+			retrieveResource(restTemplate, username, password, url, c);
 			Assert.fail();
 		} catch (AssertionError ae) {
 			throw ae;

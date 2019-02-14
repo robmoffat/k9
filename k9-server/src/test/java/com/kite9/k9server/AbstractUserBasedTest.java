@@ -21,6 +21,6 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 	
 	@After
 	public void removeUser() throws URISyntaxException {
-		delete(restTemplate, userUrl, u);
+		delete(restTemplate, userUrl, "abcd1234", "facts");
 	}
 }

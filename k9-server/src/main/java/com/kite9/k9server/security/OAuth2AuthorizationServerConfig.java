@@ -1,10 +1,5 @@
 package com.kite9.k9server.security;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +7,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -66,7 +61,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 			public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 				User u = users.findByUsername(clientId);
 				
-				BaseClientDetails out = new BaseClientDetails(clientId, "blah", "scopes", "grants", "auths");
+				BaseClientDetails out = new BaseClientDetails(clientId, "blah", "scopes", "client_credentials", "auths");
 				out.setClientSecret(u.getPassword());
 				return out;
 				
@@ -74,82 +69,22 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 		});
 	}
 
-	public ClientDetails clientDetails() {
-		return new ClientDetails() {
-
-			@Override
-			public String getClientId() {
-				return "kite9";
-			}
-
-			@Override
-			public Set<String> getResourceIds() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public boolean isSecretRequired() {
-				return false;
-			}
-
-			@Override
-			public String getClientSecret() {
-				return null;
-			}
-
-			@Override
-			public boolean isScoped() {
-				return false;
-			}
-
-			@Override
-			public Set<String> getScope() {
-				return null;
-			}
-
-			@Override
-			public Set<String> getAuthorizedGrantTypes() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Set<String> getRegisteredRedirectUri() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public Collection<GrantedAuthority> getAuthorities() {
-				return Collections.singleton(new SimpleGrantedAuthority("Identity"));
-			}
-
-			@Override
-			public Integer getAccessTokenValiditySeconds() {
-				return 10000;
-			}
-
-			@Override
-			public Integer getRefreshTokenValiditySeconds() {
-				return 5000;
-			}
-
-			@Override
-			public boolean isAutoApprove(String scope) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public Map<String, Object> getAdditionalInformation() {
-				// TODO Auto-generated method stub
-				return null;
-			}
+	@Bean
+	UserDetailsService userDetailsService() {
+		return new UserDetailsService() {
 			
+			@Override
+			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+				User u = users.findByEmail(username);
+				if (u == null) {
+					u = users.findByUsername(username);
+				}
+				
+				return u;
+			}
 		};
+		
 	}
-
 
 	@Bean
     public TokenStore tokenStore() {

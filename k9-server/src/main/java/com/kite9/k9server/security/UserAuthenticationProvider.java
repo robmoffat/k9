@@ -53,18 +53,11 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		WebSecurityConfig.checkUser(u, true);
 		String givenPassword = (String) authentication.getCredentials();
 		if (Hash.checkPassword(givenPassword, u.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(u.getEmail(), authentication.getCredentials(), createGrantedAuthorities(u));
+			return new UsernamePasswordAuthenticationToken(u.getUsername(), authentication.getCredentials(), createGrantedAuthorities(u));
 		} else {
 			throw new BadCredentialsException("Bad Login Credentials");
 		}
 	}
-//
-//	private Authentication handleApiKeyAuthentication(Authentication authentication) {
-//		Kite9Authentication apiKeyAuthentication = (Kite9Authentication) authentication;
-//		User u = userRepository.findByApi((String) apiKeyAuthentication.getCredentials());
-//		WebSecurityConfig.checkUser(u, true);
-//		return new Kite9Authentication(u, Collections.singletonList(WebSecurityConfig.KITE9_USER));
-//	}
 
 	private Collection<? extends GrantedAuthority> createGrantedAuthorities(User u) {
 		return Collections.singleton(new SimpleGrantedAuthority("USER"));

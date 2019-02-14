@@ -35,11 +35,8 @@ public class Hash {
 		public boolean matches(CharSequence rawPassword, String encodedPassword) {
 			return super.matches(rawPassword, encodedPassword);
 		}
-		
-		
 	};
 	
-
 	private static TransformerFactory tf = TransformerFactory.newInstance();
 
 	/**

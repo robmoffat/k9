@@ -1,18 +1,27 @@
 package com.kite9.k9server.domain.user;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
 @Entity
-public class User extends AbstractLongIdEntity {
+public class User extends AbstractLongIdEntity implements UserDetails {
 
 	/**
-	 * Users can call themselves anything.  We'll use email address to log in.
+	 * Users can call themselves anything.  This is used to log in.
 	 */
+	@Column(unique=true, length=25, nullable=false)
 	private String username;
 
 	/**
@@ -201,7 +210,35 @@ public class User extends AbstractLongIdEntity {
 	public String toString() {
 		return "User [username=" + username + ", email=" + email + ", id=" + id + "]";
 	}
-	
-	
+
+	@JsonIgnore
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.singleton(new SimpleGrantedAuthority("USER"));
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonExpired() {
+		return !isAccountExpired();
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonLocked() {
+		return !isAccountLocked();
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return !isPasswordExpired();
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isEnabled() {
+		return !isAccountExpired();
+	}
 	
 }
