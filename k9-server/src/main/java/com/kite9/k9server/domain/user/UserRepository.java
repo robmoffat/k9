@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kite9.k9server.security.auth.UserAuthenticationProvider;
+import com.kite9.k9server.security.OAuth2AuthorizationServerConfig;
+import com.kite9.k9server.security.UserAuthenticationProvider;
 
 /**
  * Provides a publically-accessible repository for performing user creation, email validation and 
@@ -35,6 +36,13 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	 */
 	@RestResource(exported=false)
 	public User findByEmail(String email);
+	
+	/**
+	 * Used by {@link UserAuthenticationProvider} and {@link OAuth2AuthorizationServerConfig}
+	 * Not to be exported, as it is not secure.
+	 */
+	@RestResource(exported=false)
+	public User findByUsername(String username);
 	
 	/**
 	 * Re-declaration of the method from {@link UserRepositoryCustom}, to hook it up.

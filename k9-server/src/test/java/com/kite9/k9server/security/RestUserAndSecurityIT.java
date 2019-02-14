@@ -58,14 +58,14 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		}
 		
 		// retrieve the user, testing basic authentication
-		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
+		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, username);
 		Collection<UserResource> us = uOuts.getContent();
 		Assert.assertEquals(1, us.size());
 		Assert.assertEquals(username, us.iterator().next().username);
 		
 		// retrieve the user with the wrong password
 		try {
-			uOuts = retrieveUserViaBasicAuth(restTemplate, "blah", email);
+			uOuts = retrieveUserViaBasicAuth(restTemplate, "blah", username);
 			Assert.fail();
 		} catch (Exception e) {
 			// occurs when we try to parse html into a UserResource.
@@ -73,7 +73,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// fetch a JWT token using the basic auth parameters
 		String href=urlBase+"/oauth/token";
-		HttpEntity<String> ent = new HttpEntity<>(createBasicAuthHeaders(password, email));
+		HttpEntity<String> ent = new HttpEntity<>(createBasicAuthHeaders(password, username));
 		ResponseEntity<String> resp = restTemplate.exchange(href, HttpMethod.GET, ent, String.class);
 		
 		

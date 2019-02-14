@@ -6,22 +6,42 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.w3c.dom.Node;
 
+@Configuration
 public class Hash {
 
-	private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	@Bean
+	public PasswordEncoder oauthClientPasswordEncoder() {
+		return encoder;
+	}
+
+	private static BCryptPasswordEncoder encoder = new BCryptPasswordEncoder() {
+
+		@Override
+		public String encode(CharSequence rawPassword) {
+			return super.encode(rawPassword);
+		}
+
+		@Override
+		public boolean matches(CharSequence rawPassword, String encodedPassword) {
+			return super.matches(rawPassword, encodedPassword);
+		}
+		
+		
+	};
+	
 
 	private static TransformerFactory tf = TransformerFactory.newInstance();
 
-	
 	/**
 	 * Generates the SHA-1 hash of the document.
 	 */
@@ -42,12 +62,12 @@ public class Hash {
 			throw new RuntimeException("Algorithm doesn't exist!", e);
 		}
 	}
-	
+
 	/**
 	 * Generates a hash of an xml node by converting it to a string first.
 	 */
 	public static String generateHash(Node in) {
-	    try {
+		try {
 			String w = nodeToString(in);
 			return generateHash(w);
 		} catch (Exception e) {
@@ -62,13 +82,13 @@ public class Hash {
 		transformer.transform(new DOMSource(in), new StreamResult(writer));
 		return writer.toString();
 	}
-	
+
 	public static String generatePasswordHash(String password) {
 		return encoder.encode(password);
 	}
-	
+
 	public static boolean checkPassword(String rawPassword, String encodedPassword) {
 		return encoder.matches(rawPassword, encodedPassword);
-		
+
 	}
 }

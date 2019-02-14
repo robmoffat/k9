@@ -1,4 +1,4 @@
-package com.kite9.k9server.security.auth;
+package com.kite9.k9server.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

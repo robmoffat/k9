@@ -1,4 +1,4 @@
-package com.kite9.k9server.security.auth;
+package com.kite9.k9server.security;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
-import com.kite9.k9server.security.Hash;
 
 /**
  * Provides all authentication against our own internal UserRepository.
@@ -46,10 +45,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
 	private Authentication handleFormBasedAuthentication(Authentication authentication) {
 		User u = userRepository.findByEmail(authentication.getName());
+		
+		if (u == null) {
+			u = userRepository.findByUsername(authentication.getName());
+		}
+		
 		WebSecurityConfig.checkUser(u, true);
 		String givenPassword = (String) authentication.getCredentials();
 		if (Hash.checkPassword(givenPassword, u.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), createGrantedAuthorities(u));
+			return new UsernamePasswordAuthenticationToken(u.getEmail(), authentication.getCredentials(), createGrantedAuthorities(u));
 		} else {
 			throw new BadCredentialsException("Bad Login Credentials");
 		}

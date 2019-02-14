@@ -1,10 +1,11 @@
-package com.kite9.k9server.security.auth;
+package com.kite9.k9server.security;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,30 +21,41 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
+
 @Configuration
 public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-//	@Override
-//    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        endpoints.tokenStore(tokenStore())
+
+	
+	@Autowired
+	UserRepository users;
+	
+	@Autowired
+	UserAuthenticationProvider authProvider;
+	
+	@Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        endpoints
+        //.tokenStore(tokenStore())
 //        		.prefix("oauth")
 //                 .accessTokenConverter(accessTokenConverter())
-//                 .authenticationManager(new AuthenticationManager() {
-//					
-//					@Override
-//					public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-//						// TODO Auto-generated method stub
-//						return null;
-//					}
-//				});
-//    }
-//	
-//	
+                 .authenticationManager(new AuthenticationManager() {
+					
+					@Override
+					public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+						return authProvider.authenticate(authentication);
+					}
+				});
+    }
+	
 	
 	
 	@Override
@@ -52,7 +64,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 			
 			@Override
 			public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-				return clientDetails();
+				User u = users.findByUsername(clientId);
+				
+				BaseClientDetails out = new BaseClientDetails(clientId, "blah", "scopes", "grants", "auths");
+				out.setClientSecret(u.getPassword());
+				return out;
+				
 			}
 		});
 	}
