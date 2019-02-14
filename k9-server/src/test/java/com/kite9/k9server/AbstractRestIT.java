@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Map;
 
 import org.apache.commons.logging.impl.SimpleLog;
 import org.junit.Assert;
@@ -93,6 +94,7 @@ public abstract class AbstractRestIT {
 	    MappingJackson2HttpMessageConverter halConverter = new MappingJackson2HttpMessageConverter();
 	    halConverter.setObjectMapper(objectMapper);
 	    halConverter.setSupportedMediaTypes(Arrays.asList(MediaTypes.HAL_JSON));
+	    halConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
 
 	    return halConverter;
 	}

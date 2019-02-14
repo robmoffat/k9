@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -78,10 +79,11 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		map.add("grant_type", "client_credentials");
 		HttpHeaders headers = createBasicAuthHeaders(password, username);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		
 		HttpEntity<MultiValueMap<String, String>> ent = new HttpEntity<>(map, headers);
-		ResponseEntity<String> resp = restTemplate.exchange(href, HttpMethod.POST, ent, String.class);
-		
+		ResponseEntity<OAuth2AccessToken> resp = restTemplate.exchange(href, HttpMethod.POST, ent, OAuth2AccessToken.class);
+
+		// with this token, can we do stuff?
+		String jwtToken = resp.getBody().getValue();
 		
 		
 		deleteAndCheckDeleted(restTemplate, url, username, password, UserResource.class);

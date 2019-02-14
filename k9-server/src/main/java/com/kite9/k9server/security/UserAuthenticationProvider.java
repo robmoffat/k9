@@ -25,6 +25,9 @@ import com.kite9.k9server.domain.user.UserRepository;
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 	
+	public static final String USER_AUTHORITY = "user";
+	public static final Collection<GrantedAuthority> USUAL_AUTHORITIES = Collections.singleton(new SimpleGrantedAuthority(USER_AUTHORITY));
+	
 	@Autowired
 	UserRepository userRepository;
 
@@ -60,6 +63,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	}
 
 	private Collection<? extends GrantedAuthority> createGrantedAuthorities(User u) {
-		return Collections.singleton(new SimpleGrantedAuthority("USER"));
+		return USUAL_AUTHORITIES;
 	}
 }
