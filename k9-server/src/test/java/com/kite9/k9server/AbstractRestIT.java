@@ -146,6 +146,12 @@ public abstract class AbstractRestIT {
 		return out.getBody();
 	}
 	
+	protected <X> X retrieveResource(RestTemplate restTemplate, String jwt, String url, Class<X> outClass) throws URISyntaxException {
+		RequestEntity<Void> in = new RequestEntity<Void>(createJWTTokenHeaders(jwt, null), HttpMethod.GET, new URI(url));
+		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
+		return out.getBody();
+	}
+	
 	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.COOKIE, cookie);
@@ -163,13 +169,13 @@ public abstract class AbstractRestIT {
 		return headers;
 	}
 
-	protected HttpHeaders createKite9AuthHeaders(String apiKey, MediaType in, MediaType... accept) {
+	protected HttpHeaders createJWTTokenHeaders(String jwt, MediaType in, MediaType... accept) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(accept));
 		if (in != null) {
 			headers.setContentType(in);
 		}
-		headers.add(HttpHeaders.AUTHORIZATION, "KITE9 "+apiKey);
+		headers.add(HttpHeaders.AUTHORIZATION, "Bearer "+jwt);
 		return headers;
 	}
 	
@@ -178,6 +184,28 @@ public abstract class AbstractRestIT {
 		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+	}
+	
+	protected void delete(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
+		HttpHeaders h = createJWTTokenHeaders(token, null);
+		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+	}
+	
+	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String jwtToken, Class<X> c) throws URISyntaxException {
+		delete(restTemplate, url, jwtToken);
+		try {
+			retrieveResource(restTemplate, jwtToken, url, c);
+			Assert.fail();
+		} catch (AssertionError ae) {
+			throw ae;
+		} catch (Throwable e) {
+			// should throw this.
+			e.printStackTrace();
+		} 
+		
+		
 	}
 	
 	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String username, String password, Class<X> c) throws URISyntaxException {
@@ -207,30 +235,5 @@ public abstract class AbstractRestIT {
 		}
 	}
 	
-//	public class MediaHandlingRestTemplate extends RestTemplate {
-//
-//		public MediaHandlingRestTemplate(ClientHttpRequestFactory requestFactory) {
-//			super(requestFactory);
-//			
-//		}
-//		
-//		public byte[] exchange(RequestEntity<?> requestEntity) throws RestClientException {
-//
-//			org.springframework.util.Assert.notNull(requestEntity, "'requestEntity' must not be null");
-//
-//			RequestCallback requestCallback = httpEntityCallback(requestEntity, null);
-//			return execute(requestEntity.getUrl(), requestEntity.getMethod(), requestCallback, new ResponseExtractor<byte[]>() {
-//
-//				@Override
-//				public byte[] extractData(ClientHttpResponse response) throws IOException {
-//					int contentLength = (int) response.getHeaders().getContentLength();
-//					ByteArrayOutputStream baos = new ByteArrayOutputStream(Math.max(contentLength, 6000));
-//					StreamHelp.streamCopy(response.getBody(), baos, true);
-//					return baos.toByteArray();
-//				}
-//			});
-//		}
-//
-//	}
 
 }

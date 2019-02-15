@@ -75,5 +75,13 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
 		return uOut.getBody(); 
 	}
+	
+	protected Resources<UserResource> retrieveUserViaJwt(RestTemplate restTemplate, String jwt) throws URISyntaxException {
+		String url = urlBase + "/api/users";
+		HttpHeaders headers = createJWTTokenHeaders(jwt, null);
+		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
+		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
+		return uOut.getBody(); 
+	}
 		
 }

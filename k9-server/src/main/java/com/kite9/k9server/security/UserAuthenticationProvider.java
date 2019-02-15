@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.user.User;
@@ -34,16 +35,23 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	
 	@Override
 	public boolean supports(Class<?> authentication) {
-		return authentication.equals(UsernamePasswordAuthenticationToken.class);
+		return authentication.equals(UsernamePasswordAuthenticationToken.class) || 
+				authentication.equals(PreAuthenticatedAuthenticationToken.class);
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		if (authentication instanceof UsernamePasswordAuthenticationToken) {
 			return handleFormBasedAuthentication(authentication);
+		} else if (authentication instanceof PreAuthenticatedAuthenticationToken) {
+			return handleJwtBasedAuthentication(authentication);
 		}
 		
 		return null;
+	}
+
+	private Authentication handleJwtBasedAuthentication(Authentication authentication) {
+		return authentication;
 	}
 
 	private Authentication handleFormBasedAuthentication(Authentication authentication) {
@@ -62,7 +70,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		}
 	}
 
-	private Collection<? extends GrantedAuthority> createGrantedAuthorities(User u) {
+	private Collection<? extends GrantedAuthority> createGrantedAuthorities(@SuppressWarnings("unused") User u) {
 		return USUAL_AUTHORITIES;
 	}
 }

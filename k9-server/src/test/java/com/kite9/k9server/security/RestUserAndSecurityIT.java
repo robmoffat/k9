@@ -4,14 +4,12 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpEntity;
@@ -25,13 +23,11 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.UserController;
-import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.UserResource;
 import com.kite9.k9server.web.NotificationResource;
@@ -82,11 +78,18 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		HttpEntity<MultiValueMap<String, String>> ent = new HttpEntity<>(map, headers);
 		ResponseEntity<OAuth2AccessToken> resp = restTemplate.exchange(href, HttpMethod.POST, ent, OAuth2AccessToken.class);
 
-		// with this token, can we do stuff?
+		// with this token, can we do stuff?  Pull back users first.
 		String jwtToken = resp.getBody().getValue();
+		Resources<UserResource> uOuts2 = retrieveUserViaJwt(restTemplate, jwtToken);
+		us = uOuts2.getContent();
+		Assert.assertEquals(1, us.size());
+		Assert.assertEquals(username, us.iterator().next().username);
 		
+		// pull back our single user.
+		UserResource uOut2 = retrieveResource(restTemplate, jwtToken, uOut.getId().getHref(), UserResource.class);
 		
-		deleteAndCheckDeleted(restTemplate, url, username, password, UserResource.class);
+		// we should be able to delete with it too
+		deleteAndCheckDeleted(restTemplate, url, jwtToken, UserResource.class);
 	}
 	
 	@Test

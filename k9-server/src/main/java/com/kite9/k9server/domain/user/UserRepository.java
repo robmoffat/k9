@@ -71,8 +71,8 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	/**
 	 * Required for delete to work externally.
 	 */
-	@RestResource(exported=false)
-	Optional<User> findById(Long id);
+	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
+	Optional<User> findById(@Param("id") Long id);
 	
 	/**
 	 * Removes the user permanently.
