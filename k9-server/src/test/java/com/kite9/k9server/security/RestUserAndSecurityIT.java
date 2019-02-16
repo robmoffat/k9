@@ -19,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -70,23 +69,16 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		}
 		
 		// fetch a JWT token using the basic auth parameters
-		String href=urlBase+"/oauth/token";
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("grant_type", "client_credentials");
-		HttpHeaders headers = createBasicAuthHeaders(password, username);
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		HttpEntity<MultiValueMap<String, String>> ent = new HttpEntity<>(map, headers);
-		ResponseEntity<OAuth2AccessToken> resp = restTemplate.exchange(href, HttpMethod.POST, ent, OAuth2AccessToken.class);
+		String jwtToken = getJwtToken(restTemplate, username, password);
 
 		// with this token, can we do stuff?  Pull back users first.
-		String jwtToken = resp.getBody().getValue();
 		Resources<UserResource> uOuts2 = retrieveUserViaJwt(restTemplate, jwtToken);
 		us = uOuts2.getContent();
 		Assert.assertEquals(1, us.size());
 		Assert.assertEquals(username, us.iterator().next().username);
 		
 		// pull back our single user.
-		UserResource uOut2 = retrieveResource(restTemplate, jwtToken, uOut.getId().getHref(), UserResource.class);
+		retrieveResource(restTemplate, jwtToken, uOut.getId().getHref(), UserResource.class);
 
 		// we should be able to delete with it too
 		deleteAndCheckDeleted(restTemplate, url, jwtToken, UserResource.class);

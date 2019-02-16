@@ -12,11 +12,15 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 
 	protected UserResource u;
 	protected String userUrl;
+	protected String jwtToken;
 	
 	@Before
 	public void withUser() throws URISyntaxException {
-		u = createUser(restTemplate, "abc1234", "facts", "thing2@example.com");
+		String username = "abc1234";
+		String password = "facts";
+		u = createUser(restTemplate, username, password, "thing2@example.com");
 		userUrl = u.getLink(Link.REL_SELF).getHref();
+		jwtToken = getJwtToken(restTemplate, username, password);
 	}
 	
 	@After

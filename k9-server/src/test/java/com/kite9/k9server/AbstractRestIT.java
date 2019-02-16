@@ -1,15 +1,10 @@
 package com.kite9.k9server;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Map;
 
 import org.apache.commons.logging.impl.SimpleLog;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kite9.framework.logging.Kite9Log;
@@ -25,15 +20,10 @@ import org.springframework.hateoas.core.DefaultRelProvider;
 import org.springframework.hateoas.hal.DefaultCurieProvider;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.hateoas.mvc.TypeReferences;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpOutputMessage;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.FormHttpMessageConverter;
@@ -53,6 +43,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kite9.k9server.resource.UserResource;
 import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
+/**
+ * Configuration of basic test, and rest template for accessing endpoints.
+ * 
+ * @author robmoffat
+ *
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 public abstract class AbstractRestIT {
@@ -124,7 +120,6 @@ public abstract class AbstractRestIT {
 	 * Provides a REST Template that supports HAL and logging.
 	 */
 	protected RestTemplate getRestTemplate() {
-//		MediaHandlingRestTemplate template = new MediaHandlingRestTemplate(new SimpleClientHttpRequestFactory());
 		MappingJackson2HttpMessageConverter converter = getHALMessageConverter();
 		ObjectMapper mapper = converter.getObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -139,26 +134,6 @@ public abstract class AbstractRestIT {
 		return template;
 	}
 	
-	protected <X> X retrieveResource(RestTemplate restTemplate, String username, String password, String url, Class<X> outClass) throws URISyntaxException {
-		RequestEntity<Void> in = new RequestEntity<Void>(createBasicAuthHeaders(password, username), HttpMethod.GET, new URI(url));
-		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
-		return out.getBody();
-	}
-	
-	protected <X> X retrieveResource(RestTemplate restTemplate, String jwt, String url, Class<X> outClass) throws URISyntaxException {
-		RequestEntity<Void> in = new RequestEntity<Void>(createJWTTokenHeaders(jwt, null), HttpMethod.GET, new URI(url));
-		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
-		return out.getBody();
-	}
-	
-	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.COOKIE, cookie);
-		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
-		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
-		return pOut;
-	}
-
 	protected HttpHeaders createBasicAuthHeaders(String password, String username) {
 		HttpHeaders headers = new HttpHeaders();
 		String auth = username + ":" + password;
@@ -176,50 +151,6 @@ public abstract class AbstractRestIT {
 		}
 		headers.add(HttpHeaders.AUTHORIZATION, "Bearer "+jwt);
 		return headers;
-	}
-	
-	protected void delete(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
-		HttpHeaders h = createBasicAuthHeaders(password, username);
-		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
-		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
-	}
-	
-	protected void delete(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
-		HttpHeaders h = createJWTTokenHeaders(token, null);
-		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
-		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
-	}
-	
-	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String jwtToken, Class<X> c) throws URISyntaxException {
-		delete(restTemplate, url, jwtToken);
-		try {
-			retrieveResource(restTemplate, jwtToken, url, c);
-			Assert.fail();
-		} catch (AssertionError ae) {
-			throw ae;
-		} catch (Throwable e) {
-			// should throw this.
-			e.printStackTrace();
-		} 
-		
-		
-	}
-	
-	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String username, String password, Class<X> c) throws URISyntaxException {
-		delete(restTemplate, url, username, password);
-		try {
-			retrieveResource(restTemplate, username, password, url, c);
-			Assert.fail();
-		} catch (AssertionError ae) {
-			throw ae;
-		} catch (Throwable e) {
-			// should throw this.
-			e.printStackTrace();
-		} 
-		
-		
 	}
 	
 	protected final class SilentErrorHandler implements ResponseErrorHandler {

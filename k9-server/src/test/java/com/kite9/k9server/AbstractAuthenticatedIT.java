@@ -2,19 +2,22 @@ package com.kite9.k9server;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -82,6 +85,74 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
 		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
 		return uOut.getBody(); 
+	}
+	
+	protected String getJwtToken(RestTemplate restTemplate, String username, String password) {
+		String href=urlBase+"/oauth/token";
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("grant_type", "client_credentials");
+		HttpHeaders headers = createBasicAuthHeaders(password, username);
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		HttpEntity<MultiValueMap<String, String>> ent = new HttpEntity<>(map, headers);
+		ResponseEntity<OAuth2AccessToken> resp = restTemplate.exchange(href, HttpMethod.POST, ent, OAuth2AccessToken.class);
+		String jwtToken = resp.getBody().getValue();
+		return jwtToken;
+	}
+
+	protected void delete(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
+		HttpHeaders h = createJWTTokenHeaders(token, null);
+		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+	}
+
+	protected void delete(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
+		HttpHeaders h = createBasicAuthHeaders(password, username);
+		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
+		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+	}
+
+	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String jwtToken, Class<X> c) throws URISyntaxException {
+		delete(restTemplate, url, jwtToken);
+		try {
+			retrieveResource(restTemplate, jwtToken, url, c);
+			Assert.fail();
+		} catch (AssertionError ae) {
+			throw ae;
+		} catch (Throwable e) {
+			// should throw this.
+			e.printStackTrace();
+		} 
+		
+		
+	}
+
+	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String username, String password, Class<X> c) throws URISyntaxException {
+		delete(restTemplate, url, username, password);
+		try {
+			retrieveResource(restTemplate, username, password, url, c);
+			Assert.fail();
+		} catch (AssertionError ae) {
+			throw ae;
+		} catch (Throwable e) {
+			// should throw this.
+			e.printStackTrace();
+		} 
+		
+		
+	}
+
+	protected <X> X retrieveResource(RestTemplate restTemplate, String jwt, String url, Class<X> outClass) throws URISyntaxException {
+		RequestEntity<Void> in = new RequestEntity<Void>(createJWTTokenHeaders(jwt, null), HttpMethod.GET, new URI(url));
+		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
+		return out.getBody();
+	}
+
+	protected <X> X retrieveResource(RestTemplate restTemplate, String username, String password, String url, Class<X> outClass) throws URISyntaxException {
+		RequestEntity<Void> in = new RequestEntity<Void>(createBasicAuthHeaders(password, username), HttpMethod.GET, new URI(url));
+		ResponseEntity<X> out = restTemplate.exchange(in, TypeReferences.ResourceType.forType(outClass));
+		return out.getBody();
 	}
 		
 }
