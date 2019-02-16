@@ -1,7 +1,6 @@
 package com.kite9.k9server.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -47,14 +46,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 			public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 				User u = users.findByUsername(clientId);
 
-				BaseClientDetails out = new BaseClientDetails(clientId, "api", APPLICATION_SCOPE, "client_credentials", UserAuthenticationProvider.USER_AUTHORITY);
+				BaseClientDetails out = new BaseClientDetails(clientId, JwtConfig.RESOURCE_ID, JwtConfig.APPLICATION_SCOPE, "client_credentials", UserAuthenticationProvider.USER_AUTHORITY);
 				out.setClientSecret(u.getPassword());
 				return out;
 			}
 		};
 	}
-
-	public static final String APPLICATION_SCOPE = "kite9";
 
 
 }

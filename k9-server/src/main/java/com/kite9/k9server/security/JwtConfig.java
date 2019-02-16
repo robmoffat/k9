@@ -15,6 +15,10 @@ public class JwtConfig {
 	@Value("security.oauth2.server.key:123") 
 	String signingKey;
 	
+	public static final String RESOURCE_ID = "kite9-api";
+	public static final String APPLICATION_SCOPE = "all";
+
+	
 	@Bean
 	public TokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
@@ -35,6 +39,5 @@ public class JwtConfig {
 		defaultTokenServices.setSupportRefreshToken(true);
 		return defaultTokenServices;
 	}
-	
 }
 

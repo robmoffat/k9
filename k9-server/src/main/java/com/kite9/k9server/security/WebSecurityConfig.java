@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationProcessingFilter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -31,12 +32,12 @@ import com.kite9.k9server.domain.user.UserRepository;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Autowired
-	UserAuthenticationProvider userAuthenticationProvider;
-	
+
 	@Autowired
 	UserRepository users;
+	
+	@Autowired
+	ResourceServerTokenServices tokenServices;
 	
 	/**
 	 * This login approach handles both form-based and api-key based login, and
@@ -66,18 +67,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	
+	
+	
 	public OAuth2AuthenticationProcessingFilter jwtAuthFilter() throws Exception {
 			OAuth2AuthenticationProcessingFilter resourcesServerFilter = new OAuth2AuthenticationProcessingFilter();
-//		resourcesServerFilter.setAuthenticationEntryPoint(authenticationEntryPoint);
 		resourcesServerFilter.setAuthenticationManager(authenticationManager());
-//		
-//		if (tokenExtractor != null) {
-//			resourcesServerFilter.setTokenExtractor(tokenExtractor);
-//		}
-//		if (authenticationDetailsSource != null) {
-//			resourcesServerFilter.setAuthenticationDetailsSource(authenticationDetailsSource);
-//		}
-//		resourcesServerFilter = postProcess(resourcesServerFilter);
 		resourcesServerFilter.setStateless(false);
 		resourcesServerFilter.afterPropertiesSet();
 		
@@ -85,15 +79,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	}
 	
-
-//	@Bean
-//	public AuthenticationManager oauthAuthenticationManager() {
-//		OAuth2AuthenticationManager oauthAuthenticationManager = new OAuth2AuthenticationManager();
-//		oauthAuthenticationManager.setResourceId("api");
-//		oauthAuthenticationManager.setTokenServices(tokenServices);
-//		oauthAuthenticationManager.setClientDetailsService(clientDetails);
-//		return oauthAuthenticationManager;
-//	}
 
 	public static void checkUser(User u, boolean checkPassword) throws AccountStatusException {
 		if (u == null) {
@@ -135,11 +120,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		};
 
 	}
+	
+	
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		super.configure(auth);
+		auth
+			.parentAuthenticationManager(oauthAuthenticationManager())
+			.authenticationProvider(new UserAuthenticationProvider(users));
+	}
+
+	protected AuthenticationManager oauthAuthenticationManager() throws Exception {
+		OAuth2AuthenticationManager oauthAuthenticationManager = new OAuth2AuthenticationManager();
+		oauthAuthenticationManager.setResourceId(JwtConfig.RESOURCE_ID);
+		oauthAuthenticationManager.setTokenServices(tokenServices);
+		return oauthAuthenticationManager;
 	}
 
 }
