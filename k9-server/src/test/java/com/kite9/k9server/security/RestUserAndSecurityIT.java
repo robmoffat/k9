@@ -87,7 +87,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// pull back our single user.
 		UserResource uOut2 = retrieveResource(restTemplate, jwtToken, uOut.getId().getHref(), UserResource.class);
-		
+
 		// we should be able to delete with it too
 		deleteAndCheckDeleted(restTemplate, url, jwtToken, UserResource.class);
 	}
@@ -233,7 +233,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// check we can't log in with old password
 		s = formLogin(restTemplate, email, password);
 		Assert.assertEquals(HttpStatus.FOUND, s.getStatusCode());
-		Assert.assertEquals(urlBase+"/login?error", s.getHeaders().getLocation().toString());
+		Assert.assertEquals(urlBase+"/login", s.getHeaders().getLocation().toString());
 		
 		// delete the user
 		delete(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);

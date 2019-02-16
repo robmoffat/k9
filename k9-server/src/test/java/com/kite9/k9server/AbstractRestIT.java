@@ -93,8 +93,7 @@ public abstract class AbstractRestIT {
 
 	    MappingJackson2HttpMessageConverter halConverter = new MappingJackson2HttpMessageConverter();
 	    halConverter.setObjectMapper(objectMapper);
-	    halConverter.setSupportedMediaTypes(Arrays.asList(MediaTypes.HAL_JSON));
-	    halConverter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON));
+	    halConverter.setSupportedMediaTypes(Arrays.asList(MediaTypes.HAL_JSON, MediaType.APPLICATION_JSON));
 
 	    return halConverter;
 	}
