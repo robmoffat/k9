@@ -47,15 +47,15 @@ internal-model-artifact,
 protocol-artifact,
 agent-artifact {
 	kite9-type: container;
-	kite9-margin: 10pt;
-	kite9-link-inset: 10pt;
-	kite9-link-gutter: 10pt;
+	kite9-margin: 10px;
+	kite9-link-inset: 10px;
+	kite9-link-gutter: 10px;
 	kite9-type: container;
 	kite9-layout: vertical;	
 	kite9-template: url(template.xml#artifact);
-	kite9-padding: 10pt; 
+	kite9-padding: 10px; 
 	kite9-connection-align: 50%;
-	kite9-min-size: 110pt 140pt;	
+	kite9-min-size: 110pt 140px;	
 }
 
 agent-artifact {
@@ -104,8 +104,8 @@ risk {
 
 container {
 	kite9-type: container;
-	kite9-padding: 15pt;
-	kite9-margin: 15pt;
+	kite9-padding: 15px;
+	kite9-margin: 15px;
 	kite9-template: url(template.xml#container);
 }
 
@@ -331,15 +331,15 @@ risk.methdology {
 
 
 risk-box {
-	kite9-margin: 10pt;
-	kite9-link-inset: 10pt;
-	kite9-link-gutter: 10pt;
+	kite9-margin: 10px;
+	kite9-link-inset: 10px;
+	kite9-link-gutter: 10px;
 	kite9-type: container;
 	kite9-layout: vertical;	
 	kite9-template: url(template.xml#risk-box);
-	kite9-padding: 10pt; 
+	kite9-padding: 10px; 
 	kite9-connection-align: 50%;
-	kite9-min-size: 110pt 140pt;
+	kite9-min-size: 110pt 140px;
 }
 
 risk {
@@ -348,7 +348,7 @@ risk {
 
 diagram {
 	kite9-type: diagram;
-	kite9-padding: 15pt;
+	kite9-padding: 15px;
 	kite9-traversal: none;
 	kite9-template: url(template.xml#diagram);
 	background-color: white;
@@ -358,8 +358,8 @@ image {
 	kite9-type: container;
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-	kite9-min-size: 50pt 50pt;
-	kite9-margin: 10pt;
+	kite9-min-size: 50pt 50px;
+	kite9-margin: 10px;
 	
 }
 
@@ -375,8 +375,8 @@ risk code {
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#code);
-	font-size: 22pt;
-	kite9-margin: 10pt;
+	font-size: 22px;
+	kite9-margin: 10px;
 }
 
 action code,
@@ -396,25 +396,25 @@ title {
 
 .risk-back {
 	stroke: black;
-	stroke-width: 1pt;
+	stroke-width: 1px;
 }
 
 .code-label-front {
 	stroke-width: 0;
-	font-size: 19pt;
+	font-size: 19px;
 	font-family: "gothic";
 	fill: black;
 	text-align: middle;
 }
 
 .title-label-front {
-	font-size: 12pt;
+	font-size: 12px;
 	font-family: "gothic";
 	text-align: middle;
 }
 
 .action-label-front {
-	font-size: 22pt;
+	font-size: 22px;
 	font-family: "gothic";
 	text-align: middle;
 	fill: black;
@@ -422,7 +422,7 @@ title {
 
 .action-code-label-front {
 	stroke-width: 0;
-	font-size: 22pt;
+	font-size: 22px;
 	font-family: "gothic-bold";
 	fill: black;
 	text-align: middle;
@@ -430,7 +430,7 @@ title {
 
 
 .container-back {
-	stroke-width: 1pt; 
+	stroke-width: 1px; 
 	fill:none;
 	stroke: black;
 }
@@ -456,10 +456,10 @@ diagram,
 glyph,
 arrow,
 link {
-	kite9-margin: 20pt;
-	kite9-link-inset: 10pt;
-	kite9-link-gutter: 10pt;
-	kite9-padding: 30pt;
+	kite9-margin: 20px;
+	kite9-link-inset: 10px;
+	kite9-link-gutter: 10px;
+	kite9-padding: 30px;
 }
 
 /* Glyphs */
@@ -468,10 +468,10 @@ glyph {
 	kite9-type: container;
 	kite9-layout: down;	
 	kite9-template: url(template.xml#glyph);
-	kite9-padding: 6pt 10pt 6pt 10pt; 
-	kite9-margin: 10pt;
+	kite9-padding: 6pt 10pt 6pt 10px; 
+	kite9-margin: 10px;
 	kite9-connection-align: 50%;
-	kite9-min-height: 30pt;
+	kite9-min-height: 30px;
 	kite9-sizing: minimize;
 }
 
@@ -481,7 +481,7 @@ glyph.rect {
 
 glyph.circle {
 	kite9-template: url(template.xml#glyph-circle);
-	kite9-min-size: 20pt 20pt;
+	kite9-min-size: 20pt 20px;
 }
 
 diagram glyph label {
@@ -489,19 +489,19 @@ diagram glyph label {
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#glyph-label-text);
 	kite9-vertical-align: center;
-	kite9-margin: 5pt;
-	kite9-min-width: 60pt; 
+	kite9-margin: 5px;
+	kite9-min-width: 60px; 
 	
 }
 
 .glyph-back {
-	stroke-width: 1pt;
+	stroke-width: 1px;
 	stroke: black;
 	fill: white;
 }
 
 .glyph-label-text {
-	font-size: 12pt;
+	font-size: 12px;
 	fill: black;
 	font-family: "gothic";
 	stroke: none;
@@ -512,19 +512,19 @@ diagram glyph label {
 link {
 	kite9-type: link;
 	kite9-template: url(template.xml#link);
-	kite9-link-minimum-length: 15pt;
-	kite9-link-corner-radius: 10pt;
+	kite9-link-minimum-length: 15px;
+	kite9-link-corner-radius: 10px;
 }
 
 .link {
 	stroke: black;
-	stroke-width: 2pt;
+	stroke-width: 2px;
 	fill: none;
 }
 
 .grey-link {
 	stroke: #666666;
-	stroke-width: 1pt;
+	stroke-width: 1px;
 	fill: none;
 }
 
@@ -548,15 +548,15 @@ from,
 to {
 	kite9-type: link-end;
 	kite9-template: url(template.xml#empty-terminator);
-	kite9-padding: 5pt; 
+	kite9-padding: 5px; 
 } 
 
 from.arrow,
 to.arrow {
 	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
 	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
-	kite9-padding: 5pt 12pt 5pt 1pt;
-	kite9-marker-reserve: 1pt;
+	kite9-padding: 5pt 12pt 5pt 1px;
+	kite9-marker-reserve: 1px;
 }
 
 from.circle,
@@ -582,8 +582,8 @@ context {
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-traversal: always;
-	kite9-padding: 12pt;	
-	kite9-link-inset: 12pt;
+	kite9-padding: 12px;	
+	kite9-link-inset: 12px;
 }
 
 context.dotted {
@@ -599,13 +599,13 @@ group {
 .context-back {
 	fill: none;
 	stroke: black;
-	stroke-width: 1pt;
+	stroke-width: 1px;
 }
 
 .context-dotted {
 	fill: none;
 	stroke: black;
-	stroke-width: 1pt;
+	stroke-width: 1px;
 	stroke-dasharray: 4 4;	
 }
 
@@ -615,26 +615,26 @@ group > label {
 	kite9-type: container; 
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#container-label);
-	kite9-padding: 4pt;
+	kite9-padding: 4px;
 	kite9-horizontal-align: center;
 }
 
 .container-label-front {
 	stroke-width: 0;
-	font-size: 11pt;
+	font-size: 11px;
 	font-family: "gothic";
 	fill: black;
 }
 
 /* Arrow */
 arrow {
-	kite9-padding: 3pt 5pt 3pt 5pt; 
+	kite9-padding: 3pt 5pt 3pt 5px; 
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow);
 	kite9-connections: separate;
 	kite9-connection-align: 50%;
-	kite9-link-inset: 4pt;
+	kite9-link-inset: 4px;
 }
 
 
@@ -644,7 +644,7 @@ arrow > label {
 	kite9-template: url(template.xml#arrow-label-text);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: center;
-	kite9-padding: 6pt;
+	kite9-padding: 6px;
 }
 
 arrow > label > contents {
@@ -655,7 +655,7 @@ arrow > label > contents {
 .arrow-label-text {
 	fill: white;
 	stroke: none;
-	font-size: 14pt;
+	font-size: 14px;
 	font-family: "gothic-bold";
 }
 
@@ -665,17 +665,17 @@ glyph stereotype {
 	kite9-type: container;
 	kite9-template: url(template.xml#glyph-stereotype-text);
 	kite9-horizontal-align: center;
-	kite9-margin: 5pt; 
+	kite9-margin: 5px; 
 	kite9-sizing: maximize;
 	text-align: middle;
 }
 
 .glyph-stereotype-text {
 	font-family: "gothic-bold";
-	font-size: 12pt;
+	font-size: 12px;
 	fill: black;
 	stroke: none;
-	kite9-padding: 2pt; 
+	kite9-padding: 2px; 
 }
 
 /* Text Lines */
@@ -689,7 +689,7 @@ glyph text-lines {
 text-line {
 	kite9-type: text;
 	kite9-sizing: maximize;
-	kite9-margin: 4pt;
+	kite9-margin: 4px;
 	kite9-vertical-align: top;
 	kite9-connection-align: 50%;
 	kite9-horizontal-align: left;
@@ -697,7 +697,7 @@ text-line {
 	fill: black;
 	font-family: "gothic";
 	text-align: start;	
-	font-size: 12pt;
+	font-size: 12px;
 }
 
 /* tables */
@@ -712,12 +712,12 @@ celltext {
 	kite9-usage: regular;
 	kite9-type: container;
 	kite9-template: url(template.xml#celltext);
-	kite9-minimum-height: 250pt;
-	kite9-padding: 10pt;
+	kite9-minimum-height: 250px;
+	kite9-padding: 10px;
 	kite9-vertical-align: center;
 	kite9-horizontal-align: left;
 	kite9-sizing: minimize;
-	font-size: 40pt;
+	font-size: 40px;
 	fill: black;
 	font-family: "gothic";
 	stroke: none;
@@ -733,7 +733,7 @@ bulleted {
 	kite9-template: url(template.xml#bulleted);
 	kite9-vertical-align: top;
 	kite9-horizontal-align: left;	
-	font-size: 40pt;
+	font-size: 40px;
 	fill: black;
 	font-family: "gothic";
 	stroke: none;
@@ -743,7 +743,7 @@ ctext {
 	kite9-usage: regular;
 	kite9-vertical-align: top;
 	kite9-horizontal-align: left;	
-	font-size: 40pt;
+	font-size: 40px;
 	fill: black;
 	font-family: "gothic";
 	stroke: none;
@@ -754,7 +754,7 @@ btext {
 	kite9-usage: regular;
 	kite9-vertical-align: top;
 	kite9-horizontal-align: left;	
-	font-size: 40pt;
+	font-size: 40px;
 	fill: black;
 	font-family: "gothic-bold";
 	stroke: none;
@@ -793,7 +793,7 @@ tick {
 table risk,
 table tick {
 	kite9-horizontal-align: center;
-	kite9-margin: 20pt;
+	kite9-margin: 20px;
 }
 
 table celltext.bottom {
@@ -809,9 +809,9 @@ table celltext.top {
 description {
 	kite9-type: container;	
 	kite9-template: url(template.xml#description);
-	font-size: 14pt;
+	font-size: 14px;
 	font-family: "gothic-italic";
-	kite9-padding: 10pt;
+	kite9-padding: 10px;
 }
 
 /* Steve McConnell Stuff */
@@ -820,8 +820,8 @@ leg {
 	kite9-type: container;
 	kite9-template: url(template.xml#leg);
 	kite9-layout: down;
-	kite9-min-height: 110pt;
-	kite9-min-width: 70pt;
+	kite9-min-height: 110px;
+	kite9-min-width: 70px;
 	kite9-sizing: minimize;
 	kite9-margin: 0px;
 	kite9-vertical-align: bottom;
@@ -838,7 +838,7 @@ plinth {
 
 symbol {
 	kite9-type: svg;
-	kite9-margin: 0 2pt 0 2pt;
+	kite9-margin: 0 2pt 0 2px;
 	kite9-sizing: minimize;
 	kite9-link-inset: 0px;
 	kite9-template: url(template.xml#symbol);
@@ -867,9 +867,9 @@ keyitem > * {
 keydesc {
 	kite9-type: container;	
 	kite9-template: url(template.xml#description);
-	font-size: 12pt;
+	font-size: 12px;
 	font-family: "gothic";
-	kite9-padding: 10pt;
+	kite9-padding: 10px;
 }
 
 toLabel, 

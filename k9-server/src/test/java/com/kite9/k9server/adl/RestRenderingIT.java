@@ -45,7 +45,7 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 
 	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();
-		HttpHeaders headers = createKite9AuthHeaders(u.api, MediaTypes.ADL_SVG, output);
+		HttpHeaders headers = createJWTTokenHeaders(u.api, MediaTypes.ADL_SVG, output);
 		HttpEntity<byte[]> postBody = new HttpEntity<byte[]>(xml.getBytes(), headers);
 		
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);

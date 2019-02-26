@@ -13,9 +13,9 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.python.apache.xml.serialize.DOMSerializerImpl;
 import org.springframework.util.StreamUtils;
 import org.w3c.dom.Node;
-import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -68,7 +68,7 @@ public class ADLImpl implements ADL {
 		if (getMode() == Mode.URI) {
 			xml = toXMLString(uri);
 		} else if (getMode() == Mode.DOM) {
-			xml = toXMLString(doc);
+			xml = toXMLString(doc, false);
 			doc = null;
 		}
 
@@ -107,11 +107,12 @@ public class ADLImpl implements ADL {
 		}
 	}
 	
-	public static String toXMLString(Node n) {
+	public static String toXMLString(Node n, boolean omitDeclaration) {
 		try {
-			ADLDocument owner = (ADLDocument) (n instanceof ADLDocument ? n : n.getOwnerDocument());
-			DOMImplementationLS ls = owner.getImplementation();
-			LSSerializer ser = ls.createLSSerializer();
+			LSSerializer ser = new DOMSerializerImpl();
+			if (omitDeclaration) {
+				ser.getDomConfig().setParameter("xml-declaration", false);
+			}
 			return ser.writeToString(n);
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
@@ -144,7 +145,7 @@ public class ADLImpl implements ADL {
 
 	@Override
 	public String getAsXMLString(Node n) {
-		return toXMLString(n);
+		return toXMLString(n, true);
 	}
 
 }

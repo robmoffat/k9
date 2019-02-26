@@ -60,7 +60,7 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 		MediaType contentType = outputMessage.getHeaders().getContentType();	
 		try {
 			Format f = formatSupplier.getFormatFor(contentType);
-			f.handleWrite(t, outputMessage.getBody(), this, true, null, null);
+			f.handleWrite(t, outputMessage.getBody(), true, null, null);
 		} catch (Exception e) {
 			throw new HttpMessageNotWritableException("Caused by: "+e.getMessage(), e);
 		}

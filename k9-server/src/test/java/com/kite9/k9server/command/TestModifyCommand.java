@@ -21,6 +21,7 @@ import org.xmlunit.diff.ComparisonResult;
 import org.xmlunit.diff.ComparisonType;
 import org.xmlunit.diff.DOMDifferenceEngine;
 
+import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.holder.ADL;
 
 @RunWith(SpringRunner.class)
@@ -81,7 +82,7 @@ public class TestModifyCommand {
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "4.xml", result);
 		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command4.xml"), Charset.forName("UTF-8"));
-		compareXML(expected4, result);
+		XMLCompare.compareXML(expected4, result);
 		return out;
 	}
 
@@ -91,7 +92,7 @@ public class TestModifyCommand {
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "3.xml", result);
 		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command3.xml"), Charset.forName("UTF-8"));
-		compareXML(expected3, result);
+		XMLCompare.compareXML(expected3, result);
 		return out;
 	}
 
@@ -101,7 +102,7 @@ public class TestModifyCommand {
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
 		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test_command2.xml"), Charset.forName("UTF-8"));
-		compareXML(expected2, result);
+		XMLCompare.compareXML(expected2, result);
 		return out;
 	}
 
@@ -112,23 +113,9 @@ public class TestModifyCommand {
 		ADL out = commandController.applyCommand(create);
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "1.xml", result);
-		compareXML(xml, result);
+		XMLCompare.compareXML(xml, result);
 		return out;
 	}
 	
-	private void compareXML(String a, String b) {
-		DOMDifferenceEngine diff = new DOMDifferenceEngine();
-		
-		
-		diff.addDifferenceListener(new ComparisonListener() {
-			
-	        public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
-	        		if (comparison.getType() != ComparisonType.XML_ENCODING) {
-	        			Assert.fail("found a difference: " + comparison);
-	        		}
-	        }
-	    });
-		
-		diff.compare(Input.fromString(a).build(), Input.fromString(b).build());
-	}
+	
 }
