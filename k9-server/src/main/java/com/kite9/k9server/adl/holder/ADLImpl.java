@@ -3,8 +3,15 @@ package com.kite9.k9server.adl.holder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.transcoder.Transcoder;
@@ -13,10 +20,8 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
-import org.python.apache.xml.serialize.DOMSerializerImpl;
 import org.springframework.util.StreamUtils;
 import org.w3c.dom.Node;
-import org.w3c.dom.ls.LSSerializer;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -109,11 +114,13 @@ public class ADLImpl implements ADL {
 	
 	public static String toXMLString(Node n, boolean omitDeclaration) {
 		try {
-			LSSerializer ser = new DOMSerializerImpl();
-			if (omitDeclaration) {
-				ser.getDomConfig().setParameter("xml-declaration", false);
-			}
-			return ser.writeToString(n);
+			StringWriter output = new StringWriter();
+		    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		    if (omitDeclaration) {
+		    	transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		    }
+		    transformer.transform(new DOMSource(n), new StreamResult(output));
+			return output.toString();
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
 		}

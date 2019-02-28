@@ -83,8 +83,8 @@ public class CommandsTest {
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(delete), in);
 		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "4.xml", result);
-		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command4.xml"), Charset.forName("UTF-8"));
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "after_delete.xml", result);
+		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_delete.xml"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected4, result);
 	}
 	
