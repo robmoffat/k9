@@ -1,14 +1,12 @@
 package com.kite9.k9server.adl;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,19 +14,19 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kite9.framework.common.RepositoryHelp;
-import org.kite9.framework.common.TestingHelp;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.kite9.k9server.AbstractUserBasedTest;
+import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.MediaTypes;
 
 
@@ -38,39 +36,22 @@ import com.kite9.k9server.adl.format.media.MediaTypes;
  * @author robmoffat
  *
  */
-public class RestRenderingIT extends AbstractUserBasedTest {
+public class PostRenderingIT extends AbstractUserBasedTest {
 	
-	private static final int EXPECTED_HEIGHT = 400;
-	public static final int EXPECTED_WIDTH = 400;
-
 	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();
-		HttpHeaders headers = createJWTTokenHeaders(u.api, MediaTypes.ADL_SVG, output);
+		HttpHeaders headers = createJWTTokenHeaders(jwtToken, MediaTypes.ADL_SVG, output);
 		HttpEntity<byte[]> postBody = new HttpEntity<byte[]>(xml.getBytes(), headers);
 		
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
 		return back.getBody();
 	}
 	
-	public void persistInAFile(byte[] back, String test, String filename) throws IOException, FileNotFoundException {
-		File f = TestingHelp.prepareFileName(this.getClass(),test, filename);
-		RepositoryHelp.streamCopy(new ByteArrayInputStream(back), new FileOutputStream(f), true);
-	}
-
-	
 	@Test
 	public void testHTMLRender() throws Exception {
 		byte[] back = withBytesInFormat(MediaType.TEXT_HTML);
 		persistInAFile(back, "testHTMLRender", "diagram.html");
-
-		String s = new String(back);
-		
-		Assert.assertTrue(s.contains(
-			" <renderingInformation xsi:type=\"diagram-ri\" rendered=\"true\">\n"+
-			"  <displayData xsi:type=\"org.kite9.framework.serialization.XMLFragments\">\n"+
-			"   <defs id=\"defs1\">\n"));
-		
-		Assert.assertTrue(s.endsWith("</html>"));
+		XMLCompare.compareXML(StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/post/test1.html"), Charset.forName("UTF-8")), new String(back));
 	}
 
 	
@@ -94,6 +75,7 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 		Element e = d.getDocumentElement();
 		Assert.assertEquals("svg", e.getTagName());
 		Assert.assertEquals(4, e.getChildNodes().getLength());
+		XMLCompare.compareXML(StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/post/test1.svg"), Charset.forName("UTF-8")), new String(back));
 	}
 
 	public Document parseBytesToXML(byte[] back) throws ParserConfigurationException, SAXException, IOException {
@@ -108,12 +90,12 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 	}
 	
 	public String getDesignerStylesheetReference() {
-		URL u = this.getClass().getResource("/stylesheets/designer.css");
+		URL u = this.getClass().getResource("/rendering/post/designer-server.css");
 		return "<svg:defs><svg:style type=\"text/css\"> @import url(\""+u+"\");</svg:style></svg:defs>";
 	}
 	
 	public String getJavascriptReference() {
-		URL u = this.getClass().getResource("/some.js");
+		URL u = this.getClass().getResource("/rendering/post/some.js");
 		return "<svg:script type=\"text/ecmascript\" xlink:href=\""+u.toString()+"\"/>";
 	}
 
@@ -129,7 +111,7 @@ public class RestRenderingIT extends AbstractUserBasedTest {
 	
 	public String createDiagramXML() throws IOException {
 		StringWriter sw = new StringWriter();
-		StreamHelp.streamCopy(new InputStreamReader(this.getClass().getResourceAsStream("/test1.xml")), sw, true);
+		StreamHelp.streamCopy(new InputStreamReader(this.getClass().getResourceAsStream("/rendering/post/test1.xml")), sw, true);
 		String theDiagram = sw.toString();
 		return addSVGFurniture(theDiagram);
 	}

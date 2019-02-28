@@ -44,16 +44,18 @@ public class PublicRenderingIT extends AbstractRestIT {
 	}
 	
 	@Test
-	public void testExampleHtml() throws Exception {
+	public void testExampleHTML() throws Exception {
 		byte[] html = loadStaticHtml("/public/examples/risk-first/dependency-risk-fit.html");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/dependency_risk_fit_output.html"), Charset.forName("UTF-8"));
+		persistInAFile(html, "testExampleHTML", "diagram.html");
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.html"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(new String(html), expected);
 	}
 	
 	@Test
 	public void testExampleSVG() throws Exception {
 		byte[] html = loadStaticSVG("/public/examples/risk-first/dependency-risk-fit.svg");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/dependency_risk_fit_output.svg"), Charset.forName("UTF-8"));
+		persistInAFile(html, "testExampleSVG", "diagram.svg");
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.svg"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(new String(html), expected);
 	}
 }

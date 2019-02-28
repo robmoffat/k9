@@ -1,5 +1,9 @@
 package com.kite9.k9server;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -7,6 +11,8 @@ import java.util.Arrays;
 import org.apache.commons.logging.impl.SimpleLog;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.kite9.framework.common.RepositoryHelp;
+import org.kite9.framework.common.TestingHelp;
 import org.kite9.framework.logging.Kite9Log;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
@@ -165,5 +171,9 @@ public abstract class AbstractRestIT {
 		}
 	}
 	
+	public void persistInAFile(byte[] back, String test, String filename) throws IOException, FileNotFoundException {
+		File f = TestingHelp.prepareFileName(this.getClass(),test, filename);
+		RepositoryHelp.streamCopy(new ByteArrayInputStream(back), new FileOutputStream(f), true);
+	}
 
 }

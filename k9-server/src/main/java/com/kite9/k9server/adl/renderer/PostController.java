@@ -20,8 +20,8 @@ import com.kite9.k9server.adl.holder.ADLImpl;
  * @author robmoffat
  *
  */
-@Controller()
-public class RenderingController {
+@Controller
+public class PostController {
 	
 	@RequestMapping(path="/api/renderer", consumes= {MediaTypes.ADL_SVG_VALUE, MediaTypes.SVG_VALUE})
 	public @ResponseBody ADL echo(@RequestBody ADL input) {

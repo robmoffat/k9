@@ -1,17 +1,14 @@
 package com.kite9.k9server;
 
-import java.io.IOException;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
 
 import org.hibernate.engine.jdbc.ReaderInputStream;
 import org.junit.Assert;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.Comparison;
 import org.xmlunit.diff.ComparisonListener;
@@ -23,20 +20,19 @@ public class XMLCompare {
 
 	public static void compareXML(String a, String b) {
 		DOMDifferenceEngine diff = new DOMDifferenceEngine();
-		
-		
+
 		diff.addDifferenceListener(new ComparisonListener() {
-			
-	        public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
-	        		if (comparison.getType() != ComparisonType.XML_ENCODING) {
-	        			Assert.fail("found a difference: " + comparison);
-	        		}
-	        }
-	    });
-		
+
+			public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
+				if ((!comparison.getControlDetails().getValue().toString().contains("file:")) && (comparison.getType() != ComparisonType.XML_ENCODING)) {
+					Assert.fail("found a difference: " + comparison);
+				}
+			}
+		});
+
 		diff.compare(stringToDom(a), stringToDom(b));
 	}
-	
+
 	public static Source stringToDom(String a) {
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
