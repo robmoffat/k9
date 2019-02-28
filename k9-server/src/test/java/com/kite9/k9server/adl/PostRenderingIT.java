@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,7 +26,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.kite9.k9server.AbstractUserBasedTest;
+import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.MediaTypes;
 
@@ -33,14 +34,18 @@ import com.kite9.k9server.adl.format.media.MediaTypes;
 /**
  * Tests that basic Kite9 ADL rendering functionality is working.
  * 
+ * This is an open endpoint with no security.
+ * 
  * @author robmoffat
  *
  */
-public class PostRenderingIT extends AbstractUserBasedTest {
+public class PostRenderingIT extends AbstractRestIT {
 	
 	protected byte[] withBytesInFormat(MediaType output) throws Exception {
 		String xml = createDiagramXML();
-		HttpHeaders headers = createJWTTokenHeaders(jwtToken, MediaTypes.ADL_SVG, output);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(output));
+		headers.setContentType( MediaTypes.ADL_SVG);
 		HttpEntity<byte[]> postBody = new HttpEntity<byte[]>(xml.getBytes(), headers);
 		
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);

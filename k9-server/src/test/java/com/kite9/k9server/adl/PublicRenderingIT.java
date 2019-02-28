@@ -18,15 +18,6 @@ import com.kite9.k9server.adl.format.media.MediaTypes;
 
 public class PublicRenderingIT extends AbstractRestIT {
 
-	protected HttpHeaders createKite9AuthHeaders(MediaType in, MediaType... accept) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(accept));
-		if (in != null) {
-			headers.setContentType(in);
-		}
-		return headers;
-	}
-	
 	protected byte[] loadStaticHtml(String page) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.TEXT_HTML));
