@@ -53,8 +53,8 @@ public class CommandsTest {
 		ADL out = commandController.applyCommand(Collections.singletonList(setXML), in);
 		
 		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "2.xml", result);
-		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command2.xml"), Charset.forName("UTF-8"));
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "setxml.xml", result);
+		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_setxml.xml"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected2, result);
 	}
 	
@@ -63,14 +63,14 @@ public class CommandsTest {
 		ADL in = getInitialADL();
 
 		Move move = new Move();
-		move.moveId = "two-stereo";
+		move.moveId = "one-label";
 		move.fragmentId = "two";
 		move.beforefragmentId = "two-label";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(move), in);
 		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "3.xml", result);
-		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command3.xml"), Charset.forName("UTF-8"));
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "move.xml", result);
+		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_move.xml"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected3, result);
 	}
 	

@@ -17,7 +17,7 @@ public abstract class AbstractLocatedCommand extends AbstractCommand {
 			before = doc.getElementById(beforefragmentId);
 		}
 		
-		into.insertBefore(before, e);
+		into.insertBefore(e, before);
 	}
  	
 }
