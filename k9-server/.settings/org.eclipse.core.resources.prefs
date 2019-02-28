@@ -1,7 +1,2 @@
 eclipse.preferences.version=1
 encoding//src/test/resources/commands/after_delete.xml=UTF-8
-encoding//target/functional-test/outputs/com/kite9/k9server/command/testcommands/testCommandLifecycle/2.xml=UTF-8
-encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/1.xml=ISO-8859-1
-encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/2.xml=UTF-8
-encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/3.xml=UTF-8
-encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/4.xml=UTF-8
