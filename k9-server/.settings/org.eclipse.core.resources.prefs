@@ -1,7 +1,8 @@
 eclipse.preferences.version=1
-encoding//src/test/resources/test_command2.xml=UTF-8
-encoding//src/test/resources/test_command3.xml=UTF-8
-encoding//src/test/resources/test_command4.xml=UTF-8
+encoding//src/test/resources/commands/test_command2.xml=UTF-8
+encoding//src/test/resources/commands/test_command3.xml=UTF-8
+encoding//src/test/resources/commands/test_command4.xml=UTF-8
+encoding//target/functional-test/outputs/com/kite9/k9server/command/testcommands/testCommandLifecycle/2.xml=UTF-8
 encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/1.xml=ISO-8859-1
 encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/2.xml=UTF-8
 encoding//target/functional-test/outputs/com/kite9/k9server/command/testmodifycommand/testCommandLifecycle/3.xml=UTF-8
