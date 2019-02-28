@@ -51,11 +51,8 @@ public class CommandsTest {
 		setXML.fragmentId="two";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(setXML), in);
-		
-		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "setxml.xml", result);
-		String expected2 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_setxml.xml"), Charset.forName("UTF-8"));
-		XMLCompare.compareXML(expected2, result);
+		performSaveAndCheck(out, "setxml");
+
 	}
 	
 	@Test
@@ -68,10 +65,7 @@ public class CommandsTest {
 		move.beforefragmentId = "two-label";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(move), in);
-		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "move.xml", result);
-		String expected3 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_move.xml"), Charset.forName("UTF-8"));
-		XMLCompare.compareXML(expected3, result);
+		performSaveAndCheck(out, "move");
 	}
 	
 	@Test
@@ -82,10 +76,41 @@ public class CommandsTest {
 		delete.fragmentId = "two";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(delete), in);
+		performSaveAndCheck(out, "delete");
+	}
+
+
+	public void performSaveAndCheck(ADL out, String name) throws IOException {
 		String result = out.getAsXMLString();
-		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", "after_delete.xml", result);
-		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_delete.xml"), Charset.forName("UTF-8"));
+		TestingHelp.writeOutput(this.getClass(), "testCommandLifecycle", name+".xml", result);
+		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_"+name+".xml"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected4, result);
 	}
 	
+	@Test
+	public void testSetTextCommand() throws CommandException, IOException {
+		ADL in = getInitialADL();
+		
+		SetText setText = new SetText();
+		setText.newText =  "Winner";
+		setText.fragmentId="two";
+		
+		ADL out = commandController.applyCommand(Collections.singletonList(setText), in);
+		performSaveAndCheck(out, "settext");
+	}
+	
+	@Test
+	public void testCopyCommand() throws CommandException, IOException {
+		ADL in = getInitialADL();
+		
+		String uri = this.getClass().getResource("/commands/test_command1.xml").toString()+"#one";
+		
+		Copy copy = new Copy();
+		copy.uriStr =  uri;
+		copy.fragmentId="The Diagram";
+		copy.beforefragmentId="two";
+		
+		ADL out = commandController.applyCommand(Collections.singletonList(copy), in);
+		performSaveAndCheck(out, "copy");
+	}
 }
