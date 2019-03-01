@@ -4,11 +4,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.revision.Revision;
 
 /**
@@ -28,13 +25,10 @@ import com.kite9.k9server.domain.revision.Revision;
  */
 @Controller
 @RequestMapping(path="/api/documents")
-public class DocumentController implements ResourceProcessor<PersistentEntityResource> {
+public class DocumentController extends AbstractADLContentController<Document> {
 
-	public static final String CONTENT_REL = "content";
-	public static final String CONTENT_URL = "/content";
-	
-	@Autowired
-	DocumentRepository repo;
+	public static final String CHANGE_REL = "change";
+	public static final String CHANGE_URL = "/change";
 	
 	/**
 	 * Returns the current revision contents.
@@ -52,20 +46,17 @@ public class DocumentController implements ResourceProcessor<PersistentEntityRes
 		String url = request.getRequestURL().toString();
 		return new ADLImpl(r.getXml(), url);
 	}
-	
-	public static String createDocumentControllerUrl(Long id) {
+
+	@Override
+	public String createContentControllerUrl(Long id) {
 		String url = ControllerLinkBuilder.linkTo(DocumentController.class).toString();
 		return url + "/"+id;
 	}
-	
+
 	@Override
-	public PersistentEntityResource process(PersistentEntityResource resource) {
-		if (resource.getContent() instanceof Document) {
-			Document r = (Document) resource.getContent();
-			resource.add(new Link(createDocumentControllerUrl(r.getId()) + CONTENT_URL, CONTENT_REL));
-		}
-		
-		return resource;
+	protected boolean appliesTo(Object content) {
+		return content instanceof Document;
 	}
 
+	
 }

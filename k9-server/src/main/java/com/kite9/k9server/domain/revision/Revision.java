@@ -2,7 +2,6 @@ package com.kite9.k9server.domain.revision;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
