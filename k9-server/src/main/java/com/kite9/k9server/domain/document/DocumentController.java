@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.revision;
+package com.kite9.k9server.domain.document;
 
 import java.util.Optional;
 
@@ -18,43 +18,51 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.revision.Revision;
 
 /**
- * Allows you to pull back the content of the revision from the /content url.
+ * Allows you to pull back the content of the latest revision from the /content url.
+ * Also allows you to create a new revision by applying a command.
  * 
  * @author robmoffat
  */
 @Controller
-@RequestMapping(path="/api/revisions")
-public class RevisionController implements ResourceProcessor<PersistentEntityResource> {
+@RequestMapping(path="/api/documents")
+public class DocumentController implements ResourceProcessor<PersistentEntityResource> {
 
 	public static final String CONTENT_REL = "content";
 	public static final String CONTENT_URL = "/content";
 	
 	@Autowired
-	RevisionRepository repo;
+	DocumentRepository repo;
 	
 	/**
-	 * Returns the current revision.
+	 * Returns the current revision contents.
 	 */
-	@RequestMapping(path = "/{revisionId}"+CONTENT_URL, method= {RequestMethod.GET}) 
-	public @ResponseBody ADL input(@PathVariable("revisionId") long id, HttpServletRequest request) {
-		Optional<Revision> or = repo.findById(id);
-		Revision r = or.orElseThrow(() ->  new ResourceNotFoundException("No revision for "+id));
+	@RequestMapping(path = "/{documentId}"+CONTENT_URL, method= {RequestMethod.GET}) 
+	public @ResponseBody ADL input(@PathVariable("documentId") long id, HttpServletRequest request) {
+		Optional<Document> or = repo.findById(id);
+		Document d = or.orElseThrow(() ->  new ResourceNotFoundException("No document for "+id));
+		Revision r = d.getCurrentRevision();
+		
+		if (r == null) {
+			throw new ResourceNotFoundException("No revisions for document "+id);
+		}
+		
 		String url = request.getRequestURL().toString();
 		return new ADLImpl(r.getXml(), url);
 	}
 	
-	public static String createRevisionControllerUrl(Long id) {
-		String url = ControllerLinkBuilder.linkTo(RevisionController.class).toString();
+	public static String createDocumentControllerUrl(Long id) {
+		String url = ControllerLinkBuilder.linkTo(DocumentController.class).toString();
 		return url + "/"+id;
 	}
 	
 	@Override
 	public PersistentEntityResource process(PersistentEntityResource resource) {
-		if (resource.getContent() instanceof Revision) {
-			Revision r = (Revision) resource.getContent();
-			resource.add(new Link(createRevisionControllerUrl(r.getId()) + CONTENT_URL, CONTENT_REL));
+		if (resource.getContent() instanceof Document) {
+			Document r = (Document) resource.getContent();
+			resource.add(new Link(createDocumentControllerUrl(r.getId()) + CONTENT_URL, CONTENT_REL));
 		}
 		
 		return resource;
