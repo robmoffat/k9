@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.AbstractADLContentController;
 
 /**
@@ -32,8 +31,7 @@ public class RevisionController extends AbstractADLContentController<Revision> {
 	public @ResponseBody ADL input(@PathVariable("revisionId") long id, HttpServletRequest request) {
 		Optional<Revision> or = repo.findById(id);
 		Revision r = or.orElseThrow(() ->  new ResourceNotFoundException("No revision for "+id));
-		String url = request.getRequestURL().toString();
-		return new ADLImpl(r.getXml(), url);
+		return buildADL(request, r);
 	}
 
 	@Override

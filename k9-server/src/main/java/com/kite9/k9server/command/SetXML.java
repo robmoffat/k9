@@ -12,6 +12,15 @@ public class SetXML extends AbstractCommand {
 
 	String newState;
 	
+	public SetXML() {
+		super();
+	}
+
+	public SetXML(String fragmentId, String newState) {
+		super(fragmentId);
+		this.newState = newState;
+	}
+
 	@Override
 	public void applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "setXML", "newState", newState);

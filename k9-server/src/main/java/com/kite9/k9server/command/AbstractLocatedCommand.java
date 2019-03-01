@@ -6,6 +6,15 @@ import org.w3c.dom.Element;
 public abstract class AbstractLocatedCommand extends AbstractCommand {
 
 	protected String beforefragmentId; 	// before this guy, if supplied.  otherwise, at end.
+	
+	public AbstractLocatedCommand() {
+		super();
+	}
+
+	public AbstractLocatedCommand(String fragmentId, String beforefragmentId) {
+		super(fragmentId);
+		this.beforefragmentId = beforefragmentId;
+	}
 
 	protected void insert(ADLDocument doc, Element e) {
 		ensureNotNull(this, "insert", "fragment", fragmentId);

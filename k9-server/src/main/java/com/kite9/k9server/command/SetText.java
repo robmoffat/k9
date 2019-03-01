@@ -9,6 +9,15 @@ public class SetText extends AbstractCommand {
 	
 	protected String newText;
 	
+	public SetText() {
+		super();
+	}
+
+	public SetText(String fragmentId, String newText) {
+		super(fragmentId);
+		this.newText = newText;
+	}
+
 	@Override
 	public void applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "edit", "fragment", fragmentId);

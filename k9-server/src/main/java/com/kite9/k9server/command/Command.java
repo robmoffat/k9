@@ -20,7 +20,8 @@ import com.kite9.k9server.adl.holder.ADL;
 	@Type(Delete.class), 
 	@Type(Copy.class), 
 	@Type(Move.class), 
-	@Type(SetText.class)})
+	@Type(SetText.class),
+	@Type(SetAttr.class)})
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE,
 	setterVisibility =Visibility.NONE)

@@ -15,6 +15,15 @@ public class Copy extends AbstractLocatedCommand {
 
 	String uriStr;		// to insert.	
 
+	public Copy() {
+		super();
+	}
+	
+	public Copy(String fragmentId, String beforefragmentId, String uriStr) {
+		super(fragmentId, beforefragmentId);
+		this.uriStr = uriStr;
+	}
+
 	@Override
 	public void applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "copy", "uri", uriStr);

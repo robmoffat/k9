@@ -8,6 +8,15 @@ import org.w3c.dom.Element;
 public abstract class AbstractCommand implements Command {
 	
 	protected String fragmentId;
+	
+	public AbstractCommand() {
+		super();
+	}
+
+	public AbstractCommand(String fragmentId) {
+		super();
+		this.fragmentId = fragmentId;
+	}
 
 	public static final Log LOG = LogFactory.getLog(Command.class);
 	

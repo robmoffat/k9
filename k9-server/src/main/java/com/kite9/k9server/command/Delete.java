@@ -7,6 +7,14 @@ import org.w3c.dom.Node;
 import com.kite9.k9server.adl.holder.ADL;
 
 public class Delete extends AbstractCommand {
+	
+	public Delete() {
+		super();
+	}
+
+	public Delete(String fragmentId) {
+		super(fragmentId);
+	}
 
 	@Override
 	public void applyCommand(ADL in) throws CommandException {

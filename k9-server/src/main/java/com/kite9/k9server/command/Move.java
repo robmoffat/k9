@@ -9,6 +9,15 @@ public class Move extends AbstractLocatedCommand {
 
 	protected String moveId;  	// guy we are moving
 	
+	public Move() {
+		super();
+	}
+
+	public Move(String fragmentId, String beforefragmentId, String moveId) {
+		super(fragmentId, beforefragmentId);
+		this.moveId = moveId;
+	}
+
 	@Override
 	public void applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "move", "moveId", moveId);

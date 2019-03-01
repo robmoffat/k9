@@ -26,7 +26,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
 		String doc = forDocument.getLink(Link.REL_SELF).getHref();
-		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, "renderedXML", null, null);  
+		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, "<svg id=\"0\"></svg>", null, null);  
 		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/revisions"));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
@@ -34,7 +34,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		// retrieve it
 		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, rOut.getHeaders().getLocation());
 		rOut = restTemplate.exchange(in, RevisionResource.class);
-		Assert.assertEquals("renderedXML", rOut.getBody().xml);
+		Assert.assertEquals("<svg id=\"0\"></svg>", rOut.getBody().xml);
 		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
 		return rOut.getBody();
 		
