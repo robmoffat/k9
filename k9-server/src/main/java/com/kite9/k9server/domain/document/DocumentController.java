@@ -11,7 +11,6 @@ import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.domain.AbstractADLContentController;
@@ -29,6 +27,7 @@ import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.domain.user.UserRepository;
 
 /**
  * Allows you to pull back the content of the latest revision from the /content url.
@@ -48,6 +47,9 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	
 	@Autowired
 	RevisionRepository revisions;
+	
+	@Autowired
+	UserRepository userRepository;
 	
 	/**
 	 * Returns the current revision contents.
@@ -77,16 +79,18 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	public @ResponseBody ADL change(
 			@PathVariable("documentId") long id, 
 			HttpServletRequest request, 
-			@RequestBody List<Command> steps,
-			@AuthenticationPrincipal User user) {
+			@RequestBody List<Command> steps) {
 		Revision rOld = getCurrentRevision(id);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		User u = userRepository.findByUsername(username);
+		
 		Document d = rOld.getDocument();
 		ADL adl = buildADL(request, rOld);
 		ADL out = command.applyCommand(steps, adl);
 		
 		// create the new revision
 		Revision rNew = new Revision();
-		rNew.setAuthor(user);
+		rNew.setAuthor(u);
 		rNew.setDocument(d);
 		rNew.setPreviousRevision(rOld);
 		rNew.setXml(out.getAsXMLString());

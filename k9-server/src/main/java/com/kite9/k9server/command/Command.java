@@ -15,13 +15,14 @@ import com.kite9.k9server.adl.holder.ADL;
  * @author robmoffat
  *
  */
-@JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type")
+@JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type", visible=true)
 @JsonSubTypes({
 	@Type(Delete.class), 
 	@Type(Copy.class), 
 	@Type(Move.class), 
 	@Type(SetText.class),
-	@Type(SetAttr.class)})
+	@Type(SetAttr.class),
+	@Type(SetXML.class)})
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE,
 	setterVisibility =Visibility.NONE)

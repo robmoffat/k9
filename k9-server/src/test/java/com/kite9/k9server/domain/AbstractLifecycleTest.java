@@ -20,13 +20,16 @@ import com.kite9.k9server.resource.RevisionResource;
 
 public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
+	public static final String EMPTY_DOCUMENT = "<svg xmlns=\"http://www.w3.org/2000/svg\" id=\"0\"></svg>";
+
+
 	public AbstractLifecycleTest() {
 		super();
 	}
 
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
 		String doc = forDocument.getLink(Link.REL_SELF).getHref();
-		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, "<svg id=\"0\"></svg>", null, null);  
+		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, EMPTY_DOCUMENT, null, null);  
 		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/revisions"));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
@@ -34,7 +37,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		// retrieve it
 		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, rOut.getHeaders().getLocation());
 		rOut = restTemplate.exchange(in, RevisionResource.class);
-		Assert.assertEquals("<svg id=\"0\"></svg>", rOut.getBody().xml);
+		Assert.assertEquals(EMPTY_DOCUMENT, rOut.getBody().xml);
 		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
 		return rOut.getBody();
 		
