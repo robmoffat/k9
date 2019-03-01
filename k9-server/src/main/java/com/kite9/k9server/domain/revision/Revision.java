@@ -19,14 +19,11 @@ import com.kite9.k9server.domain.user.User;
 @Entity
 public class Revision extends AbstractLongIdEntity {
 
-	@ManyToOne(targetEntity=Document.class, optional=false, cascade=CascadeType.ALL)
+	@ManyToOne(targetEntity=Document.class, optional=false, fetch=FetchType.EAGER)
     Document document;
     
 	@Column(columnDefinition="TEXT")
 	String xml;
-
-	@Column(length=40)
-    String diagramHash;
     
     Date dateCreated = new Date();
     
@@ -57,14 +54,6 @@ public class Revision extends AbstractLongIdEntity {
 
 	public void setXml(String inputXml) {
 		this.xml = inputXml;
-	}
-
-	public String getDiagramHash() {
-		return diagramHash;
-	}
-
-	public void setDiagramHash(String diagramHash) {
-		this.diagramHash = diagramHash;
 	}
 
 	public Date getDateCreated() {

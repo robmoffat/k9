@@ -7,11 +7,9 @@ import org.springframework.hateoas.ResourceSupport;
 public class RevisionResource extends ResourceSupport {
 
 	public String document;
-	public String inputXml;
-	public String diagramHash;
+	public String xml;
 	public Date dateCreated = new Date();
 	public String author;
-	public String outputXml;
 	public String previousRevision;
 	public String nextRevision;
     
@@ -19,14 +17,12 @@ public class RevisionResource extends ResourceSupport {
 		super();
 	}
 
-	public RevisionResource(String document, String inputXml, String diagramHash, Date dateCreated, String author, String renderedXml, String previousRevision, String nextRevision) {
+	public RevisionResource(String document, Date dateCreated, String author, String xml, String previousRevision, String nextRevision) {
 		super();
 		this.document = document;
-		this.inputXml = inputXml;
-		this.diagramHash = diagramHash;
+		this.xml = xml;
 		this.dateCreated = dateCreated;
 		this.author = author;
-		this.outputXml = renderedXml;
 		this.previousRevision = previousRevision;
 		this.nextRevision = nextRevision;
 	}
@@ -37,12 +33,10 @@ public class RevisionResource extends ResourceSupport {
 		int result = super.hashCode();
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
 		result = prime * result + ((dateCreated == null) ? 0 : dateCreated.hashCode());
-		result = prime * result + ((diagramHash == null) ? 0 : diagramHash.hashCode());
 		result = prime * result + ((document == null) ? 0 : document.hashCode());
-		result = prime * result + ((inputXml == null) ? 0 : inputXml.hashCode());
 		result = prime * result + ((nextRevision == null) ? 0 : nextRevision.hashCode());
 		result = prime * result + ((previousRevision == null) ? 0 : previousRevision.hashCode());
-		result = prime * result + ((outputXml == null) ? 0 : outputXml.hashCode());
+		result = prime * result + ((xml == null) ? 0 : xml.hashCode());
 		return result;
 	}
 
@@ -50,6 +44,8 @@ public class RevisionResource extends ResourceSupport {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+		if (!super.equals(obj))
+			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		RevisionResource other = (RevisionResource) obj;
@@ -63,15 +59,10 @@ public class RevisionResource extends ResourceSupport {
 				return false;
 		} else if (!dateCreated.equals(other.dateCreated))
 			return false;
-		if (diagramHash == null) {
-			if (other.diagramHash != null)
+		if (document == null) {
+			if (other.document != null)
 				return false;
-		} else if (!diagramHash.equals(other.diagramHash))
-			return false;
-		if (inputXml == null) {
-			if (other.inputXml != null)
-				return false;
-		} else if (!inputXml.equals(other.inputXml))
+		} else if (!document.equals(other.document))
 			return false;
 		if (nextRevision == null) {
 			if (other.nextRevision != null)
@@ -83,14 +74,14 @@ public class RevisionResource extends ResourceSupport {
 				return false;
 		} else if (!previousRevision.equals(other.previousRevision))
 			return false;
-		if (outputXml == null) {
-			if (other.outputXml != null)
+		if (xml == null) {
+			if (other.xml != null)
 				return false;
-		} else if (!outputXml.equals(other.outputXml))
+		} else if (!xml.equals(other.xml))
 			return false;
 		return true;
 	}
-	
+
 	
     
 }

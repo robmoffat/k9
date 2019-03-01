@@ -7,8 +7,10 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
@@ -46,40 +48,45 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 		dOut = updateADocumentResource(dOut, pOut, rOut);
 
 		
-		// get the latest resource via the document, in input form
+		// get the latest resource via the revision
 		URI uri = new URI(rOut.getLink(RevisionController.CONTENT_REL).getHref());
 		byte[] input = getADL(uri);
-		Assert.assertEquals("some new xml", new String(input));
+		Assert.assertTrue(new String(input).contains("some new xml"));
+//		
+//		// get the latest resource via the document, in output form
+//		byte[] output = getSVG(uri);
+//		Assert.assertEquals("renderedXML", new String(output));
 		
-		// get the latest resource via the document, in output form
-		byte[] output = getSVG(uri);
-		Assert.assertEquals("renderedXML", new String(output));
-		
-		// deleteAndCheckDeleted(restTemplate, rOut.getLink(Link.REL_SELF).getHref(), u, RevisionResource.class);
-		deleteAndCheckDeleted(restTemplate, dOut.getLink(Link.REL_SELF).getHref(), u, DocumentResource.class);
-		deleteAndCheckDeleted(restTemplate, pOut.getLink(Link.REL_SELF).getHref(), u, ProjectResource.class);
+		deleteAndCheckDeleted(restTemplate, pOut.getLink(Link.REL_SELF).getHref(), jwtToken, ProjectResource.class);
 	}
 	
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
 		String doc = forDocument.getLink(Link.REL_SELF).getHref();
-		RevisionResource r = new RevisionResource(doc, "someXML", "abc123", new Date(), userUrl, "renderedXML", null, null);  
-		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(revisionsUrl));
+		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, "renderedXML", null, null);  
+		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(revisionsUrl));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
-		Assert.assertEquals("someXML", rOut.getBody().inputXml);
-		Assert.assertEquals("renderedXML", rOut.getBody().outputXml);
+		
+		// retrieve it
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, rOut.getHeaders().getLocation());
+		rOut = restTemplate.exchange(in, RevisionResource.class);
+		Assert.assertEquals("renderedXML", rOut.getBody().xml);
 		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
 		return rOut.getBody();
 		
 	}
 	
 	public RevisionResource updateARevisionResource(RevisionResource r) throws URISyntaxException {
-		r.inputXml = "some new xml";
-		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createKite9AuthHeaders(u.api), HttpMethod.PUT, new URI(r.getLink(Link.REL_SELF).getHref()));
+		r.xml = "<svg>some new xml</svg>";
+		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.PUT, new URI(r.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
-		Assert.assertEquals(HttpStatus.OK, rOut.getStatusCode());
-		Assert.assertEquals("some new xml", rOut.getBody().inputXml);
-		Assert.assertEquals("renderedXML", rOut.getBody().outputXml);
+		Assert.assertTrue(rOut.getStatusCode().is2xxSuccessful());
+		
+		// retrieve it
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, rOut.getHeaders().getLocation());
+		rOut = restTemplate.exchange(in, RevisionResource.class);
+		
+		Assert.assertEquals(r.xml, rOut.getBody().xml);
 		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
 		return rOut.getBody();
 		
@@ -87,9 +94,13 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	
 	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
 		DocumentResource d = new DocumentResource("My Document", "Some name for a document", forProject.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createKite9AuthHeaders(u.api), HttpMethod.POST, new URI(documentsUrl));
+		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createHeaders(), HttpMethod.POST, new URI(documentsUrl));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
+		
+		// retrieve it
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, dOut.getHeaders().getLocation());
+		dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(d, dOut.getBody());
 		return dOut.getBody();
 	}
@@ -104,43 +115,56 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 		changed.lastUpdated = new Date();
 
 		URI self = new URI(d.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(changed, createKite9AuthHeaders(u.api), HttpMethod.PUT, self);
+		RequestEntity<DocumentResource> in = new RequestEntity<>(changed, createHeaders(), HttpMethod.PUT, self);
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
-		Assert.assertEquals(HttpStatus.OK, dOut.getStatusCode());
-		Assert.assertEquals(d.description, dOut.getBody().description);
+		Assert.assertTrue(dOut.getStatusCode().is2xxSuccessful());
+		
+		// retrieve it
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, dOut.getHeaders().getLocation());
+		dOut = restTemplate.exchange(in, DocumentResource.class);
+		Assert.assertEquals(changed.title, dOut.getBody().title);
 		return dOut.getBody();
 	}
 	
 	public byte[] getADL(URI uri) {
-		RequestEntity<String> in = new RequestEntity<>(createKite9AuthHeaders(u.api, null, MediaTypes.ADL_SVG), HttpMethod.GET, uri);
-		ResponseEntity<byte[]> dOut = restTemplate.exchange(in, byte[].class);
-		return dOut.getBody();
-	}
-	
-	public byte[] getSVG(URI uri) {
-		RequestEntity<String> in = new RequestEntity<>(createKite9AuthHeaders(u.api, null, MediaTypes.SVG), HttpMethod.GET, uri);
+		RequestEntity<String> in = new RequestEntity<>(createJWTTokenHeaders(jwtToken, null, MediaTypes.ADL_SVG), HttpMethod.GET, uri);
 		ResponseEntity<byte[]> dOut = restTemplate.exchange(in, byte[].class);
 		return dOut.getBody();
 	}
 
 	public ProjectResource createAProjectResource() throws URISyntaxException {
 		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp2", "");
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders("absc"), HttpMethod.POST, new URI(projectUrl));
+		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.POST, new URI(projectUrl));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
-		Assert.assertEquals(pIn, pOut.getBody());
 		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());
+		
+		// retrieve it
+		re = new RequestEntity<>(createHeaders(), HttpMethod.GET, pOut.getHeaders().getLocation());
+		pOut = restTemplate.exchange(re, ProjectResource.class);
+		
+		
 		return pOut.getBody();
 	}
 
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
 		pIn.description = "desc 2";
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createKite9AuthHeaders(u.api), HttpMethod.PUT, new URI(pIn.getLink(Link.REL_SELF).getHref()));
+		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.PUT, new URI(pIn.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
-		Assert.assertEquals(pIn, pOut.getBody());
-		Assert.assertEquals(HttpStatus.OK, pOut.getStatusCode());
+		Assert.assertTrue(pOut.getStatusCode().is2xxSuccessful());
+		
+		// retrieve it
+		re = new RequestEntity<>(createHeaders(), HttpMethod.GET, pOut.getHeaders().getLocation());
+		pOut = restTemplate.exchange(re, ProjectResource.class);
+				
+		Assert.assertEquals(pIn.description, pOut.getBody().description);
 		return pOut.getBody();
 	}
 	
+	protected HttpHeaders createHeaders() {
+		HttpHeaders out = createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON);
+		return out;
+		
+	}
 	
 }

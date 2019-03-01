@@ -2,6 +2,7 @@ package com.kite9.k9server.adl.format;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.adl.format.media.ADLAndSVGFormat;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.format.media.HTMLFormat;
-import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.adl.format.media.PNGFormat;
 import com.kite9.k9server.adl.format.media.SVGFormat;
 
@@ -19,12 +19,21 @@ public class BasicFormatSupplier implements FormatSupplier {
 	/**
 	 * Ordered most specific to least.
 	 */
-	public static Format[] FORMATS = new Format[] {
+	public static final Format[] FORMATS = new Format[] {
 			new PNGFormat(),
 			new SVGFormat(),
 			new ADLAndSVGFormat(),
 			new HTMLFormat(),
 		} ;
+	
+	public static final MediaType[] MEDIA_TYPES = Arrays.stream(FORMATS)
+			.flatMap(f -> Arrays.stream(f.getMediaTypes()))
+			.collect(Collectors.toList()).toArray(new MediaType[] {});
+	
+	public static final String[] MEDIA_TYPE_VALUES = Arrays.stream(MEDIA_TYPES)
+			.map(mt -> mt.toString())
+			.collect(Collectors.toList()).toArray(new String[] {});
+
 	
 	
 	@Override
@@ -41,11 +50,7 @@ public class BasicFormatSupplier implements FormatSupplier {
 	}
 	
 	public List<MediaType> getMediaTypes() {
-		return Arrays.asList(MediaTypes.ADL_SVG, 
-				MediaType.IMAGE_PNG, 
-				MediaTypes.SVG, 
-				MediaTypes.PDF, 
-				MediaType.TEXT_HTML);
+		return Arrays.asList(MEDIA_TYPES);
 	}
 
 }

@@ -1,11 +1,14 @@
 package com.kite9.k9server.domain.document;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.project.Project;
@@ -30,13 +33,16 @@ public class Document extends AbstractLongIdEntity {
 		this.project = project;
 	}
 
-    @ManyToOne(targetEntity=Revision.class, optional=true)
+    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
 	private Revision currentRevision = null;
+    
+    @OneToMany(mappedBy="document", targetEntity=Revision.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Revision> revisions;
     
     private Date dateCreated = new Date();
     private Date lastUpdated;
 	
-    @ManyToOne(targetEntity=Project.class, optional=false, cascade=CascadeType.ALL)
+    @ManyToOne(targetEntity=Project.class, optional=false, fetch=FetchType.EAGER)
     private Project project;
 
 	public String getTitle() {
@@ -81,5 +87,9 @@ public class Document extends AbstractLongIdEntity {
 
 	public Date getDateCreated() {
 		return dateCreated;
+	}
+	
+	public List<Revision> getRevisions() {
+		return revisions;
 	}
 }
