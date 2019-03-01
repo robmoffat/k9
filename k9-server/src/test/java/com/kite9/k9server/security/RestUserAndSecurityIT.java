@@ -158,7 +158,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 	}
 
 	protected String generateResponseUrl(String email, String code, String path) {
-		return urlBase+"/api/users/"+email+path+( code == null ? "" : "?code="+code);
+		return getUrlBase()+"/api/users/"+email+path+( code == null ? "" : "?code="+code);
 	}
 	
 	@Test
@@ -220,12 +220,12 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// check that we can log in.
 		ResponseEntity<String> s = formLogin(restTemplate, email, newPassword);
 		Assert.assertEquals(HttpStatus.FOUND, s.getStatusCode());
-		Assert.assertEquals(urlBase+"/", s.getHeaders().getLocation().toString());
+		Assert.assertEquals(getUrlBase()+"/", s.getHeaders().getLocation().toString());
 		
 		// check we can't log in with old password
 		s = formLogin(restTemplate, email, password);
 		Assert.assertEquals(HttpStatus.FOUND, s.getStatusCode());
-		Assert.assertEquals(urlBase+"/login", s.getHeaders().getLocation().toString());
+		Assert.assertEquals(getUrlBase()+"/login", s.getHeaders().getLocation().toString());
 		
 		// delete the user
 		delete(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);
@@ -242,19 +242,19 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		UserResource uOut = createUser(restTemplate, "Kite9TestUser", password, email);
 		
 		// try to access a protected resource, should be automatically redirected to the login page
-		ResponseEntity<String> pOut = restTemplate.getForEntity(urlBase+ "/api/projects", String.class);
+		ResponseEntity<String> pOut = restTemplate.getForEntity(getUrlBase()+ "/api/projects", String.class);
 		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));
 	
 		// try posting the login form information, 
 		pOut = formLogin(restTemplate, email, password);
 		Assert.assertEquals(HttpStatus.FOUND, pOut.getStatusCode());
-		Assert.assertEquals(urlBase+"/", pOut.getHeaders().getLocation().toString());
+		Assert.assertEquals(getUrlBase()+"/", pOut.getHeaders().getLocation().toString());
 		List<String> cookie = pOut.getHeaders().get("Set-Cookie");
 		Assert.assertNotNull(cookie);
 		
 		// try to create a project with this cookie
 		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp2");
-		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, urlBase+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, ProjectResource.class);
+		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, getUrlBase()+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
 		
 		// retrieve it again

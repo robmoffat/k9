@@ -22,7 +22,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.TEXT_HTML));
 		HttpEntity<Void> ent = new HttpEntity<>(headers);
-		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+page), HttpMethod.GET, ent, byte[].class);
+		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+page), HttpMethod.GET, ent, byte[].class);
 		return back.getBody();
 	}
 	
@@ -30,7 +30,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaTypes.SVG));
 		HttpEntity<Void> ent = new HttpEntity<>(headers);
-		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+page), HttpMethod.GET, ent, byte[].class);
+		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+page), HttpMethod.GET, ent, byte[].class);
 		return back.getBody();
 	}
 	
@@ -39,7 +39,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 		byte[] html = loadStaticHtml("/public/examples/risk-first/dependency-risk-fit.html");
 		persistInAFile(html, "testExampleHTML", "diagram.html");
 		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.html"), Charset.forName("UTF-8"));
-		XMLCompare.compareXML(new String(html), expected);
+		XMLCompare.compareXML(expected, new String(html));
 	}
 	
 	@Test

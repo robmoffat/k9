@@ -48,7 +48,7 @@ public class PostRenderingIT extends AbstractRestIT {
 		headers.setContentType( MediaTypes.ADL_SVG);
 		HttpEntity<byte[]> postBody = new HttpEntity<byte[]>(xml.getBytes(), headers);
 		
-		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(urlBase+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
+		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
 		return back.getBody();
 	}
 	

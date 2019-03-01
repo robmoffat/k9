@@ -41,7 +41,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected UserResource createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
-		String url = urlBase + "/api/users";
+		String url = getUrlBase() + "/api/users";
 		UserResource u = new UserResource(username, password, email, Project.createRandomString());
 		RequestEntity<UserResource> re = new RequestEntity<>(u, HttpMethod.POST, new URI(url));
 		ResponseEntity<UserResource> uOut = restTemplate.exchange(re, UserResource.class);
@@ -67,12 +67,12 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		HttpEntity<MultiValueMap<String, String>> in = new HttpEntity<MultiValueMap<String,String>>(map, headers);
 		
-		ResponseEntity<String> s = restTemplate.postForEntity(urlBase+"/login", in, String.class);
+		ResponseEntity<String> s = restTemplate.postForEntity(getUrlBase()+"/login", in, String.class);
 		return s;
 	}
 
 	protected Resources<UserResource> retrieveUserViaBasicAuth(RestTemplate restTemplate, String password, String email) throws URISyntaxException {
-		String url = urlBase + "/api/users";
+		String url = getUrlBase() + "/api/users";
 		HttpHeaders headers = createBasicAuthHeaders(password, email);
 		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
 		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
@@ -80,7 +80,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 	
 	protected Resources<UserResource> retrieveUserViaJwt(RestTemplate restTemplate, String jwt) throws URISyntaxException {
-		String url = urlBase + "/api/users";
+		String url = getUrlBase() + "/api/users";
 		HttpHeaders headers = createJWTTokenHeaders(jwt, null);
 		RequestEntity<Void> entity = new RequestEntity<Void>(headers, HttpMethod.GET, new URI(url));
 		ResponseEntity<Resources<UserResource>> uOut = restTemplate.exchange(entity, USER_RESOURCES_TYPE);
@@ -88,7 +88,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 	
 	protected String getJwtToken(RestTemplate restTemplate, String username, String password) {
-		String href=urlBase+"/oauth/token";
+		String href=getUrlBase()+"/oauth/token";
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add("grant_type", "client_credentials");
 		HttpHeaders headers = createBasicAuthHeaders(password, username);

@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
 
 import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.adl.format.media.MediaTypes;
@@ -22,19 +21,8 @@ import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
 
-@TestPropertySource(properties = { 
-		"logging.level.org.hibernate=TRACE",
-		"logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE",
-		"spring.datasource.username=sa1",
-		"spring.datasource.password=abc",
-		"spring.h2.console.enabled=true",
-		"spring.h2.console.path=/console"})
 public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	
-	protected String documentsUrl = urlBase + "/api/documents";
-	protected String projectUrl = urlBase + "/api/projects";
-	protected String revisionsUrl = urlBase + "/api/revisions";
-		
 	@Test
 	public void testLifeCycle() throws Exception {
 		ProjectResource pOut = createAProjectResource();
@@ -63,7 +51,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
 		String doc = forDocument.getLink(Link.REL_SELF).getHref();
 		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, "renderedXML", null, null);  
-		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(revisionsUrl));
+		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/revisions"));
 		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
 		
@@ -94,7 +82,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 	
 	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
 		DocumentResource d = new DocumentResource("My Document", "Some name for a document", forProject.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createHeaders(), HttpMethod.POST, new URI(documentsUrl));
+		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/documents"));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
 		
@@ -134,7 +122,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractUserBasedTest {
 
 	public ProjectResource createAProjectResource() throws URISyntaxException {
 		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp2", "");
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.POST, new URI(projectUrl));
+		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/projects"));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());

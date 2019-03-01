@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.kite9.framework.common.TestingHelp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.MailSender;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,7 +20,7 @@ import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 public class CommandsTest {
 	
 	public static final String END_SVG_DOCUMENT = "</svg:svg>";

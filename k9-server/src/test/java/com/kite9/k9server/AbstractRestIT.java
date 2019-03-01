@@ -14,12 +14,14 @@ import org.junit.runner.RunWith;
 import org.kite9.framework.common.RepositoryHelp;
 import org.kite9.framework.common.TestingHelp;
 import org.kite9.framework.logging.Kite9Log;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.core.DefaultRelProvider;
@@ -38,6 +40,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.MailSender;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -57,12 +60,29 @@ import com.kite9.k9server.web.WebConfig.LoggingFilter;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
+@TestPropertySource(properties = { 
+		"logging.level.org.hibernate=TRACE",
+		"logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE",
+		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
+		"spring.datasource.username=sa1",
+		"spring.datasource.password=abc",
+		"spring.datasource.url=jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE",
+		"spring.datasource.driverClassName=org.h2.Driver",
+		"spring.h2.console.path=/console",
+		"spring.h2.console.enabled=true",
+		"server.port=0"})
 public abstract class AbstractRestIT {
 	
 	@MockBean
 	protected MailSender mailSender;
 	
-	protected String urlBase = "http://localhost:8080";
+	@LocalServerPort
+	private int port;
+	
+	protected String getUrlBase()  {
+		return "http://localhost:"+port;
+	}
+	
 	public static TypeReferences.ResourcesType<UserResource> USER_RESOURCES_TYPE = new TypeReferences.ResourcesType<UserResource>() {};
 
 	public AbstractRestIT() {
