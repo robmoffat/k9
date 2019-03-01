@@ -16,8 +16,8 @@ public class SetXML extends AbstractCommand {
 		super();
 	}
 
-	public SetXML(String fragmentId, String newState) {
-		super(fragmentId);
+	public SetXML(String fragmentId, String fragmentHash, String newState) {
+		super(fragmentId, fragmentHash);
 		this.newState = newState;
 	}
 
@@ -26,6 +26,7 @@ public class SetXML extends AbstractCommand {
 		ensureNotNull(this, "setXML", "newState", newState);
 		
 		ADLDocument doc = adl.getAsDocument();
+		validateFragmentHash(doc);
 		Element e = findFragmentElement(doc);
 
 		// replace the child elements with ids - these should stay as the original

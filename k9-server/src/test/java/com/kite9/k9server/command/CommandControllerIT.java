@@ -56,7 +56,7 @@ public class CommandControllerIT {
 			
 		String docUrl = this.getClass().getResource("/commands/test_command1.xml").toExternalForm();				
 				
-		String step = "{\"type\": \"Delete\", \"fragmentId\": \"two-label\" }";
+		String step = "{\"type\": \"Delete\", \"fragmentId\": \"two-label\", \"fragmentHash\": \"0d168968280ce460f11629f27fbd21156c7bc6cf\"}";
 		
 		mockMvc.perform(
 				 post("/api/command/v1?on="+docUrl)

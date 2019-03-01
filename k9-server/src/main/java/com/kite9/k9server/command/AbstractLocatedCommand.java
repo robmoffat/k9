@@ -11,8 +11,8 @@ public abstract class AbstractLocatedCommand extends AbstractCommand {
 		super();
 	}
 
-	public AbstractLocatedCommand(String fragmentId, String beforefragmentId) {
-		super(fragmentId);
+	public AbstractLocatedCommand(String fragmentId, String fragmentHash, String beforefragmentId) {
+		super(fragmentId, fragmentHash);
 		this.beforefragmentId = beforefragmentId;
 	}
 

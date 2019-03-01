@@ -50,6 +50,7 @@ public class CommandsTest {
 		SetXML setXML = new SetXML();
 		setXML.newState =  START_SVG_DOCUMENT+"<glyph id=\"two\"><stereo id=\"two-stereo\" /><label id=\"two-label\" /></glyph>"+END_SVG_DOCUMENT;
 		setXML.fragmentId="two";
+		setXML.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(setXML), in);
 		performSaveAndCheck(out, "setxml");
@@ -64,6 +65,7 @@ public class CommandsTest {
 		move.moveId = "one-label";
 		move.fragmentId = "two";
 		move.beforefragmentId = "two-label";
+		move.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(move), in);
 		performSaveAndCheck(out, "move");
@@ -75,6 +77,7 @@ public class CommandsTest {
 
 		Delete delete = new Delete();
 		delete.fragmentId = "two";
+		delete.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(delete), in);
 		performSaveAndCheck(out, "delete");
@@ -95,9 +98,24 @@ public class CommandsTest {
 		SetText setText = new SetText();
 		setText.newText =  "Winner";
 		setText.fragmentId="two";
+		setText.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(setText), in);
 		performSaveAndCheck(out, "settext");
+	}
+	
+	@Test
+	public void testSetAttrCommand() throws CommandException, IOException {
+		ADL in = getInitialADL();
+		
+		SetAttr setAttr = new SetAttr();
+		setAttr.name =  "name";
+		setAttr.value = "value";
+		setAttr.fragmentId="two";
+		setAttr.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
+		
+		ADL out = commandController.applyCommand(Collections.singletonList(setAttr), in);
+		performSaveAndCheck(out, "setattr");
 	}
 	
 	@Test
@@ -110,6 +128,7 @@ public class CommandsTest {
 		copy.uriStr =  uri;
 		copy.fragmentId="The Diagram";
 		copy.beforefragmentId="two";
+		copy.fragmentHash = "344d34b5c8803e8191dbaef1f0ebd698bde223b3";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(copy), in);
 		performSaveAndCheck(out, "copy");

@@ -13,8 +13,8 @@ public class SetAttr extends AbstractCommand {
 		super();
 	}
 
-	public SetAttr(String fragmentId, String name, String value) {
-		super(fragmentId);
+	public SetAttr(String fragmentId, String fragmentHash, String name, String value) {
+		super(fragmentId, fragmentHash);
 		this.name = name;
 		this.value = value;
 	}
@@ -24,6 +24,7 @@ public class SetAttr extends AbstractCommand {
 		ensureNotNull(this, "setAttr", "name", name);
 		
 		ADLDocument doc = adl.getAsDocument();
+		validateFragmentHash(doc);
 		Element e = findFragmentElement(doc);
 
 		if (value == null) {

@@ -12,8 +12,8 @@ public class Delete extends AbstractCommand {
 		super();
 	}
 
-	public Delete(String fragmentId) {
-		super(fragmentId);
+	public Delete(String fragmentId, String fragmentHash) {
+		super(fragmentId, fragmentHash);
 	}
 
 	@Override
@@ -21,6 +21,7 @@ public class Delete extends AbstractCommand {
 		ensureNotNull(this, "delete", "fragmentId", fragmentId);
 
 		ADLDocument doc = in.getAsDocument();
+		validateFragmentHash(doc);
 		Element e = doc.getElementById(fragmentId);
 		if (e==null) {
 			throw new CommandException("Couldn't find fragment: "+fragmentId, this);

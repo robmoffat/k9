@@ -13,8 +13,8 @@ public class Move extends AbstractLocatedCommand {
 		super();
 	}
 
-	public Move(String fragmentId, String beforefragmentId, String moveId) {
-		super(fragmentId, beforefragmentId);
+	public Move(String fragmentId, String fragmentHash, String beforefragmentId, String moveId) {
+		super(fragmentId, fragmentHash, beforefragmentId);
 		this.moveId = moveId;
 	}
 
@@ -23,6 +23,7 @@ public class Move extends AbstractLocatedCommand {
 		ensureNotNull(this, "move", "moveId", moveId);
 		
 		ADLDocument doc = adl.getAsDocument();
+		validateFragmentHash(doc);
 		Element e = doc.getElementById(moveId);		
 		if (e == null) {
 			throw new CommandException("No element for moveId: "+fragmentId, this);

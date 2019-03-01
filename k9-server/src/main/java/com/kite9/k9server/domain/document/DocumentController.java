@@ -42,6 +42,13 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	public static final String CHANGE_REL = "change";
 	public static final String CHANGE_URL = "/change";
 	
+	public static final String UNDO_REL = "undo";
+	public static final String UNDO_URL = "/undo";
+	
+	public static final String REDO_REL = "redo";
+	public static final String REDO_URL = "/redo";
+	
+	
 	@Autowired
 	CommandController command;
 	
@@ -70,7 +77,11 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		}
 		return r;
 	}
-	
+//	
+//	@Transactional
+//	@RequestMapping(path = "/{documentId}"+UNDO_URL, method = RequestMethod.PATCH) 
+//	public @ResponseBody ADL undo
+//	
 	/**
 	 * Applies a command to the current revision, using the {@link CommandController}.
 	 */
@@ -118,7 +129,10 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	@Override
 	protected void addRels(PersistentEntityResource resource, AbstractLongIdEntity r) {
 		super.addRels(resource, r);
-		resource.add(new Link(createContentControllerUrl(r.getId()) + CHANGE_URL, CHANGE_REL));
+		String cUrl = createContentControllerUrl(r.getId());
+		resource.add(new Link(cUrl + CHANGE_URL, CHANGE_REL));
+		resource.add(new Link(cUrl + UNDO_URL, UNDO_URL));
+		resource.add(new Link(cUrl + REDO_URL, REDO_URL));
 	}
 
 	

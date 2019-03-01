@@ -19,8 +19,8 @@ public class Copy extends AbstractLocatedCommand {
 		super();
 	}
 	
-	public Copy(String fragmentId, String beforefragmentId, String uriStr) {
-		super(fragmentId, beforefragmentId);
+	public Copy(String fragmentId, String fragmentHash, String beforefragmentId, String uriStr) {
+		super(fragmentId, fragmentHash, beforefragmentId);
 		this.uriStr = uriStr;
 	}
 
@@ -28,9 +28,9 @@ public class Copy extends AbstractLocatedCommand {
 	public void applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "copy", "uri", uriStr);
 		
-		
 		try {
 			ADLDocument doc = adl.getAsDocument();
+			validateFragmentHash(doc);
 			Element insert = getElementToInsert(uriStr);
 			doc.adoptNode(insert);
 			

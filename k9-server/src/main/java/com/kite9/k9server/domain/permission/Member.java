@@ -1,9 +1,11 @@
-package com.kite9.k9server.domain.project;
+package com.kite9.k9server.domain.permission;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
+import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.project.ProjectRole;
 import com.kite9.k9server.domain.user.User;
 
 public class Member {

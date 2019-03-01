@@ -13,8 +13,8 @@ public class SetText extends AbstractCommand {
 		super();
 	}
 
-	public SetText(String fragmentId, String newText) {
-		super(fragmentId);
+	public SetText(String fragmentId, String fragmentHash, String newText) {
+		super(fragmentId, fragmentHash);
 		this.newText = newText;
 	}
 
@@ -23,6 +23,7 @@ public class SetText extends AbstractCommand {
 		ensureNotNull(this, "edit", "fragment", fragmentId);
 		ensureNotNull(this, "edit", "newText", newText);
 		ADLDocument doc = adl.getAsDocument();
+		validateFragmentHash(doc);
 		Element e = doc.getElementById(fragmentId);
 		e.setTextContent(newText);
 		LOG.info("Processed edit of "+fragmentId);
