@@ -22,12 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandController;
+import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
+import com.kite9.k9server.security.Hash;
 
 /**
  * Allows you to pull back the content of the latest revision from the /content url.
@@ -47,7 +49,6 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	
 	public static final String REDO_REL = "redo";
 	public static final String REDO_URL = "/redo";
-	
 	
 	@Autowired
 	CommandController command;
@@ -77,11 +78,50 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		}
 		return r;
 	}
-//	
-//	@Transactional
-//	@RequestMapping(path = "/{documentId}"+UNDO_URL, method = RequestMethod.PATCH) 
-//	public @ResponseBody ADL undo
-//	
+	
+	@Transactional
+	@RequestMapping(path = "/{documentId}"+UNDO_URL, method = RequestMethod.PUT) 
+	public @ResponseBody ADL undo(
+			@PathVariable("documentId") long id,
+			HttpServletRequest request,
+			@RequestBody String revisionHash) {
+		
+		Revision rCurrent = getCurrentRevision(id);
+		checkHash(revisionHash, rCurrent);
+		
+		Revision rPrevious = rCurrent.getPreviousRevision();
+		Document d = rCurrent.getDocument();
+		d.setCurrentRevision(rPrevious);
+		repo.save(d);
+		return buildADL(request, rPrevious);
+	}
+	
+	@Transactional
+	@RequestMapping(path = "/{documentId}"+REDO_URL, method = RequestMethod.PUT) 
+	public @ResponseBody ADL redo(
+			@PathVariable("documentId") long id,
+			HttpServletRequest request,
+			@RequestBody String revisionHash) {
+		
+		Revision rCurrent = getCurrentRevision(id);
+		checkHash(revisionHash, rCurrent);
+		
+		Revision rNext = rCurrent.getNextRevision();
+		Document d = rCurrent.getDocument();
+		d.setCurrentRevision(rNext);
+		repo.save(d);
+		return buildADL(request, rNext);
+	}
+	
+
+	public void checkHash(String revisionHash, Revision rCurrent) {
+		String computed = Hash.generateHash(rCurrent.getXml());
+		
+		if (!computed.equals(revisionHash)) {
+			throw new CommandException("Hash doesn't match computed: "+computed, null);
+		}
+	}
+	
 	/**
 	 * Applies a command to the current revision, using the {@link CommandController}.
 	 */
@@ -99,18 +139,13 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		ADL adl = buildADL(request, rOld);
 		ADL out = command.applyCommand(steps, adl);
 		
-		// create the new revision
+		// create the new revision. Integrity and document changes are handled by 
+		// revisionRepository.
 		Revision rNew = new Revision();
 		rNew.setAuthor(u);
 		rNew.setDocument(d);
-		rNew.setPreviousRevision(rOld);
 		rNew.setXml(out.getAsXMLString());
-		
-		d.setCurrentRevision(rNew);
-		
 		revisions.save(rNew);
-		rOld.setNextRevision(rNew);
-		revisions.save(rOld);
 		
 		return out;
 	}
@@ -131,8 +166,8 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		super.addRels(resource, r);
 		String cUrl = createContentControllerUrl(r.getId());
 		resource.add(new Link(cUrl + CHANGE_URL, CHANGE_REL));
-		resource.add(new Link(cUrl + UNDO_URL, UNDO_URL));
-		resource.add(new Link(cUrl + REDO_URL, REDO_URL));
+		resource.add(new Link(cUrl + UNDO_URL, UNDO_REL));
+		resource.add(new Link(cUrl + REDO_URL, REDO_REL));
 	}
 
 	

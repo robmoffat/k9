@@ -15,6 +15,11 @@ public class RevisionRepositoryImpl implements RevisionRepositoryCustom {
 	@Autowired
 	DocumentRepository documentRepository;
 		
+	
+	/** 
+	 * Any completely new revision gets set to the document's currentRevision, and 
+	 * the previous/next revisions are set.
+	 */
 	public Revision save(Revision r) {
 		Document d = r.getDocument();
 		
