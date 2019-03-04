@@ -16,15 +16,14 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 	
 	@Before
 	public void withUser() throws URISyntaxException {
-		String username = "abc1234";
+		String username ="abc1234";
 		String password = "facts";
-		u = createUser(restTemplate, username, password, "thing2@example.com");
-		userUrl = u.getLink(Link.REL_SELF).getHref();
+		try {
+			u = createUser(restTemplate, username, password, "thing2@example.com");
+			userUrl = u.getLink(Link.REL_SELF).getHref();
+		} catch (Exception e) {
+		}
 		jwtToken = getJwtToken(restTemplate, username, password);
 	}
 	
-	@After
-	public void removeUser() throws URISyntaxException {
-		delete(restTemplate, userUrl, "abc1234", "facts");
-	}
 }

@@ -1,10 +1,15 @@
 package com.kite9.k9server.domain.user;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
@@ -51,6 +57,9 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	 */
 	@Column(length=10, nullable=false)
 	private String salt = User.createNewSalt();
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL }, mappedBy = "user")
+    private List<Member> memberships = new ArrayList<>();
 	
 	/**
 	 * Can be set to expired if the user is deleted, but still has foreign-key references remaining.
@@ -241,4 +250,7 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 		return !isAccountExpired();
 	}
 	
+	public List<Member> getMemberships() {
+		return memberships;
+	}
 }

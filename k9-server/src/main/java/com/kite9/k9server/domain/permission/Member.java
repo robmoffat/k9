@@ -47,5 +47,4 @@ public class Member extends AbstractLongIdEntity {
 	public User getUser() {
 		return user;
 	}
-
 }

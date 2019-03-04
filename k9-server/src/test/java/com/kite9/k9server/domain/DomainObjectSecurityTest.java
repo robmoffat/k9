@@ -2,7 +2,9 @@ package com.kite9.k9server.domain;
 
 import java.net.URISyntaxException;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -11,15 +13,20 @@ import com.kite9.k9server.resource.RevisionResource;
 public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 
 	
-	@Test(expected=Exception.class)
+	@Test
 	public void ensureSecondUserCantModifyFirstUsersProject() throws Exception {
 		ProjectResource pr = createAProjectResource();
 		DocumentResource dr  = createADocumentResource(pr);
 		RevisionResource rr = createARevisionResource(dr);
-		
-		switchUser();
-		
 		updateADocumentResource(dr, pr, rr);
+
+		
+		try {
+			switchUser();
+			updateADocumentResource(dr, pr, rr);
+			Assert.fail("Shouldn't be allowed update");
+		} catch (Forbidden e) {
+		}
 		
 	}
 	

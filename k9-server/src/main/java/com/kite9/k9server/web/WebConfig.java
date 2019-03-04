@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.kite9.k9server.adl.format.ADLMessageConverter;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class WebConfig implements WebMvcConfigurer {
 
 	private static final Log LOG = LogFactory.getLog(WebConfig.class);
