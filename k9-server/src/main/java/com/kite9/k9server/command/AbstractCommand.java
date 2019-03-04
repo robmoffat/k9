@@ -4,9 +4,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.kite9.k9server.security.Hash;
 
+/**
+ * Contains a hash, which is used to make sure that the command is operating on a fresh version
+ * of the data.
+ * 
+ * @author robmoffat
+ *
+ */
 public abstract class AbstractCommand implements Command {
 	
 	protected String fragmentId;
@@ -39,10 +47,16 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	protected void validateFragmentHash(ADLDocument doc) {
-		Element e = doc.getElementById(fragmentId);
+		Node e = doc;
+		
+		if (fragmentId != null) {
+			e = doc.getElementById(fragmentId);
+		}
+		
 		if (e == null) {
 			throw new CommandException("Could not locate: "+fragmentId, this);
 		}
+		
 		String computed = Hash.generateHash(e);
 		
 		if (!computed.equals(fragmentHash)) {

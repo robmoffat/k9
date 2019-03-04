@@ -2,6 +2,7 @@ package com.kite9.k9server.domain.project;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.permission.Member;
 
 @Entity
 public class Project extends AbstractLongIdEntity {
@@ -30,6 +32,9 @@ public class Project extends AbstractLongIdEntity {
 	
 	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<Document> documents;
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL }, mappedBy = "project")
+    private List<Member> members = new ArrayList<>();
 
 	public Project() {
 	}
@@ -85,6 +90,10 @@ public class Project extends AbstractLongIdEntity {
 	
 	public List<Document> getDocuments() {
 		return documents;
+	}
+	
+	public List<Member> getMembers() {
+		return members;
 	}
 
 	

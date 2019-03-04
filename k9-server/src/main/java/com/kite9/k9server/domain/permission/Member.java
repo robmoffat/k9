@@ -1,19 +1,22 @@
 package com.kite9.k9server.domain.permission;
 
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
+import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.project.Project;
-import com.kite9.k9server.domain.project.ProjectRole;
 import com.kite9.k9server.domain.user.User;
 
-public class Member {
+@Entity
+public class Member extends AbstractLongIdEntity {
 
-	@Id
+	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.EAGER)
 	private Project project;
 
-	@Id
+	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY)
 	private User user;
 
 	@Enumerated(EnumType.STRING)
@@ -26,12 +29,15 @@ public class Member {
 	public void setProjectRole(ProjectRole projectRole) {
 		this.projectRole = projectRole;
 	}
+	
+	public Member() {
+	}
 
 	public Member(Project project, ProjectRole pr, User user) {
 		super();
 		this.project = project;
-		this.projectRole = pr;
 		this.user = user;
+		this.projectRole = pr;
 	}
 
 	public Project getProject() {

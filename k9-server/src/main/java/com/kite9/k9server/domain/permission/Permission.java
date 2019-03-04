@@ -1,7 +1,5 @@
 package com.kite9.k9server.domain.permission;
 
-import javax.persistence.Entity;
-
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
