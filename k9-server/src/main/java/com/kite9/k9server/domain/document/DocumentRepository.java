@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public interface DocumentRepository extends CrudRepository<Document, Long> {
 
 	@Override
-	@PreAuthorize("#entity.project.checkAccess(true)")
+	@PreAuthorize("#entity.checkWrite()")
 	public Document save(@Param("entity") Document document);
 
 	@RestResource(exported=false)

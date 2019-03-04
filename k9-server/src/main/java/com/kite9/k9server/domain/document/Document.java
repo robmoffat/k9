@@ -11,11 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
 
 @Entity
-public class Document extends AbstractLongIdEntity {
+public class Document extends AbstractLongIdEntity implements Secured {
 
 	@Column(length=50,nullable=false)
     private String title = "New Diagram";
@@ -92,4 +93,11 @@ public class Document extends AbstractLongIdEntity {
 	public List<Revision> getRevisions() {
 		return revisions;
 	}
+
+	@Override
+	public boolean checkAccess(Action a) {
+		return project.checkAccess(a);
+	}
+	
+	
 }

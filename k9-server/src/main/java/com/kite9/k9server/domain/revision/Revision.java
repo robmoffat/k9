@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.user.User;
 
@@ -16,7 +17,7 @@ import com.kite9.k9server.domain.user.User;
  * Contains a single diagram revision.  
  */
 @Entity
-public class Revision extends AbstractLongIdEntity {
+public class Revision extends AbstractLongIdEntity implements Secured {
 
 	@ManyToOne(targetEntity=Document.class, optional=false, fetch=FetchType.EAGER)
     Document document;
@@ -85,5 +86,10 @@ public class Revision extends AbstractLongIdEntity {
 
 	public void setNextRevision(Revision nextRevision) {
 		this.nextRevision = nextRevision;
+	}
+
+	@Override
+	public boolean checkAccess(Action a) {
+		return document.checkAccess(a);
 	}
 }

@@ -3,7 +3,6 @@ package com.kite9.k9server.domain.project;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,12 +14,13 @@ import javax.persistence.OneToMany;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
 
 @Entity
-public class Project extends AbstractLongIdEntity {
+public class Project extends AbstractLongIdEntity implements Secured {
 	
 	@Column(length=50,nullable=false)
 	private String title;
@@ -100,14 +100,16 @@ public class Project extends AbstractLongIdEntity {
 		return members;
 	}
 
-	public boolean checkAccess(boolean write) {
+	public boolean checkAccess(Action a) {
 		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
 		for (Member m : getMembers()) {
 			if (m.getUser().getUsername().equals(principal)) {
-				if (write) {
+				if (a == Action.WRITE) {
 					return (m.getProjectRole() != ProjectRole.VIEWER);  
-				} else {
+				} else if (a == Action.READ) {
 					return true;
+				} else if (a == Action.DELETE) {
+					return (m.getProjectRole() == ProjectRole.ADMIN);  
 				}
 			}
 		}
