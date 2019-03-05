@@ -69,7 +69,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	}
 
 	private Revision getCurrentRevision(long docId) {
-		Optional<Document> or = repo.findById(docId);
+		Optional<Document> or = ((DocumentRepository) repo).findById(docId);
 		Document d = or.orElseThrow(() ->  new ResourceNotFoundException("No document for "+docId));
 		Revision r = d.getCurrentRevision();
 		

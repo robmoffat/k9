@@ -29,7 +29,7 @@ public class RevisionController extends AbstractADLContentController<Revision> {
 	 */
 	@RequestMapping(path = "/{revisionId}"+CONTENT_URL, method= {RequestMethod.GET}) 
 	public @ResponseBody ADL input(@PathVariable("revisionId") long id, HttpServletRequest request) {
-		Optional<Revision> or = repo.findById(id);
+		Optional<Revision> or = ((RevisionRepository) repo).findById(id);
 		Revision r = or.orElseThrow(() ->  new ResourceNotFoundException("No revision for "+id));
 		return buildADL(request, r);
 	}

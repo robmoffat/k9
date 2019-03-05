@@ -18,6 +18,7 @@ import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
+import com.kite9.k9server.domain.user.User;
 
 @Entity
 public class Project extends AbstractLongIdEntity implements Secured {
@@ -101,6 +102,11 @@ public class Project extends AbstractLongIdEntity implements Secured {
 	}
 
 	public boolean checkAccess(Action a) {
+		// if the project is new, pass the check
+		if (getId() == null) {
+			return true;
+		}		
+		
 		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
 		for (Member m : getMembers()) {
 			if (m.getUser().getUsername().equals(principal)) {

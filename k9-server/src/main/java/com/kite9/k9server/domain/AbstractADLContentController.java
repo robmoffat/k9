@@ -3,7 +3,6 @@ package com.kite9.k9server.domain;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
@@ -18,7 +17,7 @@ public abstract class AbstractADLContentController<X extends AbstractLongIdEntit
 	public static final String CONTENT_URL = "/content";
 	
 	@Autowired
-	protected CrudRepository<X, Long> repo;
+	protected SecuredCrudRepository<X, Long> repo;
 	
 	public abstract String createContentControllerUrl(Long id);
 	

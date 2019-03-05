@@ -66,7 +66,7 @@ import com.kite9.k9server.web.WebConfig.LoggingFilter;
 		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"spring.datasource.username=sa1",
 		"spring.datasource.password=abc",
-		"spring.datasource.url=jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE",
+		"spring.datasource.url=jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
 		"spring.datasource.driverClassName=org.h2.Driver",
 		"spring.h2.console.path=/console",
 		"spring.h2.console.enabled=true",

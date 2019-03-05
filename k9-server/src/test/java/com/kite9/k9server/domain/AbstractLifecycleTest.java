@@ -3,9 +3,12 @@ package com.kite9.k9server.domain;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -103,6 +106,13 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		pOut = restTemplate.exchange(re, ProjectResource.class);
 		return pOut.getBody();
 	}
+	
+	public Resources<DocumentResource> getAllDocumentResources() throws URISyntaxException {
+		RequestEntity<DocumentResource> re = new RequestEntity<>(createHeaders(), HttpMethod.GET, new URI(getUrlBase()+"/api/documents"));
+		ParameterizedTypeReference<Resources<DocumentResource>> ptr = new ParameterizedTypeReference<Resources<DocumentResource>>(){};
+		ResponseEntity<Resources<DocumentResource>> pOut = restTemplate.exchange(re, ptr);
+		return pOut.getBody();
+	}
 
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
 		pIn.description = "desc 2";
@@ -115,8 +125,10 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
 	protected HttpHeaders createHeaders() {
 		HttpHeaders out = createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON);
-		return out;
-		
+		return out;	
 	}
 	
+	public void delete(URI url) throws URISyntaxException {
+		delete(restTemplate, url.toString(), jwtToken);
+	}
 }
