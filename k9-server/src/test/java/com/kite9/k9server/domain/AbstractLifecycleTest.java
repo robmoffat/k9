@@ -35,12 +35,21 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
 		
 		// retrieve it
-		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, rOut.getHeaders().getLocation());
-		rOut = restTemplate.exchange(in, RevisionResource.class);
-		Assert.assertEquals(EMPTY_DOCUMENT, rOut.getBody().xml);
-		Assert.assertNotNull(rOut.getBody().getLink("document").getHref());
-		return rOut.getBody();
+		URI location = rOut.getHeaders().getLocation();
+		RevisionResource resource = getARevisionResource(location);
+		Assert.assertEquals(EMPTY_DOCUMENT, resource.xml);
+		Assert.assertNotNull(resource.getLink("document").getHref());
+		return resource;
 		
+	}
+
+	public RevisionResource getARevisionResource(URI location) {
+		RequestEntity<RevisionResource> in;
+		ResponseEntity<RevisionResource> rOut;
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, location);
+		rOut = restTemplate.exchange(in, RevisionResource.class);
+		RevisionResource resource = rOut.getBody();
+		return resource;
 	}
 
 	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
@@ -48,12 +57,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/documents"));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
-		
-		// retrieve it
-		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, dOut.getHeaders().getLocation());
-		dOut = restTemplate.exchange(in, DocumentResource.class);
-		Assert.assertEquals(d, dOut.getBody());
-		return dOut.getBody();
+		return getADocumentResource(dOut.getHeaders().getLocation());
 	}
 
 	public DocumentResource updateADocumentResource(DocumentResource d, ProjectResource p, RevisionResource rOut) throws URISyntaxException {
@@ -69,11 +73,17 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		RequestEntity<DocumentResource> in = new RequestEntity<>(changed, createHeaders(), HttpMethod.PUT, self);
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertTrue(dOut.getStatusCode().is2xxSuccessful());
-		
-		// retrieve it
-		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, dOut.getHeaders().getLocation());
+
+		changed = getADocumentResource(dOut.getHeaders().getLocation());
+		Assert.assertEquals("Updated title", changed.title);
+		return changed;
+	}
+
+	public DocumentResource getADocumentResource(URI location) {
+		RequestEntity<DocumentResource> in;
+		ResponseEntity<DocumentResource> dOut;
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, location);
 		dOut = restTemplate.exchange(in, DocumentResource.class);
-		Assert.assertEquals(changed.title, dOut.getBody().title);
 		return dOut.getBody();
 	}
 
@@ -83,12 +93,14 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());
-		
-		// retrieve it
-		re = new RequestEntity<>(createHeaders(), HttpMethod.GET, pOut.getHeaders().getLocation());
+		return getAProjectResource(pOut.getHeaders().getLocation());
+	}
+
+	public ProjectResource getAProjectResource(URI location) {
+		RequestEntity<ProjectResource> re;
+		ResponseEntity<ProjectResource> pOut;
+		re = new RequestEntity<>(createHeaders(), HttpMethod.GET, location);
 		pOut = restTemplate.exchange(re, ProjectResource.class);
-		
-		
 		return pOut.getBody();
 	}
 
@@ -97,13 +109,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.PUT, new URI(pIn.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertTrue(pOut.getStatusCode().is2xxSuccessful());
-		
-		// retrieve it
-		re = new RequestEntity<>(createHeaders(), HttpMethod.GET, pOut.getHeaders().getLocation());
-		pOut = restTemplate.exchange(re, ProjectResource.class);
-				
-		Assert.assertEquals(pIn.description, pOut.getBody().description);
-		return pOut.getBody();
+		return getAProjectResource(pOut.getHeaders().getLocation());
 	}
 
 

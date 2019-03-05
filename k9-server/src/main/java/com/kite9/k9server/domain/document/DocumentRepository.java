@@ -2,9 +2,11 @@ package com.kite9.k9server.domain.document;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +21,6 @@ public interface DocumentRepository extends CrudRepository<Document, Long> {
 	public <S extends Document> Iterable<S> saveAll(Iterable<S> entities);
 
 	@Override
-//	@PostAuthorize("returnObject.project.checkAccess(false)")
 	public Optional<Document> findById(Long id);
 
 	@RestResource(exported=false)
