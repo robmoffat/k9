@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
@@ -33,6 +35,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 				Member m = new Member(r, ProjectRole.ADMIN, u);
 				members.add(m);
 			}
+		} else if (!r.checkWrite()) {
+			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
 		}
 		
 		return self.saveInternal(r);

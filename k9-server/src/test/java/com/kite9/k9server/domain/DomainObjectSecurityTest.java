@@ -11,6 +11,7 @@ import org.springframework.hateoas.Links;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -35,7 +36,7 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		try {
 			DocumentResource ndr = getADocumentResource(location);
 			Assert.fail("Shouldn't be allowed get");
-		} catch (ResourceAccessException e) {
+		} catch (Forbidden e) {
 		}
 		
 		try {
@@ -47,13 +48,13 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		try {
 			delete(location);
 			Assert.fail("Shouldn't be allowed delete");
-		} catch (ResourceNotFoundException e) {
+		} catch (Forbidden e) {
 		}
 		
 		try {
 			delete(new URI(getUrlBase()+ "/api/documents"));
 			Assert.fail("Shouldn't be allowed delete");
-		} catch (Forbidden e) {
+		} catch (NotFound e) {
 		}
 		
 	}

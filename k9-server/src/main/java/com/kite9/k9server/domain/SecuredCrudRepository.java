@@ -1,9 +1,12 @@
 package com.kite9.k9server.domain;
 
+import java.util.Optional;
+
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -11,9 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 @NoRepositoryBean
 public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
-
-	@PreAuthorize("#entity.checkWrite()")
-	public <S extends T> S save(@Param("entity") S entity);
 
 	@RestResource(exported=false)
 	public <S extends T> Iterable<S> saveAll(Iterable<S> entities);
@@ -35,5 +35,8 @@ public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
 
 	@RestResource(exported=false)
 	public void deleteAll();
+	
+	@PostAuthorize("returnObject.get().checkRead()")
+	public <S extends T> Optional<S> findById(@Param("id") ID id);
 
 }

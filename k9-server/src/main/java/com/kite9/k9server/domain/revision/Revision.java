@@ -90,6 +90,10 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 
 	@Override
 	public boolean checkAccess(Action a) {
+		if (document == null) {
+			return false;
+		}
+		
 		return document.checkAccess(a);
 	}
 }

@@ -43,7 +43,7 @@ public class Document extends AbstractLongIdEntity implements Secured {
     private Date dateCreated = new Date();
     private Date lastUpdated;
 	
-    @ManyToOne(targetEntity=Project.class, optional=false, fetch=FetchType.EAGER)
+    @ManyToOne(targetEntity=Project.class, optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
     private Project project;
 
 	public String getTitle() {
@@ -96,8 +96,11 @@ public class Document extends AbstractLongIdEntity implements Secured {
 
 	@Override
 	public boolean checkAccess(Action a) {
+		if (project == null) {
+			return false;
+		}
+				
 		return project.checkAccess(a);
 	}
-	
 	
 }

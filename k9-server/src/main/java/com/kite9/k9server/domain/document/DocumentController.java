@@ -92,7 +92,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		Revision rPrevious = rCurrent.getPreviousRevision();
 		Document d = rCurrent.getDocument();
 		d.setCurrentRevision(rPrevious);
-		repo.save(d);
+		((DocumentRepository)repo).save(d); 
 		return buildADL(request, rPrevious);
 	}
 	
@@ -109,7 +109,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		Revision rNext = rCurrent.getNextRevision();
 		Document d = rCurrent.getDocument();
 		d.setCurrentRevision(rNext);
-		repo.save(d);
+		((DocumentRepository)repo).save(d);
 		return buildADL(request, rNext);
 	}
 	
