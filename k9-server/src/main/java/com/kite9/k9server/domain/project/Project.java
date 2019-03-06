@@ -34,10 +34,10 @@ public class Project extends AbstractLongIdEntity implements Secured {
 	@Column(length=32,nullable=false)
 	private String secret = createRandomString();
 	
-	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="project", targetEntity=Document.class, fetch=FetchType.LAZY, cascade = CascadeType.REMOVE )
 	private List<Document> documents;
 	
-	@OneToMany(mappedBy = "project", targetEntity=Member.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
+	@OneToMany(mappedBy = "project", targetEntity=Member.class, fetch=FetchType.LAZY, cascade= { CascadeType.PERSIST, CascadeType.REMOVE })
     private List<Member> members = new ArrayList<>();
 
 	public Project() {

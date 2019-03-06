@@ -58,7 +58,7 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	@Column(length=10, nullable=false)
 	private String salt = User.createNewSalt();
 	
-	@OneToMany(fetch = FetchType.EAGER, targetEntity=Member.class, cascade = {CascadeType.ALL }, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, targetEntity=Member.class, mappedBy = "user", cascade= { CascadeType.REMOVE, CascadeType.REFRESH })
     private List<Member> memberships = new ArrayList<>();
 	
 	/**

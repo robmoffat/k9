@@ -22,6 +22,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
@@ -270,6 +271,13 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		pOut = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), null, HttpMethod.DELETE, String.class);
 		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());
 
+		// check it's gone
+		try {
+			pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+			Assert.assertTrue(pGet.getStatusCode().is4xxClientError());
+		} catch (ResourceAccessException e) {
+		}
+		
 		// remove user
 		pOut = exchangeUsingCookie(restTemplate, uOut.getId().getHref(), cookie.get(0), null, HttpMethod.DELETE, String.class);
 		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());

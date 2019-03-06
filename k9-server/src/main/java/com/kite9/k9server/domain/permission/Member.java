@@ -1,6 +1,5 @@
 package com.kite9.k9server.domain.permission;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,10 +14,10 @@ import com.kite9.k9server.domain.user.User;
 @Entity
 public class Member extends AbstractLongIdEntity implements Secured {
 
-	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY)
 	private Project project;
 
-	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
+	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY)
 	private User user;
 
 	@Enumerated(EnumType.STRING)

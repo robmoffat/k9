@@ -34,16 +34,16 @@ public class Document extends AbstractLongIdEntity implements Secured {
 		this.project = project;
 	}
 
-    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @ManyToOne(targetEntity=Revision.class, optional=true, fetch=FetchType.EAGER)
 	private Revision currentRevision = null;
     
-    @OneToMany(mappedBy="document", targetEntity=Revision.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="document", targetEntity=Revision.class, fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
 	private List<Revision> revisions;
     
     private Date dateCreated = new Date();
     private Date lastUpdated;
 	
-    @ManyToOne(targetEntity=Project.class, optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
+    @ManyToOne(targetEntity=Project.class, optional=false, fetch=FetchType.EAGER)
     private Project project;
 
 	public String getTitle() {
