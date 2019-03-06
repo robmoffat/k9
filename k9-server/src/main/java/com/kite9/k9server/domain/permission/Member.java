@@ -1,5 +1,6 @@
 package com.kite9.k9server.domain.permission;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,16 +8,17 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
 @Entity
-public class Member extends AbstractLongIdEntity {
+public class Member extends AbstractLongIdEntity implements Secured {
 
-	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private Project project;
 
-	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
 	private User user;
 
 	@Enumerated(EnumType.STRING)
@@ -46,5 +48,18 @@ public class Member extends AbstractLongIdEntity {
 
 	public User getUser() {
 		return user;
+	}
+
+	@Override
+	public boolean checkAccess(Action a) {
+		if (project == null) {
+			return true;
+		}
+		
+		// you can't write members unless admin
+		a = (a == Action.WRITE) ? Action.ADMIN : a;
+		
+		return project.checkAccess(a);
+		
 	}
 }

@@ -1,10 +1,7 @@
 package com.kite9.k9server.domain.document;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 

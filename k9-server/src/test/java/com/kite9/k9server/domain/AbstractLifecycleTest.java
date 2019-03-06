@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.resource.DocumentResource;
+import com.kite9.k9server.resource.MemberResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
 
@@ -52,6 +53,15 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, location);
 		rOut = restTemplate.exchange(in, RevisionResource.class);
 		RevisionResource resource = rOut.getBody();
+		return resource;
+	}
+	
+	public MemberResource getAMemberResource(URI location) {
+		RequestEntity<MemberResource> in;
+		ResponseEntity<MemberResource> rOut;
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, location);
+		rOut = restTemplate.exchange(in, MemberResource.class);
+		MemberResource resource = rOut.getBody();
 		return resource;
 	}
 

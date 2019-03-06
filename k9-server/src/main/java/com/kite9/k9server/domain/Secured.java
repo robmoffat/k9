@@ -9,7 +9,7 @@ package com.kite9.k9server.domain;
  */
 public interface Secured {
 	
-	public enum Action { READ, WRITE, DELETE }
+	public enum Action { READ, WRITE, ADMIN }
 
 	public boolean checkAccess(Action a);
 	
@@ -22,8 +22,7 @@ public interface Secured {
 	}
 	
 	public default boolean checkDelete() {
-		return checkAccess(Action.DELETE);
-	}
-	
+		return checkAccess(Action.ADMIN);
+	}	
 	
 }

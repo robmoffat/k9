@@ -18,7 +18,6 @@ import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
-import com.kite9.k9server.domain.user.User;
 
 @Entity
 public class Project extends AbstractLongIdEntity implements Secured {
@@ -38,7 +37,7 @@ public class Project extends AbstractLongIdEntity implements Secured {
 	@OneToMany(mappedBy="project", targetEntity=Document.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<Document> documents;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL }, mappedBy = "project")
+	@OneToMany(mappedBy = "project", targetEntity=Member.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY, orphanRemoval=true)
     private List<Member> members = new ArrayList<>();
 
 	public Project() {
@@ -114,7 +113,7 @@ public class Project extends AbstractLongIdEntity implements Secured {
 					return (m.getProjectRole() != ProjectRole.VIEWER);  
 				} else if (a == Action.READ) {
 					return true;
-				} else if (a == Action.DELETE) {
+				} else if (a == Action.ADMIN) {
 					return (m.getProjectRole() == ProjectRole.ADMIN);  
 				}
 			}

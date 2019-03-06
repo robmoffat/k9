@@ -10,10 +10,13 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
- * Minimises the surface area of methods we need to secure.  
+ * Minimises the surface area of methods we need to secure.  Save is left for the individual
+ * repositories to define, as are the findAll and findAllById.
  */
 @NoRepositoryBean
 public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
+	
+	static final String THIS_CLASS_NAME = SecuredCrudRepository.class.getCanonicalName();
 
 	@RestResource(exported=false)
 	public <S extends T> Iterable<S> saveAll(Iterable<S> entities);
@@ -27,7 +30,7 @@ public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
 	@RestResource(exported=false)
 	public void deleteById(ID id);
 
-	@PreAuthorize("#entity.checkDelete()")
+	@PreAuthorize("#entity == null ? true : #entity.checkDelete()")
 	public void delete(@Param("entity") T entity);
 
 	@RestResource(exported=false)
@@ -36,7 +39,6 @@ public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
 	@RestResource(exported=false)
 	public void deleteAll();
 	
-	@PostAuthorize("returnObject.get().checkRead()")
+	@PostAuthorize("returnObject.isPresent() ? returnObject.get().checkRead() : true")
 	public <S extends T> Optional<S> findById(@Param("id") ID id);
-
 }

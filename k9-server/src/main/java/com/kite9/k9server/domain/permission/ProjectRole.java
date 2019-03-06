@@ -1,7 +1,5 @@
 package com.kite9.k9server.domain.permission;
 
-import javax.persistence.Embeddable;
-
 /**
  * Enumerates over the different roles a user could have on a project.
  */
