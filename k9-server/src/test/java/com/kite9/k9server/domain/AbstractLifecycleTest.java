@@ -90,6 +90,12 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		Assert.assertEquals("Updated title", changed.title);
 		return changed;
 	}
+	
+	public MemberResource updateAMemberResource(MemberResource mr) throws URISyntaxException {
+		RequestEntity<MemberResource> in = new RequestEntity<>(mr, createHeaders(), HttpMethod.PUT, new URI(mr.getLink(Link.REL_SELF).getHref()));
+		ResponseEntity<MemberResource> dOut = restTemplate.exchange(in, MemberResource.class);
+		return dOut.getBody();
+	}
 
 	public DocumentResource getADocumentResource(URI location) {
 		RequestEntity<DocumentResource> in;
@@ -123,6 +129,13 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		RequestEntity<DocumentResource> re = new RequestEntity<>(createHeaders(), HttpMethod.GET, new URI(getUrlBase()+"/api/documents"));
 		ParameterizedTypeReference<Resources<DocumentResource>> ptr = new ParameterizedTypeReference<Resources<DocumentResource>>(){};
 		ResponseEntity<Resources<DocumentResource>> pOut = restTemplate.exchange(re, ptr);
+		return pOut.getBody();
+	}
+	
+	public Resources<RevisionResource> getAllRevisionResources(URI u) {
+		RequestEntity<DocumentResource> re = new RequestEntity<>(createHeaders(), HttpMethod.GET, u);
+		ParameterizedTypeReference<Resources<RevisionResource>> ptr = new ParameterizedTypeReference<Resources<RevisionResource>>(){};
+		ResponseEntity<Resources<RevisionResource>> pOut = restTemplate.exchange(re, ptr);
 		return pOut.getBody();
 	}
 

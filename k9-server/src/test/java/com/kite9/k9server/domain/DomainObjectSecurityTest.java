@@ -44,13 +44,13 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		updateADocumentResource(dr, pr, rr);
 
 		// switch to the viewer - should be able to retrieve one document
-		createAMemberResource(pr, altUser.getLink(Link.REL_SELF).getHref());
+		MemberResource mr = createAMemberResource(pr, altUser.getLink(Link.REL_SELF).getHref());
 		jwtToken = altToken;
 		Resources<DocumentResource> docs = getAllDocumentResources();
 		Assert.assertTrue(docs.getContent().size() == 1);
 		attemptView(pr, dr, rr, true);
 		attemptMutations(pr, dr, rr);
-
+		
 		// switch to a bad user- should be able to retried
 		switchBadUser();
 		docs = getAllDocumentResources();
@@ -58,9 +58,15 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		attemptView(pr, dr, rr, false);
 		attemptMutations(pr, dr, rr);
 		
+		// change the viewer to be a admin
+		mr.projectRole = ProjectRole.ADMIN;
+		jwtToken = adminJwt;
+		updateAMemberResource(mr);
+		jwtToken = altToken;
+		deleteAndCheckDeleted(restTemplate, pr.getLink(Link.REL_SELF).getHref(), jwtToken, ProjectResource.class);
+		
 		// revert to the admin
 		jwtToken = adminJwt;
-		//delete(new URI(pr.getLink(Link.REL_SELF).getHref()));
 	}
 
 	public void attemptView(ProjectResource pr, DocumentResource dr, RevisionResource rr, boolean allowed) throws URISyntaxException {
@@ -74,6 +80,9 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 				if (ndr == null) {
 					Assert.fail("Returned null for get");
 				}
+				
+				Resources<RevisionResource> revs = getAllRevisionResources(new URI(dr.getLink("revisions").getHref()));
+				Assert.assertEquals(1, revs.getContent().size());
 			}
 		} catch (Exception e) {
 			if (allowed) {
