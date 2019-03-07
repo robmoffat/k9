@@ -19,11 +19,11 @@ public class Move extends AbstractLocatedCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL adl) throws CommandException {
+	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "move", "moveId", moveId);
 		
 		ADLDocument doc = adl.getAsDocument();
-		validateFragmentHash(doc);
+		validateFragmentHash(adl);
 		Element e = doc.getElementById(moveId);		
 		if (e == null) {
 			throw new CommandException("No element for moveId: "+fragmentId, this);
@@ -32,6 +32,7 @@ public class Move extends AbstractLocatedCommand {
 		insert(doc, e);
 
 		LOG.info("Processed move of "+fragmentId);
+		return adl;
 	}
 
 }

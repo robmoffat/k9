@@ -25,12 +25,12 @@ public class Copy extends AbstractLocatedCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL adl) throws CommandException {
+	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "copy", "uri", uriStr);
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			validateFragmentHash(doc);
+			validateFragmentHash(adl);
 			Element insert = getElementToInsert(uriStr);
 			doc.adoptNode(insert);
 			
@@ -42,6 +42,7 @@ public class Copy extends AbstractLocatedCommand {
 		}
 		
 		LOG.info("Processed insert into "+fragmentId);
+		return adl;
 	}
 
 

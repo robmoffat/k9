@@ -17,11 +17,11 @@ public class Delete extends AbstractCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL in) throws CommandException {
+	public ADL applyCommand(ADL in) throws CommandException {
 		ensureNotNull(this, "delete", "fragmentId", fragmentId);
 
 		ADLDocument doc = in.getAsDocument();
-		validateFragmentHash(doc);
+		validateFragmentHash(in);
 		Element e = doc.getElementById(fragmentId);
 		if (e==null) {
 			throw new CommandException("Couldn't find fragment: "+fragmentId, this);
@@ -31,6 +31,7 @@ public class Delete extends AbstractCommand {
 		parent.removeChild(e);
 
 		LOG.info("Processed delete of " + fragmentId);
+		return in;
 	}
 
 }

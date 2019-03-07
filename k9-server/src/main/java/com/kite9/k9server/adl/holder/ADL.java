@@ -25,4 +25,9 @@ public interface ADL {
 	
 	String getAsXMLString(Node n);
 	
+	/**
+	 * Returns the hash of a given node, or for the whole xml document if none given.
+	 */
+	String hash(String id);
+	
 }

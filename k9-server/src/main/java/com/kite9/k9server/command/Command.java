@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.domain.document.Redo;
+import com.kite9.k9server.domain.document.Undo;
 
 /**
  * Performs some change on the ADL.
@@ -22,12 +24,14 @@ import com.kite9.k9server.adl.holder.ADL;
 	@Type(Move.class), 
 	@Type(SetText.class),
 	@Type(SetAttr.class),
-	@Type(SetXML.class)})
+	@Type(SetXML.class),
+	@Type(Undo.class),
+	@Type(Redo.class)})
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE,
 	setterVisibility =Visibility.NONE)
 public interface Command {
 					
-	public void applyCommand(ADL in) throws CommandException;
+	public ADL applyCommand(ADL in) throws CommandException;
 	
 }

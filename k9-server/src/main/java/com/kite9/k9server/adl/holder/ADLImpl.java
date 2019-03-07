@@ -26,6 +26,7 @@ import org.w3c.dom.Node;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kite9.k9server.security.Hash;
 
 /**
  * Holds XML (either rendered (SVG) or unrendered (ADL) which will be output
@@ -49,6 +50,8 @@ public class ADLImpl implements ADL {
 	@JsonIgnore
 	private ADLDocument doc;
 	
+	private String xmlHash;
+	
 	@JsonIgnore
 	private Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
 	
@@ -62,18 +65,17 @@ public class ADLImpl implements ADL {
 	public ADLImpl(String content, String uri) {
 		this.xml = content;
 		this.uri = uri;
-	}
-
-	public ADLImpl(ADLDocument doc) {
-		this.doc = doc;
+		this.xmlHash = Hash.generateHash(content);
 	}
 
 	@Override
 	public String getAsXMLString() {
 		if (getMode() == Mode.URI) {
 			xml = toXMLString(uri);
+			xmlHash = Hash.generateHash(xml);
 		} else if (getMode() == Mode.DOM) {
 			xml = toXMLString(doc, false);
+			xmlHash = Hash.generateHash(xml);
 			doc = null;
 		}
 
@@ -94,6 +96,7 @@ public class ADLImpl implements ADL {
 	public ADLDocument getAsDocument() {
 		if (getMode() == Mode.URI) {
 			xml = toXMLString(uri);
+			xmlHash = Hash.generateHash(xml);
 		}
 		
 		if (getMode() == Mode.STRING) {
@@ -155,4 +158,28 @@ public class ADLImpl implements ADL {
 		return toXMLString(n, true);
 	}
 
+	@Override
+	public String hash(String n) {
+		if (n != null) {
+			ADLDocument doc = getAsDocument();
+			Node e = doc.getElementById(n);
+			
+			if (e == null) {
+				throw new Kite9ProcessingException("Could not locate: "+n);
+			}
+			
+			return Hash.generateHash(e);
+		} else {
+			if (xmlHash != null) {
+				return xmlHash;
+			} else if (xml != null) {
+				xmlHash = Hash.generateHash(xml);
+				return xmlHash;
+			}
+		}
+		
+		throw new RuntimeException("XML Hash not set!");
+	}
+
+	
 }

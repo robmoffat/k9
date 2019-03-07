@@ -20,11 +20,11 @@ public class SetAttr extends AbstractCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL adl) throws CommandException {
+	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "setAttr", "name", name);
 		
 		ADLDocument doc = adl.getAsDocument();
-		validateFragmentHash(doc);
+		validateFragmentHash(adl);
 		Element e = findFragmentElement(doc);
 
 		if (value == null) {
@@ -35,6 +35,7 @@ public class SetAttr extends AbstractCommand {
 	
 		
 		LOG.info("Processed setAttr of "+fragmentId);
+		return adl;
 	}
 	
 }

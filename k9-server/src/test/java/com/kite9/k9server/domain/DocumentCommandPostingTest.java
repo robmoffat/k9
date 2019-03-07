@@ -43,20 +43,15 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		
 		
 		// if we perform undo, we should arrive back at the original document.
-		URI undo = new URI(dr.getLink(DocumentController.UNDO_REL).getHref());
 		String hash = Hash.generateHash(new String(back2));
-		in = new RequestEntity<>(hash.getBytes(), createJWTTokenHeaders(jwtToken, MediaType.TEXT_PLAIN, MediaTypes.ADL_SVG), HttpMethod.PUT, undo);
-		ResponseEntity<byte[]> adlOut = restTemplate.exchange(in, byte[].class);
-		byte[] back3 = adlOut.getBody();
+		byte[] back3 = postCommand("[{\"type\": \"Undo\", \"fragmentHash\": \""+hash+"\"}]", uri);
 		persistInAFile(back3, "revisions", "state3.xml");
 		XMLCompare.compareXML(new String(back1), new String(back3));
 		
 		// if we perform a redo, we should arrive back at the document after-edit
-		URI redo = new URI(dr.getLink(DocumentController.REDO_REL).getHref());
 		hash = Hash.generateHash(new String(back1));
-		in = new RequestEntity<>(hash.getBytes(), createJWTTokenHeaders(jwtToken, MediaType.TEXT_PLAIN, MediaTypes.ADL_SVG), HttpMethod.PUT, redo);
-		adlOut = restTemplate.exchange(in, byte[].class);
-		byte[] back4 = adlOut.getBody();
+		byte[] back4 = postCommand("[{\"type\": \"Redo\", \"fragmentHash\": \""+hash+"\"}]", uri);
+
 		persistInAFile(back4, "revisions", "state4.xml");
 		XMLCompare.compareXML(new String(back2), new String(back4));
 		

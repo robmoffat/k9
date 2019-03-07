@@ -18,6 +18,25 @@
     <version>2.1.2.RELEASE</version>
     <relativePath /> <!-- lookup parent from repository -->
   </parent>
+  
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>
+          false
+        </enabled>
+      </snapshots>
+      <id>
+        bintray-kite9-org-maven
+      </id>
+      <name>
+        bintray
+      </name>
+      <url>
+        https://dl.bintray.com/kite9-org/maven
+      </url>
+    </repository>
+  </repositories>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,7 +48,7 @@
     <dependency>
       <groupId>org.kite9</groupId>
       <artifactId>kite9-visualization</artifactId>
-      <version>1.0.RC1-SNAPSHOT</version>
+      <version>0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
@@ -134,111 +153,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <version>0.14.2</version>
-        <configuration>
-          <images>
-            <image>
-              <name>com.kite9/k9-mailer</name>
-              <alias>k9-mailer</alias>
-              <build>
-                <from>alterrebe/postfix-relay</from>
-              </build>
-
-              <run>
-                <envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.mail.properties</envPropertyFile>
-                <log />
-                <ports>
-                  <port>25:25</port>
-                </ports>
-                <wait>
-                  <log>success: postfix entered RUNNING state</log>
-                  <time>30000</time>
-                </wait>
-              </run>
-            </image>
-            <image>
-              <name>com.kite9/k9-server</name>
-              <alias>k9-server</alias>
-              <build>
-                <from>java:8</from>
-                <ports>
-                  <port>8080</port>
-                </ports>
-
-                <entryPoint>
-                  <exec>
-                    <arg>java</arg>
-                    <arg>-jar</arg>
-                    <arg>-Djava.security.egd=file:/dev/./urandom</arg>
-                    <arg>/app/${project.build.finalName}.${project.packaging}</arg>
-                  </exec>
-                </entryPoint>
-                <assembly>
-                  <basedir>/app</basedir>
-                  <descriptorRef>artifact</descriptorRef>
-                </assembly>
-              </build>
-              <run>
-                <labels>
-                  <environment>local</environment>
-                </labels>
-                <envPropertyFile>${project.basedir}/src/docker/${env.DOCKER_MACHINE_NAME}.properties</envPropertyFile>
-                <extraHosts>
-                  <host>mysql:Robs-MacBook.local</host>
-                </extraHosts>
-                <ports>
-                  <port>8080:8080</port>
-                </ports>
-                <links>
-                  <link>k9-mailer</link>
-                </links>
-                <wait>
-                  <log>Started Kite9ServerApplication</log>
-                  <time>30000</time>
-                </wait>
-                <log />
-              </run>
-            </image>
-          </images>
-        </configuration>
-
-        <executions>
-          <execution>
-            <id>start</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <!-- "build" should be used to create the images with the artifact -->
-              <goal>build</goal>
-              <goal>start</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.19.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -19,14 +19,15 @@ public class SetText extends AbstractCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL adl) throws CommandException {
+	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "edit", "fragment", fragmentId);
 		ensureNotNull(this, "edit", "newText", newText);
 		ADLDocument doc = adl.getAsDocument();
-		validateFragmentHash(doc);
+		validateFragmentHash(adl);
 		Element e = doc.getElementById(fragmentId);
 		e.setTextContent(newText);
 		LOG.info("Processed edit of "+fragmentId);
+		return adl;
 	}
 
 

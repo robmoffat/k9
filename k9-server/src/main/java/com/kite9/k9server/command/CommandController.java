@@ -35,7 +35,7 @@ public class CommandController {
 	
 	public ADL applyCommand(List<Command> steps, ADL input) {
 		for (Command command : steps) {
-			command.applyCommand(input);
+			input = command.applyCommand(input);
 		}
 		
 		return input;

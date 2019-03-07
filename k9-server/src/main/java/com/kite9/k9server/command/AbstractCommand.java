@@ -4,9 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
-import com.kite9.k9server.security.Hash;
+import com.kite9.k9server.adl.holder.ADL;
 
 /**
  * Contains a hash, which is used to make sure that the command is operating on a fresh version
@@ -46,18 +45,8 @@ public abstract class AbstractCommand implements Command {
 		return into;
 	}
 	
-	protected void validateFragmentHash(ADLDocument doc) {
-		Node e = doc;
-		
-		if (fragmentId != null) {
-			e = doc.getElementById(fragmentId);
-		}
-		
-		if (e == null) {
-			throw new CommandException("Could not locate: "+fragmentId, this);
-		}
-		
-		String computed = Hash.generateHash(e);
+	protected void validateFragmentHash(ADL adl) {
+		String computed = adl.hash(fragmentId);
 		
 		if (!computed.equals(fragmentHash)) {
 			throw new CommandException("Fragment hash doesn't match: "+computed, this);

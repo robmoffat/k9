@@ -29,7 +29,6 @@ import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
-import com.kite9.k9server.security.Hash;
 
 /**
  * Allows you to pull back the content of the latest revision from the /content url.
@@ -43,12 +42,6 @@ public class DocumentController extends AbstractADLContentController<Document> {
 
 	public static final String CHANGE_REL = "change";
 	public static final String CHANGE_URL = "/change";
-	
-	public static final String UNDO_REL = "undo";
-	public static final String UNDO_URL = "/undo";
-	
-	public static final String REDO_REL = "redo";
-	public static final String REDO_URL = "/redo";
 	
 	@Autowired
 	CommandController command;
@@ -67,60 +60,6 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		Revision r = getCurrentRevision(id);
 		return buildADL(request, r);
 	}
-
-	private Revision getCurrentRevision(long docId) {
-		Optional<Document> or = ((DocumentRepository) repo).findById(docId);
-		Document d = or.orElseThrow(() ->  new ResourceNotFoundException("No document for "+docId));
-		Revision r = d.getCurrentRevision();
-		
-		if (r == null) {
-			throw new ResourceNotFoundException("No revisions for document "+docId);
-		}
-		return r;
-	}
-	
-	@Transactional
-	@RequestMapping(path = "/{documentId}"+UNDO_URL, method = RequestMethod.PUT) 
-	public @ResponseBody ADL undo(
-			@PathVariable("documentId") long id,
-			HttpServletRequest request,
-			@RequestBody String revisionHash) {
-		
-		Revision rCurrent = getCurrentRevision(id);
-		checkHash(revisionHash, rCurrent);
-		
-		Revision rPrevious = rCurrent.getPreviousRevision();
-		Document d = rCurrent.getDocument();
-		d.setCurrentRevision(rPrevious);
-		((DocumentRepository)repo).save(d); 
-		return buildADL(request, rPrevious);
-	}
-	
-	@Transactional
-	@RequestMapping(path = "/{documentId}"+REDO_URL, method = RequestMethod.PUT) 
-	public @ResponseBody ADL redo(
-			@PathVariable("documentId") long id,
-			HttpServletRequest request,
-			@RequestBody String revisionHash) {
-		
-		Revision rCurrent = getCurrentRevision(id);
-		checkHash(revisionHash, rCurrent);
-		
-		Revision rNext = rCurrent.getNextRevision();
-		Document d = rCurrent.getDocument();
-		d.setCurrentRevision(rNext);
-		((DocumentRepository)repo).save(d);
-		return buildADL(request, rNext);
-	}
-	
-
-	public void checkHash(String revisionHash, Revision rCurrent) {
-		String computed = Hash.generateHash(rCurrent.getXml());
-		
-		if (!computed.equals(revisionHash)) {
-			throw new CommandException("Hash doesn't match computed: "+computed, null);
-		}
-	}
 	
 	/**
 	 * Applies a command to the current revision, using the {@link CommandController}.
@@ -137,17 +76,51 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		
 		Document d = rOld.getDocument();
 		ADL adl = buildADL(request, rOld);
-		ADL out = command.applyCommand(steps, adl);
 		
-		// create the new revision. Integrity and document changes are handled by 
-		// revisionRepository.
-		Revision rNew = new Revision();
-		rNew.setAuthor(u);
-		rNew.setDocument(d);
-		rNew.setXml(out.getAsXMLString());
-		revisions.save(rNew);
+		if (isUndoRedo(request, steps, rOld)) {
+			ADL out = command.applyCommand(steps, adl);
+			return out;
+		} else {
+			// creates a new revision. Integrity and document changes are handled by 
+			// revisionRepository.
+
+			ADL out = command.applyCommand(steps, adl);
+			Revision rNew = new Revision();
+			rNew.setAuthor(u);
+			rNew.setDocument(d);
+			rNew.setXml(out.getAsXMLString());
+			revisions.save(rNew);
+			
+			return out;
+		}
+	}
+	
+	private boolean isUndoRedo(HttpServletRequest request, List<Command> steps, Revision r) {
+		boolean contextSet = false;
 		
-		return out;
+		for (Command command : steps) {
+			if (command instanceof HasDocument) {
+				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, request.getRequestURL().toString());
+				contextSet = true;
+			}
+		}
+		
+		if (contextSet && (steps.size() > 1)) {
+			throw new CommandException("Undo/Redo commands must be a supplied alone rather than as multiple steps", null);
+		}
+		
+		return contextSet;
+	}
+
+	protected Revision getCurrentRevision(long docId) {
+		Optional<Document> or = repo.findById(docId);
+		Document d = or.orElseThrow(() ->  new ResourceNotFoundException("No document for "+docId));
+		Revision r = d.getCurrentRevision();
+		
+		if (r == null) {
+			throw new ResourceNotFoundException("No revisions for document "+docId);
+		}
+		return r;
 	}
 
 	@Override
@@ -166,8 +139,6 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		super.addRels(resource, r);
 		String cUrl = createContentControllerUrl(r.getId());
 		resource.add(new Link(cUrl + CHANGE_URL, CHANGE_REL));
-		resource.add(new Link(cUrl + UNDO_URL, UNDO_REL));
-		resource.add(new Link(cUrl + REDO_URL, REDO_REL));
 	}
 
 	

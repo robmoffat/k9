@@ -22,11 +22,11 @@ public class SetXML extends AbstractCommand {
 	}
 
 	@Override
-	public void applyCommand(ADL adl) throws CommandException {
+	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "setXML", "newState", newState);
 		
 		ADLDocument doc = adl.getAsDocument();
-		validateFragmentHash(doc);
+		validateFragmentHash(adl);
 		Element e = findFragmentElement(doc);
 
 		// replace the child elements with ids - these should stay as the original
@@ -39,6 +39,7 @@ public class SetXML extends AbstractCommand {
 		e.getParentNode().replaceChild(n, e);
 		
 		LOG.info("Processed setXML of "+fragmentId);
+		return adl;
 	}
 	
 	private void replaceElementsWithIds(Element n, ADLDocument e) {
