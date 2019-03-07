@@ -17,7 +17,7 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 	protected UserResource u;
 	protected String userUrl;
 	protected String jwtToken;
-	private int userNumber = 0;
+	private static int userNumber = 0;
 	
 	@Before
 	public void withUser() throws URISyntaxException {

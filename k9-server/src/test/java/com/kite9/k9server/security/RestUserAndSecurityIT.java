@@ -64,7 +64,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertNull(firstUser.password);
 		Assert.assertNotNull(firstUser.email);
 		Assert.assertNotNull(firstUser.api);
-		Assert.assertNotNull(firstUser.salt);
+		Assert.assertNull(firstUser.salt);
 		Assert.assertFalse(firstUser.accountExpired);
 		Assert.assertFalse(firstUser.accountLocked);
 		

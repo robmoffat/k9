@@ -48,27 +48,44 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		jwtToken = altToken;
 		Resources<DocumentResource> docs = getAllDocumentResources();
 		Assert.assertTrue(docs.getContent().size() == 1);
+		attemptView(pr, dr, rr, true);
 		attemptMutations(pr, dr, rr);
 
 		// switch to a bad user- should be able to retried
 		switchBadUser();
 		docs = getAllDocumentResources();
 		Assert.assertTrue(docs.getContent().size() == 0);
+		attemptView(pr, dr, rr, false);
 		attemptMutations(pr, dr, rr);
 		
 		// revert to the admin
 		jwtToken = adminJwt;
-		delete(new URI(pr.getLink(Link.REL_SELF).getHref()));
+		//delete(new URI(pr.getLink(Link.REL_SELF).getHref()));
 	}
 
-	public void attemptMutations(ProjectResource pr, DocumentResource dr, RevisionResource rr) throws URISyntaxException {
+	public void attemptView(ProjectResource pr, DocumentResource dr, RevisionResource rr, boolean allowed) throws URISyntaxException {
 		URI location = new URI(dr.getLink(Link.REL_SELF).getHref());
-
+	
 		try {
 			DocumentResource ndr = getADocumentResource(location);
-			Assert.fail("Shouldn't be allowed get");
-		} catch (Forbidden e) {
+			if (!allowed) {
+				Assert.fail("Shouldn't be allowed get");
+			} else {
+				if (ndr == null) {
+					Assert.fail("Returned null for get");
+				}
+			}
+		} catch (Exception e) {
+			if (allowed) {
+				Assert.fail("Should be allowed get");
+			}
 		}
+		
+		
+	}
+	
+	public void attemptMutations(ProjectResource pr, DocumentResource dr, RevisionResource rr) throws URISyntaxException {
+		URI location = new URI(dr.getLink(Link.REL_SELF).getHref());
 		
 		try {
 			updateADocumentResource(dr, pr, rr);
@@ -92,7 +109,7 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	public void switchBadUser() throws URISyntaxException {
 		String username = "badactor";
 		String password = "facts11";
-		u = createUser(restTemplate, username, password, "thing3@example.com");
+		u = createUser(restTemplate, username, password, "badthing3@example.com");
 		jwtToken = getJwtToken(restTemplate, username, password);
 	}
 	

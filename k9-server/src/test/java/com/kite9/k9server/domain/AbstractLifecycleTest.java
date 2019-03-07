@@ -3,7 +3,6 @@ package com.kite9.k9server.domain;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Assert;
 import org.springframework.core.ParameterizedTypeReference;
@@ -100,8 +99,11 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		return dOut.getBody();
 	}
 
+	static int stubNumber = 1;
+	
 	public ProjectResource createAProjectResource() throws URISyntaxException {
-		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp2", "");
+		stubNumber++;
+		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp"+stubNumber, "");
 		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/projects"));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);

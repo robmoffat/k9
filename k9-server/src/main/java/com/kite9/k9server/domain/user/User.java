@@ -62,6 +62,7 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	 * This cannot be set externally.
 	 */
 	@Column(length=10, nullable=false)
+	@JsonProperty(access=Access.WRITE_ONLY)
 	private String salt = User.createNewSalt();
 	
 	@OneToMany(fetch = FetchType.LAZY, targetEntity=Member.class, mappedBy = "user", cascade= { CascadeType.REMOVE, CascadeType.REFRESH })
