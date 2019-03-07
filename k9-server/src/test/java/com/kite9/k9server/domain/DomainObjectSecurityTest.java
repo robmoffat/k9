@@ -2,7 +2,6 @@ package com.kite9.k9server.domain;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,7 +31,7 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	public void setupAltUser() throws Exception {
 		String username = "altuser";
 		String password = "facts11";
-		u = createUser(restTemplate, username, password, "thing3@example.com");
+		altUser = createUser(restTemplate, username, password, "viewer@example.com");
 		altToken = getJwtToken(restTemplate, username, password);
 	}
 	
@@ -51,7 +50,6 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		Assert.assertTrue(docs.getContent().size() == 1);
 		attemptMutations(pr, dr, rr);
 
-		
 		// switch to a bad user- should be able to retried
 		switchBadUser();
 		docs = getAllDocumentResources();

@@ -59,7 +59,15 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, username);
 		Collection<UserResource> us = uOuts.getContent();
 		Assert.assertEquals(1, us.size());
-		Assert.assertEquals(username, us.iterator().next().username);
+		UserResource firstUser = us.iterator().next();
+		Assert.assertEquals(username, firstUser.username);
+		Assert.assertNull(firstUser.password);
+		Assert.assertNotNull(firstUser.email);
+		Assert.assertNotNull(firstUser.api);
+		Assert.assertNotNull(firstUser.salt);
+		Assert.assertFalse(firstUser.accountExpired);
+		Assert.assertFalse(firstUser.accountLocked);
+		
 		
 		// retrieve the user with the wrong password
 		try {
@@ -76,10 +84,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Resources<UserResource> uOuts2 = retrieveUserViaJwt(restTemplate, jwtToken);
 		us = uOuts2.getContent();
 		Assert.assertEquals(1, us.size());
-		Assert.assertEquals(username, us.iterator().next().username);
-		
-		// pull back our single user.
-		retrieveResource(restTemplate, jwtToken, uOut.getId().getHref(), UserResource.class);
+		Assert.assertEquals(username, firstUser.username);
 
 		// we should be able to delete with it too
 		deleteAndCheckDeleted(restTemplate, url, jwtToken, UserResource.class);

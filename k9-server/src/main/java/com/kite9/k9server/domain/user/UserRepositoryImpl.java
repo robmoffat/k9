@@ -55,17 +55,17 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 
-//	@Override
-//	public void deleteById(Long id) {
-//		// this should always work
-//		userRepository.expire(id);
-//		try {
-//			// this works if the user isn't on any projects.
-//			userRepository.remove(id);
-//		} catch (Exception e) {
-//			LOG.info("User can't be deleted outright, expiring: "+id);
-//		}
-//	}
+	@Override
+	public void deleteById(Long id) {
+		// this should always work
+		userRepository.expire(id);
+		try {
+			// this works if the user isn't on any projects.
+			userRepository.remove(id);
+		} catch (Exception e) {
+			LOG.info("User can't be deleted outright, expiring: "+id);
+		}
+	}
 
 	@Override
 	public User saveInternal(User entity) {

@@ -11,17 +11,21 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
 @Entity
+@JsonIgnoreProperties()
 public class User extends AbstractLongIdEntity implements UserDetails {
 
 	/**
@@ -32,8 +36,10 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 
 	/**
 	 * In the database, this just stores the hash of the password, using bcrypt.
-	 * However, the client sends the password in this field when creating a user.
+	 * The client sends the password in this field when creating a user, but 
+	 * we never want to send it back.
 	 */
+	@JsonProperty(access=Access.WRITE_ONLY)
 	@Column(length=60)			
 	private String password;
 	
