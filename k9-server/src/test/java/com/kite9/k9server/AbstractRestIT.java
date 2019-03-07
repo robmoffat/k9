@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.kite9.framework.common.RepositoryHelp;
 import org.kite9.framework.common.TestingHelp;
 import org.kite9.framework.logging.Kite9Log;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,8 +60,8 @@ import com.kite9.k9server.web.WebConfig.LoggingFilter;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.DEFINED_PORT)
 @TestPropertySource(properties = { 
-		"logging.level.org.hibernate=TRACE",
-		"logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE",
+//		"logging.level.org.hibernate=TRACE",
+//		"logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE",
 		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"spring.datasource.username=sa1",
 		"spring.datasource.password=abc",
