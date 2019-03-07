@@ -154,6 +154,15 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      
+     <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.11</version>
+        <configuration>
+          <printSummary>true</printSummary>
+          <argLine>-Xms500M -Xmx500M -Djava.awt.headless=true</argLine>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
