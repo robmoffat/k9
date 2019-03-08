@@ -11,6 +11,7 @@ import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
+import com.kite9.k9server.web.HttpException;
 
 /**
  * Allows you to pull back the content of the latest revision from the /content url.
@@ -115,11 +117,11 @@ public class DocumentController extends AbstractADLContentController<Document> {
 
 	protected Revision getCurrentRevision(long docId) {
 		Optional<Document> or = repo.findById(docId);
-		Document d = or.orElseThrow(() ->  new ResourceNotFoundException("No document for "+docId));
+		Document d = or.orElseThrow(() ->  new HttpException(HttpStatus.NOT_FOUND, "No document for "+docId));
 		Revision r = d.getCurrentRevision();
 		
 		if (r == null) {
-			throw new ResourceNotFoundException("No revisions for document "+docId);
+			throw new HttpException(HttpStatus.NOT_FOUND, "No revisions for document "+docId);
 		}
 		return r;
 	}

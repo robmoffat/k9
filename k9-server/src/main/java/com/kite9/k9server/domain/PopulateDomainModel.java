@@ -1,9 +1,14 @@
 package com.kite9.k9server.domain;
 
+import java.nio.charset.Charset;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
+import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;
@@ -12,6 +17,8 @@ import com.kite9.k9server.domain.permission.MemberRepository;
 import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.project.ProjectRepository;
+import com.kite9.k9server.domain.revision.Revision;
+import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
@@ -44,6 +51,9 @@ public class PopulateDomainModel implements CommandLineRunner {
 	@Autowired
 	MemberRepository memberRepository;
 	
+	@Autowired
+	RevisionRepository revisionRepository;
+	
 	@Override
 	public void run(String... arg0) throws Exception {
 		// add some projects
@@ -61,7 +71,7 @@ public class PopulateDomainModel implements CommandLineRunner {
 		documentRepository.saveInternal(document1);
 		documentRepository.saveInternal(document2);
 		documentRepository.saveInternal(document3);
-		
+				
 		// add the test user
 		userRepository.save(TEST_USER);
 		
@@ -71,6 +81,16 @@ public class PopulateDomainModel implements CommandLineRunner {
 		
 		memberRepository.saveInternal(m1);
 		memberRepository.saveInternal(m2);
+		
+		// add a revision
+		Revision r = new Revision();
+		r.setDocument(document1);
+		r.setAuthor(TEST_USER);
+		r.setDateCreated(new Date());
+		r.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command1.xml"), Charset.forName("UTF-8")));
+		revisionRepository.saveInternal(r);
+		document1.setCurrentRevision(r);
+		documentRepository.saveInternal(document1);
 	}
 
 }
