@@ -4,10 +4,10 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.web.HttpException;
 
 public class RevisionRepositoryImpl implements RevisionRepositoryCustom {
 
@@ -26,7 +26,7 @@ public class RevisionRepositoryImpl implements RevisionRepositoryCustom {
 		Document d = r.getDocument();
 		
 		if (!d.checkWrite()) {
-			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+			throw new HttpException(HttpStatus.FORBIDDEN);
 		}
 		
 		Revision currentRevision = d.getCurrentRevision();

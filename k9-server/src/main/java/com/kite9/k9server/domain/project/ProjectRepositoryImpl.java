@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.web.HttpException;
 
 public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 
@@ -40,7 +40,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 				}
 			}
 		} else if (!r.checkWrite()) {
-			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);
+			throw new HttpException(HttpStatus.FORBIDDEN);
 		}
 		
 		return self.saveInternal(r);
