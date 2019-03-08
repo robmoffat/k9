@@ -1,5 +1,6 @@
-package com.kite9.k9server.domain.document;
+package com.kite9.k9server.domain.document.commands;
 
+import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.revision.Revision;
 
 public interface HasDocument {

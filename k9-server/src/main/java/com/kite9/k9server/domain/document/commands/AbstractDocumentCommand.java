@@ -1,6 +1,7 @@
-package com.kite9.k9server.domain.document;
+package com.kite9.k9server.domain.document.commands;
 
 import com.kite9.k9server.command.AbstractCommand;
+import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.revision.Revision;
 
 public abstract class AbstractDocumentCommand extends AbstractCommand implements HasDocument {

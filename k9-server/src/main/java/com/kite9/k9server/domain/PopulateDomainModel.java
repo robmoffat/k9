@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.domain.permission.Member;
+import com.kite9.k9server.domain.permission.MemberRepository;
+import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.project.ProjectRepository;
 import com.kite9.k9server.domain.user.User;
@@ -38,6 +41,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	MemberRepository memberRepository;
 	
 	@Override
 	public void run(String... arg0) throws Exception {
@@ -53,12 +58,19 @@ public class PopulateDomainModel implements CommandLineRunner {
 		Document document2 = new Document("Document 2", "Document Description", project1);
 		Document document3 = new Document("Document 3", "Document Description", project2);
 
-		documentRepository.save(document1);
-		documentRepository.save(document2);
-		documentRepository.save(document3);
+		documentRepository.saveInternal(document1);
+		documentRepository.saveInternal(document2);
+		documentRepository.saveInternal(document3);
 		
 		// add the test user
 		userRepository.save(TEST_USER);
+		
+		// add the user to the projects
+		Member m1 = new Member(project1, ProjectRole.ADMIN, TEST_USER);
+		Member m2 = new Member(project2, ProjectRole.ADMIN, TEST_USER);
+		
+		memberRepository.saveInternal(m1);
+		memberRepository.saveInternal(m2);
 	}
 
 }

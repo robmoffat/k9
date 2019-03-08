@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,10 +31,13 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 			
 			if (members.size() == 0) {
 				// create the default member
-				String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-				User u = (User) userDetails.loadUserByUsername(userName);
-				Member m = new Member(r, ProjectRole.ADMIN, u);
-				members.add(m);
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				if (authentication != null) {
+					String userName = authentication.getName();
+					User u = (User) userDetails.loadUserByUsername(userName);
+					Member m = new Member(r, ProjectRole.ADMIN, u);
+					members.add(m);
+				}
 			}
 		} else if (!r.checkWrite()) {
 			throw new HttpClientErrorException(HttpStatus.FORBIDDEN);

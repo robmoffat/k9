@@ -1,8 +1,9 @@
-package com.kite9.k9server.domain.document;
+package com.kite9.k9server.domain.document.commands;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.revision.Revision;
 
 public class Redo extends AbstractDocumentCommand {

@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kite9.k9server.security.Hash;
 import com.kite9.k9server.security.WebSecurityConfig;
 import com.kite9.k9server.web.HttpException;
-import com.kite9.k9server.web.NotificationResource;
 
 /**
  * Email validation and password reset functionality.

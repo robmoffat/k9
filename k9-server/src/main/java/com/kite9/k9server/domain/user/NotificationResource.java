@@ -1,8 +1,6 @@
-package com.kite9.k9server.web;
+package com.kite9.k9server.domain.user;
 
 import org.springframework.hateoas.ResourceSupport;
-
-import com.kite9.k9server.domain.user.UserController;
 
 /**
  * Sent from the {@link UserController} when some activity has been performed.

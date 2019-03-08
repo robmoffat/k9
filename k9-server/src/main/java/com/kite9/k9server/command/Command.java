@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.document.Redo;
-import com.kite9.k9server.domain.document.Undo;
+import com.kite9.k9server.domain.document.commands.Redo;
+import com.kite9.k9server.domain.document.commands.Undo;
 
 /**
  * Performs some change on the ADL.

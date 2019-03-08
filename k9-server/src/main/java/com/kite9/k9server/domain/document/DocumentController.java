@@ -25,6 +25,7 @@ import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.document.commands.HasDocument;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
