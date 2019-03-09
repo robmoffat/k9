@@ -1,0 +1,18 @@
+@script url('hoverable.js')
+
+.hoverable {
+	transition-duration: 1s;
+}
+
+.hoverable {
+	cursor: pointer;
+}
+
+.mouseover > .indicator {
+	fill: #EEEE77 !important;
+	stroke: #EEEE77 !important;
+}
+
+.mouseover > g > text {
+	fill: #EEEE77 !important;
+}

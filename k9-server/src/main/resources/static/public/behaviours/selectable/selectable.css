@@ -6,9 +6,6 @@
 
 .selected>.indicator {
 	fill: #FFAA23 !important;
-}
-
-.selected>.indicator {
 	stroke: #FFAA23 !important;
 }
 

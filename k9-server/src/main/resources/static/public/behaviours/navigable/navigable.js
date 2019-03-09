@@ -1,6 +1,6 @@
 
-import '../libraries/jquery.min.js'
-import {transition} from '../bundles/transition.js'
+import '../../libraries/jquery.min.js'
+import {transition} from '../../bundles/transition.js'
 
 function navigate(url) {
 	$.get({

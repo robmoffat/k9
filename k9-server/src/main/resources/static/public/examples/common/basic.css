@@ -45,6 +45,7 @@ g.box {
 	kite9-min-size: 100px 100px;
 	fill: #CCCCAA;
 	stroke: #AAAA88;
+	kite9-connection-align: 50%;
 	
 }
 
@@ -83,7 +84,7 @@ rect.terminator {
 from, to {
 	kite9-type: link-end;
 	kite9-template: url(template.xml#terminator);
-	kite9-padding: 5px;
+	kite9-padding: 12px 24px 12px 0px;
 }
 
 from.arrow, to.arrow {
@@ -91,4 +92,5 @@ from.arrow, to.arrow {
 	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
 	kite9-padding: 12px 24px 12px 0px;
 	kite9-marker-reserve: 7px;
+	fill: none;
 }
