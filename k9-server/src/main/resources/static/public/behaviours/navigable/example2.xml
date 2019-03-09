@@ -9,7 +9,7 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="box hoverable" href="example.svg"><g id="fs1" class="text">Clicked.  Click Again</g></g>
+     <g id="b1" class="box" href="example.svg"><g id="fs1" class="text">Clicked.  Click Again</g></g>
      
   </diagram>
 </svg:svg>
