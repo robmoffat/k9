@@ -44,6 +44,7 @@ g.box {
 	fill: white;
 	stroke: cyan;
 	kite9-padding: 10px;
+	kite9-min-size: 50px 50px;
 }
 
 g.button {

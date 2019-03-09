@@ -1,0 +1,94 @@
+@font-face {
+	font-family: "metropolis";
+	src: url('/public/fonts/metropolis/Metropolis-Regular.ttf')
+		format('truetype');
+}
+
+@font-face {
+	font-family: "metropolis";
+	font-weight: bold;
+	src: url('/public/fonts/metropolis/Metropolis-Bold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: "metropolis";
+	font-style: italic;
+	src: url('/public/fonts/metropolis/Metropolis-RegularItalic.ttf') format('truetype');
+}
+
+/* On every example */
+
+diagram {
+	kite9-type: diagram;
+	kite9-padding: 15px;
+	kite9-traversal: none;
+	kite9-template: url(template.xml#diagram);
+	background-color: white;
+}
+
+g.group {
+	kite9-type: container;
+	kite9-sizing: maximize;
+	kite9-traversal: always;
+	kite9-template: url(template.xml#box);
+	fill: white;
+	stroke: black;
+	kite9-padding: 20px;
+}
+
+g.box {
+	kite9-template: url(template.xml#box);
+	kite9-padding: 10px;
+	kite9-sizing: minimize;
+	kite9-type: container;
+	kite9-margin: 20px;
+	kite9-min-size: 100px 100px;
+	fill: #CCCCAA;
+	stroke: #AAAA88;
+	
+}
+
+g.text {
+	kite9-type: text;
+	kite9-margin: 4px;
+	kite9-vertical-align: center;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: center;
+	stroke: black;
+	fill: #333300;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 50px;
+}
+
+
+
+/* Links */
+
+g.link {
+	kite9-type: link;
+	kite9-template: url(template.xml#link);
+	kite9-link-minimum-length: 20px;
+	kite9-link-corner-radius: 20px;
+	stroke: black;
+	stroke-width: 5px;
+	fill: none;
+}
+
+rect.terminator {
+	fill: white;
+	stroke: none;
+}
+
+from, to {
+	kite9-type: link-end;
+	kite9-template: url(template.xml#terminator);
+	kite9-padding: 5px;
+}
+
+from.arrow, to.arrow {
+	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
+	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
+	kite9-padding: 12px 24px 12px 0px;
+	kite9-marker-reserve: 7px;
+}

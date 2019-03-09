@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+       @import url("/public/examples/common/basic.css");
+       @import url("selectable.css");
+    </svg:style>
+    
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl">
+
+     <g id="b1" class="box selectable"><g id="fs1" class="text selectable">A</g></g>
+     
+     <g class="group selectable" id="bigbox">
+       <g id="b2" class="box selectable"><g id="fs2" class="text selectable">B</g></g>
+       
+       <g id="b3" class="box selectable"><g id="fs3" class="text selectable">C</g></g>
+     </g>
+     
+     <g class="link selectable" id="link2">
+      <from id="link2-from" reference="b1" class="arrow selectable"></from>
+      <to id="link2-to" class="arrow selectable" reference="b3"></to>
+     </g>
+
+  </diagram>
+</svg:svg>

@@ -1,0 +1,53 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl'>
+  <svg:defs>
+
+    <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="4" refY="4" orient="auto">
+      <svg:path d="M2,2 L6,4 L2,6" class="kie9-back"></svg:path>
+    </svg:marker>
+
+    <svg:marker id="arrow-start-marker" markerWidth="7" markerHeight="7" refX="3" refY="4" orient="auto">
+      <svg:path d="M6,2 L2,4 L6,6" class="kite9-back"></svg:path>
+    </svg:marker>
+  </svg:defs>
+
+  <template id="diagram">
+    <back class="back indicator" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' />
+    </back>
+    <contents />
+  </template>
+
+  <template id='box'>
+    <back class="back indicator" style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
+    </back>
+    <contents />
+  </template>
+
+  <template id="link">
+    <contents />
+    <line class="back indicator" style="kite9-type: svg; kite9-usage: decal;">
+      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
+    </line>
+  </template>
+
+  <template id='terminator'>
+    <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="indicator terminator" />
+  </template>
+
+
+  <template id="button" a="b">
+    <back class="back" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8' ry='8' />
+    </back>
+    <contents />
+  </template>
+
+  <template id="field" name="#{../@name}">
+    <back style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
+    </back>
+    <contents />
+  </template>
+
+</svg:svg>

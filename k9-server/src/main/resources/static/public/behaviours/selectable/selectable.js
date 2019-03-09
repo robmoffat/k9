@@ -35,7 +35,7 @@ function mousedown(event) {
 
 window.addEventListener('load', function() {
 	
-    document.querySelector("div.main").querySelectorAll("[id]").forEach(function(v) {
+    document.querySelector("div.main").querySelectorAll(".selectable").forEach(function(v) {
     	// set up mousedown listeners.
     	v.removeEventListener("mousedown", mousedown);
     	v.addEventListener("mousedown", mousedown);

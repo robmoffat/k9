@@ -1,0 +1,17 @@
+@script url('selectable.js')
+
+.selectable {
+	cursor: pointer;
+}
+
+.selected>.indicator {
+	fill: #FFAA23 !important;
+}
+
+.selected>.indicator {
+	stroke: #FFAA23 !important;
+}
+
+.selected > g > text {
+	fill: #FFAA23 !important;
+}
