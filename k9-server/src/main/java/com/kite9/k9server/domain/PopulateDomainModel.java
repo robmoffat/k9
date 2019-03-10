@@ -87,9 +87,10 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r.setDocument(document1);
 		r.setAuthor(TEST_USER);
 		r.setDateCreated(new Date());
-		r.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command1.xml"), Charset.forName("UTF-8")));
+		r.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/commands/example.xml"), Charset.forName("UTF-8")));
 		revisionRepository.saveInternal(r);
 		document1.setCurrentRevision(r);
+		
 		documentRepository.saveInternal(document1);
 	}
 

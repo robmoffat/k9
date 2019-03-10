@@ -1,5 +1,5 @@
 import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "../context-menu.js";
-import { transition } from "../../../bundles/transition.js"
+import { transition } from "/public/bundles/transition.js"
 
 function createDeleteStep(e) {
 	return {
@@ -28,7 +28,7 @@ registerContextMenuCallback(function(event) {
 		htmlElement.appendChild(img);
 		
 		img.setAttribute("title", "Delete");
-		img.setAttribute("src", "../scripts/commands/delete/delete.svg");
+		img.setAttribute("src", "/public/commands/delete/delete.svg");
 		img.addEventListener("click", function(event) {
 			const steps = Array.from(selectedElements).map(e => createDeleteStep(e));
 			

@@ -1,6 +1,6 @@
 @script url('hoverable.js')
 
-.hoverable {
+*[id] {
 	cursor: pointer;
 }
 

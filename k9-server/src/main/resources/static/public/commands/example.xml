@@ -3,30 +3,30 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("/public/behaviours/selectable/selectable.css");
-       @import url("context-menu.css");
+       @import url("/public/commands/context-menu.css");
+       @import url("/public/commands/delete/delete.css")
     </svg:style>
     
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="box hoverable"><g id="fs1" class="text hoverable">A</g></g>
+     <g id="b1" class="box hoverable selectable"><g id="fs1" class="text hoverable">A</g></g>
      
-     <g class="group hoverable" id="bigbox" style="kite9-layout: horizontal; ">
-       <g id="b2" class="box hoverable"><g id="fs2" class="text hoverable">B</g></g>
+     <g class="group hoverable selectable" id="bigbox" style="kite9-layout: horizontal; ">
+       <g id="b2" class="box hoverable selectable"><g id="fs2" class="text hoverable">B</g></g>
        
-       <g id="b3" class="box hoverable"><g id="fs3" class="text hoverable">C</g></g>
+       <g id="b3" class="box hoverable selectable"><g id="fs3" class="text hoverable">C</g></g>
      </g>
      
-     <g class="link hoverable" id="link2">
-      <from id="link2-from" reference="b1" class="arrow hoverable"></from>
-      <to id="link2-to" class="arrow hoverable" reference="b3"></to>
+     <g class="link hoverable selectable" id="link2">
+      <from id="link2-from" reference="b1" class="arrow hoverable selectable"></from>
+      <to id="link2-to" class="arrow hoverable selectable" reference="b3"></to>
      </g>
      
      
-     <g class="link hoverable" id="link2">
-      <from id="link2-from" reference="b1" class="hoverable"></from>
-      <to id="link2-to" class="hoverable" reference="b2"></to>
+     <g class="link hoverable selectable" id="link2">
+      <from id="link2-from" reference="b1" class="hoverable selectable"></from>
+      <to id="link2-to" class="hoverable selectable" reference="b2"></to>
      </g>
 
   </diagram>

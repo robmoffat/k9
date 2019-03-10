@@ -1,6 +1,6 @@
 @script url('selectable.js');
 
-.selectable {
+*[id] {
 	cursor: pointer;
 }
 

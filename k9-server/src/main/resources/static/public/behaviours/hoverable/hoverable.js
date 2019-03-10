@@ -28,7 +28,7 @@ export function mouseout(event) {
 }
 
 window.addEventListener('load', function() {
-	document.querySelector("div.main").querySelectorAll(".hoverable").forEach(function(v) {
+	document.querySelector("div.main").querySelectorAll("[id]").forEach(function(v) {
     	v.removeEventListener("mouseover", mouseover);
     	v.addEventListener("mouseover", mouseover);
     	v.removeEventListener("mouseout", mouseout);
