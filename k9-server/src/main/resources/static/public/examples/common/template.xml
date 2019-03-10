@@ -12,7 +12,7 @@
 
   <template id="diagram">
     <back class="back indicator" style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' />
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
     </back>
     <contents />
   </template>
@@ -25,10 +25,10 @@
   </template>
 
   <template id="link">
-    <contents />
-    <line class="back indicator" style="kite9-type: svg; kite9-usage: decal;">
+    <line class="back indicator-path" style="kite9-type: svg; kite9-usage: decal;">
       <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
     </line>
+    <contents />
   </template>
 
   <template id='terminator'>

@@ -1,11 +1,15 @@
-@script url('selectable.js')
+@script url('selectable.js');
 
 .selectable {
 	cursor: pointer;
 }
 
-.selected>.indicator {
+.selected > .indicator {
 	fill: #FFAA23 !important;
+	fill-opacity: 1 !important;
+}
+
+.selected > .indicator-path {
 	stroke: #FFAA23 !important;
 }
 

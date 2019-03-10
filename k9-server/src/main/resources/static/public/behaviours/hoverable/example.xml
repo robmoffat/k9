@@ -7,7 +7,7 @@
     </svg:style>
     
   </svg:defs>
-  <diagram xmlns="http://www.kite9.org/schema/adl">
+  <diagram xmlns="http://www.kite9.org/schema/adl" class="hoverable">
 
      <g id="b1" class="box hoverable"><g id="fs1" class="text hoverable">A</g></g>
      

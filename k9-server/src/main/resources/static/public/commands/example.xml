@@ -3,7 +3,7 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("../selectable/selectable.css")
+       @import url("/public/behaviours/selectable/selectable.css");
        @import url("context-menu.css");
     </svg:style>
     

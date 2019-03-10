@@ -15,7 +15,7 @@ function mousedown(event) {
 		// unselect parent elements
 		while (v) {
 			v = v.parentElement;
-			if ((v != null) && (v.hasAttribute("id"))) {
+			if (v != null) {
 				v.classList.remove("selected")
 			}
 		}

@@ -1,18 +1,25 @@
 @script url('hoverable.js')
 
 .hoverable {
-	transition-duration: 1s;
-}
-
-.hoverable {
 	cursor: pointer;
 }
 
 .mouseover > .indicator {
-	fill: #EEEE77 !important;
-	stroke: #EEEE77 !important;
+	fill: #FFFF77 !important;
+	fill-opacity: 1 !important;
+}
+
+
+.mouseover > .indicator-path {
+	stroke: #FFFF77 !important;
 }
 
 .mouseover > g > text {
-	fill: #EEEE77 !important;
+	fill: #FFFF77 !important;
+}
+
+
+.indicator,
+.indicator-path {
+	transition-duration: .2s !important;
 }

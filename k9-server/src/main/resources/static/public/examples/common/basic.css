@@ -26,6 +26,10 @@ diagram {
 	background-color: white;
 }
 
+g.kite9-diagram {
+	fill: white;
+}
+
 g.group {
 	kite9-type: container;
 	kite9-sizing: maximize;
@@ -78,6 +82,7 @@ g.link {
 
 rect.terminator {
 	fill: white;
+	fill-opacity: 0.01;
 	stroke: none;
 }
 
