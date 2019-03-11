@@ -8,7 +8,7 @@
     </svg:style>
     
   </svg:defs>
-  <diagram xmlns="http://www.kite9.org/schema/adl">
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia">
 
      <g id="b1" class="box hoverable selectable"><g id="fs1" class="text hoverable">A</g></g>
      
@@ -18,9 +18,9 @@
        <g id="b3" class="box hoverable selectable"><g id="fs3" class="text hoverable">C</g></g>
      </g>
      
-     <g class="link hoverable selectable" id="link2">
-      <from id="link2-from" reference="b1" class="arrow hoverable selectable"></from>
-      <to id="link2-to" class="arrow hoverable selectable" reference="b3"></to>
+     <g class="link hoverable selectable" id="link1">
+      <from id="link1-from" reference="b1" class="arrow hoverable selectable"></from>
+      <to id="link1-to" class="arrow hoverable selectable" reference="b3"></to>
      </g>
      
      

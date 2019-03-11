@@ -7,16 +7,17 @@ import { getChangeUri } from "/public/bundles/api.js";
  * Takes a node and creates a delete command.
  */
 function createDeleteStep(id, keepChildren) {
-//	var serializer = new XMLSerializer();
-//	var string = serializer.serializeToString(e);
-//	var hash = SHA1(string);
-//	console.log("String: "+string);
-//	console.log("Hash: "+hash);
+	var e = document.getElementById(id);
+	var deleteMode = e.getAttribute("delete");
+	if (deleteMode == 'none') {
+		return;
+	} 
 	
 	return {
 		fragmentHash: '', 
 		fragmentId: id,
-		type: 'Delete'
+		type: 'Delete',
+		cascade: deleteMode != 'single'
 	};
 }
 
@@ -30,32 +31,43 @@ function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
 }
 
+function performDelete() {
+	const selectedElements = document.querySelectorAll("[id].selected");
+	
+	const ids = Array.from(selectedElements).map(e => e.getAttribute('id'));
+	const refIds = ids.flatMap(id => getReferences(id));
+	const allIds = ids.concat(refIds).filter(onlyUnique);
+	const steps = allIds
+		.map(id => createDeleteStep(id))
+		.filter(x => x != null);
+	
+	if (steps.length > 0) {
+		destroyContextMenu();
+		postCommands(steps, getChangeUri());
+		console.log("delete complete");
+	}
+}
+
 
 /**
  * Provides a delete option for the context menu
  */
 registerContextMenuCallback(function(event) {
 	
-	const selectedElements = document.querySelectorAll("[id].selected");
+	const e = document.querySelector("[id].lastSelected");
 	
-	if (selectedElements.length > 0) {
-	
+	if ((e) && ('none' != e.getAttribute('delete'))){
 		var htmlElement = getContextMenu(event);
-		
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);
-		
 		img.setAttribute("title", "Delete");
 		img.setAttribute("src", "/public/commands/delete/delete.svg");
-		img.addEventListener("click", function(event) {
-			const ids = Array.from(selectedElements).map(e => e.getAttribute('id'));
-			const refIds = ids.flatMap(id => getReferences(id));
-			const allIds = ids.concat(refIds).filter(onlyUnique);
-			const steps = allIds.map(id => createDeleteStep(id));
-			
-			destroyContextMenu();
-			postCommands(steps, getChangeUri());
-			console.log("delete complete");
-		});
+		img.addEventListener("click", performDelete);
+	}
+});
+
+document.addEventListener('keydown', function(event) {
+	if (event.key == 'Delete') {
+	    performDelete();
 	}
 });
