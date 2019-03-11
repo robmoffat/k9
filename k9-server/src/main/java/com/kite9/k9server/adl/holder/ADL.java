@@ -1,6 +1,6 @@
 package com.kite9.k9server.adl.holder;
 
-import org.apache.batik.transcoder.Transcoder;
+import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Node;
 
@@ -21,7 +21,7 @@ public interface ADL {
 	
 	ADLDocument getAsDocument();
 
-	Transcoder getTranscoder();
+	Kite9SVGTranscoder getTranscoder();
 	
 	String getAsXMLString(Node n);
 	

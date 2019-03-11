@@ -11,9 +11,11 @@ function reconcileAttributes(fromElement, toElement) {
         fromElement.setAttribute(a, toElement.getAttribute(a));
     });
 }
+
 function reconcileText(fromElement, toElement) {
     fromElement.textContent = toElement.textContent;
 }
+
 function reconcileElement(fromElement, toElement) {
     reconcileAttributes(fromElement, toElement);
     var fi = 0;
@@ -57,4 +59,36 @@ function transition(documentElement) {
     window.dispatchEvent(evt);
 }
 
-export { transition };
+function handleErrors(response) {
+    if (!response.ok) {
+        return response.json().then(j => { 
+        	console.log(JSON.stringify(j));
+        	throw new Error(j.message); 
+        });
+    }
+    return response;
+}
+
+function postCommands(commands, uri) {
+	
+	fetch(uri, {
+		credentials: 'include', 
+		method: 'POST', 
+		body: JSON.stringify(commands),
+		headers: {
+			"Content-Type": "application/json; charset=utf-8",
+			"Accept": "image/svg+xml, application/json"
+		}})
+	.then(handleErrors)
+	.then(response => response.text())
+	.then(text => {
+		var parser = new DOMParser();
+		return parser.parseFromString(text, "image/svg+xml");
+	})
+	.then(doc => transition(doc.documentElement))
+	.catch(e => alert(e));
+	
+}
+	
+	
+export { transition, postCommands };

@@ -1,17 +1,35 @@
-import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "../context-menu.js";
-import { transition } from "/public/bundles/transition.js"
+import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "/public/commands/context-menu.js";
+import { transition, postCommands } from "/public/bundles/transition.js"
+import { SHA1 } from "/public/bundles/sha1.js";
+import { getChangeUri } from "/public/bundles/api.js";
 
-function createDeleteStep(e) {
+/**
+ * Takes a node and creates a delete command.
+ */
+function createDeleteStep(id, keepChildren) {
+//	var serializer = new XMLSerializer();
+//	var string = serializer.serializeToString(e);
+//	var hash = SHA1(string);
+//	console.log("String: "+string);
+//	console.log("Hash: "+hash);
+	
 	return {
-		"type": 'DELETE',
-		"arg1": e.getAttribute('id')
-	}
+		fragmentHash: '', 
+		fragmentId: id,
+		type: 'Delete'
+	};
 }
 
-function getUri() {
-	const href = document.URL;
-	return href.replace(".html", ".xml")
+function getReferences(id) {
+	return Array.from(document.querySelectorAll("[reference="+id+"]"))
+		.map(e => e.parentElement)
+		.map(e => e.getAttribute("id"));
 }
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
 
 /**
  * Provides a delete option for the context menu
@@ -30,30 +48,13 @@ registerContextMenuCallback(function(event) {
 		img.setAttribute("title", "Delete");
 		img.setAttribute("src", "/public/commands/delete/delete.svg");
 		img.addEventListener("click", function(event) {
-			const steps = Array.from(selectedElements).map(e => createDeleteStep(e));
-			
-			const data = {
-				input: {
-					uri: getUri()
-				},
-				steps: steps
-			};
+			const ids = Array.from(selectedElements).map(e => e.getAttribute('id'));
+			const refIds = ids.flatMap(id => getReferences(id));
+			const allIds = ids.concat(refIds).filter(onlyUnique);
+			const steps = allIds.map(id => createDeleteStep(id));
 			
 			destroyContextMenu();
-			$.post({
-				url: '/api/v1/command',
-				data: JSON.stringify(data),
-				dataType: 'xml',
-				headers: {
-					"Accept": "image/svg+xml"
-				},
-				contentType:"application/json; charset=utf-8",
-				success: function(ob, status, jqXHR) {
-					transition(ob.documentElement);
-				}
-			
-			});
-			
+			postCommands(steps, getChangeUri());
 			console.log("delete complete");
 		});
 	}

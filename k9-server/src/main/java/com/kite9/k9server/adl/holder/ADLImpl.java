@@ -149,7 +149,7 @@ public class ADLImpl implements ADL {
 	
 
 	@Override
-	public Transcoder getTranscoder() {
+	public Kite9SVGTranscoder getTranscoder() {
 		return transcoder;
 	}
 
