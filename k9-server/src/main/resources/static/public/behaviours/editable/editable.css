@@ -1,0 +1,18 @@
+/* 
+  Editable collects together many other behaviours in order to make a diagram use the command API
+  and update the document to change versions
+*/
+
+
+/*
+  Basic behaviours required for editable to work
+*/  
+@import url('/public/behaviours/hoverable/hoverable.css');
+@import url('/public/behaviours/selectable/selectable.css');
+@import url('/public/behaviours/dragable/dragable.css');
+
+/*
+ Specific commands
+*/
+@import url('/public/commands/delete/delete.css');
+

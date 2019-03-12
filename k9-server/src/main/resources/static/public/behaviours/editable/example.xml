@@ -3,8 +3,7 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("/public/commands/context-menu.css");
-       @import url("/public/commands/delete/delete.css")
+       @import url("/public/behaviours/editable/editable.css");
     </svg:style>
     
   </svg:defs>

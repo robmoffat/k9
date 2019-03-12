@@ -3,6 +3,8 @@ import { transition, postCommands } from "/public/bundles/transition.js"
 import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri } from "/public/bundles/api.js";
 
+
+
 /**
  * Takes a node and creates a delete command.
  */
@@ -66,6 +68,9 @@ registerContextMenuCallback(function(event) {
 	}
 });
 
+/**
+ * This should only be called once.  Adds the delete-key shortcut.
+ */
 document.addEventListener('keydown', function(event) {
 	if (event.key == 'Delete') {
 	    performDelete();
