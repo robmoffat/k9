@@ -1,3 +1,5 @@
+import { getTrueCoords } from '/public/bundles/screen.js';
+
 /**
  * Displays a context menu when the user clicks on an element.
  */
@@ -14,12 +16,10 @@ var callbacks = [];
  * Call this function to register a plugin menu-item.
  * Context Menu only works if the SVG is embedded in an HTML page.
  */
-export function registerContextMenuCallback(p) {
+export function registerActionableCallback(p) {
 		
 	callbacks.push(p);	
 }
-
-
 
 /**
  * Creates the context menu within the main svg element,
@@ -34,9 +34,10 @@ export function getContextMenu(event) {
 		ctxMenu.setAttribute("id", "contextMenu");
 		ctxMenu.setAttribute("class", "contextMenu");
 		
+		const coords = getTrueCoords(event);
 		
-		ctxMenu.style.left = (event.screenX + 20)+"px";
-		ctxMenu.style.top = (event.screenY - 20)+"px";
+		ctxMenu.style.left = (coords.x)+"px";
+		ctxMenu.style.top = (coords.y)+"px";
 		
 		console.log(event);
 		
@@ -76,7 +77,7 @@ if (!document.getElementById(cssId)) {
     link.id   = cssId;
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = '/public/commands/context-menu.css';
+    link.href = '/public/behaviours/actionable/context-menu.css';
     link.media = 'all';
     head.appendChild(link);
 }

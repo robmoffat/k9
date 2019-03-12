@@ -1,3 +1,5 @@
+import { getTrueCoords } from '/public/bundles/screen.js';
+
 /**
  * Drag and drop is controlled by the 'drag' attribute:
  *  - 'yes': the element can be dragged.   
@@ -18,16 +20,6 @@ var dragOrigin = null;
 var moveCallbacks= [];
 var dropCallbacks = [];
 
-function getTrueCoords(evt) {
-	// find the current zoom level and pan setting, and adjust the reported
-	//    mouse position accordingly
-	var newScale = svg.currentScale;
-	var translation = svg.currentTranslate;
-	return {
-		x:  (evt.clientX - translation.x) / newScale,
-		y:  (evt.clientY - translation.y) / newScale
-	}
-}
 
 function dragAttribute(v) {
 	var out = v.getAttribute("drag");
@@ -76,16 +68,21 @@ function getDifferentialTranslate(dt) {
 }
 
 function grab(evt) {
-	dragTarget = getDragTarget(evt.target);
-	dragParent = dragTarget.parentElement;
-	dragBefore = dragTarget.nextSibling;
+	var newDragTarget = getDragTarget(evt.target);
 
-	if (svg == dragTarget) {
+	if (newDragTarget == dragTarget) {
+		return;
+	}
+
+	if (svg == newDragTarget) {
 		// you cannot drag the background itself, so ignore any attempts to mouse down on it
 		dragTarget = null;
 		return;
 	}
-
+	
+	dragTarget = newDragTarget;
+	dragParent = dragTarget.parentElement;
+	dragBefore = dragTarget.nextSibling;
 
 	// turn off all pointer events to the dragged element, this does 2 things:
 	//    1) allows us to drag text elements without selecting the text
@@ -163,7 +160,7 @@ function drop(evt) {
 /**
  * Allows you to say what should happen as we move the element.
  */
-export function registerMoveCallback(p) {
+export function registerDragableMoveCallback(p) {
 		
 	moveCallbacks.push(p);	
 }
@@ -173,7 +170,7 @@ export function registerMoveCallback(p) {
  * One function must return true, or the object goes back to it's 
  * original spot.
  */
-export function registerDropCallback(p) {
+export function registerDragableDropCallback(p) {
 		
 	dropCallbacks.push(p);	
 }
@@ -211,14 +208,14 @@ export function getDropTarget(v) {
 }
 
 
-registerDropCallback(function(dragTarget, evt) {
+registerDragableDropCallback(function(dragTarget, evt) {
 
 	var targetElement = getDropTarget(evt.target);
 	
 	if (targetElement == null) {
 		returnDragTarget();
 	} else {
-		alert(dragTarget.id + ' has been dropped on top of ' + targetElement.id);
+		console.log(dragTarget.id + ' has been dropped on top of ' + targetElement.id);
 	}
 
 	return false;

@@ -14,5 +14,5 @@
 /*
  Specific commands
 */
-@import url('/public/commands/delete/delete.css');
+@script url('/public/commands/delete/delete.js');
 

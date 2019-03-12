@@ -18,14 +18,14 @@
      </g>
      
      <g class="link" id="link2">
-      <from drag="from" id="link2-from" reference="b1" class="arrow"></from>
-      <to drag="to" id="link2-to" class="arrow" reference="b3"></to>
+      <from drag="yes,from" id="link2-from" reference="b1" class="arrow"></from>
+      <to drag="yes,to" id="link2-to" class="arrow" reference="b3"></to>
      </g>
      
      
      <g class="link" id="link2">
-      <from drag="from" id="link2-from" reference="b1" class="hoverable"></from>
-      <to drag="to" id="link2-to" class="hoverable" reference="b2"></to>
+      <from drag="yes,from" id="link2-from" reference="b1" class="hoverable"></from>
+      <to drag="yes,to" id="link2-to" class="hoverable" reference="b2"></to>
      </g>
 
   </diagram>

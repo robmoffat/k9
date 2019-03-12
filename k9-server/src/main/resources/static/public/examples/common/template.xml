@@ -10,21 +10,21 @@
     </svg:marker>
   </svg:defs>
 
-  <template id="diagram" delete="none" drag="none">
+  <template id="diagram">
     <back class="back indicator" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
     </back>
     <contents />
   </template>
 
-  <template id='box' drag="target yes">
+  <template id='box'>
     <back class="back indicator" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
   
-  <template id='group' drag="target yes" delete="single">
+  <template id='group' delete="single">
     <back class="back indicator" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
