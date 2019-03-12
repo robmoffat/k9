@@ -1,13 +1,22 @@
 /**
  * Drag and drop is controlled by the 'drag' attribute:
- *  - 'none': the element can't be dragged.   
- *  - 'nodrop':  you can't drop here.
+ *  - 'yes': the element can be dragged.   
+ *  - 'target':  you can drop here.
+ *  - 'from': it's drag-able, but it's the from-end of a link
+ *  - 'to: it's drag-able, but it's the to-end of a link.
+ *  - 'link': you can link to it.
  */
 
 var dragTarget = null;
+var dragParent = null;
+var dragBefore = null;
 var svg = null;
 var shapeOrigin = null;
+var embeddedShapeOrigin = null;
 var dragOrigin = null;
+
+var moveCallbacks= [];
+var dropCallbacks = [];
 
 function getTrueCoords(evt) {
 	// find the current zoom level and pan setting, and adjust the reported
@@ -25,15 +34,10 @@ function dragAttribute(v) {
 	return out == null ? "" : out;
 }
 
-
-
 function isDragable(v) {
-	return (!dragAttribute(v).includes("none")) && (v.hasAttribute("id") && v.hasAttribute("kite9-elem"));
+	return dragAttribute(v).includes("yes");
 }
 
-function isDropable(v) {
-	return (!dragAttribute(v).includes("nodrop")) && (v.hasAttribute("id") && v.hasAttribute("kite9-elem"));
-}
 
 function getDragTarget(v) {
 	if (isDragable(v)) {
@@ -41,29 +45,6 @@ function getDragTarget(v) {
 	} else {
 		return getDragTarget(v.parentNode);
 	}
-}
-
-function getDropTarget(v) {
-	if (isDropable(v)) {
-		return v;
-	} else if (v == svg) {
-		return null;
-	} else {
-		return getDropTarget(v.parentNode);
-	}
-}
-
-function moveToFront(dr) {
-	if (dr == null) {
-		return;
-	}
-	
-	if (dr.hasAttribute("kite9-elem")) {
-		dr.parentElement.appendChild(dr);
-	}
-	
-	moveToFront(dr.parentElement);
-	
 }
 
 function getTranslate(dt) {
@@ -96,6 +77,8 @@ function getDifferentialTranslate(dt) {
 
 function grab(evt) {
 	dragTarget = getDragTarget(evt.target);
+	dragParent = dragTarget.parentElement;
+	dragBefore = dragTarget.nextSibling;
 
 	if (svg == dragTarget) {
 		// you cannot drag the background itself, so ignore any attempts to mouse down on it
@@ -103,11 +86,6 @@ function grab(evt) {
 		return;
 	}
 
-	// move this element to the "top" of the display, so it is (almost)
-	//    always over other elements (exception: in this case, elements that are
-	//    "in the folder" (children of the folder group) with only maintain
-	//    hierarchy within that group
-	moveToFront(dragTarget)
 
 	// turn off all pointer events to the dragged element, this does 2 things:
 	//    1) allows us to drag text elements without selecting the text
@@ -117,8 +95,14 @@ function grab(evt) {
 	// we need to find the current position and translation of the grabbed element,
 	//    so that we only apply the differential between the current location
 	//    and the new location
-	shapeOrigin = getDifferentialTranslate(dragTarget);
+	embeddedShapeOrigin = getDifferentialTranslate(dragTarget);
+	shapeOrigin = getTranslate(dragTarget);
 	dragOrigin = getTrueCoords(evt);
+	
+	// pop the element out
+	svg.appendChild(dragTarget)
+	dragTarget.setAttributeNS(null, 'transform', 'translate(' + shapeOrigin.x + ','
+			+ shapeOrigin.y + ')');
 }
 
 function drag(evt) {
@@ -145,30 +129,55 @@ function drag(evt) {
 		//    it in its new location
 		dragTarget.setAttributeNS(null, 'transform', 'translate(' + newX + ','
 				+ newY + ')');
+		
+		moveCallbacks.forEach(mc => mc(dragTarget, evt));
 	}
 
+}
+
+export function returnDragTarget() {
+	dragParent.insertBefore(dragTarget, dragBefore);
+	dragTarget.setAttributeNS(null, 'transform', 'translate(' + embeddedShapeOrigin.x + ','
+			+ embeddedShapeOrigin.y + ')');
+	
 }
 
 function drop(evt) {
 	// if we aren't currently dragging an element, don't do anything
 	if (dragTarget) {
-		var targetElement = getDropTarget(evt.target);
+			
+		var result = dropCallbacks
+			.map(dc => dc(dragTarget, evt))
+			.reduce((a,b) => (a | b), false);
+		
+		if (!result) {
+			returnDragTarget();
+		}
 
 		// turn the pointer-events back on, so we can grab this item later
 		dragTarget.setAttributeNS(null, 'pointer-events', 'all');
-		
-		if (targetElement == null) {
-			// can't drop here.
-			dragTarget.setAttributeNS(null, 'transform', 'translate(' + shapeOrigin.x + ','
-					+ shapeOrigin.y + ')');
-			
-		} else {
-			alert(dragTarget.id + ' has been dropped on top of ' + targetElement.id);
-		}
-
 		dragTarget = null;
 	}
 };
+
+/**
+ * Allows you to say what should happen as we move the element.
+ */
+export function registerMoveCallback(p) {
+		
+	moveCallbacks.push(p);	
+}
+
+/**
+ * Allows you to say what should happen as we drop the element.
+ * One function must return true, or the object goes back to it's 
+ * original spot.
+ */
+export function registerDropCallback(p) {
+		
+	dropCallbacks.push(p);	
+}
+
 
 window.addEventListener('load', function(event) {
 
@@ -183,11 +192,34 @@ window.addEventListener('load', function(event) {
 		v.removeEventListener("mousedown", grab);
 		v.removeEventListener("mousemove", drag);
 		v.removeEventListener("mouseup", drop);
-
 		if (isDragable(v)) {
 			v.addEventListener("mousedown", grab);
 			v.addEventListener("mousemove", drag);
 			v.addEventListener("mouseup", drop);
 		}
 	})
+})
+
+export function getDropTarget(v) {
+	if (v.hasAttribute("kite9-elem") && v.hasAttribute("id")) {
+		return v;
+	} else if (v == svg) {
+		return null;
+	} else {
+		return getDropTarget(v.parentNode);
+	}
+}
+
+
+registerDropCallback(function(dragTarget, evt) {
+
+	var targetElement = getDropTarget(evt.target);
+	
+	if (targetElement == null) {
+		returnDragTarget();
+	} else {
+		alert(dragTarget.id + ' has been dropped on top of ' + targetElement.id);
+	}
+
+	return false;
 })
