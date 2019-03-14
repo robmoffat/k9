@@ -1,1 +1,4 @@
+@import url('/public/behaviours/hoverable/hoverable.css');
+@import url('/public/behaviours/selectable/selectable.css');
+
 @script url('dragable.js')

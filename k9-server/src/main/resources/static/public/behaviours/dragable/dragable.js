@@ -9,19 +9,20 @@ import { getTrueCoords } from '/public/bundles/screen.js';
  *  - 'link': you can link to it.
  */
 
-var dragTarget = null;
-var dragParent = null;
-var dragBefore = null;
 var svg = null;
-var shapeOrigin = null;
-var embeddedShapeOrigin = null;
+
+// keeps track of the current drag
 var dragOrigin = null;
+var state = null;
+var shapeLayer = null;
+var mouseDown = false;
+var delta = null;
 
 var moveCallbacks= [];
 var dropCallbacks = [];
 
 
-function dragAttribute(v) {
+export function dragAttribute(v) {
 	var out = v.getAttribute("drag");
 	return out == null ? "" : out;
 }
@@ -67,45 +68,58 @@ function getDifferentialTranslate(dt) {
 	return out;
 }
 
-function grab(evt) {
-	var newDragTarget = getDragTarget(evt.target);
-
-	if (newDragTarget == dragTarget) {
-		return;
-	}
-
-	if (svg == newDragTarget) {
-		// you cannot drag the background itself, so ignore any attempts to mouse down on it
-		dragTarget = null;
-		return;
+function beginMove(evt) {
+	var out = []
+	
+	svg.querySelectorAll("[id].selected,.mouseover").forEach(e => {
+		if (isDragable(e)) {
+			
+			if (shapeLayer == null) {
+				shapeLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+				shapeLayer.setAttributeNS(null, 'pointer-events', 'none');
+				shapeLayer.setAttribute("id", "--moveLayer");
+				svg.appendChild(shapeLayer);
+			}
+			
+			var shapeOrigin = getTranslate(e);
+			var embeddedShapeOrigin = getDifferentialTranslate(e);
+			
+			out.push({
+				dragTarget: e,
+				dragParent: e.parentElement,
+				dragBefore: e.nextSibling,
+				shapeOrigin: shapeOrigin,
+				embeddedShapeOrigin: embeddedShapeOrigin
+			})
+			
+			shapeLayer.appendChild(e);
+			e.setAttributeNS(null, 'pointer-events', 'none');
+			e.setAttributeNS(null, 'transform', 'translate(' + shapeOrigin.x + ','
+					+ shapeOrigin.y + ')');
+		}
+	});
+	
+	if (out.length > 0) {
+		dragOrigin = getTrueCoords(evt);
+		state = out;
 	}
 	
-	dragTarget = newDragTarget;
-	dragParent = dragTarget.parentElement;
-	dragBefore = dragTarget.nextSibling;
-
-	// turn off all pointer events to the dragged element, this does 2 things:
-	//    1) allows us to drag text elements without selecting the text
-	//    2) allows us to find out where the dragged element is dropped (see Drop)
-	dragTarget.setAttributeNS(null, 'pointer-events', 'none');
-
-	// we need to find the current position and translation of the grabbed element,
-	//    so that we only apply the differential between the current location
-	//    and the new location
-	embeddedShapeOrigin = getDifferentialTranslate(dragTarget);
-	shapeOrigin = getTranslate(dragTarget);
-	dragOrigin = getTrueCoords(evt);
-	
-	// pop the element out
-	svg.appendChild(dragTarget)
-	dragTarget.setAttributeNS(null, 'transform', 'translate(' + shapeOrigin.x + ','
-			+ shapeOrigin.y + ')');
 }
 
+function grab(evt) {
+	mouseDown = true;
+}
+ 
 function drag(evt) {
-
-	// if we don't currently have an element in tow, don't do anything
-	if (dragTarget) {
+	if (!mouseDown) {
+		return;
+	}
+	
+	if (!state) {
+		beginMove(evt);
+	}
+	
+	if (state) {
 		// calculate move in true coords
 		var trueCoords = getTrueCoords(evt);
 		var changeTrueCoords = {
@@ -114,47 +128,54 @@ function drag(evt) {
 		};
 		
 		// calculate move in shape coords
-		var changeShapeCoords = {
+		delta = {
 				x: changeTrueCoords.x * svg.currentScale,
 				y: changeTrueCoords.y * svg.currentScale
 		}
-		
-		var newX = changeShapeCoords.x + shapeOrigin.x;
-		var newY = changeShapeCoords.y + shapeOrigin.y;
 
 		// apply a new tranform translation to the dragged element, to display
 		//    it in its new location
-		dragTarget.setAttributeNS(null, 'transform', 'translate(' + newX + ','
-				+ newY + ')');
+		shapeLayer.setAttributeNS(null, 'transform', 'translate(' + delta.x + ','
+				+ delta.y + ')');
 		
-		moveCallbacks.forEach(mc => mc(dragTarget, evt));
-	}
-
+		moveCallbacks.forEach(mc => mc(state.map(s => s.dragTarget), evt));
+	} 
 }
 
-export function returnDragTarget() {
-	dragParent.insertBefore(dragTarget, dragBefore);
-	dragTarget.setAttributeNS(null, 'transform', 'translate(' + embeddedShapeOrigin.x + ','
-			+ embeddedShapeOrigin.y + ')');
-	
+export function endMove(reset) {
+	if (state) {
+		state.forEach(s => {
+			s.dragParent.insertBefore(s.dragTarget, s.dragBefore);
+			
+			var x = s.embeddedShapeOrigin.x + ( reset ? 0 : delta.x );
+			var y = s.embeddedShapeOrigin.y + ( reset ? 0 : delta.y );
+			
+			s.dragTarget.setAttributeNS(null, 'transform', 'translate(' + x + ','
+					+ y + ')');	
+			s.dragTarget.setAttributeNS(null, 'pointer-events', 'all');
+		})
+		
+		state = null;
+		svg.removeChild(shapeLayer);
+		svg.style.cursor = null;
+		shapeLayer = null;
+		dragOrigin = null;
+	}
 }
 
 function drop(evt) {
 	// if we aren't currently dragging an element, don't do anything
-	if (dragTarget) {
+	if (state) {
 			
 		var result = dropCallbacks
-			.map(dc => dc(dragTarget, evt))
+			.map(dc => dc(state.map(s => s.dragTarget), evt))
 			.reduce((a,b) => (a | b), false);
 		
-		if (!result) {
-			returnDragTarget();
-		}
-
-		// turn the pointer-events back on, so we can grab this item later
-		dragTarget.setAttributeNS(null, 'pointer-events', 'all');
-		dragTarget = null;
+		endMove(!result);
 	}
+	
+	mouseDown = false;
+	svg.style.cursor = undefined;
 };
 
 /**
@@ -186,9 +207,9 @@ window.addEventListener('load', function(event) {
 
 	svg.querySelectorAll("[id][kite9-elem]").forEach(function(v) {
 		console.log("Adding e.l. to " + v.getAttribute("id"))
-		v.removeEventListener("mousedown", grab);
 		v.removeEventListener("mousemove", drag);
 		v.removeEventListener("mouseup", drop);
+		v.removeEventListener("mousedown", grab);
 		if (isDragable(v)) {
 			v.addEventListener("mousedown", grab);
 			v.addEventListener("mousemove", drag);
@@ -207,16 +228,58 @@ export function getDropTarget(v) {
 	}
 }
 
+function intersects(a, b) {
+    return a.map(e => b.indexOf(e) > -1).reduce((a,b) => a||b, false);
+}
 
-registerDragableDropCallback(function(dragTarget, evt) {
+export function canDropHere(dragTarget, dropTarget) {
+	if (dropTarget == null) {
+		return false;
+	}
+	
+	var dragAtt = dragAttribute(dragTarget);
+	var dropAtt = dropTarget.getAttribute("drop");
+	
+	if (dropAtt != null) {
+		
+		// look for matching ids between the two
+		const dragAtts = dragAtt.split(" ");
+		const dropAtts = dropAtt.split(" ");
+		return intersects(dragAtts, dropAtts);
+	} 
+	
+	return false;
+}
+
+export function canDropAllHere(dragTargets, dropTarget) {
+	return dragTargets
+		.map(dt => canDropHere(dt, dropTarget))
+		.reduce((a,b) => a&&b, true);
+}
+
+
+registerDragableDropCallback(function(dragTargets, evt) {
 
 	var targetElement = getDropTarget(evt.target);
 	
 	if (targetElement == null) {
-		returnDragTarget();
+		endMove(true);
 	} else {
-		console.log(dragTarget.id + ' has been dropped on top of ' + targetElement.id);
+		console.log(dragTargets + ' has been dropped on top of ' + targetElement.id);
 	}
 
 	return false;
-})
+});
+
+registerDragableMoveCallback(function(dragTargets, evt) {
+	const dropTarget = getDropTarget(evt.target);
+	
+	const canDrop = canDropAllHere(dragTargets, dropTarget);
+	
+	if (canDrop) {
+		svg.style.cursor = "grabbing";
+	} else {
+		svg.style.cursor = "not-allowed";
+	}
+});
+

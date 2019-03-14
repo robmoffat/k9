@@ -1,6 +1,8 @@
 @script url('selectable.js');
 
-*[id] {
+svg {
+	user-select: none; 
+	-webkit-user-select: none;
 	cursor: pointer;
 }
 

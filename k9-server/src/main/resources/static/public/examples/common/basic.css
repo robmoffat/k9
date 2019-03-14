@@ -81,8 +81,8 @@ g.link {
 }
 
 rect.terminator {
-	fill: white;
-	fill-opacity: 0.01;
+	fill: green;
+	fill-opacity: 0.1;
 	stroke: none;
 }
 

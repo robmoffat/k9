@@ -10,6 +10,8 @@
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	background: #fff;
+	user-select: none; 
+	-webkit-user-select: none;
 }
 
 .contextMenu:after {
