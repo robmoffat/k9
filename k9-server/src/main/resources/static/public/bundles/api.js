@@ -24,5 +24,4 @@ function parseDebug(t) {
 	}
 }
 
-
 export { getChangeUri, parseDebug }

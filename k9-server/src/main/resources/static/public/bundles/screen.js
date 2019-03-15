@@ -16,6 +16,10 @@ window.addEventListener('load', function(event) {
 	svg = document.querySelector("div.main svg");
 });
 
+export function getMainSvg() {
+	return svg;
+}
+
 export function getHtmlCoords(evt) {
-	
+	return {x: evt.pageX, y: evt.pageY };
 }

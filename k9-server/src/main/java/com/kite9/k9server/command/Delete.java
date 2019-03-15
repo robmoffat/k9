@@ -6,6 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.command.AbstractCommand;
+import com.kite9.k9server.command.CommandException;
 
 public class Delete extends AbstractCommand {
 		

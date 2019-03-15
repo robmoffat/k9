@@ -3,44 +3,29 @@ import { transition, postCommands } from "/public/bundles/transition.js"
 import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri } from "/public/bundles/api.js";
 
-
-
 /**
  * Takes a node and creates a delete command.
  */
-function createDeleteStep(id, keepChildren) {
-	var e = document.getElementById(id);
+function createDeleteStep(e) {
+	var id = e.getAttribute("id");
 	var deleteMode = e.getAttribute("delete");
 	if (deleteMode == 'none') {
-		return;
+		return null;
 	} 
 	
 	return {
 		fragmentHash: '', 
 		fragmentId: id,
-		type: 'Delete',
+		type: 'ADLDelete',
 		cascade: deleteMode != 'single'
 	};
-}
-
-function getReferences(id) {
-	return Array.from(document.querySelectorAll("[reference="+id+"]"))
-		.map(e => e.parentElement)
-		.map(e => e.getAttribute("id"));
-}
-
-function onlyUnique(value, index, self) { 
-    return self.indexOf(value) === index;
 }
 
 function performDelete() {
 	const selectedElements = document.querySelectorAll("[id].selected");
 	
-	const ids = Array.from(selectedElements).map(e => e.getAttribute('id'));
-	const refIds = ids.flatMap(id => getReferences(id));
-	const allIds = ids.concat(refIds).filter(onlyUnique);
-	const steps = allIds
-		.map(id => createDeleteStep(id))
+	const steps = Array.from(selectedElements)
+		.map(e => createDeleteStep(e))
 		.filter(x => x != null);
 	
 	if (steps.length > 0) {

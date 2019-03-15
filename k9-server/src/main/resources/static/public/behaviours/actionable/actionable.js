@@ -1,4 +1,4 @@
-import { getTrueCoords } from '/public/bundles/screen.js';
+import { getHtmlCoords } from '/public/bundles/screen.js';
 
 /**
  * Displays a context menu when the user clicks on an element.
@@ -34,10 +34,10 @@ export function getContextMenu(event) {
 		ctxMenu.setAttribute("id", "contextMenu");
 		ctxMenu.setAttribute("class", "contextMenu");
 		
-		const coords = getTrueCoords(event);
+		const coords = getHtmlCoords(event);
 		
-		ctxMenu.style.left = (coords.x)+"px";
-		ctxMenu.style.top = (coords.y)+"px";
+		ctxMenu.style.left = (coords.x + 22)+"px";
+		ctxMenu.style.top = (coords.y-33)+"px";
 		
 		console.log(event);
 		

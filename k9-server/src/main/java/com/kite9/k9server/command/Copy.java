@@ -3,6 +3,7 @@ package com.kite9.k9server.command;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.batik.dom.AbstractAttr;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,7 +14,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 
 public class Copy extends AbstractLocatedCommand {
 
-	String uriStr;		// to insert.	
+	protected String uriStr;		// to insert.	
 
 	public Copy() {
 		super();
@@ -30,13 +31,7 @@ public class Copy extends AbstractLocatedCommand {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			validateFragmentHash(adl);
-			Element insert = getElementToInsert(uriStr);
-			doc.adoptNode(insert);
-			
-			insert(doc, insert);
-			
-			replaceIds(insert);
+			performCopy(doc);
 		} catch (Exception e) {
 			throw new CommandException("Couldn't copy", e, this);
 		}
@@ -45,8 +40,18 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
+	protected Element performCopy(ADLDocument doc) throws URISyntaxException {
+		Element insert = getElementToInsert(doc, uriStr);
+		doc.adoptNode(insert);
+		
+		insert(doc, insert);
+		
+		replaceIds(insert);
+		return insert;
+	}
 
-	private void replaceIds(Element insert) {
+
+	protected void replaceIds(Element insert) {
 		if (insert.hasAttribute("id")) {
 			insert.setAttribute("id", ((ADLDocument) insert.getOwnerDocument()).createUniqueId()); 
 		}
@@ -61,16 +66,22 @@ public class Copy extends AbstractLocatedCommand {
 	}
 
 
-	public Element getElementToInsert(String uriStr) throws URISyntaxException {
+	public Element getElementToInsert(ADLDocument currentDoc, String uriStr) throws URISyntaxException {
 		URI uri = new URI(uriStr);
-		String documentUri = uri.toString();
 		String id = uri.getFragment();
-		documentUri.substring(0, documentUri.length() - id.length());
-		
-		ADLDocument toInsert = new ADLImpl(documentUri).getAsDocument();
-		Element out = toInsert.getElementById(id);
-		return out;
+		if (uriStr.startsWith("#")) {
+			Element template = currentDoc.getElementById(id);
+			Element out = (Element) template.cloneNode(true);	
+			return out;
+			
+		} else {
+			String fullUri = uri.toString();
+			String documentUri = fullUri.substring(0, fullUri.length() - id.length());
+			ADLDocument toInsert = new ADLImpl(documentUri).getAsDocument();
+			Element out = toInsert.getElementById(id);
+			return out;
+		}
 	}
 
-
+	
 }

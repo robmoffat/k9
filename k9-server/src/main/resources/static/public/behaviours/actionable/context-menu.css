@@ -15,10 +15,10 @@
 }
 
 .contextMenu:after {
-	top: 16px;
+	top: 10px;
 	bottom: auto;
-	left: -20px;
-	border-width: 9px 21px 9px 0;
+	left: -12px;
+	border-width:  9px 13px 9px 0;
 	border-color: transparent #fff;
 	content: "";
 	position: absolute;
@@ -30,8 +30,8 @@
 .contextMenu:before {
 	top: 10px;
 	bottom: auto;
-	left: -30px;
-	border-width: 15px 30px 15px 0;
+	left: -14px;
+	border-width:  9px 13px 9px 0;
 	border-color: transparent #5a5a5a;
 	content: "";
 	position: absolute;
@@ -43,4 +43,5 @@
 .contextMenu img {
 	width: 20px;
 	height: 20px;
+	cursor: pointer;
 }
