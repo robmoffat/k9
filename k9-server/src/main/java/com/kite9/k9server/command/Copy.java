@@ -3,7 +3,6 @@ package com.kite9.k9server.command;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.batik.dom.AbstractAttr;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

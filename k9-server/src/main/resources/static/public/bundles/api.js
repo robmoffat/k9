@@ -6,7 +6,7 @@ function getChangeUri() {
 }
 
 function parseDebug(t) {
-	if (t.hasAttribute("debug")) {
+	if ((t!= null) &&(t.hasAttribute("debug"))) {
 		const parts = t.getAttribute("debug").split(';');
 		var out = {}
 		parts.forEach(p => {
@@ -24,4 +24,15 @@ function parseDebug(t) {
 	}
 }
 
-export { getChangeUri, parseDebug }
+
+var lastId = 1;
+
+function createUniqueId() {
+	while (document.getElementById(""+lastId)) {
+		lastId++;
+	}
+	
+	return ""+lastId;
+}
+
+export { getChangeUri, parseDebug, createUniqueId }

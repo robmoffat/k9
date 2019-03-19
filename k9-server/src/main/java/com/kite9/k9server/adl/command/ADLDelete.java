@@ -1,12 +1,13 @@
-package com.kite9.k9server.adl.commands;
+package com.kite9.k9server.adl.command;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kite9.diagram.dom.CSSConstants;
 import org.kite9.diagram.dom.elements.ADLDocument;
-import org.kite9.diagram.dom.elements.Kite9XMLElement;
-import org.kite9.diagram.model.Connection;
-import org.kite9.diagram.model.DiagramElement;
+import org.kite9.diagram.dom.elements.ReferencingKite9XMLElement;
+import org.kite9.diagram.dom.elements.StyledKite9XMLElement;
+import org.kite9.diagram.model.style.DiagramElementType;
 import org.kite9.framework.common.LinkReferenceException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,28 +33,43 @@ public class ADLDelete extends Delete {
 
 	@Override
 	public ADL applyCommand(ADL in) throws CommandException {
+		ADLDocument doc = in.getAsDocument();
+		in.getTranscoder().ensureCSSEngine(doc);
+		
+		if (isDiagramElement(doc)) {
+			return in;	// you can't delete the diagram
+		}
+		
 		ADL out = super.applyCommand(in);
-		ADLDocument doc = out.getAsDocument();
-		out.getTranscoder().ensureCSSEngine(doc);
 		checkReferences(doc);
 		return out;
+	}
+
+	private boolean isDiagramElement(ADLDocument doc) {
+		Element toDelete = doc.getElementById(fragmentId);
+		if (toDelete instanceof StyledKite9XMLElement) {
+			return (((StyledKite9XMLElement) toDelete).getType() == DiagramElementType.DIAGRAM);
+		} else {
+			return false;
+		}
 	}
 
 	/**
 	 * Removes any link references that are broken.
 	 */
 	private void checkReferences(Node n) {
-		if (n instanceof Kite9XMLElement) {
-			try {
-				DiagramElement de = ((Kite9XMLElement) n).getDiagramElement();
-				if (de instanceof Connection) {
-					((Connection) de).getFrom();
-					((Connection) de).getTo();
+		if (n instanceof ReferencingKite9XMLElement) {
+			if (((ReferencingKite9XMLElement) n).getType() == DiagramElementType.LINK) {
+				
+				String fromId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_FROM_XPATH);
+				String toId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_TO_XPATH);
+				
+				if (n.getOwnerDocument().getElementById(fromId) == null) {
+					n.getParentNode().removeChild(n);
+				} else if (n.getOwnerDocument().getElementById(toId) == null) {
+					n.getParentNode().removeChild(n);
 				}
-			} catch (LinkReferenceException e) {
-				n.getParentNode().removeChild(n);
-				LOG.debug("Removed orphan link: "+((Element)n).getAttribute("id"));
-			}		
+			}
 		}
 		
 		if (n instanceof Element) {

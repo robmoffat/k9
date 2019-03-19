@@ -20,6 +20,18 @@ export function getMainSvg() {
 	return svg;
 }
 
+
 export function getHtmlCoords(evt) {
 	return {x: evt.pageX, y: evt.pageY };
+}
+
+export function getElementPageBBox(e) {
+	const mtrx = e.getCTM();
+	const bbox = e.getBBox();
+	return {
+		x: mtrx.e + bbox.x,
+		y: mtrx.f + bbox.y,
+		width: bbox.width,
+		height: bbox.height
+	}
 }

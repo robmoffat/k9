@@ -1,11 +1,11 @@
-package com.kite9.k9server.adl.commands;
+package com.kite9.k9server.adl.command;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.kite9.diagram.dom.CSSConstants;
 import org.kite9.diagram.dom.elements.ADLDocument;
-import org.kite9.diagram.dom.elements.StyledKite9SVGElement;
+import org.kite9.diagram.dom.elements.StyledKite9XMLElement;
 import org.kite9.diagram.dom.managers.EnumValue;
 import org.kite9.diagram.model.style.DiagramElementType;
 import org.w3c.dom.Element;
@@ -18,16 +18,17 @@ import com.kite9.k9server.command.Copy;
 
 public class CreateLink extends Copy {
 
-	protected String fromId, toId;
+	protected String fromId, toId, linkId;
 	
 	public CreateLink() {
 		super();
 	}
 
-	public CreateLink(String fragmentId, String templateUri, String fromId, String toId) {
+	public CreateLink(String fragmentId, String templateUri, String fromId, String toId, String linkId) {
 		super(fragmentId, null, null, templateUri);
 		this.fromId = fromId;
 		this.toId = toId;
+		this.linkId = linkId;
 	}
 
 	@Override
@@ -40,6 +41,10 @@ public class CreateLink extends Copy {
 			ADLDocument doc = adl.getAsDocument();
 			Element insert = performCopy(doc);
 			
+			if ((linkId != null) && (doc.getElementById(linkId) == null)) {
+				insert.setAttribute("id", linkId);
+			}
+						
 			List<String> refs = Arrays.asList(fromId, toId);
 		
 			// this means we can use css to find out the purpose of each element.
@@ -66,12 +71,12 @@ public class CreateLink extends Copy {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node n = nl.item(i);
 			
-			if (n instanceof StyledKite9SVGElement) {
-				EnumValue v = (EnumValue) ((StyledKite9SVGElement) n).getCSSStyleProperty(CSSConstants.ELEMENT_TYPE_PROPERTY);
+			if (n instanceof StyledKite9XMLElement) {
+				EnumValue v = (EnumValue) ((StyledKite9XMLElement) n).getCSSStyleProperty(CSSConstants.ELEMENT_TYPE_PROPERTY);
 				
 				if (v.getTheValue() == DiagramElementType.LINK_END) {
 					String ref = refs.get(refNo);
-					((StyledKite9SVGElement) n).setAttribute("reference", ref);
+					((StyledKite9XMLElement) n).setAttribute("reference", ref);
 					refNo++;
 				}
 			}

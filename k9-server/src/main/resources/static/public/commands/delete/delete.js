@@ -43,7 +43,7 @@ registerActionableCallback(function(event) {
 	
 	const e = document.querySelector("[id].lastSelected");
 	
-	if ((e) && ('none' != e.getAttribute('delete'))){
+	if ((e) && ('none' != e.getAttribute('delete')) && (e.classList.contains("selected"))){
 		var htmlElement = getContextMenu(event);
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);

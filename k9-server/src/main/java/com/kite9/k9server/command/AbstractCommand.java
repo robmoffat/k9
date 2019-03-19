@@ -46,7 +46,7 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	protected void validateFragmentHash(ADL adl) {
-		String computed = adl.hash(fragmentId);
+//		String computed = adl.hash(fragmentId);
 		
 //		if (!computed.equals(fragmentHash)) {
 //			throw new CommandException("Fragment hash doesn't match: "+computed, this);

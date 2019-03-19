@@ -13,46 +13,92 @@ function reconcileAttributes(fromElement, toElement) {
 }
 
 function reconcileText(fromElement, toElement) {
-    fromElement.textContent = toElement.textContent;
+	if (fromElement.textContent != toElement.textContent) {
+		fromElement.textContent = toElement.textContent;
+	}
 }
 
-function reconcileElement(fromElement, toElement) {
-    reconcileAttributes(fromElement, toElement);
-    var fi = 0;
-    var ti = 0;
-    while (fromElement.childElementCount > toElement.childElementCount) {
-        fromElement.children[fromElement.childElementCount - 1].remove();
-    }
-    if (toElement.childElementCount == 0) {
-        reconcileText(fromElement, toElement);
-    }
-    while (ti < toElement.childElementCount) {
-        if (fi < fromElement.childElementCount) {
-            // element on both sides.
-            var newFromElement = fromElement.children[fi];
-            var newToElement = toElement.children[ti];
-            if (newFromElement.tagName == newToElement.tagName) {
-                reconcileElement(newFromElement, newToElement);
-                fi++;
-                ti++;
-            }
-            else {
-                console.log("Replacing: " + newFromElement.tagName + " " + newToElement);
-                fromElement.insertBefore(newToElement, newFromElement);
-                newFromElement.remove();
-                fi++;
-            }
+function reconcileElement(inFrom, inTo, toDelete) {
+	console.log("Reconciling "+inFrom.tagName+' with '+inTo.tagName+" "+inFrom.getAttribute("id")+" "+inTo.getAttribute("id"))
+    reconcileAttributes(inFrom, inTo);
+    
+    if (inTo.childElementCount == 0) {
+        reconcileText(inFrom, inTo);
+    } else {
+        var fi = 0;
+        var ti = 0;
+    	
+        while (ti < inTo.childElementCount) {
+        	const toElement = inTo.children.item(ti);
+        	const fromElement = (fi < inFrom.childElementCount) ? inFrom.children.item(fi) : null;
+    		
+        	if (toElement.hasAttribute("id")) {
+        		// ideally, we need to merge
+        		const toId = toElement.getAttribute("id");
+        		const fromId = fromElement == null ? null : fromElement.getAttribute("id");
+    			const missingFrom = inFrom.ownerDocument.getElementById(toId);
+        		
+        		if (toId == fromId) {
+        			// to/from correspond
+        			reconcileElement(fromElement, toElement, toDelete);
+        			ti ++;
+        			fi ++;
+        		} else if (missingFrom != null) {
+        			// from element has moved
+        			console.log("from moving")
+    				inFrom.insertBefore(missingFrom, fromElement);
+    				reconcileElement(missingFrom, toElement, toDelete);
+    				ti ++;
+    				fi ++;
+        		} else {
+        			// to element is new	
+        			console.log("creating new element "+toElement.tagName)
+        			const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
+                    inFrom.insertBefore(newFromElement, fromElement);
+                    reconcileElement(newFromElement, toElement, toDelete);
+                    ti ++;
+        		} 
+        	} else {
+    			// here, we have non-id elements, so we really just need 
+    			// to be sure there are the right number
+        			
+        		if ((fromElement == null) || (fromElement.tagName != toElement.tagName)) {
+        			// treat as an insertion.
+        			console.log("creating new element "+toElement.tagName)
+        			const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
+                    inFrom.insertBefore(newFromElement, fromElement);
+                    reconcileElement(newFromElement, toElement, toDelete);
+                    ti ++;
+        		} else {
+        			// assume it's the same element (tags match, after all)
+        			reconcileElement(fromElement, toElement, toDelete);
+        			ti ++;
+        			fi ++;
+        		}
+        	}
         }
-        else {
-            const newToElement = toElement.children[ti];
-            const newFromElement = document.createElementNS(newToElement.namespaceURI, newToElement.tagName);
-            fromElement.appendChild(newFromElement);
-            reconcileElement(newFromElement, newToElement);
-        }
+        	
+    	while (fi < inFrom.childElementCount) {
+    		const fromElement = inFrom.children.item(fi);
+    		console.log("removing "+fromElement);
+    		if (fromElement != toDelete) {
+	    		toDelete.appendChild(fromElement);
+    		} else {
+    			toDelete.parentElement.removeChild(toDelete);
+    		}
+    	}
+        
     }
 }
 function transition(documentElement) {
-    reconcileElement(document.querySelector("body svg"), documentElement);
+	
+	// this will store everything we'll eventually remove
+	var svg = document.querySelector("body svg");
+	var toDelete = svg.ownerDocument.createElementNS(svg.namespaceURI, "g");
+	svg.appendChild(toDelete);
+	toDelete.setAttribute('id', '--deleteGroup');
+    reconcileElement(svg, documentElement, toDelete);
+    
     // force the load event to occur again
     var evt = document.createEvent('Event');
     evt.initEvent('load', false, false);

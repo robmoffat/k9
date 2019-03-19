@@ -1,7 +1,7 @@
 import { getContextMenu, registerActionableCallback, destroyContextMenu } from "/public/behaviours/actionable/actionable.js";
 import { transition, postCommands } from "/public/bundles/transition.js"
-import { getChangeUri, parseDebug } from "/public/bundles/api.js";
-import { getHtmlCoords, getMainSvg } from '/public/bundles/screen.js';
+import { getChangeUri, parseDebug, createUniqueId } from "/public/bundles/api.js";
+import { getHtmlCoords, getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
 function getTemplateLinkSVG(svg) {
@@ -24,40 +24,44 @@ export function getLinkTarget(v) {
 	}
 }
 
-function setPath(evt, e) {
-	var endPoint = getHtmlCoords(evt);
+function setPath(e, from, to) {
 	const path = e.querySelector(".indicator-path path");
-	path.setAttribute("d", "M"+startPoint.x+" "+startPoint.y+ "L"+endPoint.x+" "+endPoint.y);
+	path.setAttribute("d", "M"+from.x+" "+from.y+ "L"+to.x+" "+to.y);
 }
 
-function startDrawLink(evt, evt2) {
+function startDrawLink(evt) {
 	destroyContextMenu();
 	const selectedElements = document.querySelectorAll("[id][debug*='connect:'].selected");
 	const template = getTemplateLinkSVG();
-	const coords = getHtmlCoords(evt);
-	startPoint = coords;
-	
 	const svg = getMainSvg();
 	
 	Array.from(selectedElements).forEach(e => {
 		var newLink = template.cloneNode(true);
 		svg.appendChild(newLink);
 		newLink.setAttribute("temp-from", e.getAttribute("id"));
+		newLink.setAttribute("id", createUniqueId())
+		const bbox = getElementPageBBox(e)
+		var from = { x: bbox.x + bbox.width/2, y: bbox.y + bbox.height/2 };
 		drawing.push(newLink);
-		setPath(evt2, newLink);
+		newLink.start = from;
+		newLink.setAttributeNS(null, 'pointer-events', 'none');
+		setPath(newLink, from, mouseCoords);
 	});
 	
 }
 
+
+
 var drawing = [];
-var startPoint = null;
 var svg;
 var linkTemplateUri;
+var mouseCoords;
 
 const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
 
 function draw(evt) {
-	drawing.forEach(e => setPath(evt, e));
+	mouseCoords = getHtmlCoords(evt);
+	drawing.forEach(e => setPath(e, e.start, mouseCoords));
 }
 
 /**
@@ -75,6 +79,13 @@ function getContainingDiagram(elem) {
 	}
 }
 
+function removeDrawingLinks() {
+	drawing.forEach(e => {
+		e.parentElement.removeChild(e);
+	});
+	drawing = [];
+}
+
 function end(evt) {
 	if (drawing.length == 0) {
 		return;
@@ -85,10 +96,7 @@ function end(evt) {
 	const linkTargetId = linkTarget.getAttribute("id");
 	
 	if (linkTarget == null) {
-		drawing.forEach(e => {
-			e.parentElement.removeChild(e);
-		});
-		drawing = [];
+		removeDrawingLinks();
 	} else {
 		const commands = drawing.map(e => 
 			{ return {
@@ -96,16 +104,15 @@ function end(evt) {
 				fragmentId: diagramId,
 				uriStr: linkTemplateUri,
 				fromId: e.getAttribute("temp-from"),
-				toId: linkTargetId
+				toId: linkTargetId,
+				linkId: e.getAttribute("id")
 			}});
 		
 		postCommands(commands, getChangeUri());
-		drawing.forEach(e => {
-			e.parentElement.removeChild(e);
-		});
 		drawing = [];
 	}
 	
+	evt.stopPropagation();
 }
 
 
@@ -114,7 +121,7 @@ function end(evt) {
  */
 registerActionableCallback(function(event) {
 	
-	const e = document.querySelector("[id].lastSelected");
+	const e = document.querySelector("[id].lastSelected.selected");
 	const debug = parseDebug(e);
 	
 	if (debug.connect) {
@@ -133,6 +140,10 @@ registerActionableCallback(function(event) {
 document.addEventListener('keydown', function(event) {
 	if (event.key == 'l') {
 		startDrawLink(event, event);
+	}
+	
+	if (event.key == 'Escape') {
+		removeDrawingLinks();
 	}
 });
 

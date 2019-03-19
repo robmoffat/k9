@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -87,13 +88,15 @@ public class DocumentController extends AbstractADLContentController<Document> {
 			// creates a new revision. Integrity and document changes are handled by 
 			// revisionRepository.
 
+			System.out.println("BEFORE:"+new XMLHelper().toXML(adl.getAsDocument()));
 			ADL out = command.applyCommand(steps, adl);
 			Revision rNew = new Revision();
 			rNew.setAuthor(u);
 			rNew.setDocument(d);
 			rNew.setXml(out.getAsXMLString());
 			revisions.save(rNew);
-			
+			System.out.println("AFTER: "+new XMLHelper().toXML(out.getAsDocument()));
+
 			return out;
 		}
 	}
