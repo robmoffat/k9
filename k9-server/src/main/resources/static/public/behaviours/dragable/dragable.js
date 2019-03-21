@@ -226,7 +226,7 @@ window.addEventListener('load', function(event) {
 	svg.addEventListener("mousemove", drag);
 	svg.addEventListener("mouseup", drop);
 
-	svg.querySelectorAll("[id][kite9-elem]").forEach(function(v) {
+	svg.querySelectorAll("[id][k9-elem]").forEach(function(v) {
 		console.log("Adding e.l. to " + v.getAttribute("id"))
 		v.removeEventListener("mousemove", drag);
 		v.removeEventListener("mouseup", drop);
@@ -240,7 +240,7 @@ window.addEventListener('load', function(event) {
 })
 
 export function getDropTarget(v) {
-	if (v.hasAttribute("kite9-elem") && v.hasAttribute("id")) {
+	if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
 		return v;
 	} else if (v == svg) {
 		return null;

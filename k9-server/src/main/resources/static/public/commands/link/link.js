@@ -1,18 +1,18 @@
 import { getContextMenu, registerActionableCallback, destroyContextMenu } from "/public/behaviours/actionable/actionable.js";
 import { transition, postCommands } from "/public/bundles/transition.js"
-import { getChangeUri, parseDebug, createUniqueId } from "/public/bundles/api.js";
+import { getChangeUri, parseInfo, createUniqueId } from "/public/bundles/api.js";
 import { getHtmlCoords, getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
 function getTemplateLinkSVG(svg) {
-	const template = document.querySelector("div.main [debug*=link][id]");
+	const template = document.querySelector("div.main [k9-info*=link][id]");
 	linkTemplateUri = "#"+template.getAttribute("id");
 	return template;
 }
 
 export function getLinkTarget(v) {
-	if (v.hasAttribute("kite9-elem") && v.hasAttribute("id")) {
-		if (parseDebug(v).connect) {
+	if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
+		if (parseInfo(v).connect) {
 			return v;
 		} else {
 			return null;
@@ -31,7 +31,7 @@ function setPath(e, from, to) {
 
 function startDrawLink(evt) {
 	destroyContextMenu();
-	const selectedElements = document.querySelectorAll("[id][debug*='connect:'].selected");
+	const selectedElements = document.querySelectorAll("[id][k9-info*='connect:'].selected");
 	const template = getTemplateLinkSVG();
 	const svg = getMainSvg();
 	
@@ -74,7 +74,7 @@ function getContainingDiagram(elem) {
 	const pcd = getContainingDiagram(elem.parentElement);
 	if (pcd) {
 		return pcd;
-	} else if (elem.hasAttribute("kite9-elem")) {
+	} else if (elem.hasAttribute("k9-elem")) {
 		return elem;
 	}
 }
@@ -122,7 +122,7 @@ function end(evt) {
 registerActionableCallback(function(event) {
 	
 	const e = document.querySelector("[id].lastSelected.selected");
-	const debug = parseDebug(e);
+	const debug = parseInfo(e);
 	
 	if (debug.connect) {
 		var htmlElement = getContextMenu(event);
@@ -151,7 +151,7 @@ window.addEventListener('load', function(event) {
 
 	svg = getMainSvg();
 
-	svg.querySelectorAll("[id][kite9-elem][debug*=connect]").forEach(function(v) {
+	svg.querySelectorAll("[id][k9-elem][k9-info*=connect]").forEach(function(v) {
 		v.removeEventListener("mousemove", draw);
 		v.removeEventListener("mouseup", end);
 		v.addEventListener("mousemove", draw);

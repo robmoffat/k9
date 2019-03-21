@@ -29,7 +29,7 @@ function reconcileStyles(fromElement, toElement, tl, start, end) {
     			start[a] = number(fromValue);
     		} else if (a=='transform') {
     			reconcileTransform(fromValue, toValue, start, end);
-    		} else{
+    		} else {
     			// just change text
         		fromElement.style[a] = toValue;
     		}
@@ -67,8 +67,12 @@ function reconcileAttributes(fromElement, toElement, tl) {
     			start[a] = number(fromValue);
     		} else if (a == 'style') {
     			reconcileStyles(fromElement, toElement, tl, start, end);
+    		} else if (a == 'd') {
+    			end[a] = toValue;
+    			start[a] = fromValue;
     		} else {
     			// just change text
+    			console.log("Just changing: "+a);
         		fromElement.setAttribute(a, toValue);
     		}
     	}
@@ -123,12 +127,11 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
     if (inTo.childElementCount == 0) {
         reconcileText(inFrom, inTo);
     } else {
-        var fi = 0;
         var ti = 0;
     	
         while (ti < inTo.childElementCount) {
         	const toElement = inTo.children.item(ti);
-        	const fromElement = (fi < inFrom.childElementCount) ? inFrom.children.item(fi) : null;
+        	const fromElement = (ti < inFrom.childElementCount) ? inFrom.children.item(ti) : null;
     		
         	if (toElement.hasAttribute("id")) {
         		// ideally, we need to merge
@@ -139,8 +142,6 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
         		if (toId == fromId) {
         			// to/from correspond
         			reconcileElement(fromElement, toElement, toDelete, tl);
-        			ti ++;
-        			fi ++;
         		} else if (missingFrom != null) {
         			// from element has moved
         			const parentFromTranslate = getTotalTranslate(missingFrom.parentElement);
@@ -154,15 +155,12 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
     				inFrom.insertBefore(missingFrom, fromElement);
         			missingFrom.setAttribute("transform", "translate("+newTranslate.x+","+newTranslate.y+")");
     				reconcileElement(missingFrom, toElement, toDelete, tl);
-    				ti ++;
-    				fi ++;
         		} else {
         			// to element is new	
         			console.log("creating new element "+toElement.tagName)
         			const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
                     inFrom.insertBefore(newFromElement, fromElement);
                     reconcileElement(newFromElement, toElement, toDelete, tl);
-                    ti ++;
         		} 
         	} else {
     			// here, we have non-id elements, so we really just need 
@@ -178,14 +176,14 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
         		} else {
         			// assume it's the same element (tags match, after all)
         			reconcileElement(fromElement, toElement, toDelete, tl);
-        			ti ++;
-        			fi ++;
         		}
         	}
+        	
+        	ti++;
         }
         	
-    	while (fi < inFrom.childElementCount) {
-    		const fromElement = inFrom.children.item(fi);
+    	while (ti < inFrom.childElementCount) {
+    		const fromElement = inFrom.children.item(ti);
     		const totalTranslate = getTotalTranslate(fromElement);
     		console.log("removing "+fromElement);
     		if (fromElement != toDelete) {

@@ -5,9 +5,9 @@ function getChangeUri() {
 	return href.replace("/content", "/change")
 }
 
-function parseDebug(t) {
-	if ((t!= null) &&(t.hasAttribute("debug"))) {
-		const parts = t.getAttribute("debug").split(';');
+function parseInfo(t) {
+	if ((t!= null) &&(t.hasAttribute("k9-info"))) {
+		const parts = t.getAttribute("k9-info").split(';');
 		var out = {}
 		parts.forEach(p => {
 			p=p.trim();
@@ -101,4 +101,4 @@ function createUniqueId() {
 	return ""+lastId;
 }
 
-export { getChangeUri, parseDebug, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle }
+export { getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle }

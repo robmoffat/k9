@@ -4,7 +4,7 @@
  */
 import { registerDragableDropCallback, registerDragableMoveCallback, getDropTarget, dragAttribute, canDropAllHere } from "/public/behaviours/dragable/dragable.js";
 import { transition, postCommands } from "/public/bundles/transition.js"
-import { getChangeUri, parseDebug } from "/public/bundles/api.js";
+import { getChangeUri, parseInfo } from "/public/bundles/api.js";
 import { getTrueCoords } from '/public/bundles/screen.js';
 
 
@@ -13,7 +13,7 @@ function isTerminator(debug) {
 }
 
 function createMoveCommand(drag, drop) {
-	if (!isTerminator(parseDebug(drag))) {
+	if (!isTerminator(parseInfo(drag))) {
 		return {
 			type: 'Move',
 			fragmentId: drop.getAttribute('id'),
@@ -73,7 +73,7 @@ const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
 registerDragableMoveCallback(function(dragTargets, evt) {
 	
 	dragTargets.forEach(dt => {
-		const debug = parseDebug(dt);
+		const debug = parseInfo(dt);
 		if (isTerminator(debug)) {
 			const coords = getTrueCoords(evt);
 			
