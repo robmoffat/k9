@@ -1,5 +1,7 @@
 package com.kite9.k9server.adl.holder;
 
+import java.util.Map;
+
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Node;
@@ -29,5 +31,15 @@ public interface ADL {
 	 * Returns the hash of a given node, or for the whole xml document if none given.
 	 */
 	String hash(String id);
+	
+	/**
+	 * Returns properties that might be useful for display on the screen of the editor.
+	 */
+	void setMeta(String name, String value);
+	
+	/**
+	 * Information about the editing, creation etc. of the document.
+	 */
+	Map<String, String> getMetaData();
 	
 }

@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -27,6 +26,7 @@ import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.document.commands.AbstractDocumentCommand;
 import com.kite9.k9server.domain.document.commands.HasDocument;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
@@ -62,9 +62,19 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	@RequestMapping(path = "/{documentId}"+CONTENT_URL, method= {RequestMethod.GET}) 
 	public @ResponseBody ADL input(@PathVariable("documentId") long id, HttpServletRequest request) {
 		Revision r = getCurrentRevision(id);
-		return buildADL(request, r);
+		return addDocumentMeta(buildADL(request, r), r);
 	}
 	
+	/**
+	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
+	 */
+	private ADL addDocumentMeta(ADL adl, Revision r) {
+		adl.setMeta("redo", ""+(r.getNextRevision() != null));
+		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
+		adl.setMeta("author", r.getAuthor().getUsername());
+		return adl;
+	}
+
 	/**
 	 * Applies a command to the current revision, using the {@link CommandController}.
 	 */
@@ -83,7 +93,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		
 		if (isUndoRedo(request, steps, rOld)) {
 			ADL out = command.applyCommand(steps, adl);
-			return out;
+			return addDocumentMeta(out, ((AbstractDocumentCommand) steps.get(0)).getCurrentRevision());
 		} else {
 			// creates a new revision. Integrity and document changes are handled by 
 			// revisionRepository.
@@ -97,7 +107,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 			revisions.save(rNew);
 			System.out.println("AFTER: "+new XMLHelper().toXML(out.getAsDocument()));
 
-			return out;
+			return addDocumentMeta(out, rNew);
 		}
 	}
 	

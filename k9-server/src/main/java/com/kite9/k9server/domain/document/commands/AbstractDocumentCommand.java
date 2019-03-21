@@ -23,6 +23,10 @@ public abstract class AbstractDocumentCommand extends AbstractCommand implements
 		this.repo = repo;
 		this.currentRevision = current;
 		this.url = url;
+	}
+
+	public Revision getCurrentRevision() {
+		return currentRevision;
 	} 
 
 }

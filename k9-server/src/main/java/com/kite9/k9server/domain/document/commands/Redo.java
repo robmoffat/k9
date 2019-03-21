@@ -28,6 +28,9 @@ public class Redo extends AbstractDocumentCommand {
 		Document d = currentRevision.getDocument();
 		d.setCurrentRevision(rNext);
 		repo.save(d);
+		
+		this.currentRevision = rNext;
+		
 		return new ADLImpl(rNext.getXml(), url);
 	}
 

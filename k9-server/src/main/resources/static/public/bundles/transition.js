@@ -61,7 +61,9 @@ function reconcileAttributes(fromElement, toElement, tl) {
     	var fromValue = fromElement.getAttribute(a);
     	var toValue = toElement.getAttribute(a);
     	
-    	if (fromValue !== toValue) {
+    	if (fromValue == null) {
+    		fromElement.setAttribute(a, toValue);
+    	} else if (fromValue !== toValue) {
     		if (numeric.indexOf(a) != -1) {
     			end[a] = number(toValue);
     			start[a] = number(fromValue);
@@ -71,8 +73,6 @@ function reconcileAttributes(fromElement, toElement, tl) {
     			end[a] = toValue;
     			start[a] = fromValue;
     		} else {
-    			// just change text
-    			console.log("Just changing: "+a);
         		fromElement.setAttribute(a, toValue);
     		}
     	}
@@ -128,10 +128,11 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
         reconcileText(inFrom, inTo);
     } else {
         var ti = 0;
+        var fi = 0;
     	
         while (ti < inTo.childElementCount) {
         	const toElement = inTo.children.item(ti);
-        	const fromElement = (ti < inFrom.childElementCount) ? inFrom.children.item(ti) : null;
+        	const fromElement = (fi < inFrom.childElementCount) ? inFrom.children.item(fi) : null;
     		
         	if (toElement.hasAttribute("id")) {
         		// ideally, we need to merge
@@ -142,6 +143,8 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
         		if (toId == fromId) {
         			// to/from correspond
         			reconcileElement(fromElement, toElement, toDelete, tl);
+        			fi++;
+        			ti++;
         		} else if (missingFrom != null) {
         			// from element has moved
         			const parentFromTranslate = getTotalTranslate(missingFrom.parentElement);
@@ -155,12 +158,16 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
     				inFrom.insertBefore(missingFrom, fromElement);
         			missingFrom.setAttribute("transform", "translate("+newTranslate.x+","+newTranslate.y+")");
     				reconcileElement(missingFrom, toElement, toDelete, tl);
+    				ti++;
+    				fi++;
         		} else {
         			// to element is new	
         			console.log("creating new element "+toElement.tagName)
         			const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
                     inFrom.insertBefore(newFromElement, fromElement);
                     reconcileElement(newFromElement, toElement, toDelete, tl);
+                    fi++;
+                    ti++;
         		} 
         	} else {
     			// here, we have non-id elements, so we really just need 
@@ -172,18 +179,20 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
         			const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
                     inFrom.insertBefore(newFromElement, fromElement);
                     reconcileElement(newFromElement, toElement, toDelete, tl);
-                    ti ++;
+                    fi++;
+                    ti++;
         		} else {
         			// assume it's the same element (tags match, after all)
         			reconcileElement(fromElement, toElement, toDelete, tl);
+        			fi++;
+        			ti++;
         		}
         	}
         	
-        	ti++;
         }
         	
-    	while (ti < inFrom.childElementCount) {
-    		const fromElement = inFrom.children.item(ti);
+    	while (fi < inFrom.childElementCount) {
+    		const fromElement = inFrom.children.item(fi);
     		const totalTranslate = getTotalTranslate(fromElement);
     		console.log("removing "+fromElement);
     		if (fromElement != toDelete) {

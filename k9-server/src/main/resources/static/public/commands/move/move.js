@@ -78,7 +78,7 @@ registerDragableMoveCallback(function(dragTargets, evt) {
 			const coords = getTrueCoords(evt);
 			
 			const id = debug.terminates;
-			const linkElem = document.querySelector("#"+id);
+			const linkElem = document.getElementById(id);
 			
 			const path = linkElem.querySelector(".indicator-path path");
 			if (path) {

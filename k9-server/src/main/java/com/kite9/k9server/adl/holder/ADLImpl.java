@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -14,7 +16,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.dom.util.DocumentFactory;
-import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.util.SVG12Constants;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
@@ -46,7 +47,7 @@ public class ADLImpl implements ADL {
 
 	private String xml;
 	private String uri;
-
+	
 	@JsonIgnore
 	private ADLDocument doc;
 	
@@ -54,6 +55,8 @@ public class ADLImpl implements ADL {
 	
 	@JsonIgnore
 	private Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
+	
+	private Map<String, String> metadata = new HashMap<>();
 	
 	public ADLImpl() {
 	}
@@ -181,5 +184,15 @@ public class ADLImpl implements ADL {
 		throw new RuntimeException("XML Hash not set!");
 	}
 
+	@Override
+	public void setMeta(String name, String value) {
+		metadata.put(name, value);
+	}
+
+	@Override
+	public Map<String, String> getMetaData() {
+		return metadata;
+	}
+	
 	
 }

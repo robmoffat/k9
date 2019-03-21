@@ -28,6 +28,9 @@ public class Undo extends AbstractDocumentCommand {
 		Document d = currentRevision.getDocument();
 		d.setCurrentRevision(rPrevious);
 		repo.save(d); 
+		
+		this.currentRevision = rPrevious;
+		
 		return new ADLImpl(rPrevious.getXml(), url);
 	}
 	
