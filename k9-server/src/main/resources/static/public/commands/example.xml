@@ -9,7 +9,7 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia">
 
-     <g id="b1" class="box"><g id="fs1" class="text">A</g></g>
+     <g id="b1" class="box" style="stroke-width: 4px; "><g id="fs1" class="text">A</g></g>
      
      <g class="group" id="bigbox" style="kite9-layout: horizontal; ">
        <g id="b2" class="box"><g id="fs2" class="text">B</g></g>

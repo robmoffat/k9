@@ -1,4 +1,5 @@
 import { getTrueCoords } from '/public/bundles/screen.js';
+import { handleTransformAsStyle } from '/public/bundles/api.js';
 
 /**
  * Drag and drop is controlled by the 'drag' attribute:
@@ -74,6 +75,8 @@ function beginMove(evt) {
 	svg.querySelectorAll("[id].selected,.mouseover").forEach(e => {
 		if (isDragable(e)) {
 			
+			handleTransformAsStyle(e);
+			
 			if (shapeLayer == null) {
 				shapeLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
 				shapeLayer.setAttributeNS(null, 'pointer-events', 'none');
@@ -94,13 +97,31 @@ function beginMove(evt) {
 			
 			shapeLayer.appendChild(e);
 			e.setAttributeNS(null, 'pointer-events', 'none');
-			e.setAttributeNS(null, 'transform', 'translate(' + shapeOrigin.x + ','
-					+ shapeOrigin.y + ')');
+			e.style.setProperty('transform', 'translateX(' + shapeOrigin.x + 'px) translateY('
+					+ shapeOrigin.y + 'px)');
 		}
 	});
 	
 	if (out.length > 0) {
 		dragOrigin = getTrueCoords(evt);
+		
+		// make sure the order of the state is such that we don't run 
+		// into trouble with insertBefore.
+		
+		var keepGoing = true;
+		while (keepGoing) {
+			keepGoing = false;
+			var ordered = out.map(s => s.dragTarget);
+			for (var i = 0; i < out.length; i++) {
+				const antecedent = ordered.indexOf(out[i].dragBefore);
+				if (antecedent > i) {
+					var removed = out.splice(antecedent, 1);
+					out.unshift(removed[0]);
+					keepGoing = true;
+				} 
+			}
+		}
+		
 		state = out;
 	}
 	
@@ -135,8 +156,8 @@ function drag(evt) {
 
 		// apply a new tranform translation to the dragged element, to display
 		//    it in its new location
-		shapeLayer.setAttributeNS(null, 'transform', 'translate(' + delta.x + ','
-				+ delta.y + ')');
+		shapeLayer.style.setProperty('transform', 'translateX(' + delta.x + 'px) translateY('
+				+ delta.y + 'px)');
 		
 		moveCallbacks.forEach(mc => mc(state.map(s => s.dragTarget), evt));
 	} 
@@ -150,8 +171,8 @@ export function endMove(reset) {
 			var x = s.embeddedShapeOrigin.x + ( reset ? 0 : delta.x );
 			var y = s.embeddedShapeOrigin.y + ( reset ? 0 : delta.y );
 			
-			s.dragTarget.setAttributeNS(null, 'transform', 'translate(' + x + ','
-					+ y + ')');	
+			s.dragTarget.style.setProperty('transform', 'translateX(' + x + 'px) translateY('
+					+ y + 'px)');
 			s.dragTarget.setAttributeNS(null, 'pointer-events', 'all');
 		})
 		

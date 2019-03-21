@@ -24,6 +24,72 @@ function parseDebug(t) {
 	}
 }
 
+function transformToCss(a) {
+	var out = '';
+	out = a.scaleX != 1 ? out + "scaleX("+a.scaleX+") " : out;
+	out = a.scaleY != 1 ? out + "scaleY("+a.scaleY+") " : out;	
+	out = a.translateX != 0 ? out + "translateX("+a.translateX+"px) " : out;
+	out = a.translateY != 0 ? out + "translateY("+a.translateY+"px) " : out;	
+	return out;
+}
+
+
+function number(value) {
+	if (value == null) {
+		return null;
+	} else if (value.endsWith("px")) {
+		return Number(value.substr(0, value.length -2));
+	} else {
+		return Number(value);
+	}
+}
+
+function parseTransform(a) {
+    var b={ 
+    	translateX: 0,
+    	translateY: 0,
+    	scaleX: 1,
+    	scaleY: 1
+    };
+    
+    if (a == null) {
+    	return b;
+    }
+    
+    for (var i in a = a.match(/(\w+\((\-?\d+\.?\d*e?\-?\d*[(px),\ ]*)+\))+/g))
+    {
+        var c = a[i].match(/[\w\.\-]+/g);
+        var name = c.shift();
+        if (c.length > 1) {
+        	b[name] = c.map(e => number(e)); 
+        } else {
+        	b[name] = number(c[0]);
+        }
+    }
+    
+    if (b.translate) {
+    	b.translateX = b.translate[0];
+    	b.translateY = b.translate[1];
+    	delete b.translate;
+    }
+    
+    if (b.scale) {
+    	b.scaleX = b.scale[0];
+    	b.scaleY = b.scale[1];
+    	delete b.scale;
+    }
+    
+    return b;
+}
+
+function handleTransformAsStyle(e) {
+	if (e.hasAttribute('transform')) {
+		const t = parseTransform(e.getAttribute('transform'));
+		const css = transformToCss(t);
+		e.style.setProperty('transform', css, '');
+		e.removeAttribute('transform')
+	}
+}
 
 var lastId = 1;
 
@@ -35,4 +101,4 @@ function createUniqueId() {
 	return ""+lastId;
 }
 
-export { getChangeUri, parseDebug, createUniqueId }
+export { getChangeUri, parseDebug, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle }
