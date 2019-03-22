@@ -21,7 +21,9 @@ import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl; 
+import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.user.User;
+import com.kite9.k9server.security.Hash; 
 
 @Component
 public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
@@ -80,6 +82,10 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 	private void handleMetaData(ADL t, HttpHeaders headers) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		t.setMeta("user", authentication.getName());
+		
+		if (authentication.getDetails() instanceof User) {
+			t.setMeta("email", Hash.generateMD5Hash(((User)authentication.getDetails()).getEmail().toLowerCase()));
+		}
 
 		for (Map.Entry<String, String> item : t.getMetaData().entrySet()) {
 			headers.set("kite9:"+item.getKey(), item.getValue());

@@ -55,7 +55,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		WebSecurityConfig.checkUser(u, true);
 		String givenPassword = (String) authentication.getCredentials();
 		if (Hash.checkPassword(givenPassword, u.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(u.getUsername(), authentication.getCredentials(), createGrantedAuthorities(u));
+			UsernamePasswordAuthenticationToken out = new UsernamePasswordAuthenticationToken(u.getUsername(), authentication.getCredentials(), createGrantedAuthorities(u));
+			out.setDetails(u);
+			return out;
 		} else {
 			throw new BadCredentialsException("Bad Login Credentials");
 		}

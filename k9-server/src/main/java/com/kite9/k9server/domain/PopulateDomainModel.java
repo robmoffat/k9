@@ -32,7 +32,7 @@ import com.kite9.k9server.domain.user.UserRepository;
 @Profile("populate")
 public class PopulateDomainModel implements CommandLineRunner {
 	
-	public static final User TEST_USER = new User("test1", "blah", "test1@kite9.com");
+	public static final User TEST_USER = new User("test1", "blah", "robmoffat@mac.com");
 	
 	static {
 		TEST_USER.setApi("test-user-api-key");

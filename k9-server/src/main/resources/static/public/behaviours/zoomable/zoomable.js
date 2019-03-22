@@ -12,6 +12,7 @@ export function zoomableInstrumentationCallback(nav) {
 	var svg = main.querySelector("svg");
 	svg.style.transition = "transform .2s";
 	svg.style.transformOrigin = "0 0";
+	main.style.transition = "all .2s";
 	main.style.overflow = "hidden";
 	
 	function setScale(change) {

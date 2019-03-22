@@ -75,7 +75,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 		String salt = principal.getSalt();
 		String source = email+"|"+api+"|"+salt+"|"+path;
 		LOG.info("Hashing: "+source);
-		String code = Hash.generateHash(source);
+		String code = Hash.generateSHA1Hash(source);
 		return code;
 	}
 	

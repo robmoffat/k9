@@ -68,17 +68,17 @@ public class ADLImpl implements ADL {
 	public ADLImpl(String content, String uri) {
 		this.xml = content;
 		this.uri = uri;
-		this.xmlHash = Hash.generateHash(content);
+		this.xmlHash = Hash.generateSHA1Hash(content);
 	}
 
 	@Override
 	public String getAsXMLString() {
 		if (getMode() == Mode.URI) {
 			xml = toXMLString(uri);
-			xmlHash = Hash.generateHash(xml);
+			xmlHash = Hash.generateSHA1Hash(xml);
 		} else if (getMode() == Mode.DOM) {
 			xml = toXMLString(doc, false);
-			xmlHash = Hash.generateHash(xml);
+			xmlHash = Hash.generateSHA1Hash(xml);
 			doc = null;
 		}
 
@@ -99,7 +99,7 @@ public class ADLImpl implements ADL {
 	public ADLDocument getAsDocument() {
 		if (getMode() == Mode.URI) {
 			xml = toXMLString(uri);
-			xmlHash = Hash.generateHash(xml);
+			xmlHash = Hash.generateSHA1Hash(xml);
 		}
 		
 		if (getMode() == Mode.STRING) {
@@ -176,7 +176,7 @@ public class ADLImpl implements ADL {
 			if (xmlHash != null) {
 				return xmlHash;
 			} else if (xml != null) {
-				xmlHash = Hash.generateHash(xml);
+				xmlHash = Hash.generateSHA1Hash(xml);
 				return xmlHash;
 			}
 		}

@@ -42,9 +42,23 @@ public class Hash {
 	/**
 	 * Generates the SHA-1 hash of the document.
 	 */
-	public static String generateHash(String document) {
+	public static String generateSHA1Hash(String document) {
+		return generateHash(document, "SHA-1");
+	}
+	
+	/**
+	 * Generates the MD5 hash of the document.
+	 */
+	public static String generateMD5Hash(String document) {
+		return generateHash(document, "MD5");
+	}
+	
+	/**
+	 * Generates a hash using a provided type
+	 */
+	public static String generateHash(String document, String type) {
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			MessageDigest md = MessageDigest.getInstance(type);
 			byte[] data = document.getBytes();
 			byte[] out = md.digest(data);
 
@@ -66,7 +80,7 @@ public class Hash {
 	public static String generateHash(Node in) {
 		try {
 			String w = nodeToString(in);
-			return generateHash(w);
+			return generateSHA1Hash(w);
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't generate hash: ", e);
 		}

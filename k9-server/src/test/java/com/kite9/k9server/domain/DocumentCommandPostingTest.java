@@ -43,13 +43,13 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		
 		
 		// if we perform undo, we should arrive back at the original document.
-		String hash = Hash.generateHash(new String(back2));
+		String hash = Hash.generateSHA1Hash(new String(back2));
 		byte[] back3 = postCommand("[{\"type\": \"Undo\", \"fragmentHash\": \""+hash+"\"}]", uri);
 		persistInAFile(back3, "revisions", "state3.xml");
 		XMLCompare.compareXML(new String(back1), new String(back3));
 		
 		// if we perform a redo, we should arrive back at the document after-edit
-		hash = Hash.generateHash(new String(back1));
+		hash = Hash.generateSHA1Hash(new String(back1));
 		byte[] back4 = postCommand("[{\"type\": \"Redo\", \"fragmentHash\": \""+hash+"\"}]", uri);
 
 		persistInAFile(back4, "revisions", "state4.xml");

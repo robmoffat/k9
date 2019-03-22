@@ -16,7 +16,7 @@ export class Metadata {
 		});
 		
 		this.callbacks.forEach(cb => {
-			cb(metadata);
+			cb(this.metadata);
 		});
 	}
 
