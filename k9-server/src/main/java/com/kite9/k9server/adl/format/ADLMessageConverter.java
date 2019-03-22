@@ -71,8 +71,6 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 		}
 	}
 	
-	
-
 	@Override
 	protected void addDefaultHeaders(HttpHeaders headers, ADL t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
@@ -80,12 +78,13 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 	}
 
 	private void handleMetaData(ADL t, HttpHeaders headers) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		t.setMeta("user", authentication.getName());
+
 		for (Map.Entry<String, String> item : t.getMetaData().entrySet()) {
-			headers.set("kite9-"+item.getKey(), item.getValue());
+			headers.set("kite9:"+item.getKey(), item.getValue());
 		}
 	
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		headers.set("kite9-user", authentication.getName());
 	}
 	
 }

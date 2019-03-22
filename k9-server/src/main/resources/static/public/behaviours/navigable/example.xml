@@ -3,8 +3,14 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("navigable.css");
     </svg:style>
+
+    <svg:script type="module">
+      import { Transition } from "/public/classes/transition/transition.js";
+      import { initNavigable } from "./navigable.js";
+      
+      initNavigable(new Transition());
+    </svg:script>
     
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">

@@ -1,7 +1,6 @@
 import { getContextMenu, registerContextMenuCallback, destroyContextMenu } from "../context-menu.js";
 import { mouseover, mouseout } from "../../hoverable.js";
-import { transition } from "../../../bundles/transition.js"
-import '../../../libraries/jquery.min.js'
+import { transition } from "/publlc/behaviours/transition/transition.js"
 
 
 function createInsertStep(e, id) {

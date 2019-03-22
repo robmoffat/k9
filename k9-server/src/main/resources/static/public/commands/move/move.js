@@ -3,7 +3,7 @@
  * You can't drop into an element unless it has 
  */
 import { registerDragableDropCallback, registerDragableMoveCallback, getDropTarget, dragAttribute, canDropAllHere } from "/public/behaviours/dragable/dragable.js";
-import { transition, postCommands } from "/public/bundles/transition.js"
+import { transition, postCommands } from "/public/behaviours/transition/transition.js"
 import { getChangeUri, parseInfo } from "/public/bundles/api.js";
 import { getTrueCoords } from '/public/bundles/screen.js';
 

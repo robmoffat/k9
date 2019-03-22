@@ -237,6 +237,12 @@ function handleErrors(response) {
     return response;
 }
 
+var callbacks = [];
+
+function registerTransitionCallback(action) {
+	callbacks.push(action);
+}
+
 function postCommands(commands, uri) {
 	
 	fetch(uri, {
@@ -248,6 +254,10 @@ function postCommands(commands, uri) {
 			"Accept": "image/svg+xml, application/json"
 		}})
 	.then(handleErrors)
+	.then(response => {
+		callbacks.forEach(cb => cb(response));
+		return response;
+	})
 	.then(response => response.text())
 	.then(text => {
 		var parser = new DOMParser();
@@ -259,4 +269,4 @@ function postCommands(commands, uri) {
 }
 	
 	
-export { transition, postCommands };
+export { transition, postCommands, registerTransitionCallback };

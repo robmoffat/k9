@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+       @import url("/public/examples/common/basic.css");
+    </svg:style>
+   
+    <svg:script type="module">
+      import { Instrumentation } from "./instrumentation.js";
+      
+      new Instrumentation([function(nav) {
+          var e = document.createElement("img");
+		      e.setAttribute("id", "example");
+		      e.setAttribute("src", "./icon.svg");
+              e.addEventListener("click", () => {alert("hi") });
+          nav.appendChild(e);
+      }]);
+    </svg:script>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" drag="target">
+
+     <g id="b1" class="box"><g id="fs1" class="text">Click One</g></g>
+     
+     <g id="b2" class="box"><g id="fs2" class="text">Click Two</g></g>
+     
+  </diagram>
+</svg:svg>

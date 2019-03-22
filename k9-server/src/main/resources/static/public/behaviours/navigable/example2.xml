@@ -3,7 +3,6 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("navigable.css");
     </svg:style>
     
   </svg:defs>
