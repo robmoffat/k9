@@ -27,6 +27,7 @@ export class Instrumentation {
 		}
 
 		this.callbacks.forEach(cb => cb(this.nav));
+		
 	}
 
 	/**

@@ -1,8 +1,8 @@
 .instrumentation {
 	background-color: grey;
-	position: absolute;
+	position: fixed;
 	top: 0;
-	right: 10px;
+	left: 10px;
 	height: 40px;
 	color: #333;
 	background: #fff;
