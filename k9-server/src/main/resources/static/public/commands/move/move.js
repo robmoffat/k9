@@ -2,75 +2,64 @@
  * This handles moving a block from one place to another on the diagram, via drag and drop.
  * You can't drop into an element unless it has 
  */
-import { registerDragableDropCallback, registerDragableMoveCallback, getDropTarget, dragAttribute, canDropAllHere } from "/public/behaviours/dragable/dragable.js";
-import { transition, postCommands } from "/public/behaviours/transition/transition.js"
 import { getChangeUri, parseInfo } from "/public/bundles/api.js";
 import { getTrueCoords } from '/public/bundles/screen.js';
-
-
-function isTerminator(debug) {
-	return debug.terminates != undefined;
-}
-
-function createMoveCommand(drag, drop) {
-	if (!isTerminator(parseInfo(drag))) {
-		return {
-			type: 'Move',
-			fragmentId: drop.getAttribute('id'),
-			moveId: drag.getAttribute('id')
-		}
-	} else {
-		return {
-			type: 'SetAttr',
-			fragmentId: drag.getAttribute('id'),
-			name: 'reference',
-			value: drop.getAttribute('id')
-		}
-	}	
-}
 
 /**
  * Keeps track of any links we've animated moving.
  */
 var moveLinks = [];
 
-registerDragableDropCallback(function(dragTargets, evt) {
-	var dropTarget = getDropTarget(evt.target);
-	
-	if (canDropAllHere(dragTargets, dropTarget)) {
-		const commands = Array.from(dragTargets).map(dt => createMoveCommand(dt, dropTarget));
-		postCommands(commands, getChangeUri());
-		moveLinks = [];
-		return true;
-	} else {
-		moveLinks.forEach(m => {
-			m.setAttribute("d", m.getAttribute("d-old"));
-			m.setAttributeNS(null, 'pointer-events', 'all');
-		})
-		moveLinks = [];
-		console.log("Can't dropped in " + dropTarget.id);
-		return false;
-	}
-});
-
-/*
- * This shows the user where the elements will be dropped, within a layout container.
- */
-registerDragableMoveCallback(function(dragTargets, evt) {
-	
-	
-	
-	
-});
-
 const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
 
 
+function isTerminator(debug) {
+	return debug.terminates != undefined;
+}
 
-/*
+export function createMoveDragableDropCallback(transition) {
+	
+	function createMoveCommand(drag, drop) {
+		if (!isTerminator(parseInfo(drag))) {
+			return {
+				type: 'Move',
+				fragmentId: drop.getAttribute('id'),
+				moveId: drag.getAttribute('id')
+			}
+		} else {
+			return {
+				type: 'SetAttr',
+				fragmentId: drag.getAttribute('id'),
+				name: 'reference',
+				value: drop.getAttribute('id')
+			}
+		}	
+	}
+	
+	return function(dragTargets, evt, okDrop, dropTarget) {
+		if (okDrop) {
+			const commands = Array.from(dragTargets).map(dt => createMoveCommand(dt, dropTarget));
+			transition.postCommands(commands, getChangeUri());
+			moveLinks = [];
+			return true;
+		} else {
+			// reset the links being moved.
+			moveLinks.forEach(m => {
+				m.setAttribute("d", m.getAttribute("d-old"));
+				m.setAttributeNS(null, 'pointer-events', 'all');
+			})
+			moveLinks = [];
+			console.log("Can't dropped in " + dropTarget.id);
+			return false;
+		}
+	}
+}
+
+
+/**
  * This shows the user where links will go.
  */
-registerDragableMoveCallback(function(dragTargets, evt) {
+export function moveDragableMoveCallback(dragTargets, evt) {
 	
 	dragTargets.forEach(dt => {
 		const debug = parseInfo(dt);
@@ -106,8 +95,7 @@ registerDragableMoveCallback(function(dragTargets, evt) {
 			}
 		}
 	});
-
-});
+}
 
 
 

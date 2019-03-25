@@ -190,9 +190,11 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 	function drop(evt) {
 		// if we aren't currently dragging an element, don't do anything
 		if (state) {
-				
+			const dragTargets = state.map(s => s.dragTarget);
+			const dropTarget = getDropTarget(evt.target);
+			const canDrop = canDropAllHere(dragTargets, dropTarget)
 			var result = dropCallbacks
-				.map(dc => dc(state.map(s => s.dragTarget), evt))
+				.map(dc => dc(dragTargets, evt, canDrop, dropTarget))
 				.reduce((a,b) => (a | b), false);
 			
 			endMove(!result);

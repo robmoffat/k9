@@ -9,7 +9,6 @@
 */  
 @import url('/public/behaviours/hoverable/hoverable.css');
 @import url('/public/behaviours/selectable/selectable.css');
-@import url('/public/behaviours/dragable/dragable.css');
 
 /*
  Compose the functionality.
