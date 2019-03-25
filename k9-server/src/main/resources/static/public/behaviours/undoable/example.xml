@@ -6,17 +6,13 @@
     </svg:style>
    
     <svg:script type="module">
-      import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
-      import { initActionable } from "./actionable.js";
+      import { Instrumentation } from "/public/classes/instrumentation/instrumentation.js";
+      import { Metadata } from "/public/classes/metadata/metadata.js";
       
-      initActionable(new ContextMenu([function(event, cm) {
-        var htmlElement = cm.get(event);
-        var p = document.createElement("p");
-        p.textContent = "This works ok";
-        htmlElement.appendChild(p);
-       }]))
-       
-       
+      import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "./undoable.js";
+      
+      new Metadata([undoableMetadataCallback]);
+      new Instrumentation([createUndoableInstrumentationCallback((e, c) => alert("Undo "+c), (e, c) => alert("Redo "+c))]);
     </svg:script>
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" drag="target">

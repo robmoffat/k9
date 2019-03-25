@@ -6,15 +6,14 @@
     </svg:style>
    
     <svg:script type="module">
-      import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
-      import { initActionable } from "./actionable.js";
+      import { ContextMenu } from "./context-menu.js";
       
-      initActionable(new ContextMenu([function(event, cm) {
-        var htmlElement = cm.get(event);
+      new ContextMenu([function(event) {
+        var htmlElement = getContextMenu(event);
         var p = document.createElement("p");
         p.textContent = "This works ok";
         htmlElement.appendChild(p);
-       }]))
+       }])
        
        
     </svg:script>

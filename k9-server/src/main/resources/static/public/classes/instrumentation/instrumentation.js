@@ -29,15 +29,6 @@ export class Instrumentation {
 		this.callbacks.forEach(cb => cb(this.nav));
 		
 	}
-
-	/**
-	 * Callback for updating the instrumentation menu when metadata changes.
-	 */
-	metadataCallback() {
-
-		
-	}
-
 }
 
 

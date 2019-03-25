@@ -12,8 +12,6 @@
 @import url('/public/behaviours/dragable/dragable.css');
 
 /*
- Specific commands
+ Compose the functionality.
 */
-@script url('/public/commands/delete/delete.js');
-@script url('/public/commands/move/move.js');
-@script url('/public/commands/link/link.js');
+@script url('/public/behaviours/editable/editable.js');

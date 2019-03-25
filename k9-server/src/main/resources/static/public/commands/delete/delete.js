@@ -1,4 +1,4 @@
-import { getContextMenu, registerActionableCallback, destroyContextMenu } from "/public/behaviours/actionable/actionable.js";
+import { getContextMenu, destroyContextMenu } from "/public/behaviours/actionable/actionable.js";
 import { transition, postCommands } from "/public/bundles/transition.js"
 import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri } from "/public/bundles/api.js";
