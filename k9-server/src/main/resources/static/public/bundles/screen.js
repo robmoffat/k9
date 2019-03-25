@@ -12,11 +12,10 @@ export function getTrueCoords(evt) {
 	}
 }
 
-window.addEventListener('load', function(event) {
-	svg = document.querySelector("div.main svg");
-});
-
 export function getMainSvg() {
+	if (svg == undefined) {
+		svg = document.querySelector("div.main svg");
+	}
 	return svg;
 }
 

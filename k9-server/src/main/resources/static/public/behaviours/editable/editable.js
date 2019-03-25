@@ -32,7 +32,7 @@ import { createUndoableInstrumentationCallback, undoableMetadataCallback } from 
 import { createUndoCallback, createRedoCallback } from '/public/commands/undo/undo.js';
 import { createMoveDragableDropCallback, moveDragableMoveCallback } from '/public/commands/move/move.js';
 import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
-
+import { initLinkLinkerCallback, initLinkContextMenuCallback } from '/public/commands/link/link.js';
 
 
 var metadata = new Metadata([
@@ -40,21 +40,24 @@ var metadata = new Metadata([
 	undoableMetadataCallback ]);
 
 var transition = new Transition([
-	
 	(r) => metadata.transitionCallback(r)
-	
-	
 ]);
 
-new Instrumentation([
+var instrumentation = new Instrumentation([
 	identityInstrumentationCallback,
 	createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 	zoomableInstrumentationCallback
 	]);
 
+var linker = new Linker([
+	initLinkLinkerCallback()
+]);
+
 var contextMenu = new ContextMenu([ 
 	initDeleteContextMenuCallback(transition),
-	initLinkContextMenuCallback(transition)]);
+	initLinkContextMenuCallback(transition, linker)
+]);
+
 
 initActionable(contextMenu);
 
@@ -63,3 +66,5 @@ initDragable([
 ], [
 	createMoveDragableDropCallback(transition)	
 ]);
+
+initLinkable(linker);

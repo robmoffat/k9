@@ -11,7 +11,7 @@
       import { Linker } from "/public/classes/linker/linker.js"
       import { initLinkable } from "./linkable.js";
       
-      initLinkable(new Linker(document.querySelector("svg"), [ (l, e) => l.removeDrawingLinks() ]));
+      initLinkable(new Linker([ (l, e) => l.removeDrawingLinks() ]));
     </svg:script>
     
   </svg:defs>

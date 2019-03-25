@@ -1,13 +1,12 @@
-import { getHtmlCoords, getElementPageBBox } from '/public/bundles/screen.js' ;
-import { createUniqueId } from '/public/bundles/api.js'; 
+import { getHtmlCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js' ;
+import { createUniqueId, parseInfo } from '/public/bundles/api.js'; 
 
 /**
  * Provides functionality for drawing links on the diagram, and keeping track of them.
- * 
  */
 export class Linker {
 	
-	constructor(svg, callbacks, svgLinkTemplate, linkTemplateUri) {
+	constructor(callbacks, svgLinkTemplate) {
 		if (svgLinkTemplate == undefined) {
 			// code to use first found link as the template
 			this.svgLinkTemplate = function(svg) {
@@ -18,16 +17,7 @@ export class Linker {
 			this.svgLinkTemplate = svgLinkTemplate;
 		}
 		
-		if (linkTemplateUri == undefined) {
-			this.linkTemplateUri = function(svg) {
-				const template = this.svg.querySelector("div.main [k9-info*=link][id]");
-				return "#"+template.getAttribute("id");
-			}
-		} else {
-			this.linkTemplateUri = linkTemplateUri;
-		}
-		
-		this.svg = svg;
+		this.svg = getMainSvg();
 		this.drawing = [];
 		
 		this.callbacks = callbacks == undefined ? [] : callbacks;
@@ -40,10 +30,10 @@ export class Linker {
 			} else {
 				return null;
 			}
-		} else if (v == svg) {
+		} else if (v == this.svg) {
 			return null;
 		} else {
-			return getLinkTarget(v.parentNode);
+			return this.getLinkTarget(v.parentNode);
 		}
 	}
 	
@@ -91,4 +81,26 @@ export class Linker {
 		evt.stopPropagation();
 	}
 	
+	/**
+	 * May remove later
+	 */
+	getContainingDiagram(elem) {
+		if (elem == null) {
+			return null;
+		}
+		const pcd = this.getContainingDiagram(elem.parentElement);
+		if (pcd) {
+			return pcd;
+		} else if (elem.hasAttribute("k9-elem")) {
+			return elem;
+		}
+	}
+	
+	get() {
+		return this.drawing;
+	}
+	
+	clear() {
+		this.drawing = [];
+	}
 }
