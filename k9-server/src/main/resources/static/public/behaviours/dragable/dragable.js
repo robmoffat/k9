@@ -1,4 +1,4 @@
-import { getTrueCoords } from '/public/bundles/screen.js';
+import { getHtmlCoords } from '/public/bundles/screen.js';
 import { handleTransformAsStyle } from '/public/bundles/api.js';
 
 /**
@@ -106,7 +106,7 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		});
 		
 		if (out.length > 0) {
-			dragOrigin = getTrueCoords(evt);
+			dragOrigin = getHtmlCoords(evt);
 			
 			// make sure the order of the state is such that we don't run 
 			// into trouble with insertBefore.
@@ -145,7 +145,7 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		
 		if (state) {
 			// calculate move in true coords
-			var trueCoords = getTrueCoords(evt);
+			var trueCoords = getHtmlCoords(evt);
 			var changeTrueCoords = {
 					x:  trueCoords.x - dragOrigin.x, 
 					y:  trueCoords.y - dragOrigin.y

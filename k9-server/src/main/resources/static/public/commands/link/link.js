@@ -29,8 +29,8 @@ export function initLinkContextMenuCallback(transition, linker) {
 export function initLinkLinkerCallback(transition, linkTemplateUri) {
 	
 	if (linkTemplateUri == undefined) {
-		linkTemplateUri = function(svg) {
-			const template = this.svg.querySelector("div.main [k9-info*=link][id]");
+		linkTemplateUri = function() {
+			const template = getMainSvg().querySelector("div.main [k9-info*=link][id]");
 			return "#"+template.getAttribute("id");
 		}
 	} 

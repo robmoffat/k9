@@ -23,7 +23,7 @@ import { initLinkable } from '/public/behaviours/linkable/linkable.js';
 
 // Instrumentation Imports
 
-import { zoomableInstrumentationCallback } from "/public/behaviours/zoomable/zoomable.js";
+import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/public/behaviours/zoomable/zoomable.js";
 import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/undoable/undoable.js";
 
@@ -40,7 +40,8 @@ var metadata = new Metadata([
 	undoableMetadataCallback ]);
 
 var transition = new Transition([
-	(r) => metadata.transitionCallback(r)
+	(r) => metadata.transitionCallback(r),
+	zoomableTransitionCallback
 ]);
 
 var instrumentation = new Instrumentation([
@@ -50,7 +51,7 @@ var instrumentation = new Instrumentation([
 	]);
 
 var linker = new Linker([
-	initLinkLinkerCallback()
+	initLinkLinkerCallback(transition)
 ]);
 
 var contextMenu = new ContextMenu([ 
