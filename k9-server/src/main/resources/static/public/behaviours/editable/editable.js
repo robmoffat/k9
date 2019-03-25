@@ -8,11 +8,13 @@ import { Instrumentation } from "/public/classes/instrumentation/instrumentation
 import { Metadata } from "/public/classes/metadata/metadata.js";
 import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
 import { Transition } from '/public/classes/transition/transition.js';
+import { Linker } from '/public/classes/linker/linker.js';
 
 // Behaviours
 
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
 import { initDragable } from '/public/behaviours/dragable/dragable.js' 
+import { initLinkable } from '/public/behaviours/linkable/linkable.js';
 
 
 // Context Menu Imports
@@ -50,7 +52,9 @@ new Instrumentation([
 	zoomableInstrumentationCallback
 	]);
 
-var contextMenu = new ContextMenu([ initDeleteContextMenuCallback(transition) ]);
+var contextMenu = new ContextMenu([ 
+	initDeleteContextMenuCallback(transition),
+	initLinkContextMenuCallback(transition)]);
 
 initActionable(contextMenu);
 

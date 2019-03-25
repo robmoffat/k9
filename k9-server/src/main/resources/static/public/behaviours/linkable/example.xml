@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+       @import url("/public/examples/common/basic.css");
+       @import url("/public/behaviours/selectable/selectable.css");
+
+    </svg:style>
+    
+    <svg:script type="module">
+      import { Linker } from "/public/classes/linker/linker.js"
+      import { initLinkable } from "./linkable.js";
+      
+      initLinkable(new Linker(document.querySelector("svg"), [ (l, e) => l.removeDrawingLinks() ]));
+    </svg:script>
+    
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="d" drag="target">
+
+     <g id="b1" drag="yes rect" drop="*" class="box"><g id="fs1" class="text">Press L to Link</g></g>
+     
+     <g class="group" drag="yes target" id="bigbox" style="kite9-layout: horizontal; ">
+       <g id="b2" drag="yes rect" drop="link" class="box"><g id="fs2" class="text">B</g></g>
+       
+       <g id="b3" drag="no" drop="link rect" class="box"><g id="fs3" class="text">Can't Drag</g></g>
+     </g>
+     
+     <g class="link" id="link2" drop="rect">
+      <from drag="yes from" id="link2-from" reference="b1" class="arrow"></from>
+      <to drag="yes to" id="link2-to" class="arrow" reference="b3"></to>
+     </g>
+     
+     
+     <g class="link" id="link2" drop="rect">
+      <from drag="yes from" id="link2-from" reference="b1" class="hoverable"></from>
+      <to drag="yes to" id="link2-to" class="hoverable" reference="b2"></to>
+     </g>
+
+  </diagram>
+</svg:svg>

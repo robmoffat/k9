@@ -1,9 +1,23 @@
 
-export function initLinkContextMenuCallback(transition, templateLinkFunction) {
+export function initLinkContextMenuCallback(transition, linker) {
 	
-	
-	
-	
+	/**
+	 * Provides a link option for the context menu
+	 */
+	return function(event) {
+		
+		const e = document.querySelector("[id].lastSelected.selected");
+		const debug = parseInfo(e);
+		
+		if (debug.connect) {
+			var htmlElement = getContextMenu(event);
+			var img = document.createElement("img");
+			htmlElement.appendChild(img);
+			img.setAttribute("title", "Draw Link");
+			img.setAttribute("src", "/public/commands/link/link.svg");
+			img.addEventListener("click", e => linker.startDrawLink(event, e));
+		}
+	};
 }
 
 function getTemplateLinkSVG(svg) {
@@ -118,23 +132,7 @@ function end(evt) {
 }
 
 
-/**
- * Provides a delete option for the context menu
- */
-registerActionableCallback(function(event) {
-	
-	const e = document.querySelector("[id].lastSelected.selected");
-	const debug = parseInfo(e);
-	
-	if (debug.connect) {
-		var htmlElement = getContextMenu(event);
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
-		img.setAttribute("title", "Draw Link");
-		img.setAttribute("src", "/public/commands/link/link.svg");
-		img.addEventListener("click", e => startDrawLink(event, e));
-	}
-});
+
 
 /**
  * This should only be called once.  Adds the delete-key shortcut.
