@@ -29,6 +29,7 @@ function ensureButton(nav, name, cb) {
 		b.setAttribute("class", name);
 		b.setAttribute("title", name);
 		b.setAttribute("src", "/public/behaviours/undoable/"+name+".svg");
+		b.style.backgroundColor = '#EEEEEE';
 		b.addEventListener("click", cb);
 	    nav.appendChild(b);
 	}

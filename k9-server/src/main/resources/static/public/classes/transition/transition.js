@@ -276,7 +276,7 @@ export class Transition {
 		}));
 	}
 
-	post(commands, uri) {
+	postCommands(commands, uri) {
 
 		return this.mainHandler(fetch(uri, {
 			credentials: 'include',

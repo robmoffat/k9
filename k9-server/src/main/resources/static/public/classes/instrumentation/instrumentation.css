@@ -16,6 +16,7 @@
 	background: #fff;
 	user-select: none; 
 	-webkit-user-select: none;
+	opacity: .7;
 }
 
 .instrumentation img {
@@ -26,5 +27,5 @@
 	-moz-border-radius: 20px;
 	cursor: pointer;
 	margin: 0 2px 0 2px;
-	background-color: #EEEEEE;
+	opacity: 1;
 }

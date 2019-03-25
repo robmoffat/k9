@@ -27,7 +27,7 @@ export function zoomableInstrumentationCallback(nav) {
 	if (zoomIn == undefined) {
 		var e = document.createElement("img");
 	      e.setAttribute("class", "zoom-in");
-	      e.setAttribute("src", "./zoom_in.svg");
+	      e.setAttribute("src", "/public/behaviours/zoomable/zoom_in.svg");
 	      e.addEventListener("click", () => setScale(.3));
 	      nav.appendChild(e);
 	}
@@ -35,7 +35,7 @@ export function zoomableInstrumentationCallback(nav) {
 	if (zoomOut == undefined) {
 		var e = document.createElement("img");
 	      e.setAttribute("class", "zoom-out");
-	      e.setAttribute("src", "./zoom_out.svg");
+	      e.setAttribute("src", "/public/behaviours/zoomable/zoom_out.svg");
 	      e.addEventListener("click", () => setScale(-.3));
 	      nav.appendChild(e);
 	}

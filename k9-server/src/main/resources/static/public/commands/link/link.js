@@ -1,8 +1,10 @@
-import { getContextMenu, registerActionableCallback, destroyContextMenu } from "/public/behaviours/actionable/actionable.js";
-import { transition, postCommands } from "/public/bundles/transition.js"
-import { getChangeUri, parseInfo, createUniqueId } from "/public/bundles/api.js";
-import { getHtmlCoords, getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
+export function initLinkContextMenuCallback(transition, templateLinkFunction) {
+	
+	
+	
+	
+}
 
 function getTemplateLinkSVG(svg) {
 	const template = document.querySelector("div.main [k9-info*=link][id]");
@@ -10,7 +12,7 @@ function getTemplateLinkSVG(svg) {
 	return template;
 }
 
-export function getLinkTarget(v) {
+function getLinkTarget(v) {
 	if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
 		if (parseInfo(v).connect) {
 			return v;

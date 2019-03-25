@@ -3,11 +3,14 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/common/basic.css");
-       @import url("dragable.css");
+       @import url("/public/behaviours/selectable/selectable.css");
+
     </svg:style>
     
-    <svg:script type="">
-      // import "/public/commands/move/move.js";
+    <svg:script type="module">
+      import { initDragable } from "./dragable.js";
+      
+      initDragable();
     </svg:script>
     
   </svg:defs>
