@@ -27,7 +27,7 @@ export class Metadata {
 	transitionCallback(response) {
 
 		for (var pair of response.headers.entries()) {
-			if (pair[0].startsWith("kite9:")) {
+			if (pair[0].startsWith("kite9-")) {
 				const name = pair[0].substring(6);
 				this.metadata[name] = pair[1];
 			}

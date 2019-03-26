@@ -88,7 +88,7 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 		}
 
 		for (Map.Entry<String, String> item : t.getMetaData().entrySet()) {
-			headers.set("kite9:"+item.getKey(), item.getValue());
+			headers.set("kite9-"+item.getKey(), item.getValue());
 		}
 	
 	}
