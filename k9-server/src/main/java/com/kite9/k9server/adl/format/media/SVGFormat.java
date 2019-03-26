@@ -35,7 +35,7 @@ public class SVGFormat implements Format {
 		try {
 			Transcoder transcoder = data.getTranscoder();
 			TranscoderInput in = new TranscoderInput(data.getAsDocument());
-			in.setURI(data.getUri());
+			in.setURI(data.getUri().toString());
 			StringWriter sw = new StringWriter();
 			TranscoderOutput out = new TranscoderOutput(sw);
 			transcoder.transcode(in, out);

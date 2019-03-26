@@ -1,6 +1,7 @@
 package com.kite9.k9server.command;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Collections;
 
@@ -36,15 +37,15 @@ public class CommandsTest {
 	@Autowired
 	CommandController commandController;
 	
-	public ADL getInitialADL() throws IOException {
+	public ADL getInitialADL() throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command1.xml"), Charset.forName("UTF-8"));
-		ADL adl = new ADLImpl(xml, "someuri");
+		ADL adl = new ADLImpl(xml, new URI("/public/commands/test_command1.xml"));
 		return adl;
 	}
 	
 
 	@Test
-	public void testSetXMLCommand() throws CommandException, IOException {
+	public void testSetXMLCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 
 		
@@ -59,7 +60,7 @@ public class CommandsTest {
 	}
 	
 	@Test
-	public void testMoveCommand() throws CommandException, IOException {
+	public void testMoveCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 
 		Move move = new Move();
@@ -73,19 +74,20 @@ public class CommandsTest {
 	}
 	
 	@Test
-	public void testDeleteCommand() throws CommandException, IOException {
+	public void testDeleteCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 
 		Delete delete = new Delete();
 		delete.fragmentId = "two";
 		delete.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
+		delete.cascade = true;
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(delete), in);
 		performSaveAndCheck(out, "delete");
 	}
 
 
-	public void performSaveAndCheck(ADL out, String name) throws IOException {
+	public void performSaveAndCheck(ADL out, String name) throws Exception {
 		String result = out.getAsXMLString();
 		TestingHelp.writeOutput(this.getClass(), null, name+".xml", result);
 		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_"+name+".xml"), Charset.forName("UTF-8"));
@@ -93,7 +95,7 @@ public class CommandsTest {
 	}
 	
 	@Test
-	public void testSetTextCommand() throws CommandException, IOException {
+	public void testSetTextCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 		
 		SetText setText = new SetText();
@@ -106,7 +108,7 @@ public class CommandsTest {
 	}
 	
 	@Test
-	public void testSetAttrCommand() throws CommandException, IOException {
+	public void testSetAttrCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 		
 		SetAttr setAttr = new SetAttr();
@@ -120,7 +122,7 @@ public class CommandsTest {
 	}
 	
 	@Test
-	public void testCopyCommand() throws CommandException, IOException {
+	public void testCopyCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
 		
 		String uri = this.getClass().getResource("/commands/test_command1.xml").toString()+"#one";

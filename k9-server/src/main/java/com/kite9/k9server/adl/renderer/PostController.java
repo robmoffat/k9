@@ -1,7 +1,10 @@
 package com.kite9.k9server.adl.renderer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
@@ -24,13 +27,14 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class PostController {
 	
 	@RequestMapping(path="/api/renderer", consumes= {MediaTypes.ADL_SVG_VALUE, MediaTypes.SVG_VALUE})
-	public @ResponseBody ADL echo(@RequestBody ADL input) {
+	public @ResponseBody ADL echo(@RequestBody ADL input, HttpServletRequest request) throws Exception {
+		input.setUri(new URI(request.getRequestURL().toString()));
 		return input;
 	}
 	
 	@RequestMapping(path="/api/renderer/test")
-	public @ResponseBody ADL testCard() throws IOException {
+	public @ResponseBody ADL testCard(HttpServletRequest request) throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test-card.xml"), Charset.defaultCharset());
-		return new ADLImpl(xml, "someurl");
+		return new ADLImpl(xml, new URI(request.getRequestURL().toString()));
 	}
 }

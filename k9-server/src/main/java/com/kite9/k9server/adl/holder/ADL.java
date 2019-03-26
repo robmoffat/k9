@@ -1,5 +1,6 @@
 package com.kite9.k9server.adl.holder;
 
+import java.net.URI;
 import java.util.Map;
 
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
@@ -15,7 +16,9 @@ import org.w3c.dom.Node;
  */
 public interface ADL {
 	
-	String getUri();
+	URI getUri();
+	
+	void setUri(URI u);
 	
 	String getAsXMLString();
 	

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,7 @@ public class RevisionController extends AbstractADLContentController<Revision> {
 	 * Returns the current revision ADL.
 	 */
 	@RequestMapping(path = "/{revisionId}"+CONTENT_URL, method= {RequestMethod.GET}) 
-	public @ResponseBody ADL input(@PathVariable("revisionId") long id, HttpServletRequest request) {
+	public @ResponseBody ADL input(@PathVariable("revisionId") long id, HttpServletRequest request) throws Exception {
 		Optional<Revision> or = ((RevisionRepository) repo).findById(id);
 		Revision r = or.orElseThrow(() ->  new HttpException(HttpStatus.NOT_FOUND, "No revision for "+id));
 		return buildADL(request, r);

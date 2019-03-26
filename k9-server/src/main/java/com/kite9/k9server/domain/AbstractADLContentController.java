@@ -1,5 +1,8 @@
 package com.kite9.k9server.domain;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +38,8 @@ public abstract class AbstractADLContentController<X extends AbstractLongIdEntit
 		resource.add(new Link(createContentControllerUrl(r.getId()) + CONTENT_URL, CONTENT_REL));
 	}
 	
-	public ADL buildADL(HttpServletRequest request, Revision r) {
-		String url = request.getRequestURL().toString();
+	public ADL buildADL(HttpServletRequest request, Revision r) throws URISyntaxException {
+		URI url = new URI(request.getRequestURI());
 		return new ADLImpl(r.getXml(), url);
 	}
 

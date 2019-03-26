@@ -1,5 +1,7 @@
 package com.kite9.k9server.domain.document.commands;
 
+import java.net.URI;
+
 import com.kite9.k9server.command.AbstractCommand;
 import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.revision.Revision;
@@ -8,7 +10,7 @@ public abstract class AbstractDocumentCommand extends AbstractCommand implements
 
 	protected DocumentRepository repo;
 	protected Revision currentRevision;
-	protected String url;
+	protected URI url;
 	
 	public AbstractDocumentCommand() {
 		super();
@@ -19,7 +21,7 @@ public abstract class AbstractDocumentCommand extends AbstractCommand implements
 	}
 	
 	@Override
-	public void setCommandContext(DocumentRepository repo, Revision current, String url) {
+	public void setCommandContext(DocumentRepository repo, Revision current, URI url) {
 		this.repo = repo;
 		this.currentRevision = current;
 		this.url = url;

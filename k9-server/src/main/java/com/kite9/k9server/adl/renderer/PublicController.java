@@ -2,6 +2,7 @@ package com.kite9.k9server.adl.renderer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,23 +28,23 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class PublicController {
 	
 	@GetMapping(path="/public/**/*.html", produces=MediaType.TEXT_HTML_VALUE)
-	public @ResponseBody ADL loadStaticHtml(HttpServletRequest request) throws IOException {
+	public @ResponseBody ADL loadStaticHtml(HttpServletRequest request) throws Exception {
 		String url = request.getRequestURL().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".html"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, url);
+		return new ADLImpl(xml, new URI(url));
 	}
 	
 	@GetMapping(path="/public/**/*.svg", produces=MediaTypes.SVG_VALUE)
-	public @ResponseBody ADL loadStaticSvg(HttpServletRequest request) throws IOException {
+	public @ResponseBody ADL loadStaticSvg(HttpServletRequest request) throws Exception {
 		String url = request.getRequestURL().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".svg"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, url);
+		return new ADLImpl(xml, new URI(url));
 	}
-
+	
 	private String loadXML(String resourceName) throws IOException {
 		InputStream resourceAsStream = this.getClass().getResourceAsStream(resourceName);
 		

@@ -30,7 +30,7 @@ public class SetXML extends AbstractCommand {
 		Element e = findFragmentElement(doc);
 
 		// replace the child elements with ids - these should stay as the original
-		ADLDocument nDoc = adl.loadXMLDocument(newState, adl.getUri());
+		ADLDocument nDoc = adl.loadXMLDocument(newState, adl.getUri().toString());
 		Element n = getSingleContentElement(nDoc, this);
 		replaceElementsWithIds(n, doc);
 		

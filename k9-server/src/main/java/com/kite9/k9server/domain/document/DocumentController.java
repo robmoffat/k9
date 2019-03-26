@@ -1,5 +1,6 @@
 package com.kite9.k9server.domain.document;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,6 @@ import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.document.commands.AbstractDocumentCommand;
 import com.kite9.k9server.domain.document.commands.HasDocument;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
@@ -60,7 +60,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	 * Returns the current revision contents.
 	 */
 	@RequestMapping(path = "/{documentId}"+CONTENT_URL, method= {RequestMethod.GET}) 
-	public @ResponseBody ADL input(@PathVariable("documentId") long id, HttpServletRequest request) {
+	public @ResponseBody ADL input(@PathVariable("documentId") long id, HttpServletRequest request) throws Exception {
 		Revision r = getCurrentRevision(id);
 		return addDocumentMeta(buildADL(request, r), r);
 	}
@@ -83,7 +83,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	public @ResponseBody ADL change(
 			@PathVariable("documentId") long id, 
 			HttpServletRequest request, 
-			@RequestBody List<Command> steps) {
+			@RequestBody List<Command> steps) throws Exception {
 		Revision rOld = getCurrentRevision(id);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		User u = userRepository.findByUsername(username);
@@ -93,7 +93,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		
 		if (isUndoRedo(request, steps, rOld)) {
 			ADL out = command.applyCommand(steps, adl);
-			return addDocumentMeta(out, ((AbstractDocumentCommand) steps.get(0)).getCurrentRevision());
+			return addDocumentMeta(out, ((HasDocument) steps.get(0)).getCurrentRevision());
 		} else {
 			// creates a new revision. Integrity and document changes are handled by 
 			// revisionRepository.
@@ -111,12 +111,12 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		}
 	}
 	
-	private boolean isUndoRedo(HttpServletRequest request, List<Command> steps, Revision r) {
+	private boolean isUndoRedo(HttpServletRequest request, List<Command> steps, Revision r) throws Exception {
 		boolean contextSet = false;
 		
 		for (Command command : steps) {
 			if (command instanceof HasDocument) {
-				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, request.getRequestURL().toString());
+				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, new URI(request.getRequestURI()));
 				contextSet = true;
 			}
 		}

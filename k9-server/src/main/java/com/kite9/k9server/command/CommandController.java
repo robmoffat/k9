@@ -1,6 +1,9 @@
 package com.kite9.k9server.command;
 
+import java.net.URI;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,9 +29,13 @@ public class CommandController {
 	@RequestMapping(method={RequestMethod.POST}, path="/api/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ADL applyCommand(
 			@RequestBody List<Command> steps,
-			@RequestParam(required=true, name="on") String sourceUri) throws CommandException {
+			HttpServletRequest req,
+			@RequestParam(required=true, name="on") String sourceUri) throws Exception {
 		
-		ADL input = new ADLImpl(sourceUri);
+		URI uri = new URI(sourceUri);
+		URI base = new URI(req.getRequestURI());
+		uri = base.resolve(uri);
+		ADL input = new ADLImpl(uri);
 		
 		return applyCommand(steps, input);
 	}

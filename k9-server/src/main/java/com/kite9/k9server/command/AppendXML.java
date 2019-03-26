@@ -29,7 +29,7 @@ public class AppendXML extends AbstractLocatedCommand {
 		validateFragmentHash(adl);
 
 		// create the new child element
-		ADLDocument nDoc = adl.loadXMLDocument(newState, adl.getUri());
+		ADLDocument nDoc = adl.loadXMLDocument(newState, adl.getUri().toString());
 		Element n = getSingleContentElement(nDoc, this);
 		replaceElementsWithIds(n, doc);
 		

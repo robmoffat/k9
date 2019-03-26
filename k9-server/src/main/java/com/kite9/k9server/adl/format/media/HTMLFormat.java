@@ -77,7 +77,7 @@ public class HTMLFormat implements Format {
 		try {
 			Transcoder transcoder = data.getTranscoder();
 			TranscoderInput in = new TranscoderInput(data.getAsDocument());
-			in.setURI(data.getUri());
+			in.setURI(data.getUri().toString());
 			TranscoderOutput to = new TranscoderOutput();
 			transcoder.transcode(in, to);
 			Element e = to.getDocument().getDocumentElement();

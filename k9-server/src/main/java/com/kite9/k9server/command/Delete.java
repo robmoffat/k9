@@ -15,7 +15,7 @@ public class Delete extends AbstractCommand {
 		super();
 	}
 	
-	private boolean cascade;
+	protected boolean cascade;
 	
 	public Delete(String fragmentId, String fragmentHash, boolean cascade) {
 		super(fragmentId, fragmentHash);
@@ -41,7 +41,11 @@ public class Delete extends AbstractCommand {
 			NodeList children = e.getChildNodes();
 			while (children.getLength() > 0) {
 				Node c = children.item(0);
-				parent.insertBefore(c, e);
+				if (c instanceof Element) {
+					parent.insertBefore(c, e);
+				} else {
+					e.removeChild(c);
+				}
 			}
 		}
 		

@@ -1,10 +1,9 @@
 package com.kite9.k9server.adl.holder;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +45,7 @@ public class ADLImpl implements ADL {
 	};
 
 	private String xml;
-	private String uri;
+	private URI uri;
 	
 	@JsonIgnore
 	private ADLDocument doc;
@@ -61,11 +60,11 @@ public class ADLImpl implements ADL {
 	public ADLImpl() {
 	}
 
-	public ADLImpl(String uri) {
+	public ADLImpl(URI uri) {
 		this.uri = uri;
 	}
 
-	public ADLImpl(String content, String uri) {
+	public ADLImpl(String content, URI uri) {
 		this.xml = content;
 		this.uri = uri;
 		this.xmlHash = Hash.generateSHA1Hash(content);
@@ -103,18 +102,18 @@ public class ADLImpl implements ADL {
 		}
 		
 		if (getMode() == Mode.STRING) {
-			doc = loadXMLDocument(xml, uri);
+			doc = loadXMLDocument(xml, uri.toString());
 			xml = null;
 		}
 		return doc;
 	}
 
-	public static String toXMLString(String uri) {
+	public static String toXMLString(URI uri) {
 		try {
-			InputStream in = new URL(uri).openStream();
+			InputStream in = uri.toURL().openStream();
 			return StreamUtils.copyToString(in, Charset.forName("UTF-8"));
-		} catch (IOException e) {
-			throw new Kite9ProcessingException("Couldn't get content from: " + uri, e);
+		} catch (Exception u) {
+			throw new Kite9ProcessingException("Couldn't get content from: " + uri, u);
 		}
 	}
 	
@@ -145,10 +144,13 @@ public class ADLImpl implements ADL {
 	}
 
 	@Override
-	public String getUri() {
+	public URI getUri() {
 		return uri;
 	}
 	
+	public void setUri(URI u) {
+		this.uri = u;
+	}
 	
 
 	@Override

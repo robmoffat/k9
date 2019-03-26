@@ -74,9 +74,7 @@ public class Copy extends AbstractLocatedCommand {
 			return out;
 			
 		} else {
-			String fullUri = uri.toString();
-			String documentUri = fullUri.substring(0, fullUri.length() - id.length());
-			ADLDocument toInsert = new ADLImpl(documentUri).getAsDocument();
+			ADLDocument toInsert = new ADLImpl(uri).getAsDocument();
 			Element out = toInsert.getElementById(id);
 			return out;
 		}
