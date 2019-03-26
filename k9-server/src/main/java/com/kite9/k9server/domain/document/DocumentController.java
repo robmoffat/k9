@@ -116,7 +116,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		
 		for (Command command : steps) {
 			if (command instanceof HasDocument) {
-				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, new URI(request.getRequestURI()));
+				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, new URI(request.getRequestURL().toString()));
 				contextSet = true;
 			}
 		}

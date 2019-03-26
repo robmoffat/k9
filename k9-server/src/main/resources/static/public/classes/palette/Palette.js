@@ -72,6 +72,7 @@ export class Palette {
 	}
 	
 	destroy() {
+		var palette = document.querySelector("#--palette");
 		palette.style.display = 'none';
 	}
 }

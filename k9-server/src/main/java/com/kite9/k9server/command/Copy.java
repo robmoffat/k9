@@ -30,7 +30,7 @@ public class Copy extends AbstractLocatedCommand {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			performCopy(doc);
+			performCopy(adl.getUri(), doc);
 		} catch (Exception e) {
 			throw new CommandException("Couldn't copy", e, this);
 		}
@@ -39,8 +39,8 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
-	protected Element performCopy(ADLDocument doc) throws URISyntaxException {
-		Element insert = getElementToInsert(doc, uriStr);
+	protected Element performCopy(URI baseUri, ADLDocument doc) throws URISyntaxException {
+		Element insert = getElementToInsert(doc, baseUri, uriStr);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);
@@ -65,19 +65,19 @@ public class Copy extends AbstractLocatedCommand {
 	}
 
 
-	public Element getElementToInsert(ADLDocument currentDoc, String uriStr) throws URISyntaxException {
-		URI uri = new URI(uriStr);
-		String id = uri.getFragment();
-		if (uriStr.startsWith("#")) {
-			Element template = currentDoc.getElementById(id);
-			Element out = (Element) template.cloneNode(true);	
-			return out;
-			
-		} else {
-			ADLDocument toInsert = new ADLImpl(uri).getAsDocument();
-			Element out = toInsert.getElementById(id);
-			return out;
-		}
+	public Element getElementToInsert(ADLDocument currentDoc, URI baseUri, String uriStr) throws URISyntaxException {
+		String id = uriStr.substring(uriStr.indexOf("#")+1);
+		String location = uriStr.substring(0, uriStr.indexOf("#"));
+		
+		if (location.length() > 0) {
+			// referencing a different doc.
+			URI uri = baseUri.resolve(location);
+			currentDoc = new ADLImpl(uri).getAsDocument();
+		} 
+		
+		Element template = currentDoc.getElementById(id);
+		Element out = (Element) template.cloneNode(true);	
+		return out;
 	}
 
 	

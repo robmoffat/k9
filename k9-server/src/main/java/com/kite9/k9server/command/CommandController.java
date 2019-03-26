@@ -33,7 +33,7 @@ public class CommandController {
 			@RequestParam(required=true, name="on") String sourceUri) throws Exception {
 		
 		URI uri = new URI(sourceUri);
-		URI base = new URI(req.getRequestURI());
+		URI base = new URI(req.getRequestURL().toString());
 		uri = base.resolve(uri);
 		ADL input = new ADLImpl(uri);
 		

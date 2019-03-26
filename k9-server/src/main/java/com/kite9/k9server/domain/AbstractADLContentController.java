@@ -39,7 +39,7 @@ public abstract class AbstractADLContentController<X extends AbstractLongIdEntit
 	}
 	
 	public ADL buildADL(HttpServletRequest request, Revision r) throws URISyntaxException {
-		URI url = new URI(request.getRequestURI());
+		URI url = new URI(request.getRequestURL().toString());
 		return new ADLImpl(r.getXml(), url);
 	}
 
