@@ -1,6 +1,6 @@
 import { getMainSvg } from '/public/bundles/screen.js';
 
-var magnification = 1;
+var magnification = null;
 const main = document.querySelector("div.main");
 const svg = getMainSvg();
 
@@ -21,9 +21,6 @@ export function zoomableInstrumentationCallback(nav) {
 	var zoomIn = nav.querySelector(".zoom-in");
 	var zoomOut = nav.querySelector(".zoom-out");
 	
-	
-	setScale(1);
-	
 	if (zoomIn == undefined) {
 		var e = document.createElement("img");
 	      e.setAttribute("class", "zoom-in");
@@ -41,10 +38,20 @@ export function zoomableInstrumentationCallback(nav) {
 	}
 	
 	window.addEventListener('load', function(event) {
+		if (magnification == undefined) {
+			// need to calculate initial magnification
+			var windowWidth = window.innerWidth;
+			var windowHeight = window.innerHeight;
+			var {x, y, width, height} = getMainSvg().getBoundingClientRect();
+			var scaleX = windowWidth / width;
+			var scaleY = windowHeight /height;
+			magnification = Math.min(scaleX, scaleY);
+		} 
+		
 		setScale(magnification);
 	})
 }
 
-export function zoomableTransitionCallback(resp) {
+export function zoomableTransitionCallback(anim) {
 	setScale(magnification);
 }

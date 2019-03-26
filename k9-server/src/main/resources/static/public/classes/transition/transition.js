@@ -72,7 +72,9 @@ function reconcileAttributes(fromElement, toElement, tl) {
 				end[a] = number(toValue);
 				start[a] = number(fromValue);
 			} else if (a == 'style') {
-				reconcileStyles(fromElement, toElement, tl, start, end);
+				if (fromElement.tagName != 'svg') {
+					reconcileStyles(fromElement, toElement, tl, start, end);
+				}
 			} else if (a == 'd') {
 				end[a] = toValue;
 				start[a] = fromValue;
@@ -123,9 +125,9 @@ function getTotalTranslate(e) {
 
 function reconcileElement(inFrom, inTo, toDelete, tl) {
 	console.log("Reconciling " + inFrom.tagName + ' with ' + inTo.tagName + " " + inFrom.getAttribute("id") + " " + inTo.getAttribute("id"))
+	
 	handleTransformAsStyle(inFrom);
 	handleTransformAsStyle(inTo);
-
 	reconcileAttributes(inFrom, inTo, tl);
 
 	if (inTo.childElementCount == 0) {
@@ -212,8 +214,9 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(cb) {
-		this.callbacks = cb == undefined ? [] : cb;
+	constructor(loadCallbacks, animationCallbacks) {
+		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
+		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 	}
 
 	
@@ -228,10 +231,15 @@ export class Transition {
 		// create the animation timeline
 		var tl = anime.timeline({
 			easing: 'easeOutExpo',
-			duration: 1000
+			duration: 1000,
+			autoplay: false,
+			complete: (anim) => this.animationCallbacks.forEach(cb => cb(anim))
+
 		});
 
 		reconcileElement(svg, documentElement, toDelete, tl);
+		
+		tl.play();
 
 		// force the load event to occur again
 		var evt = document.createEvent('Event');
@@ -253,7 +261,7 @@ export class Transition {
 		p
 			.then(this.handleErrors)
 			.then(response => {
-				this.callbacks.forEach(cb => cb(response));
+				this.loadCallbacks.forEach(cb => cb(response));
 				return response;
 			})
 			.then(response => response.text())

@@ -41,6 +41,7 @@ var metadata = new Metadata([
 
 var transition = new Transition([
 	(r) => metadata.transitionCallback(r),
+],[
 	zoomableTransitionCallback
 ]);
 
