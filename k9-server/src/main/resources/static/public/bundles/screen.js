@@ -1,16 +1,6 @@
+import { parseTransform } from './api.js';
 
 var svg;
-
-export function getTrueCoords(evt) {
-	// find the current zoom level and pan setting, and adjust the reported
-	//    mouse position accordingly
-	var newScale = svg.currentScale;
-	var translation = svg.currentTranslate;
-	return {
-		x:  (evt.clientX - translation.x) / newScale,
-		y:  (evt.clientY - translation.y) / newScale
-	}
-}
 
 export function getMainSvg() {
 	if (svg == undefined) {
@@ -21,7 +11,17 @@ export function getMainSvg() {
 
 
 export function getHtmlCoords(evt) {
-	return {x: evt.pageX, y: evt.pageY };
+	var out =  {x: evt.pageX, y: evt.pageY};
+	return out;
+}
+
+export function getSVGCoords(evt) {
+	var out = getHtmlCoords(evt);
+	var transform = getMainSvg().style.transform;
+	var t = parseTransform(transform);
+	out.x = out.x / t.scaleX;
+	out.y = out.y / t.scaleY;
+	return out;
 }
 
 export function getElementPageBBox(e) {

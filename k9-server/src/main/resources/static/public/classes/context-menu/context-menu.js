@@ -37,8 +37,8 @@ export class ContextMenu {
 			
 			const coords = getHtmlCoords(event);
 			
-			ctxMenu.style.left = (coords.x + 22)+"px";
-			ctxMenu.style.top = (coords.y-33)+"px";
+			ctxMenu.style.left = (coords.x + 15)+"px";
+			ctxMenu.style.top = (coords.y-20)+"px";
 			
 			console.log(event);
 			

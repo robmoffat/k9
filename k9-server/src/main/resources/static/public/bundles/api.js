@@ -74,8 +74,13 @@ function parseTransform(a) {
     }
     
     if (b.scale) {
-    	b.scaleX = b.scale[0];
-    	b.scaleY = b.scale[1];
+    	if (b.scale.length) {
+	    	b.scaleX = b.scale[0];
+	    	b.scaleY = b.scale[1];
+    	} else {
+    		b.scaleX = b.scale;
+	    	b.scaleY = b.scale;
+    	}
     	delete b.scale;
     }
     

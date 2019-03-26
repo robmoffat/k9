@@ -3,7 +3,7 @@
  * You can't drop into an element unless it has 
  */
 import { getChangeUri, parseInfo } from "/public/bundles/api.js";
-import { getTrueCoords } from '/public/bundles/screen.js';
+import { getSVGCoords } from '/public/bundles/screen.js';
 
 /**
  * Keeps track of any links we've animated moving.
@@ -64,7 +64,7 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 	dragTargets.forEach(dt => {
 		const debug = parseInfo(dt);
 		if (isTerminator(debug)) {
-			const coords = getTrueCoords(evt);
+			const coords = getSVGCoords(evt);
 			
 			const id = debug.terminates;
 			const linkElem = document.getElementById(id);

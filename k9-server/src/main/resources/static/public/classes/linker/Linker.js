@@ -1,4 +1,4 @@
-import { getHtmlCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js' ;
+import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js' ;
 import { createUniqueId, parseInfo } from '/public/bundles/api.js'; 
 
 /**
@@ -60,7 +60,7 @@ export class Linker {
 	}
 	
 	move(evt) {
-		this.mouseCoords = getHtmlCoords(evt);
+		this.mouseCoords = getSVGCoords(evt);
 		this.drawing.forEach(e => this.setPath(e, e.start, this.mouseCoords));
 	}
 

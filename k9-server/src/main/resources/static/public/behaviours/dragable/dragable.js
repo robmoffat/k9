@@ -1,4 +1,4 @@
-import { getHtmlCoords } from '/public/bundles/screen.js';
+import { getSVGCoords } from '/public/bundles/screen.js';
 import { handleTransformAsStyle } from '/public/bundles/api.js';
 
 /**
@@ -106,7 +106,7 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		});
 		
 		if (out.length > 0) {
-			dragOrigin = getHtmlCoords(evt);
+			dragOrigin = getSVGCoords(evt);
 			
 			// make sure the order of the state is such that we don't run 
 			// into trouble with insertBefore.
@@ -145,17 +145,11 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		
 		if (state) {
 			// calculate move in true coords
-			var trueCoords = getHtmlCoords(evt);
-			var changeTrueCoords = {
+			var trueCoords = getSVGCoords(evt);
+			delta = {
 					x:  trueCoords.x - dragOrigin.x, 
 					y:  trueCoords.y - dragOrigin.y
 			};
-			
-			// calculate move in shape coords
-			delta = {
-					x: changeTrueCoords.x * svg.currentScale,
-					y: changeTrueCoords.y * svg.currentScale
-			}
 
 			// apply a new tranform translation to the dragged element, to display
 			//    it in its new location
