@@ -7,11 +7,11 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
 
-     <g id="b1" class="box hoverable selectable"><g id="fs1" class="text hoverable">Pick Me 1</g></g>
+     <g id="b1" class="box hoverable selectable insertable"><g id="fs1" class="text hoverable">Pick Me 1</g></g>
      
-     <g id="b2" class="box hoverable selectable"><g id="fs1" class="text hoverable">Pick Me 2</g></g>
+     <g id="b2" class="box hoverable selectable insertable"><g id="fs1" class="text hoverable">Pick Me 2</g></g>
      
-     <g id="b3" class="box hoverable selectable"><g id="fs1" class="text hoverable">Pick Me 3</g></g>
+     <g id="b3" class="box hoverable selectable insertable"><g id="fs1" class="text hoverable">Pick Me 3</g></g>
      
    </diagram>
 </svg:svg>

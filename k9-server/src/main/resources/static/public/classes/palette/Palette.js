@@ -18,23 +18,16 @@ export class Palette {
 		    link.media = 'all';
 		    head.appendChild(link);
 		}
-	}
-	
-	handleErrors(response) {
-		if (!response.ok) {
-			return response.json().then(j => {
-				console.log(JSON.stringify(j));
-				throw new Error(j.message);
-			});
+		
+		var darken = document.querySelector("#--darken");
+		if (!darken) {
+			darken = document.createElement("div");
+			darken.setAttribute("id", "--darken");
+			darken.setAttribute("class", "darken");
+			document.querySelector("body").appendChild(darken);
+			darken.style.display = 'none';
 		}
-		return response;
-	}
-	
-	getUri() {
-		return this.paletteUri;
-	}
-	
-	get(event) {
+		
 		var palette = document.querySelector("#--palette");
 		if (!palette) {
 			palette = document.createElement("div");
@@ -60,19 +53,60 @@ export class Palette {
 				palette.appendChild(doc.documentElement);
 				this.callbacks.forEach(cb => cb(this, event));
 				
+				// ensure the palette appears in the centre of the screen
+				var {width, height} = palette.getBoundingClientRect();
+				this.paletteWidth = width;
+				this.paletteHeight = height;
+				
 				// force the load event to occur again
 				var evt = document.createEvent('Event');
 				evt.initEvent('load', false, false);
 				window.dispatchEvent(evt);
 			});
 		}
-			
-		palette.style.display = 'block';
+	}
+	
+
+	
+	handleErrors(response) {
+		if (!response.ok) {
+			return response.json().then(j => {
+				console.log(JSON.stringify(j));
+				throw new Error(j.message);
+			});
+		}
+		return response;
+	}
+	
+	getUri() {
+		return this.paletteUri;
+	}
+	
+	get(event) {
+		return document.querySelector("#--palette");
+	}
+		
+	open(event) {
+		var darken = document.querySelector("#--darken");
+		var palette = document.querySelector("#--palette");
+		
+		var width = Math.min(this.paletteWidth, window.innerWidth-100);
+		var height = Math.min(this.paletteHeight, window.innerHeight-100);
+		
+		palette.style.marginTop= (-height/2)+"px";
+		palette.style.marginLeft= (-width/2)+"px";
+		palette.style.width = (width)+"px";
+		palette.style.height = (height)+"px";
+		palette.style.visibility = 'visible';
+		darken.style.display = 'block';
+		
 		return palette;	
 	}
 	
 	destroy() {
 		var palette = document.querySelector("#--palette");
-		palette.style.display = 'none';
+		var darken = document.querySelector("#--darken");
+		palette.style.visibility = 'hidden';
+		darken.style.display = 'none';
 	}
 }

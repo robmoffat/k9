@@ -50,7 +50,7 @@ var transition = new Transition([
 var instrumentation = new Instrumentation([
 	identityInstrumentationCallback,
 	createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
-	zoomableInstrumentationCallback
+	zoomableInstrumentationCallback,
 	]);
 
 var linker = new Linker([

@@ -39,7 +39,7 @@ public class CreateLink extends Copy {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			Element insert = performCopy(doc);
+			Element insert = performCopy(adl.getUri(), doc);
 			
 			if ((linkId != null) && (doc.getElementById(linkId) == null)) {
 				insert.setAttribute("id", linkId);
