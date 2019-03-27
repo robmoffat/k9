@@ -30,11 +30,21 @@ export class Palette {
 		
 		var palette = document.querySelector("#--palette");
 		if (!palette) {
+			
+			// create palette
 			palette = document.createElement("div");
 			palette.setAttribute("id", "--palette");
 			palette.setAttribute("class", "palette");
 			document.querySelector("body").appendChild(palette);
-
+			
+			// add cancel button
+			var cancel = document.createElement("img");
+			cancel.setAttribute("src", "/public/classes/palette/cancel.svg");
+			cancel.setAttribute("class", "cancel");
+			cancel.addEventListener("click", () => this.destroy());
+			palette.appendChild(cancel);
+			
+			// populate it
 			fetch(this.paletteUri+".svg", {
 				credentials: 'include',
 				method: 'GET',
@@ -50,11 +60,16 @@ export class Palette {
 				return parser.parseFromString(text, "image/svg+xml");
 			})
 			.then(doc => {
-				palette.appendChild(doc.documentElement);
+				
+				// create scrollable area
+				var scrollable = document.createElement("div");
+				scrollable.setAttribute("class", "scrollable");
+				palette.appendChild(scrollable);
+				scrollable.appendChild(doc.documentElement);
 				this.callbacks.forEach(cb => cb(this, event));
 				
 				// ensure the palette appears in the centre of the screen
-				var {width, height} = palette.getBoundingClientRect();
+				var {width, height} = scrollable.getBoundingClientRect();
 				this.paletteWidth = width;
 				this.paletteHeight = height;
 				

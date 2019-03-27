@@ -48,3 +48,7 @@
 	background-color: #EEEEEE;
 	margin: 0 2px 0 2px;
 }
+
+.contextMenu img:hover {
+	background-color: #DDDDDD;
+}

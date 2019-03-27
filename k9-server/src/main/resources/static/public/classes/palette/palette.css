@@ -15,7 +15,29 @@
 	user-select: none; 
 	-webkit-user-select: none;
 	z-index: 100;
-	overflow: scroll;
+	padding: 3px;
+}
+
+.palette .scrollable {
+	overflow: auto;
+	padding: 0;
+}
+
+.palette img.cancel {
+	position: absolute;
+	left: -50px;
+	top: 0;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	border-radius: 20px;
+	background-color: #EEEEEE;
+	margin: 0 2px 0 2px;
+	float: left;
+}
+
+.palette img.cancel:hover {
+	background-color: #DDDDDD;
 }
 
 .darken {

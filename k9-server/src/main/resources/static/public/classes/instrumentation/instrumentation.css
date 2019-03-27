@@ -29,3 +29,7 @@
 	margin: 0 2px 0 2px;
 	opacity: 1;
 }
+
+.instrumentation img:hover {
+	background-color: #DDDDDD;
+}
