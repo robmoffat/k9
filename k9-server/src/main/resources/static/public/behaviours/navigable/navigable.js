@@ -1,13 +1,19 @@
-export function initNavigable(transition) {
+export function initNavigable(transition, selector) {
 
 	function onClick(event) {
 		var v = event.currentTarget;
 		var url = v.getAttribute("href");
 		transition.get(url);
 	}
+	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("div.main [href]");
+		}
+	}
 
 	window.addEventListener('load', function() {
-		document.querySelector("div.main").querySelectorAll("[href]").forEach(function(v) {
+		selector().forEach(function(v) {
 			v.removeEventListener("click", onClick);
 			v.addEventListener("click", onClick);
 	    })

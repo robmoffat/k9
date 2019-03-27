@@ -16,11 +16,8 @@ import { Palette } from '/public/classes/palette/Palette.js';
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
 import { initDragable } from '/public/behaviours/dragable/dragable.js' 
 import { initLinkable } from '/public/behaviours/linkable/linkable.js';
-
-
-// Context Menu Imports
-
-//@script url('/public/commands/link/link.js');
+import { initSelectable } from '/public/behaviours/selectable/selectable.js';
+import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
 
 // Instrumentation Imports
 
@@ -37,44 +34,52 @@ import { initLinkLinkerCallback, initLinkContextMenuCallback } from '/public/com
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
 
 
-var metadata = new Metadata([
-	identityMetadataCallback, 
-	undoableMetadataCallback ]);
+export function initEditable(paletteUrl) {
 
-var transition = new Transition([
-	(r) => metadata.transitionCallback(r),
-],[
-	zoomableTransitionCallback
-]);
-
-var instrumentation = new Instrumentation([
-	identityInstrumentationCallback,
-	createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
-	zoomableInstrumentationCallback,
+	var metadata = new Metadata([
+		identityMetadataCallback, 
+		undoableMetadataCallback ]);
+	
+	var transition = new Transition([
+		(r) => metadata.transitionCallback(r),
+	],[
+		zoomableTransitionCallback
 	]);
+	
+	var instrumentation = new Instrumentation([
+		identityInstrumentationCallback,
+		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
+		zoomableInstrumentationCallback,
+		]);
+	
+	var linker = new Linker([
+		initLinkLinkerCallback(transition)
+	]);
+	
+	
+	var palette = new Palette([
+		initInsertPaletteCallback(transition)
+	], paletteUrl);
+	
+	var contextMenu = new ContextMenu([ 
+		initDeleteContextMenuCallback(transition),
+		initLinkContextMenuCallback(transition, linker),
+		initInsertContextMenuCallback(palette)
+	]);
+	
+	
+	initActionable(contextMenu);
+	
+	initDragable([
+		moveDragableMoveCallback,
+	], [
+		createMoveDragableDropCallback(transition)	
+	]);
+	
+	initLinkable(linker);
+	
+	initSelectable();
+	
+	initHoverable();
 
-var linker = new Linker([
-	initLinkLinkerCallback(transition)
-]);
-
-
-var palette = new Palette([
-	initInsertPaletteCallback(transition)
-], '/public/behaviours/editable/palette-example');
-
-var contextMenu = new ContextMenu([ 
-	initDeleteContextMenuCallback(transition),
-	initLinkContextMenuCallback(transition, linker),
-	initInsertContextMenuCallback(palette)
-]);
-
-
-initActionable(contextMenu);
-
-initDragable([
-	moveDragableMoveCallback,
-], [
-	createMoveDragableDropCallback(transition)	
-]);
-
-initLinkable(linker);
+}

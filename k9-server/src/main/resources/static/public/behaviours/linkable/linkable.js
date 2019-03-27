@@ -2,10 +2,8 @@
  * Contains the functionality for linking drawing links between selected elements 
  * and a target.
  */
-export function initLinkable(linker)  {
+export function initLinkable(linker, selector)  {
 	
-	var svg = document.querySelector("div.main svg");
-
 	/**
 	 * This should only be called once.  Adds the delete-key shortcut.
 	 */
@@ -27,9 +25,15 @@ export function initLinkable(linker)  {
 	function end(event) {
 		linker.end(event);
 	}
+	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("div.main svg [id][k9-elem][k9-info*=connect]");
+		}
+	}
 
 	window.addEventListener('load', function(event) {
-		svg.querySelectorAll("[id][k9-elem][k9-info*=connect]").forEach(function(v) {
+		selector().forEach(function(v) {
 			v.removeEventListener("mousemove", move);
 			v.removeEventListener("mouseup", end);
 			v.addEventListener("mousemove", move);

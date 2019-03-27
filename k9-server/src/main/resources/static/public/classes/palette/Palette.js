@@ -1,5 +1,5 @@
 /**
- * Provides functionality for populating/ showing/ hiding the palette.  
+ * Provides functionality for populating/ showing/ hiding a palette.  
  */
 export class Palette {
 

@@ -1,7 +1,7 @@
 /**
  * Allows the context menu to appear when the user clicks an element with an id
  */    
-export function initActionable(contextMenu) {
+export function initActionable(contextMenu, selector) {
 
 	/**
 	 * Displays a context menu when the user clicks on an element.
@@ -11,10 +11,16 @@ export function initActionable(contextMenu) {
 		contextMenu.handle(event);
 		event.stopPropagation();
 	}
+	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("div.main [id]");
+		}
+	}
 
 	window.addEventListener('load', function() {
 		
-		document.querySelector("div.main").querySelectorAll("[id]").forEach(function(v) {
+		selector().forEach(function(v) {
 	    	// set up listeners
 	    	v.removeEventListener("click", click);
 	    	v.addEventListener("click", click);

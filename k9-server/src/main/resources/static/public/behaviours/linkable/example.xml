@@ -10,7 +10,9 @@
     <svg:script type="module">
       import { Linker } from "/public/classes/linker/linker.js"
       import { initLinkable } from "./linkable.js";
+      import { initSelectable } from '/public/behaviours/selectable/selectable.js'
       
+      initSelectable();
       initLinkable(new Linker([ (l, e) => l.removeDrawingLinks() ]));
     </svg:script>
     

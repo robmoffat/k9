@@ -1,21 +1,8 @@
 import { getSVGCoords } from '/public/bundles/screen.js';
 import { handleTransformAsStyle } from '/public/bundles/api.js';
 
-/**
- * Adds functionality to allow any element with a drag="yes" attribute
- * to be dragged.
- */
-export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHere) {
+export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable, canDropHere) {
 	
-	/**
-	 * Drag and drop is controlled by the 'drag' attribute:
-	 *  - 'yes': the element can be dragged.   
-	 *  - 'target':  you can drop here.
-	 *  - 'from': it's drag-able, but it's the from-end of a link
-	 *  - 'to: it's drag-able, but it's the to-end of a link.
-	 *  - 'link': you can link to it.
-	 */
-
 	var svg = null;
 
 	// keeps track of the current drag
@@ -30,6 +17,14 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		return out == null ? "" : out;
 	}
 	
+	/**
+	 * Drag and drop is controlled by the 'drag' attribute:
+	 *  - 'yes': the element can be dragged.   
+	 *  - 'target':  you can drop here.
+	 *  - 'from': it's drag-able, but it's the from-end of a link
+	 *  - 'to: it's drag-able, but it's the to-end of a link.
+	 *  - 'link': you can link to it.
+	 */
 	if (isDragable == undefined) {
 		isDragable = function(v) {
 			return dragAttribute(v).includes("yes");
@@ -208,11 +203,17 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		}
 	}
 
-	function intersects(a, b) {
-	    return a.map(e => b.indexOf(e) > -1).reduce((a,b) => a||b, false);
-	}
 
+	/**
+	 * In this case, we look for the 'drop' attribute, and check that there is 
+	 * some intersection with the items in the 'drag' attribute.
+	 */
 	if (canDropHere == undefined) {
+		
+		function intersects(a, b) {
+		    return a.map(e => b.indexOf(e) > -1).reduce((a,b) => a||b, false);
+		}
+
 		canDropHere = function(dragTarget, dropTarget) {
 			if (dropTarget == null) {
 				return false;
@@ -267,6 +268,12 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		}
 	});
 	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("div.main [id][k9-elem]");
+		}
+	}
+	
 	window.addEventListener('load', function(event) {
 
 		svg = document.querySelector("div.main svg");
@@ -275,7 +282,7 @@ export function initDragable(moveCallbacks, dropCallbacks, isDragable, canDropHe
 		svg.addEventListener("mousemove", drag);
 		svg.addEventListener("mouseup", drop);
 
-		svg.querySelectorAll("[id][k9-elem]").forEach(function(v) {
+		selector().forEach(function(v) {
 			console.log("Adding e.l. to " + v.getAttribute("id"))
 			v.removeEventListener("mousemove", drag);
 			v.removeEventListener("mouseup", drop);

@@ -6,6 +6,13 @@
        @import url("/public/behaviours/editable/editable.css");
     </svg:style>
     
+    <svg:script type="module">
+      import { initEditable } from './editable.js';
+    
+      initEditable('/public/behaviours/editable/palette-example');
+      
+    </svg:script>
+    
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia">
 
