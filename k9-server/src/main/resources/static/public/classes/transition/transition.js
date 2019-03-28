@@ -120,7 +120,18 @@ function getTotalTranslate(e) {
 	return out;
 }
 
+function removeNonElementContent(el) {
+	var child = el.firstChild;
+	var nextChild;
 
+	while (child) {
+	    nextChild = child.nextSibling;
+	    if (child.nodeType == 3) {
+	        el.removeChild(child);
+	    }
+	    child = nextChild;
+	}
+}
 
 
 function reconcileElement(inFrom, inTo, toDelete, tl) {
@@ -135,7 +146,10 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 	} else {
 		var ti = 0;
 		var fi = 0;
-
+		
+		removeNonElementContent(inFrom);
+		removeNonElementContent(inTo);
+		
 		while (ti < inTo.childElementCount) {
 			const toElement = inTo.children.item(ti);
 			const fromElement = (fi < inFrom.childElementCount) ? inFrom.children.item(fi) : null;

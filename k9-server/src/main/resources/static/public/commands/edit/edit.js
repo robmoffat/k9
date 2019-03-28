@@ -30,11 +30,14 @@ export function initEditContextMenuCallback(transition) {
 			img.addEventListener("click", function(event) {
 				
 				const defaultText = document.querySelector(".lastSelected text").textContent;
-				const newText = prompt("Enter New Text", defaultText)
-				
-				const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
+				const newText = prompt("Enter New Text", defaultText);
 				cm.destroy();
-				transition.postCommands(steps, getChangeUri());
+				
+				if (newText) {
+					const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
+					transition.postCommands(steps, getChangeUri());
+				}
+				
 				
 			});
 		}
