@@ -47,11 +47,11 @@ export function initHoverable(selector, css) {
 	}
 
 	if (selector == undefined) {
-		selector = "svg [id][k9-elem]";
+		selector = function() { return document.querySelectorAll("div.main svg [id][k9-elem]"); }
 	}
 	
 	window.addEventListener('load', function() {
-		document.querySelectorAll(selector).forEach(function(v) {
+		selector().forEach(function(v) {
 	    	v.removeEventListener("mouseover", mouseover);
 	    	v.addEventListener("mouseover", mouseover);
 	    	v.removeEventListener("mouseout", mouseout);

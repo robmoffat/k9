@@ -32,9 +32,11 @@ import { createMoveDragableDropCallback, moveDragableMoveCallback } from '/publi
 import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
 import { initLinkLinkerCallback, initLinkContextMenuCallback } from '/public/commands/link/link.js';
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
+import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 
+var initialized = false;
 
-export function initEditable(paletteUrl) {
+function initEditor() {
 
 	var metadata = new Metadata([
 		identityMetadataCallback, 
@@ -57,15 +59,16 @@ export function initEditable(paletteUrl) {
 	]);
 	
 	
-	var palette = new Palette([
+	var shapePalette = new Palette([
 		initInsertPaletteCallback(transition)
-	], paletteUrl);
+	], document.params['shape-palette']);
 	
 	var contextMenu = new ContextMenu([ 
 		initDeleteContextMenuCallback(transition),
 		initLinkContextMenuCallback(transition, linker),
-		initInsertContextMenuCallback(palette)
-	]);
+		initInsertContextMenuCallback(shapePalette), 
+		initEditContextMenuCallback(transition)
+	]); 
 	
 	
 	initActionable(contextMenu);
@@ -80,6 +83,21 @@ export function initEditable(paletteUrl) {
 	
 	initSelectable();
 	
-	initHoverable();
+	initHoverable();		// init for main svg area
+	
+	initHoverable(function() { return document.querySelectorAll("div.palette svg [id][k9-elem].insertable"); });
 
 }
+
+
+
+
+window.addEventListener('load', function(event) {
+
+	if (!initialized) {
+		initEditor();
+		initialized = true;
+	}
+	
+})
+

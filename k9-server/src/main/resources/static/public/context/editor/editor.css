@@ -1,0 +1,8 @@
+/*
+ Compose the functionality.
+*/
+@script url(editor.js);
+
+diagram {
+	kite9-padding: 120px;	/* ensures enough space to drag in */
+}

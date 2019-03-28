@@ -2,7 +2,7 @@ import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri } from "/public/bundles/api.js";
 
 
-export function initDeleteContextMenuCallback(transition) {
+export function initDeleteContextMenuCallback(transition, selector) {
 	
 	/**
 	 * Takes a node and creates a delete command.
