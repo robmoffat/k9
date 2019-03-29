@@ -41,6 +41,9 @@
   <template id='terminator' drag="yes link" delete="none">
     <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="indicator terminator" />
   </template>
+  
+  <template id='no-terminator' drag="no" delete="none">
+  </template>
 
 
   <template id="button" a="b">

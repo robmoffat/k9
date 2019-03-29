@@ -30,9 +30,12 @@ import { createUndoableInstrumentationCallback, undoableMetadataCallback } from 
 import { createUndoCallback, createRedoCallback } from '/public/commands/undo/undo.js';
 import { createMoveDragableDropCallback, moveDragableMoveCallback } from '/public/commands/move/move.js';
 import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
-import { initLinkLinkerCallback, initLinkContextMenuCallback } from '/public/commands/link/link.js';
+import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/commands/link/link.js';
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
+//import { createAlignDragableDropCallback, createAlignDragableMoveCallback } from '/public/commands/align/align.js';
+//import { createAlignDragableDropCallback, createAlignDragableMoveCallback } from '/public/commands/align/align.js';
+import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
 
 var initialized = false;
 
@@ -48,33 +51,39 @@ function initEditor() {
 		zoomableTransitionCallback
 	]);
 	
+	var shapePalette = new Palette("--palette", [
+		initInsertPaletteCallback(transition)
+	], document.params['shape-palette']);
+
+	var linkPalette = new Palette("--linkpalette", [
+		initLinkPaletteCallback()
+	], document.params['link-palette']);
+	
+	var linker = new Linker([
+		initLinkLinkerCallback(transition, linkTemplateUri)
+	], selectedLink);
+
 	var instrumentation = new Instrumentation([
 		identityInstrumentationCallback,
 		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
+		initLinkInstrumentationCallback(linkPalette)
 		]);
-	
-	var linker = new Linker([
-		initLinkLinkerCallback(transition)
-	]);
-	
-	
-	var shapePalette = new Palette([
-		initInsertPaletteCallback(transition)
-	], document.params['shape-palette']);
 	
 	var contextMenu = new ContextMenu([ 
 		initDeleteContextMenuCallback(transition),
-		initLinkContextMenuCallback(transition, linker),
+		initLinkContextMenuCallback(transition, linker, linkTemplateUri),
 		initInsertContextMenuCallback(shapePalette), 
-		initEditContextMenuCallback(transition)
-	]); 
+		initEditContextMenuCallback(transition),
+		initAlignContextMenuCallback(transition)
+		]); 
 	
 	
 	initActionable(contextMenu);
 	
 	initDragable([
 		moveDragableMoveCallback,
+//		createAlignDragableMoveCallback()
 	], [
 		createMoveDragableDropCallback(transition)	
 	]);
@@ -85,7 +94,9 @@ function initEditor() {
 	
 	initHoverable();		// init for main svg area
 	
-	initHoverable(function() { return document.querySelectorAll("div.palette svg [id][k9-elem].insertable"); });
+	initHoverable(function() { return document.querySelectorAll("#--palette svg [id][k9-elem].insertable"); });
+
+	initHoverable(function() { return document.querySelectorAll("#--linkpalette svg [id][k9-elem].chooseable"); });
 
 }
 

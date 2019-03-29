@@ -8,7 +8,6 @@ export function initInsertPaletteCallback(transition) {
 	
 	return function(palette, event) {
 
-	
 		function createInsertStep(e, id) {
 			return {
 				"type": 'Copy',

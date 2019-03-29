@@ -1,11 +1,15 @@
+import { suffixIds } from '/public/bundles/api.js';
+
 /**
  * Provides functionality for populating/ showing/ hiding a palette.  
  */
 export class Palette {
 
-	constructor(cb, uri) {
+	constructor(id, cb, uri) {
 		this.callbacks = cb == undefined ? [] : cb;
 		this.paletteUri = uri;
+		
+		this.id = (id == undefined) ? "--palette" : id;
 
 		var cssId = 'palette';  
 		if (!document.getElementById(cssId)) {
@@ -19,7 +23,7 @@ export class Palette {
 		    head.appendChild(link);
 		}
 		
-		var darken = document.querySelector("#--darken");
+		var darken = document.getElementById("--darken");
 		if (!darken) {
 			darken = document.createElement("div");
 			darken.setAttribute("id", "--darken");
@@ -28,12 +32,12 @@ export class Palette {
 			darken.style.display = 'none';
 		}
 		
-		var palette = document.querySelector("#--palette");
+		var palette = document.getElementById(this.id);
 		if (!palette) {
 			
 			// create palette
 			palette = document.createElement("div");
-			palette.setAttribute("id", "--palette");
+			palette.setAttribute("id", this.id);
 			palette.setAttribute("class", "palette");
 			document.querySelector("body").appendChild(palette);
 			
@@ -56,22 +60,20 @@ export class Palette {
 			.then(this.handleErrors)
 			.then(response => response.text())
 			.then(text => {
+				console.log("Loaded "+this.paletteUri);
 				var parser = new DOMParser();
 				return parser.parseFromString(text, "image/svg+xml");
 			})
 			.then(doc => {
+				// set new ids
+				suffixIds(doc.documentElement, this.id);
 				
 				// create scrollable area
-				var scrollable = document.createElement("div");
-				scrollable.setAttribute("class", "scrollable");
-				palette.appendChild(scrollable);
-				scrollable.appendChild(doc.documentElement);
+				this.scrollable = document.createElement("div");
+				this.scrollable.setAttribute("class", "scrollable");
+				palette.appendChild(this.scrollable);
+				this.scrollable.appendChild(doc.documentElement);
 				this.callbacks.forEach(cb => cb(this, event));
-				
-				// ensure the palette appears in the centre of the screen
-				var {width, height} = scrollable.getBoundingClientRect();
-				this.paletteWidth = width;
-				this.paletteHeight = height;
 				
 				// force the load event to occur again
 				var evt = document.createEvent('Event');
@@ -97,13 +99,24 @@ export class Palette {
 		return this.paletteUri;
 	}
 	
+	getId() {
+		return this.id;
+	}
+	
 	get(event) {
-		return document.querySelector("#--palette");
+		return document.getElementById(this.id);
 	}
 		
 	open(event) {
-		var darken = document.querySelector("#--darken");
-		var palette = document.querySelector("#--palette");
+		var darken = document.getElementById("--darken");
+		var palette = document.getElementById(this.id);
+		
+		if (this.paletteWidth == undefined) {
+			// ensure the palette appears in the centre of the screen
+			var {width, height} = this.scrollable.getBoundingClientRect();
+			this.paletteWidth = width;
+			this.paletteHeight = height;
+		}
 		
 		var width = Math.min(this.paletteWidth, window.innerWidth-100);
 		var height = Math.min(this.paletteHeight, window.innerHeight-100);
@@ -119,8 +132,8 @@ export class Palette {
 	}
 	
 	destroy() {
-		var palette = document.querySelector("#--palette");
-		var darken = document.querySelector("#--darken");
+		var palette = document.getElementById(this.id);
+		var darken = document.getElementById("--darken");
 		palette.style.visibility = 'hidden';
 		darken.style.display = 'none';
 	}

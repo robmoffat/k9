@@ -44,7 +44,9 @@ export class Linker {
 			var newLink = template.cloneNode(true);
 			this.svg.appendChild(newLink);
 			newLink.setAttribute("temp-from", e.getAttribute("id"));
-			newLink.setAttribute("id", createUniqueId())
+			newLink.setAttribute("id", createUniqueId());
+			newLink.classList.remove("selected");
+
 			const bbox = getElementPageBBox(e)
 			var from = { x: bbox.x + bbox.width/2, y: bbox.y + bbox.height/2 };
 			this.drawing.push(newLink);
@@ -79,21 +81,6 @@ export class Linker {
 		this.callbacks.forEach(cb => cb(this, evt));
 		
 		evt.stopPropagation();
-	}
-	
-	/**
-	 * May remove later
-	 */
-	getContainingDiagram(elem) {
-		if (elem == null) {
-			return null;
-		}
-		const pcd = this.getContainingDiagram(elem.parentElement);
-		if (pcd) {
-			return pcd;
-		} else if (elem.hasAttribute("k9-elem")) {
-			return elem;
-		}
 	}
 	
 	get() {

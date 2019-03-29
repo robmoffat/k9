@@ -56,7 +56,15 @@ g.box {
 	fill: #CCCCAA;
 	stroke: #AAAA88;
 	kite9-connection-align: 50%;
-	
+}
+
+g.clearbox {
+	kite9-padding: 10px;
+	kite9-sizing: maximize;
+	kite9-type: container;
+	kite9-margin: 20px;
+	kite9-min-size: 100px 100px;
+	kite9-connection-align: 50%;
 }
 
 g.text {
@@ -86,6 +94,13 @@ g.link {
 	fill: none;
 }
 
+g.link.invisible {
+	kite9-link-minimum-length: 0px;
+	kite9-link-corner-radius: 0px;
+	stroke-width: 2px;
+	stroke: none;
+}
+
 rect.terminator {
 	fill: green;
 	fill-opacity: 0.1;
@@ -96,6 +111,11 @@ from, to {
 	kite9-type: link-end;
 	kite9-template: url(template.xml#terminator);
 	kite9-padding: 12px 24px 12px 0px;
+}
+
+g.link.align from,
+g.link.align to {
+	kite9-template: url(template.xml#no-terminator);;
 }
 
 from.arrow, to.arrow {

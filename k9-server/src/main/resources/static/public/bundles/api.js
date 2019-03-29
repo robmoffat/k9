@@ -24,6 +24,18 @@ function parseInfo(t) {
 	}
 }
 
+function getContainingDiagram(elem) {
+	if (elem == null) {
+		return null;
+	}
+	const pcd = getContainingDiagram(elem.parentElement);
+	if (pcd) {
+		return pcd;
+	} else if (elem.hasAttribute("k9-elem")) {
+		return elem;
+	}
+}
+
 function transformToCss(a) {
 	var out = '';
 	out = a.scaleX != 1 ? out + "scaleX("+a.scaleX+") " : out;
@@ -87,6 +99,18 @@ function parseTransform(a) {
     return b;
 }
 
+function suffixIds(e, suffix) {
+	if (e.hasAttribute("id")) {
+		var id = e.getAttribute("id");
+		e.setAttribute("id", id+suffix);
+	}
+	
+	for (var i = 0; i < e.children.length; i++) {
+		const c = e.children[i];
+		suffixIds(c, suffix);
+	}
+}
+
 function handleTransformAsStyle(e) {
 	if (e.hasAttribute('transform')) {
 		const t = parseTransform(e.getAttribute('transform'));
@@ -106,4 +130,4 @@ function createUniqueId() {
 	return ""+lastId;
 }
 
-export { getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle }
+export { getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle, getContainingDiagram, suffixIds }

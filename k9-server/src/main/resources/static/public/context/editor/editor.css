@@ -6,3 +6,7 @@
 diagram {
 	kite9-padding: 120px;	/* ensures enough space to drag in */
 }
+
+.invisible {
+	stroke: blue;
+}
