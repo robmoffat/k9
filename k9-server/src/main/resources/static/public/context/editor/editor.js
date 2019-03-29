@@ -28,13 +28,12 @@ import { createUndoableInstrumentationCallback, undoableMetadataCallback } from 
 // Commands
 
 import { createUndoCallback, createRedoCallback } from '/public/commands/undo/undo.js';
-import { createMoveDragableDropCallback, moveDragableMoveCallback } from '/public/commands/move/move.js';
+import { createMoveDragableDropCallback, moveDragableMoveCallback, initCompleteDragable } from '/public/commands/move/move.js';
 import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
 import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/commands/link/link.js';
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
-//import { createAlignDragableDropCallback, createAlignDragableMoveCallback } from '/public/commands/align/align.js';
-//import { createAlignDragableDropCallback, createAlignDragableMoveCallback } from '/public/commands/align/align.js';
+import { createAutoConnectDragableDropCallback, createAutoConnectDragableMoveCallback } from '/public/commands/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
 
 var initialized = false;
@@ -83,9 +82,11 @@ function initEditor() {
 	
 	initDragable([
 		moveDragableMoveCallback,
-//		createAlignDragableMoveCallback()
+		createAutoConnectDragableMoveCallback()
 	], [
-		createMoveDragableDropCallback(transition)	
+		createMoveDragableDropCallback(transition),	
+		createAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
+		initCompleteDragable(transition)
 	]);
 	
 	initLinkable(linker);

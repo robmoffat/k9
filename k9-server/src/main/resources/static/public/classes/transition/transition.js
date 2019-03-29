@@ -231,6 +231,7 @@ export class Transition {
 	constructor(loadCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
+		this.commandList = [];
 	}
 
 	
@@ -310,4 +311,19 @@ export class Transition {
 			}
 		}));
 	}
+		
+	/**
+	 * This is for where we want to queue up a bunch of commands and post them all together
+	 */
+	push(command) {
+		this.commandList.push(command);
+	}
+	
+	postCommandList(uri) {
+		if (this.commandList.length > 0) {
+			this.postCommands(this.commandList, uri);
+			this.commandList = [];
+		}
+	}
+	
 }

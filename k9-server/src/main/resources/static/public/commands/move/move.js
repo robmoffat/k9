@@ -38,8 +38,7 @@ export function createMoveDragableDropCallback(transition) {
 	
 	return function(dragTargets, evt, okDrop, dropTarget) {
 		if (okDrop) {
-			const commands = Array.from(dragTargets).map(dt => createMoveCommand(dt, dropTarget));
-			transition.postCommands(commands, getChangeUri());
+			Array.from(dragTargets).forEach(dt => transition.push(createMoveCommand(dt, dropTarget)));
 			moveLinks = [];
 			return true;
 		} else {
@@ -49,7 +48,7 @@ export function createMoveDragableDropCallback(transition) {
 				m.setAttributeNS(null, 'pointer-events', 'all');
 			})
 			moveLinks = [];
-			console.log("Can't dropped in " + dropTarget.id);
+			console.log("Can't dropped in " + dropTarget.getAttribute("id"));
 			return false;
 		}
 	}
@@ -95,6 +94,13 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 			}
 		}
 	});
+}
+
+export function initCompleteDragable(transition) {
+	
+	return function() {
+		transition.postCommandList(getChangeUri());
+	}
 }
 
 

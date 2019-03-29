@@ -1,4 +1,5 @@
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
+import { parseInfo, createUniqueId, getChangeUri, getContainingDiagram } from '/public/bundles/api.js';
 
 function getElementsInAxis(coords, horiz) {
 	
@@ -47,23 +48,124 @@ function updateLink(tx, ty, frompos, link_d) {
 	if (link == null) {
 		var svg = getMainSvg();
 		link = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		link.style.stroke = '#b7c0fe';
+		link.style.strokeWidth = '4px';
+		link.style.strokeDasharray="4";
+		link.setAttributeNS(null, 'pointer-events', 'none');
 		svg.appendChild(link);
 	}
 	
-	link.style.stroke = 'black';
 	link.setAttribute("d", "M"+fx+" "+fy+" L "+tx+" "+ty);
 }
 
-
-export function createAlignDragableDropCallback(transition) {
+export function createAutoConnectDragableDropCallback(transition, templateUri) {
 	
-	return function(dragTargets, event) {
+	function reverseDirection(d) {
+        switch (d) {
+        case "LEFT":
+                return "RIGHT";
+        case "UP":
+                return "DOWN";
+        case "DOWN":
+                return "UP";
+        case "RIGHT":
+                return "LEFT";
+        }
+
+        return d;
+	};
+	
+	function getExistingConnections(id1, id2) {
+		return Array.from(document.querySelectorAll("div.main svg [id][k9-info*='link:']")).filter(e => {
+			const parsed = parseInfo(e);
+			const link = parsed['link'];
+			
+			if (link) {
+				const ids = link.split(" ");
+				
+				if (id2) {
+					return ((ids[0] == id1) && (ids[1] == id2)) || 
+					 ((ids[1] == id1) && (ids[0] == id2));	
+				} else {
+					return (ids[0] == id1) || (ids[1] == id1);
+				}
+				
+			}
+			
+			return false;
+		});
+	}
+	
+	function ensureNoDirectedLeavers(id, d1, keepMe) {
+		const d2 = reverseDirection(d1);
+		getExistingConnections(id).forEach(e => {
+			const parsed = parseInfo(e);
+			const d = parsed['direction'];
+			const alignOnly = e.classList.contains("align");
+			
+			if ((d==d2) || (d==d1)) {
+				if (alignOnly && (!e ==keepMe)) {
+					transition.push({
+						type: 'ADLDelete',
+						fragmentId: e.getAttribute("id")
+					});
+				} else {
+					transition.push({
+						type: 'SetAttr',
+						fragmentId: e.getAttribute("id"),
+						name: 'direction'
+					})
+				}
+			}
+		});
+	}
 		
+	return function(dragTargets, event) {		
+		if (link_to) {
+			// create links between the selected object and the link_to one
+			var id_from = dragTargets[0].getAttribute("id");
+			var id_to = link_to.getAttribute("id");
+			var existingLinks = getExistingConnections(id_from, id_to);
+
+			ensureNoDirectedLeavers(id_from, link_d, existingLinks.length > 0 ? existingLinks[0] : null);
+
+			if (existingLinks.length == 0) {
+				// create a new link
+				const linkId = createUniqueId();
+				transition.push({
+					fragmentId: getContainingDiagram(link_to).getAttribute("id"),
+					type: 'CopyLink',
+					linkId: linkId,
+					fromId: id_from,
+					toId: id_to,
+					uriStr: templateUri
+				});
+				
+				transition.push({
+					fragmentId: linkId,
+					type: 'SetAttr',
+					name: 'drawDirection',
+					value: reverseDirection(link_d)
+				});
+			} else {
+				const firstLink = existingLinks[0];
+				const parsed = parseInfo(firstLink);
+				const link = parsed['link'];
+				const ids = link.split(" ");
+				const reversed = ids[0] == id_to;
+				const direction = reversed ? link_d : reverseDirection(link_d);
+				transition.push({
+					fragmentId: firstLink.getAttribute("id"),
+					type: 'SetAttr',
+					name: 'drawDirection',
+					value: direction
+				});
+			}			
+		}
 	}
 }
 
-
-export function createAlignDragableMoveCallback() {
+export function createAutoConnectDragableMoveCallback() {
 	
 	var maxDistance = 100;
 	var width, height;
