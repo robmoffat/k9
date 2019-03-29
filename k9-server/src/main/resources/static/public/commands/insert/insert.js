@@ -12,7 +12,7 @@ export function initInsertPaletteCallback(transition) {
 			return {
 				"type": 'Copy',
 				"fragmentId": e.getAttribute('id'),
-				"uriStr": palette.getUri()+".xml#"+id
+				"uriStr": palette.getUri()+".xml#"+id.substring(0, id.length-palette.getId().length)
 			}
 		}
 	

@@ -7,6 +7,20 @@ diagram {
 	kite9-padding: 120px;	/* ensures enough space to drag in */
 }
 
-.invisible {
-	stroke: blue;
+.invisible > .indicator-path {
+	stroke: #b7c0fe !important;
+	stroke-width: 4px;
 }
+
+*[k9-info~="contradicting:"] > .indicator-path {
+	stroke: #ff5956!important;
+}
+
+.invisible.selected > .indicator-path {
+	stroke: rgb(255, 204, 0) !important;
+}
+
+.invisible.mouseover > .indicator-path {
+	stroke: #CCEEFF !important;
+}
+

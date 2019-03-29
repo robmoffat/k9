@@ -19,6 +19,7 @@
 @params {
 	shape-palette: url(shape-palette);
 	link-palette: url(link-palette);	
+	align-template-uri:  url(link-palette.xml#invisible);
 }
 
 

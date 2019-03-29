@@ -3,27 +3,29 @@ import { getChangeUri, getContainingDiagram, createUniqueId } from "/public/bund
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
-export function initAlignContextMenuCallback(transition, createLink, selector) {
-	
-	if (createLink == undefined) {
-		createLink = function(d, fromId, toId) {
-			return "<svg:svg xmlns:svg='http://www.w3.org/2000/svg'><g xmlns='http://www.kite9.org/schema/adl' id='"+createUniqueId()+"' class='link invisible' drawDirection='"+d+"'>"+
-				"<from reference='"+fromId+"' />"+
-				"<to reference='"+toId+"' />"+
-				"</g></svg:svg>";
-		}
-	}
+export function initAlignContextMenuCallback(transition, templateUri, selector) {
 	
 	/**
-	 * 
 	 * Takes a node and creates a delete command.
 	 */
-	function createAlignStep(from, to, direction) {
-		return {
+	function createAlignStep(from, to, direction, steps ,linkId) {
+		steps.push({
 			fragmentId: getContainingDiagram(from).getAttribute("id"),
-			type: 'AppendXML',
-			newState: createLink(direction, from.getAttribute("id"), to.getAttribute("id"))
-		};
+			type: 'CopyLink',
+			linkId: linkId,
+			fromId: from.getAttribute("id"),
+			toId: to.getAttribute("id"),
+			uriStr: templateUri
+		});
+		
+		steps.push({
+			fragmentId: linkId,
+			type: 'SetAttr',
+			name: 'drawDirection',
+			value: direction
+		});
+		
+		return linkId;
 	}
 
 	function performAlign(cm, horiz) {
@@ -43,11 +45,12 @@ export function initAlignContextMenuCallback(transition, createLink, selector) {
 		});
 		
 		var steps = [];
+		const linkId = createUniqueId();
 		
 		for (var i = 0; i < selectedElements.length-1; i++) {
 			var from = selectedElements[i];
 			var to = selectedElements[i+1];
-			steps.push(createAlignStep(from, to, horiz ? "RIGHT" : "DOWN"));
+			createAlignStep(from, to, horiz ? "RIGHT" : "DOWN", steps, linkId+"-"+i);
 		}
 		
 		cm.destroy();

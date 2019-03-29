@@ -75,7 +75,7 @@ function initEditor() {
 		initLinkContextMenuCallback(transition, linker, linkTemplateUri),
 		initInsertContextMenuCallback(shapePalette), 
 		initEditContextMenuCallback(transition),
-		initAlignContextMenuCallback(transition)
+		initAlignContextMenuCallback(transition, document.params['align-template-uri'])
 		]); 
 	
 	
@@ -89,14 +89,14 @@ function initEditor() {
 	]);
 	
 	initLinkable(linker);
-	
-	initSelectable();
-	
+		
 	initHoverable();		// init for main svg area
 	
 	initHoverable(function() { return document.querySelectorAll("#--palette svg [id][k9-elem].insertable"); });
 
 	initHoverable(function() { return document.querySelectorAll("#--linkpalette svg [id][k9-elem].chooseable"); });
+
+	initSelectable();
 
 }
 

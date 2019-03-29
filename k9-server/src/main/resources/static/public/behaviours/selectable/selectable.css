@@ -5,14 +5,14 @@ svg {
 }
 
 .selected > .indicator {
-	fill: #FFAA23 !important;
+	fill: rgb(255, 204, 0) !important;
 	fill-opacity: 1 !important;
 }
 
 .selected > .indicator-path {
-	stroke: #FFAA23 !important;
+	stroke: rgb(255, 204, 0) !important;
 }
 
 .selected > g > text {
-	fill: #FFAA23 !important;
+	fill: rgb(255, 204, 0) !important;
 }

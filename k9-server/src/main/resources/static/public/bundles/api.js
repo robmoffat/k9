@@ -130,4 +130,5 @@ function createUniqueId() {
 	return ""+lastId;
 }
 
+
 export { getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle, getContainingDiagram, suffixIds }
