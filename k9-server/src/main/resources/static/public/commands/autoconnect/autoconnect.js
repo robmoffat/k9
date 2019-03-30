@@ -96,28 +96,37 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 		});
 	}
 	
+	function undoAlignment(transition, e) {
+		const alignOnly = e.classList.contains("align");
+		if (alignOnly) {
+			transition.push({
+				type: 'ADLDelete',
+				fragmentId: e.getAttribute("id"),
+				cascade: true
+			});
+		} else {
+			transition.push({
+				type: 'SetAttr',
+				fragmentId: e.getAttribute("id"),
+				name: 'direction'
+			})
+			
+			return true;
+		}		
+	}
+	
 	function ensureNoDirectedLeavers(id, d1) {
-		const d2 = reverseDirection(d1);
 		getExistingConnections(id).forEach(e => {
 			const parsed = parseInfo(e);
 			const d = parsed['direction'];
-			const alignOnly = e.classList.contains("align");
+			const link = parsed['link'];
+			const ids = link.split(" ");
+			const reversed = ids[0] == id;
+			const dUse = reversed ? reverseDirection(d1) : d1;
 			
-			if ((d==d2) || (d==d1)) {
-				if (alignOnly) {
-					transition.push({
-						type: 'ADLDelete',
-						fragmentId: e.getAttribute("id"),
-						cascade: true
-					});
-				} else {
-					transition.push({
-						type: 'SetAttr',
-						fragmentId: e.getAttribute("id"),
-						name: 'direction'
-					})
-				}		
-			}
+			if (d==dUse) {
+				undoAlignment(transition, e);
+			} 
 		});
 	}
 		
@@ -130,6 +139,8 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 
 			ensureNoDirectedLeavers(id_from, link_d);
 			const diagramId = getContainingDiagram(link_to).getAttribute("id");
+			
+			existingLinks = existingLinks.filter(e => undoAlignment(transition, e));
 			
 			if (existingLinks.length == 0) {
 				// create a new link

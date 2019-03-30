@@ -81,6 +81,7 @@ function initEditor() {
 	initActionable(contextMenu);
 	
 	initDragable([
+		() => contextMenu.destroy(),
 		moveDragableMoveCallback,
 		createAutoConnectDragableMoveCallback()
 	], [
