@@ -31,7 +31,7 @@ public class Move extends AbstractLocatedCommand {
 
 		insert(doc, e);
 
-		LOG.info("Processed move of "+fragmentId);
+		LOG.info("Processed move of "+moveId+ " in "+ fragmentId);
 		return adl;
 	}
 

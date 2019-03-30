@@ -96,7 +96,7 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 		});
 	}
 	
-	function ensureNoDirectedLeavers(id, d1, keepMe) {
+	function ensureNoDirectedLeavers(id, d1) {
 		const d2 = reverseDirection(d1);
 		getExistingConnections(id).forEach(e => {
 			const parsed = parseInfo(e);
@@ -104,10 +104,11 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 			const alignOnly = e.classList.contains("align");
 			
 			if ((d==d2) || (d==d1)) {
-				if (alignOnly && (!e ==keepMe)) {
+				if (alignOnly) {
 					transition.push({
 						type: 'ADLDelete',
-						fragmentId: e.getAttribute("id")
+						fragmentId: e.getAttribute("id"),
+						cascade: true
 					});
 				} else {
 					transition.push({
@@ -115,7 +116,7 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 						fragmentId: e.getAttribute("id"),
 						name: 'direction'
 					})
-				}
+				}		
 			}
 		});
 	}
@@ -127,13 +128,14 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 			var id_to = link_to.getAttribute("id");
 			var existingLinks = getExistingConnections(id_from, id_to);
 
-			ensureNoDirectedLeavers(id_from, link_d, existingLinks.length > 0 ? existingLinks[0] : null);
-
+			ensureNoDirectedLeavers(id_from, link_d);
+			const diagramId = getContainingDiagram(link_to).getAttribute("id");
+			
 			if (existingLinks.length == 0) {
 				// create a new link
 				const linkId = createUniqueId();
 				transition.push({
-					fragmentId: getContainingDiagram(link_to).getAttribute("id"),
+					fragmentId: diagramId,
 					type: 'CopyLink',
 					linkId: linkId,
 					fromId: id_from,
@@ -160,6 +162,11 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 					name: 'drawDirection',
 					value: direction
 				});
+				transition.push({
+					type: 'Move',
+					fragmentId: diagramId,
+					moveId: firstLink.getAttribute("id"),
+				})
 			}			
 		}
 	}

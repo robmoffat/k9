@@ -9,12 +9,12 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia">
 
-     <g id="b1" class="box"><g id="fs1" class="text">A</g></g>
+     <g id="b1" class="box"><g id="fs1" class="text">b1</g></g>
      
      <g class="group" id="bigbox" style="kite9-layout: horizontal; ">
-       <g id="b2" class="box"><g id="fs2" class="text">B</g></g>
+       <g id="b2" class="box"><g id="fs2" class="text">b2</g></g>
        
-       <g id="b3" class="box"><g id="fs3" class="text">C</g></g>
+       <g id="b3" class="box"><g id="fs3" class="text">b3</g></g>
      </g>
      
      <g class="link" id="link1">
