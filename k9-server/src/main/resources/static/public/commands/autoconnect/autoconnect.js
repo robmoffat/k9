@@ -332,7 +332,7 @@ export function initAutoConnectContextMenuCallback(transition) {
 		}
 	}
 	
-	function drawDirection(htmlElement, direction, reverse) {
+	function drawDirection(htmlElement, direction, reverse, selected) {
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);
 		
@@ -343,6 +343,10 @@ export function initAutoConnectContextMenuCallback(transition) {
 		} else {
 			img.setAttribute("title", "Link Direction (undirected)");
 			img.setAttribute("src", "/public/commands/autoconnect/undirected.svg");				
+		}
+		
+		if (selected == direction) {
+			img.style.backgroundColor = 'rgb(255, 204, 0)';
 		}
 		
 		return img;
@@ -368,24 +372,12 @@ export function initAutoConnectContextMenuCallback(transition) {
 			}
 			
 			function handleClick() {
-				img.removeEventListener("click", handleClick)
-				img.style.opacity = "0.5";
-				
-				// remove the other stuff from the context menu
 				Array.from(htmlElement.children).forEach(e => {
-					if (e != img) {
-						htmlElement.removeChild(e);
-					}
+					htmlElement.removeChild(e);
 				});
 				
-				var sep = document.createElement("img");
-				htmlElement.appendChild(sep);
-				sep.style.opacity = "0.5";
-				sep.setAttribute("src", "/public/commands/autoconnect/separator.svg")
-				sep.setAttribute("class",'decoration');
-				
 				["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
-					var img2 = drawDirection(htmlElement, s, reverse);
+					var img2 = drawDirection(htmlElement, s, reverse, direction);
 					img2.addEventListener("click", () => setDirection(e, s, contextMenu));
 				});
 			}

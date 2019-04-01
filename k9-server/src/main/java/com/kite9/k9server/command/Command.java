@@ -28,6 +28,7 @@ import com.kite9.k9server.domain.document.commands.Undo;
 	@Type(SetAttr.class),
 	@Type(SetXML.class),
 	@Type(AppendXML.class),
+	@Type(SetStyle.class),
 	
 	// document-specific
 	@Type(Undo.class),

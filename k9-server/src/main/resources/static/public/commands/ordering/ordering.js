@@ -5,37 +5,22 @@ export function initOrderingContextMenuCallback(transition) {
 	
 	function setLayout(e, layout, contextMenu) {
 		contextMenu.destroy();
-		const diagramId = getContainingDiagram(e).getAttribute("id");
 		const id = e.getAttribute("id")
-
-		const alignOnly = e.classList.contains("align");
 		
-		if (alignOnly && (direction == 'null')) {
-			transition.postCommands([{
-					type: 'ADLDelete',
-					fragmentId: e.getAttribute("id"),
-					cascade: true
-			}], getChangeUri());
-		} else {
-			if (direction == 'null') {
-				// causes the attribute to be removed.
-				direction = null;	
-			} 
-			
-			transition.postCommands([{
-				fragmentId: id,
-				type: 'SetAttr',
-				name: 'drawDirection',
-				value: direction
-			},{
-				type: 'Move',
-				fragmentId: diagramId,
-				moveId: id,
-			}], getChangeUri());
+		if ((layout == 'none') || (layout == 'null')) {
+			layout = null;
 		}
+
+		transition.postCommands([{
+				fragmentId: id,
+				type: 'SetStyle',
+				name: 'kite9-layout',
+				value: layout
+		}], getChangeUri());
+		
 	}
 	
-	function drawLayout(htmlElement, layout) {
+	function drawLayout(htmlElement, layout, selected) {
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);
 		
@@ -44,8 +29,13 @@ export function initOrderingContextMenuCallback(transition) {
 		}
 		img.setAttribute("title", "Layout ("+layout+")");
 		img.setAttribute("src", "/public/commands/ordering/"+layout.toLowerCase()+".svg");
-		img.style.backgroundColor = 'white';
 		img.style.borderRadius = "0px";
+		
+		if (selected == layout) {
+			img.style.backgroundColor = 'rgb(255, 204, 0)';
+		} else {
+			img.style.backgroundColor = 'white';
+		}
 		
 		return img;
 	}
@@ -63,25 +53,14 @@ export function initOrderingContextMenuCallback(transition) {
 			var img = drawLayout(htmlElement, debug.layout);
 			
 			function handleClick() {
-				img.removeEventListener("click", handleClick)
-				img.style.opacity = "0.5";
-				
 				// remove the other stuff from the context menu
 				Array.from(htmlElement.children).forEach(e => {
-					if (e != img) {
 						htmlElement.removeChild(e);
-					}
 				});
-				
-				var sep = document.createElement("img");
-				htmlElement.appendChild(sep);
-				sep.style.opacity = "0.5";
-				sep.setAttribute("src", "/public/commands/ordering/separator.svg")
-				sep.setAttribute("class",'decoration');
 				
 				["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
 					var img2 = drawLayout(htmlElement, s);
-					img2.addEventListener("click", () => setDirection(e, s, layout));
+					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
 				});
 			}
 			
