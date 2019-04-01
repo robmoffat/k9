@@ -35,6 +35,7 @@ import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/publi
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 import { createAutoConnectDragableDropCallback, createAutoConnectDragableMoveCallback, initAutoConnectContextMenuCallback } from '/public/commands/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
+import { initOrderingDragableMoveCallback, initOrderingContextMenuCallback } from '/public/commands/ordering/ordering.js';
 
 var initialized = false;
 
@@ -75,7 +76,8 @@ function initEditor() {
 		initInsertContextMenuCallback(shapePalette), 
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
-		initAutoConnectContextMenuCallback(transition)
+		initAutoConnectContextMenuCallback(transition),
+		initOrderingContextMenuCallback(transition)
 		]); 
 	
 	
@@ -84,7 +86,8 @@ function initEditor() {
 	initDragable([
 		() => contextMenu.destroy(),
 		moveDragableMoveCallback,
-		createAutoConnectDragableMoveCallback()
+		createAutoConnectDragableMoveCallback(),
+		initOrderingDragableMoveCallback()
 	], [
 		createMoveDragableDropCallback(transition),	
 		createAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),

@@ -12,6 +12,7 @@
 	user-select: none; 
 	-webkit-user-select: none;
 	opacity: .7;
+	max-width: 220px;
 }
 
 .contextMenu:after {
