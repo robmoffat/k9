@@ -1,4 +1,4 @@
-import { parseInfo, getChangeUri, getContainingDiagram } from '/public/bundles/api.js';
+import { parseInfo, getChangeUri, getContainingDiagram, getAlignElementsAndDirections } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
 export function initLinkContextMenuCallback(transition, linker) {
@@ -17,7 +17,7 @@ export function initLinkContextMenuCallback(transition, linker) {
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Draw Link");
 			img.setAttribute("src", "/public/commands/link/link.svg");
-			const elements = document.querySelectorAll("div.main [id].selected");
+			const elements = document.querySelectorAll("div.main [id][k9-info~='connect:'].selected");
 			img.addEventListener("click", e => {
 				contextMenu.destroy();
 				linker.start(Array.from(elements), e);
@@ -107,17 +107,42 @@ export function initLinkLinkerCallback(transition, linkTemplateUri) {
 		if (linkTarget == null) {
 			linker.removeDrawingLinks();
 		} else {
-			const commands = linker.get().map(e => 
-				{ return {
+			linker.get().forEach(e => {
+				var fromId = e.getAttribute("temp-from");
+				var aligns = getAlignElementsAndDirections(fromId, linkTargetId);
+				var linkId = e.getAttribute("id");
+				
+				transition.push({
 					type: "CopyLink",
 					fragmentId: diagramId,
 					uriStr: linkTemplateUri(),
-					fromId: e.getAttribute("temp-from"),
+					fromId: fromId,
 					toId: linkTargetId,
-					linkId: e.getAttribute("id")
-				}});
+					linkId: linkId
+				});
+				
+				/*
+				 * If there is an align element, remove it and set the draw direction.
+				 */
+				
+				if (aligns.length == 1) {
+					var { element, direction } = aligns[0];
+					transition.push({
+						type: 'ADLDelete',
+						fragmentId: element.getAttribute("id"),
+						cascade: true
+					});
+					transition.push({
+						type: 'SetAttr',
+						fragmentId: linkId,
+						name: 'drawDirection',
+						value: direction
+					})
+				}
+				
+			});
 			
-			transition.postCommands(commands, getChangeUri());
+			transition.postCommandList(getChangeUri());
 			linker.clear();
 		}
 	};

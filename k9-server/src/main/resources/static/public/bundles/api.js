@@ -1,3 +1,54 @@
+function getAlignElementsAndDirections(id1, id2) {
+	return getExistingConnections(id1, id2)
+	 	.filter(e => e.classList.contains("align"))
+	 	.map(e => {
+	 		const parsed = parseInfo(e);
+	 		const d = parsed['direction'];
+	 		const link = parsed['link'];
+	 		const ids = link.split(" ");
+	 		const reversed = ids[0] == id2;	
+	 		return { 
+	 			element: e,
+	 			direction: reversed ? reverseDirection(d) : d
+	 		}
+	 	});
+}
+
+function getExistingConnections(id1, id2) {
+	return Array.from(document.querySelectorAll("div.main svg [id][k9-info*='link:']")).filter(e => {
+		const parsed = parseInfo(e);
+		const link = parsed['link'];
+		
+		if (link) {
+			const ids = link.split(" ");
+			
+			if (id2) {
+				return ((ids[0] == id1) && (ids[1] == id2)) || 
+				 ((ids[1] == id1) && (ids[0] == id2));	
+			} else {
+				return (ids[0] == id1) || (ids[1] == id1);
+			}
+			
+		}
+		
+		return false;
+	});
+}
+
+function reverseDirection(d) {
+    switch (d) {
+    case "LEFT":
+            return "RIGHT";
+    case "UP":
+            return "DOWN";
+    case "DOWN":
+            return "UP";
+    case "RIGHT":
+            return "LEFT";
+    }
+
+    return d;
+};
 
 
 function getChangeUri() {
@@ -131,4 +182,4 @@ function createUniqueId() {
 }
 
 
-export { getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, handleTransformAsStyle, getContainingDiagram, suffixIds }
+export { reverseDirection, getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, getExistingConnections, handleTransformAsStyle, getContainingDiagram, suffixIds, getAlignElementsAndDirections }
