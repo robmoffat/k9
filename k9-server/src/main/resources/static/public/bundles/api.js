@@ -182,4 +182,15 @@ function createUniqueId() {
 }
 
 
-export { reverseDirection, getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, getExistingConnections, handleTransformAsStyle, getContainingDiagram, suffixIds, getAlignElementsAndDirections }
+function getKite9Target(v) {
+	if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
+		return v;
+	} else if (v.tagName == 'svg') {
+		return null;
+	} else {
+		return getKite9Target(v.parentNode);
+	}
+}
+
+
+export { reverseDirection, getKite9Target, getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, getExistingConnections, handleTransformAsStyle, getContainingDiagram, suffixIds, getAlignElementsAndDirections }

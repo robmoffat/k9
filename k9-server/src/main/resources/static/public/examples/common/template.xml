@@ -17,7 +17,7 @@
     <contents />
   </template>
 
-  <template id='box' drag="yes rect" drop="rect link">
+  <template id='box' drag="yes rect" drop="rect link" align="yes">
     <back class="back indicator" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>

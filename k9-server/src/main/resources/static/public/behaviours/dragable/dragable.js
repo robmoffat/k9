@@ -1,5 +1,5 @@
 import { getSVGCoords } from '/public/bundles/screen.js';
-import { handleTransformAsStyle } from '/public/bundles/api.js';
+import { handleTransformAsStyle, getKite9Target } from '/public/bundles/api.js';
 
 export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable, canDropHere) {
 	
@@ -180,7 +180,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		// if we aren't currently dragging an element, don't do anything
 		if (state) {
 			const dragTargets = state.map(s => s.dragTarget);
-			const dropTarget = getDropTarget(evt.target);
+			const dropTarget = getKite9Target(evt.target);
 			const canDrop = canDropAllHere(dragTargets, dropTarget)
 			var result = dropCallbacks
 				.map(dc => dc(dragTargets, evt, canDrop, dropTarget))
@@ -192,17 +192,6 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		mouseDown = false;
 		svg.style.cursor = undefined;
 	};
-
-	function getDropTarget(v) {
-		if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
-			return v;
-		} else if (v == svg) {
-			return null;
-		} else {
-			return getDropTarget(v.parentNode);
-		}
-	}
-
 
 	/**
 	 * In this case, we look for the 'drop' attribute, and check that there is 
@@ -245,7 +234,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 
 	dropCallbacks.push(function(dragTargets, evt) {
 
-		var targetElement = getDropTarget(evt.target);
+		var targetElement = getKite9Target(evt.target);
 		
 		if (targetElement == null) {
 			endMove(true);
@@ -257,7 +246,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 	});
 
 	moveCallbacks.push(function(dragTargets, evt) {
-		const dropTarget = getDropTarget(evt.target);
+		const dropTarget = getKite9Target(evt.target);
 		
 		const canDrop = canDropAllHere(dragTargets, dropTarget);
 		

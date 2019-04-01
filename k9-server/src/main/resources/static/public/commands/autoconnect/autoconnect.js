@@ -1,9 +1,9 @@
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
-import { parseInfo, createUniqueId, getChangeUri, getContainingDiagram, reverseDirection, getExistingConnections } from '/public/bundles/api.js';
+import { parseInfo, createUniqueId, getChangeUri, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target } from '/public/bundles/api.js';
 
 function getElementsInAxis(coords, horiz) {
 	
-	const out = Array.from(document.querySelectorAll("div.main svg [id][k9-info*='connect:']"))
+	const out = Array.from(document.querySelectorAll("div.main svg [id][align~='yes']"))
 		.filter(e => {
 			var {x, y, width, height} = getElementPageBBox(e);
 			
@@ -152,9 +152,19 @@ export function createAutoConnectDragableMoveCallback() {
 	var maxDistance = 100;
 	var width, height;
 	
-	function canAutoConnect(e) {
-		var info = parseInfo(e);
-		return info['connect'];
+	function canAutoConnect(e, dropTarget) {
+		var info = parseInfo(getKite9Target(dropTarget));
+		var layout = info.layout;
+		
+		if ((layout == null) || (layout == 'null')) {
+			var info = parseInfo(e);
+			return info['connect'];
+		} else {
+			// we don't do auto-connect inside directed containers. Too confusing.
+			return false;
+		}
+		
+		
 	}
 	
     /**
@@ -189,7 +199,7 @@ export function createAutoConnectDragableMoveCallback() {
 		
 		var draggingElement = dragTargets[0];
 		
-		if (!canAutoConnect(draggingElement)) {
+		if (!canAutoConnect(draggingElement, event.target)) {
 			clearLink();
 			link_to = undefined;
 			return;
@@ -274,6 +284,7 @@ export function createAutoConnectDragableMoveCallback() {
 				
 		if (best === undefined) {
 			clearLink();
+			link_to = undefined;
 		} else if (best === link_to) {
 			link_d = best_d;
 			updateLink(x, y, getElementPageBBox(best), link_d);	
@@ -373,7 +384,7 @@ export function initAutoConnectContextMenuCallback(transition) {
 				sep.setAttribute("src", "/public/commands/autoconnect/separator.svg")
 				sep.setAttribute("class",'decoration');
 				
-				["UP", "DOWN", "LEFT", "RIGHT", "null"].forEach(s => {
+				["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
 					var img2 = drawDirection(htmlElement, s, reverse);
 					img2.addEventListener("click", () => setDirection(e, s, contextMenu));
 				});

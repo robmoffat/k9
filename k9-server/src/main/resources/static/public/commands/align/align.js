@@ -1,14 +1,31 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, getContainingDiagram, createUniqueId } from "/public/bundles/api.js";
+import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
 export function initAlignContextMenuCallback(transition, templateUri, selector) {
 	
 	/**
-	 * Takes a node and creates a delete command.
+	 * Aligns the two elements
 	 */
 	function createAlignStep(from, to, direction, steps ,linkId) {
+		
+		const conns = getExistingConnections(from, to);
+		var toUse = null;
+		
+		conns.forEach(c => {
+		
+			
+			
+		})
+		
+		
+		
+		
+		
+		
+		
+		
 		steps.push({
 			fragmentId: getContainingDiagram(from).getAttribute("id"),
 			type: 'CopyLink',
@@ -75,7 +92,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 	 */
 	return function(event, cm) {
 		
-		const e = document.querySelectorAll("div.main svg [id][k9-info*='connect:'].selected");
+		const e = document.querySelectorAll("div.main svg [id][align*='yes'].selected");
 		
 		if (e.length > 1) {
 			var htmlElement = cm.get(event);
