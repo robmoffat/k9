@@ -1,5 +1,5 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections } from "/public/bundles/api.js";
+import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
@@ -10,31 +10,53 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 	 */
 	function createAlignStep(from, to, direction, steps ,linkId) {
 		
-		const conns = getExistingConnections(from, to);
-		var toUse = null;
+		const conns = getExistingConnections(from.getAttribute("id"), to.getAttribute("id"));
+		var toUseId = null;
 		
+		// tidy up any existing connections between these elements.
 		conns.forEach(c => {
-		
+			const alignOnly = c.classList.contains("align");
 			
-			
+			if (alignOnly) {
+				// remove the old alignment
+				steps.push({
+					type: 'ADLDelete',
+					fragmentId: c.getAttribute("id"),
+					cascade: true
+				});
+			} else {
+				const debug = parseInfo(c);
+				const direction = debug.direction;
+
+				if (direction != 'null') {
+					steps.push({
+						fragmentId: c.getAttribute("id"),
+						type: 'SetAttr',
+						name: 'drawDirection',
+						value: null
+					})	
+				}
+				
+				if (toUseId == null) {
+					toUseId = c.getAttribute("id");
+				}
+			}
 		})
 		
-		
-		
-		
-		
-		
-		
-		
-		steps.push({
-			fragmentId: getContainingDiagram(from).getAttribute("id"),
-			type: 'CopyLink',
-			linkId: linkId,
-			fromId: from.getAttribute("id"),
-			toId: to.getAttribute("id"),
-			uriStr: templateUri
-		});
-		
+		if (toUseId == null) {
+			// create an align element
+			steps.push({
+				fragmentId: getContainingDiagram(from).getAttribute("id"),
+				type: 'CopyLink',
+				linkId: linkId,
+				fromId: from.getAttribute("id"),
+				toId: to.getAttribute("id"),
+				uriStr: templateUri
+			});
+		} else {
+			linkId = toUseId;
+		}
+				
 		steps.push({
 			fragmentId: linkId,
 			type: 'SetAttr',
