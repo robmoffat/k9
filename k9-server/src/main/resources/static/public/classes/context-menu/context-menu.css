@@ -50,6 +50,10 @@
 	margin: 0 2px 0 2px;
 }
 
+.contextMenu img.selected {
+	background-color: rgb(255, 204, 0);
+}
+
 .contextMenu img:hover {
 	background-color: #DDDDDD;
 }

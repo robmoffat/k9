@@ -32,10 +32,8 @@ export function initOrderingContextMenuCallback(transition) {
 		img.style.borderRadius = "0px";
 		
 		if (selected == layout) {
-			img.style.backgroundColor = 'rgb(255, 204, 0)';
-		} else {
-			img.style.backgroundColor = 'white';
-		}
+			img.setAttribute("class", "selected");
+		} 
 		
 		return img;
 	}

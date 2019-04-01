@@ -346,7 +346,7 @@ export function initAutoConnectContextMenuCallback(transition) {
 		}
 		
 		if (selected == direction) {
-			img.style.backgroundColor = 'rgb(255, 204, 0)';
+			img.setAttribute("class", "selected");
 		}
 		
 		return img;
