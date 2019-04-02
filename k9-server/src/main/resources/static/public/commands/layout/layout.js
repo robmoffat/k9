@@ -1,7 +1,7 @@
 import { parseInfo, getChangeUri, getKite9Target } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
-export function initLayoutContextMenuCallback(transition) {
+export function initLayoutContextMenuCallback(transition, cellCreator) {
 	
 	function setLayout(e, layout, contextMenu) {
 		contextMenu.destroy();
@@ -51,15 +51,21 @@ export function initLayoutContextMenuCallback(transition) {
 			var img = drawLayout(htmlElement, debug.layout);
 			
 			function handleClick() {
-				// remove the other stuff from the context menu
-				Array.from(htmlElement.children).forEach(e => {
-						htmlElement.removeChild(e);
-				});
-				
-				["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
-					var img2 = drawLayout(htmlElement, s, debug.layout);
-					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
-				});
+				if (debug.layout == 'GRID') {
+					
+					
+					
+				} else {
+					// remove the other stuff from the context menu
+					Array.from(htmlElement.children).forEach(e => {
+							htmlElement.removeChild(e);
+					});
+					
+					["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
+						var img2 = drawLayout(htmlElement, s, debug.layout);
+						img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
+					});
+				}	
 			}
 			
 			img.addEventListener("click", handleClick);
