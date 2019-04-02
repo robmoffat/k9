@@ -5,5 +5,5 @@ env:
   global:
     secure: U8E8wEYoorQLCfj2hKb/sQIosWkCYnAPbJM+7xHOmWX1znsT3Bh6VHs+N6Q3XkFhQKFtI7h6A+zv2MSiSEmr95Rd4EkeLCf1O9OkPoupWu/4emFjinFAx0Fn+wWnVs4OJOkZLNWKs4ofydqjzIDaeHuN3ulXoLojKNx1GGGRKc1OHk4Po9BMTy37tPyypdysxDqqMclPlGspK8he3HlrANWaHRuQxFeU6Pa2lDedC69NICvJqgvkDV0+HhIoJGx1iEO/qbh/EXZOesp6bVS04tgiBvh+yCYCZisecmz7p+BHILD/2HdPWOpLDHGcQSAtTjL6wqEukT696RlXLnv2DlOt7u4lnx9Tree7SVkq6A010bbgzAtHJtLjEf55qMtfK//bQtQYmNjboE4bFYu/BlU7XYqEqTRGSnOaO8OTgAnmCr3B/f/iVTKsMS5pZOxc1zaeBw+3uXyavoWY1v4N4KYeSlRDTmgLgKBnmpumimeewvBKgcQGGra3O3DZ56wB4SVOpv9pbmyiUSdl5n28lApDK//zXdyFrI5YFfHpGXysYVgrAmW+1+FGGbkX5FysevfVqcL2ZX1bcNiHRVFX//T7KBF1TvNCVNxEfI+/n7HMjvgh8lrtA6T+QOfwMJ1LPK+prH6TEUzlrE1aRWl9QDvkcIsfGLG8feZ7c+lZCY4=
 
-before_install: "cp .travis.settings.xml $HOME/.m2/settings.xml"
+before_install: "cp .travis.maven-settings.xml $HOME/.m2/settings.xml"
     
