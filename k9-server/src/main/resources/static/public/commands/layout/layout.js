@@ -51,21 +51,15 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 			var img = drawLayout(htmlElement, debug.layout);
 			
 			function handleClick() {
-				if (debug.layout == 'GRID') {
-					
-					
-					
-				} else {
-					// remove the other stuff from the context menu
-					Array.from(htmlElement.children).forEach(e => {
-							htmlElement.removeChild(e);
-					});
-					
-					["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
-						var img2 = drawLayout(htmlElement, s, debug.layout);
-						img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
-					});
-				}	
+				// remove the other stuff from the context menu
+				Array.from(htmlElement.children).forEach(e => {
+						htmlElement.removeChild(e);
+				});
+				
+				["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
+					var img2 = drawLayout(htmlElement, s, debug.layout);
+					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
+				});
 			}
 			
 			img.addEventListener("click", handleClick);
