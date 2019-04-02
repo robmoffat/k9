@@ -14,14 +14,16 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class Copy extends AbstractLocatedCommand {
 
 	protected String uriStr;		// to insert.	
-
+	protected String newId;
+	
 	public Copy() {
 		super();
 	}
 	
-	public Copy(String fragmentId, String fragmentHash, String beforefragmentId, String uriStr) {
+	public Copy(String fragmentId, String fragmentHash, String beforefragmentId, String uriStr, String newId) {
 		super(fragmentId, fragmentHash, beforefragmentId);
 		this.uriStr = uriStr;
+		this.newId = newId;
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class Copy extends AbstractLocatedCommand {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			performCopy(adl.getUri(), doc);
+			performCopy(adl.getUri(), doc, newId);
 		} catch (Exception e) {
 			throw new CommandException("Couldn't copy", e, this);
 		}
@@ -39,13 +41,18 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
-	protected Element performCopy(URI baseUri, ADLDocument doc) throws URISyntaxException {
+	protected Element performCopy(URI baseUri, ADLDocument doc, String newId) throws URISyntaxException {
 		Element insert = getElementToInsert(doc, baseUri, uriStr);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);
 		
 		replaceIds(insert);
+		
+		if ((newId != null) && (doc.getElementById(newId) == null)) {
+			insert.setAttribute("id", newId);
+		}
+		
 		return insert;
 	}
 

@@ -4,7 +4,13 @@ import { getChangeUri } from '/public/bundles/api.js';
  * Provides functionality so that when the user clicks on a 
  * palette element it is inserted into the document.
  */
-export function initInsertPaletteCallback(transition) {
+export function initInsertPaletteCallback(transition, selector) {
+	
+	if (selector == undefined) {
+		selector = function(palette) {
+			return palette.get().querySelectorAll("[id][k9-elem].insertable");
+		}
+	}
 	
 	return function(palette, event) {
 
@@ -25,7 +31,7 @@ export function initInsertPaletteCallback(transition) {
 			event.stopPropagation();
 		}
 	
-		palette.get().querySelectorAll("[id][k9-elem]").forEach(function(v) {
+		selector(palette).forEach(function(v) {
 	    	v.removeEventListener("click", click);
 	    	v.addEventListener("click", click);
 		})

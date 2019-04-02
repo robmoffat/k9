@@ -11,13 +11,13 @@ export function initLinkContextMenuCallback(transition, linker) {
 		const e = document.querySelector("[id].lastSelected.selected");
 		const debug = parseInfo(e);
 		
-		if (debug.connect) {
+		if (debug.rectangular=='connected') {
 			var htmlElement = contextMenu.get(event);
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Draw Link");
 			img.setAttribute("src", "/public/commands/link/link.svg");
-			const elements = document.querySelectorAll("div.main [id][k9-info~='connect:'].selected");
+			const elements = document.querySelectorAll("div.main [id][k9-info~='connected;'].selected");
 			img.addEventListener("click", e => {
 				contextMenu.destroy();
 				linker.start(Array.from(elements), e);
@@ -118,7 +118,7 @@ export function initLinkLinkerCallback(transition, linkTemplateUri) {
 					uriStr: linkTemplateUri(),
 					fromId: fromId,
 					toId: linkTargetId,
-					linkId: linkId
+					newId: linkId
 				});
 				
 				/*

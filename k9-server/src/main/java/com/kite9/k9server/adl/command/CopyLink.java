@@ -12,17 +12,16 @@ import com.kite9.k9server.command.Copy;
 
 public class CopyLink extends Copy {
 
-	protected String fromId, toId, linkId;
+	protected String fromId, toId;
 	
 	public CopyLink() {
 		super();
 	}
 
 	public CopyLink(String fragmentId, String templateUri, String fromId, String toId, String linkId) {
-		super(fragmentId, null, null, templateUri);
+		super(fragmentId, null, null, templateUri, linkId);
 		this.fromId = fromId;
 		this.toId = toId;
-		this.linkId = linkId;
 	}
 
 	@Override
@@ -33,11 +32,7 @@ public class CopyLink extends Copy {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			Element insert = performCopy(adl.getUri(), doc);
-			
-			if ((linkId != null) && (doc.getElementById(linkId) == null)) {
-				insert.setAttribute("id", linkId);
-			}
+			Element insert = performCopy(adl.getUri(), doc, newId);
 						
 			List<String> refs = Arrays.asList(fromId, toId);
 		

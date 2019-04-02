@@ -1,3 +1,17 @@
+@font-face {
+	font-family: "metropolis";
+	src: url('/public/fonts/metropolis/Metropolis-Regular.ttf')
+		format('truetype');
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: "metropolis";
+	src: url('/public/fonts/metropolis/Metropolis-Light.ttf')
+		format('truetype');
+	font-weight: 200;
+}
+
 .contextMenu {
 	background-color: grey;
 	position: absolute;
@@ -64,4 +78,21 @@
 .contextMenu img.decoration,
 .contextMenu img.decoration:hover {
 	background-color: white;
+}
+
+.contextMenu div.field {
+	width: 36px;
+	height: 36px;
+	margin: 0 2px 0 2px;
+	font-family: metropolis, sans-serif;
+	font-size: 12px;
+	font-weight: 200;
+	display: inline-block;
+	vertical-align: top;
+	padding: 2px;
+	border-radius: 5px;
+}
+
+.contextMenu div.field input {
+	width: 30px;	
 }

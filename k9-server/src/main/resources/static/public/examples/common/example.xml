@@ -17,7 +17,7 @@
        <g id="b3" class="box"><g id="fs3" class="text">b3</g></g>
      </g>
      
-     <g class="link" id="link1">
+     <g class="link" id="link1" r="r">
       <from id="link1-from" reference="b1" class="arrow"></from>
       <to id="link1-to" class="arrow" reference="b3"></to>
      </g>

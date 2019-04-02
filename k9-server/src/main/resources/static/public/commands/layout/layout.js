@@ -1,7 +1,28 @@
-import { parseInfo, getChangeUri, getKite9Target } from '/public/bundles/api.js';
+import { parseInfo, getChangeUri, getKite9Target, number, createUniqueId } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
+export function initCellCreator(templateUri, transition) {
+	
+	return function(parentId, x, y) {
+		
+		var newId = createUniqueId();
+		
+		transition.push({
+			type: 'Copy',
+			fragmentId: parentId,
+			uriStr: templateUri,
+			newId: newId
+		}); 
+			
+		return newId;
+	}
+}
+
 export function initLayoutContextMenuCallback(transition, cellCreator) {
+	
+	const selector = function(e) { 
+		return  document.querySelectorAll("[id='"+e.getAttribute("id")+ "'] > [k9-info~='connected;']");
+	}
 	
 	function setLayout(e, layout, contextMenu, existing) {
 		contextMenu.destroy();
@@ -11,21 +32,66 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 			return;
 		}
 		
-		if (existing == 'grid') {
+		if (existing == 'GRID') {
+			// remove all the grid cells within
+			selector(e).forEach(f => {
+				transition.push({
+					type: 'ADLDelete',
+					fragmentId: f.getAttribute("id"),
+					cascade: false
+				});
+			});
 			
+			// remove other grid attributes
+			['kite9-grid-rows', 'kite9-grid-columns', 'kite9-grid-size'].forEach(v => transition.push({
+				fragmentId: id,
+				type: 'SetStyle',
+				name: v
+			}))
 		}
 		
-		if ((layout == 'none') || (layout == 'null')) {
-			layout = null;
+		if (layout == 'null') {
+			layout = 'NONE';
+		}
+		
+		var firstCellId;
+		
+		if (layout == 'GRID') {
+			for(var x=0; x<cols; x++ ) {
+				for (var y=0; y<rows; y++ ) {
+					var cellId = cellCreator(id, x, y);
+					if (firstCellId == null) {
+						firstCellId = cellId;
+					}
+				}
+			}
+			
+			// add the grid size
+			transition.push({
+				fragmentId: id,
+				type: 'SetStyle',
+				name: 'kite9-grid-size',
+				value: rows+" "+cols
+			});
+			
+			// move all the existing contents into the first cell
+			selector(e).forEach(f => {
+				transition.push({
+					type: 'Move',
+					fragmentId: firstCellId,
+					moveId: f.getAttribute("id"),
+				});
+			});
 		}
 
-		transition.postCommands([{
+		transition.push({
 				fragmentId: id,
 				type: 'SetStyle',
 				name: 'kite9-layout',
 				value: layout
-		}], getChangeUri());
+		});
 		
+		transition.postCommandList(getChangeUri());
 	}
 	
 	function drawLayout(htmlElement, layout, selected) {
@@ -46,6 +112,27 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 		return img;
 	}
 	
+	var rows = 2;
+	var cols = 2;
+	
+	function addField(htmlElement, name, value, change) {
+		var container = document.createElement("div");
+		var label = document.createElement("label");
+		var input = document.createElement("input");
+		htmlElement.appendChild(container);
+		container.setAttribute("class", "field");
+		container.appendChild(label);
+		container.appendChild(input);
+		input.setAttribute("id", "id-"+name);
+		input.setAttribute("name", name);
+		input.setAttribute("value", value);
+		input.setAttribute("type", "numeric");
+		input.addEventListener("change", change);
+		label.setAttribute("for", name);	
+		label.textContent = name+":";
+	}
+	
+	
 	/**
 	 * Provides a layout option for the context menu
 	 */
@@ -64,10 +151,20 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 						htmlElement.removeChild(e);
 				});
 				
-				["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
+				["NONE", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "LEFT", "UP"].forEach(s => {
 					var img2 = drawLayout(htmlElement, s, debug.layout);
 					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
 				});
+				
+				var hr = document.createElement("hr");
+				htmlElement.appendChild(hr);
+				
+				var img2 = drawLayout(htmlElement, 'GRID', debug.layout);
+				img2.addEventListener("click", () => setLayout(e, 'GRID', contextMenu, debug.layout));
+				
+				addField(htmlElement, "rows", rows, (evt) => rows = number(evt.target.value));
+				addField(htmlElement, "cols", cols, (evt) => cols = number(evt.target.value));
+				
 			}
 			
 			img.addEventListener("click", handleClick);

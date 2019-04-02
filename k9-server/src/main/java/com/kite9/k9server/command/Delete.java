@@ -35,6 +35,12 @@ public class Delete extends AbstractCommand {
 			return in;
 		}
 		
+		performDelete(e);
+		LOG.info("Processed delete of " + fragmentId);
+		return in;
+	}
+
+	protected void performDelete(Element e) {
 		Node parent = e.getParentNode();
 	
 		if (!cascade) {
@@ -50,8 +56,6 @@ public class Delete extends AbstractCommand {
 		}
 		
 		parent.removeChild(e);
-		LOG.info("Processed delete of " + fragmentId);
-		return in;
 	}
 
 }

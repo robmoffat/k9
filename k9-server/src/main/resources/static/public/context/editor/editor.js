@@ -35,7 +35,7 @@ import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/publi
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 import { createAutoConnectDragableDropCallback, createAutoConnectDragableMoveCallback, initAutoConnectContextMenuCallback } from '/public/commands/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
-import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback } from '/public/commands/layout/layout.js';
+import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/commands/layout/layout.js';
 
 var initialized = false;
 
@@ -77,7 +77,7 @@ function initEditor() {
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initAutoConnectContextMenuCallback(transition),
-		initLayoutContextMenuCallback(transition)
+		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition))
 		]); 
 	
 	

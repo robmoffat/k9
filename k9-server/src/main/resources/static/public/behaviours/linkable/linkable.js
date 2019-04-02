@@ -9,7 +9,7 @@ export function initLinkable(linker, selector)  {
 	 */
 	document.addEventListener('keydown', function(event) {
 		if (event.key == 'l') {
-			const selectedElements = document.querySelectorAll("[id][k9-info*='connect:'].selected");
+			const selectedElements = document.querySelectorAll("[id][k9-info~='connected'].selected");
 			linker.start(Array.from(selectedElements), event);
 		}
 		
@@ -28,7 +28,7 @@ export function initLinkable(linker, selector)  {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("div.main svg [id][k9-elem][k9-info*=connect]");
+			return document.querySelectorAll("div.main svg [id][k9-elem]");
 		}
 	}
 

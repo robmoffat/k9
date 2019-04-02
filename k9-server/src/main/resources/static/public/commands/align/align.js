@@ -48,7 +48,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 			steps.push({
 				fragmentId: getContainingDiagram(from).getAttribute("id"),
 				type: 'CopyLink',
-				linkId: linkId,
+				newId: linkId,
 				fromId: from.getAttribute("id"),
 				toId: to.getAttribute("id"),
 				uriStr: templateUri
@@ -68,7 +68,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 	}
 
 	function performAlign(cm, horiz) {
-		var selectedElements = Array.from(document.querySelectorAll("div.main svg [id][k9-info*='connect:'].selected"));
+		var selectedElements = Array.from(document.querySelectorAll("div.main svg [id][k9-info~='connected'].selected"));
 		
 		selectedElements.sort((a, b) => {
 			var apos = getElementPageBBox(a);

@@ -112,7 +112,7 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 				transition.push({
 					fragmentId: diagramId,
 					type: 'CopyLink',
-					linkId: linkId,
+					newId: linkId,
 					fromId: id_from,
 					toId: id_to,
 					uriStr: templateUri

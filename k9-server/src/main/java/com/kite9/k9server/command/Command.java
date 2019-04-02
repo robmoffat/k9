@@ -36,7 +36,7 @@ import com.kite9.k9server.domain.document.commands.Undo;
 	
 	// ADL-Specific
 	@Type(CopyLink.class),
-	@Type(ADLDelete.class),
+	@Type(ADLDelete.class)
 	
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 

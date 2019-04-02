@@ -12,6 +12,11 @@ diagram {
 	stroke-width: 4px;
 }
 
+.invisible > .indicator {
+	stroke: #b7c0fe !important;
+	stroke-width: 2px;
+}
+
 *[k9-info~="contradicting:"] > .indicator-path {
 	stroke: #ff5956!important;
 }

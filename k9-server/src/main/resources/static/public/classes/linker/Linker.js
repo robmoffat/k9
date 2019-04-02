@@ -25,7 +25,7 @@ export class Linker {
 	
 	getLinkTarget(v) {
 		if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
-			if (parseInfo(v).connect) {
+			if (parseInfo(v).rectangular=='connected') {
 				return v;
 			} else {
 				return null;

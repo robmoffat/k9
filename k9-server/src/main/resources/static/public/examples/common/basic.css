@@ -20,6 +20,7 @@
 	shape-palette: url(shape-palette);
 	link-palette: url(link-palette);	
 	align-template-uri:  url(link-palette.xml#invisible);
+	cell-template-uri: url(shape-palette.xml#cell);
 }
 
 
@@ -81,7 +82,20 @@ g.text {
 	font-size: 50px;
 }
 
+/* Grid */
 
+g.grid {
+	kite9-layout: grid;
+	kite9-type: container;
+	kite9-template: url(template.xml#grid);
+	kite9-padding: 1px;
+}
+
+g.cell {
+	kite9-type: container;
+	kite9-min-size: 30px 30px;
+	kite9-template: url(template.xml#cell);
+}
 
 /* Links */
 
