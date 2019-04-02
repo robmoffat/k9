@@ -53,6 +53,9 @@
 .contextMenu img.selected {
 	background-color: rgb(255, 204, 0);
 }
+.contextMenu img.selected:hover {
+	background-color: rgb(205, 184, 0);
+}
 
 .contextMenu img:hover {
 	background-color: #DDDDDD;

@@ -1,7 +1,7 @@
 import { parseInfo, getChangeUri, getKite9Target } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
-export function initOrderingContextMenuCallback(transition) {
+export function initLayoutContextMenuCallback(transition) {
 	
 	function setLayout(e, layout, contextMenu) {
 		contextMenu.destroy();
@@ -28,7 +28,7 @@ export function initOrderingContextMenuCallback(transition) {
 			layout = "none";
 		}
 		img.setAttribute("title", "Layout ("+layout+")");
-		img.setAttribute("src", "/public/commands/ordering/"+layout.toLowerCase()+".svg");
+		img.setAttribute("src", "/public/commands/layout/"+layout.toLowerCase()+".svg");
 		img.style.borderRadius = "0px";
 		
 		if (selected == layout) {
@@ -57,7 +57,7 @@ export function initOrderingContextMenuCallback(transition) {
 				});
 				
 				["none", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "GRID", "LEFT", "UP"].forEach(s => {
-					var img2 = drawLayout(htmlElement, s);
+					var img2 = drawLayout(htmlElement, s, debug.layout);
 					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
 				});
 			}
@@ -70,7 +70,7 @@ export function initOrderingContextMenuCallback(transition) {
 	
 }
 
-export function initOrderingDragableMoveCallback() {
+export function initLayoutDragableMoveCallback() {
 	
 	var bar = null;
 
