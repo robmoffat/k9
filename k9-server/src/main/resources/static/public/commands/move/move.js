@@ -19,12 +19,53 @@ function isTerminator(debug) {
 
 export function createMoveDragableDropCallback(transition) {
 	
-	function createMoveCommand(drag, drop) {
+	function prepareSort(drop, isDragable, boolean horiz) {
+		return Array.from(drop.children)
+			.filter(e => isDragable(e))
+			.map(e => {
+				const box = getElementPageBBox(e);
+				const pos = { 
+						p: horiz ? (box.x + box.width) : (box.y + box.height),
+						e: e };
+			});
+	}
+	
+	function getBeforeId(drop, evt, isDragable) {
+		const info = parseInfo(drop);
+		const layout = info.layout;
+		
+		const pos = getSVGCoords(evt);
+		
+		if (layout == 'null') {
+			return null;
+		}
+		
+		switch(layout) {
+		  case 'null':
+		  case 'HORIZONTAL':
+		  case 'VERTICAL':
+		   	return null;
+		  case 'LEFT':
+		    return prepareSort(drop, isDragable).map(pos => )
+		  case 'RIGHT:
+		  
+		  case 'UP'
+		  
+		  case 'DOWN':
+			  
+		    break;
+		  default:
+		    // code block
+		}
+	}
+	
+	function createMoveCommand(drag, drop, evt, isDragable) {
 		if (!isTerminator(parseInfo(drag))) {
 			return {
 				type: 'Move',
 				fragmentId: drop.getAttribute('id'),
-				moveId: drag.getAttribute('id')
+				moveId: drag.getAttribute('id'),
+				beforeId: getBeforeId(drop, evt, isDragable)
 			}
 		} else {
 			return {
@@ -36,9 +77,9 @@ export function createMoveDragableDropCallback(transition) {
 		}	
 	}
 	
-	return function(dragTargets, evt, okDrop, dropTarget) {
+	return function(dragTargets, evt, okDrop, dropTarget, isDragable) {
 		if (okDrop) {
-			Array.from(dragTargets).forEach(dt => transition.push(createMoveCommand(dt, dropTarget)));
+			Array.from(dragTargets).forEach(dt => transition.push(createMoveCommand(dt, dropTarget, evt, isDragable)));
 			moveLinks = [];
 			return true;
 		} else {

@@ -32,6 +32,8 @@
       <name>
         bintray
       </name>
+      <username>robmoffat</username>
+      <password>${env.BINTRAY_PASSWORD}</password>
       <url>
         https://dl.bintray.com/kite9-org/maven
       </url>

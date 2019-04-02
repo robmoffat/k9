@@ -117,7 +117,7 @@ export function initOrderingDragableMoveCallback() {
 		const dropInto = getKite9Target(event.target);
 		const info = parseInfo(dropInto);
 		const layout = info.layout;
-		if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL ")) {
+		if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL")) {
 			// draw the horizontal bar
 			updateBar(event, dropInto, true);
 		} else if ((layout == 'LEFT') || (layout == 'RIGHT') || (layout == 'HORIZONTAL')) {

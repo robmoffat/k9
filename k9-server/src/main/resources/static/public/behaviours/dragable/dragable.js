@@ -183,7 +183,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 			const dropTarget = getKite9Target(evt.target);
 			const canDrop = canDropAllHere(dragTargets, dropTarget)
 			var result = dropCallbacks
-				.map(dc => dc(dragTargets, evt, canDrop, dropTarget))
+				.map(dc => dc(dragTargets, evt, canDrop, dropTarget, isDragable))
 				.reduce((a,b) => (a | b), false);
 			
 			endMove(!result);
