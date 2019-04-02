@@ -1,0 +1,9 @@
+<settings>
+	<servers>
+		<server>
+			<id>bintray-kite9-org-maven</id>
+			<username>robmoffat</username>
+			<password>${env.BINTRAY_PASSWORD}</password>
+		</server>
+	</servers>
+</settings>
