@@ -3,9 +3,17 @@ import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/sc
 
 export function initLayoutContextMenuCallback(transition, cellCreator) {
 	
-	function setLayout(e, layout, contextMenu) {
+	function setLayout(e, layout, contextMenu, existing) {
 		contextMenu.destroy();
 		const id = e.getAttribute("id")
+		
+		if (existing == layout) {
+			return;
+		}
+		
+		if (existing == 'grid') {
+			
+		}
 		
 		if ((layout == 'none') || (layout == 'null')) {
 			layout = null;
