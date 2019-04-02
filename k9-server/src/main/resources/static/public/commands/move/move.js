@@ -3,7 +3,7 @@
  * You can't drop into an element unless it has 
  */
 import { getChangeUri, parseInfo } from "/public/bundles/api.js";
-import { getSVGCoords } from '/public/bundles/screen.js';
+import { getSVGCoords, getElementPageBBox } from '/public/bundles/screen.js';
 
 /**
  * Keeps track of any links we've animated moving.
@@ -19,53 +19,59 @@ function isTerminator(debug) {
 
 export function createMoveDragableDropCallback(transition) {
 	
-	function prepareSort(drop, isDragable, boolean horiz) {
-		return Array.from(drop.children)
+	function doSort(drop, isDragable, horiz, c, drag) {
+		var sorted = Array.from(drop.children)
 			.filter(e => isDragable(e))
+			.filter(e => drag.indexOf(e) == -1)
 			.map(e => {
 				const box = getElementPageBBox(e);
-				const pos = { 
-						p: horiz ? (box.x + box.width) : (box.y + box.height),
+				const pos = horiz ? (box.x + box.width) : (box.y + box.height);
+				const val = c < 0 ? ( 0 -c - pos) : (pos - c);
+				const out = { 
+						p: val,
 						e: e };
-			});
+				console.log(out);
+				return out;
+			})
+			.filter(pos => pos.p >= 0)
+			.sort((a, b) => a.p - b.p);
+			
+		if (sorted.length == 0) {
+			return null;
+		} else {
+			return sorted[0].e.getAttribute("id");
+		}
 	}
 	
-	function getBeforeId(drop, evt, isDragable) {
+	function getBeforeId(drop, evt, isDragable, drag) {
 		const info = parseInfo(drop);
 		const layout = info.layout;
-		
 		const pos = getSVGCoords(evt);
-		
-		if (layout == 'null') {
-			return null;
-		}
-		
+	
 		switch(layout) {
 		  case 'null':
+		  case 'RIGHT':
 		  case 'HORIZONTAL':
-		  case 'VERTICAL':
-		   	return null;
-		  case 'LEFT':
-		    return prepareSort(drop, isDragable).map(pos => )
-		  case 'RIGHT:
-		  
-		  case 'UP'
-		  
+		    return doSort(drop, isDragable, true, pos.x, drag);
 		  case 'DOWN':
-			  
-		    break;
+		  case 'VERTICAL':
+   		    return doSort(drop, isDragable, false, pos.y, drag);
+		  case 'LEFT':
+		    return doSort(drop, isDragable, true, -pos.x, drag);
+		  case 'UP':		  
+			return doSort(drop, isDragable, false, -pos.y, drag);
 		  default:
-		    // code block
+		    return null;
 		}
 	}
 	
-	function createMoveCommand(drag, drop, evt, isDragable) {
+	function createMoveCommand(drag, drop, evt, isDragable, dragTargets) {
 		if (!isTerminator(parseInfo(drag))) {
 			return {
 				type: 'Move',
 				fragmentId: drop.getAttribute('id'),
 				moveId: drag.getAttribute('id'),
-				beforeId: getBeforeId(drop, evt, isDragable)
+				beforeFragmentId: getBeforeId(drop, evt, isDragable, dragTargets)
 			}
 		} else {
 			return {
@@ -79,7 +85,7 @@ export function createMoveDragableDropCallback(transition) {
 	
 	return function(dragTargets, evt, okDrop, dropTarget, isDragable) {
 		if (okDrop) {
-			Array.from(dragTargets).forEach(dt => transition.push(createMoveCommand(dt, dropTarget, evt, isDragable)));
+			Array.from(dragTargets).forEach(dt => transition.push(createMoveCommand(dt, dropTarget, evt, isDragable, dragTargets)));
 			moveLinks = [];
 			return true;
 		} else {

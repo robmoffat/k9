@@ -51,7 +51,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 				y: Number(transMatrix.f)
 			};
 		
-		console.log(dt+" "+out);
+		//console.log(dt+" "+out);
 		return out;
 	}
 
@@ -272,7 +272,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		svg.addEventListener("mouseup", drop);
 
 		selector().forEach(function(v) {
-			console.log("Adding e.l. to " + v.getAttribute("id"))
+			//console.log("Adding e.l. to " + v.getAttribute("id"))
 			v.removeEventListener("mousemove", drag);
 			v.removeEventListener("mouseup", drop);
 			v.removeEventListener("mousedown", grab);

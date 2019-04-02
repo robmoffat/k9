@@ -11,7 +11,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractLocatedCommand extends AbstractCommand {
 
-	protected String beforefragmentId; 	// before this guy, if supplied.  otherwise, at end.
+	protected String beforeFragmentId; 	// before this guy, if supplied.  otherwise, at end.
 	
 	public AbstractLocatedCommand() {
 		super();
@@ -19,7 +19,7 @@ public abstract class AbstractLocatedCommand extends AbstractCommand {
 
 	public AbstractLocatedCommand(String fragmentId, String fragmentHash, String beforefragmentId) {
 		super(fragmentId, fragmentHash);
-		this.beforefragmentId = beforefragmentId;
+		this.beforeFragmentId = beforefragmentId;
 	}
 
 	protected void insert(ADLDocument doc, Element e) {
@@ -28,8 +28,8 @@ public abstract class AbstractLocatedCommand extends AbstractCommand {
 		Element into = findFragmentElement(doc);
 		
 		Element before = null;
-		if (beforefragmentId != null) {
-			before = doc.getElementById(beforefragmentId);
+		if (beforeFragmentId != null) {
+			before = doc.getElementById(beforeFragmentId);
 		}
 		
 		into.insertBefore(e, before);

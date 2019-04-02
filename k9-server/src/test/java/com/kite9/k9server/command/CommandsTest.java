@@ -66,7 +66,7 @@ public class CommandsTest {
 		Move move = new Move();
 		move.moveId = "one-label";
 		move.fragmentId = "two";
-		move.beforefragmentId = "two-label";
+		move.beforeFragmentId = "two-label";
 		move.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(move), in);
@@ -130,7 +130,7 @@ public class CommandsTest {
 		Copy copy = new Copy();
 		copy.uriStr =  uri;
 		copy.fragmentId="The Diagram";
-		copy.beforefragmentId="two";
+		copy.beforeFragmentId="two";
 		copy.fragmentHash = "344d34b5c8803e8191dbaef1f0ebd698bde223b3";
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(copy), in);

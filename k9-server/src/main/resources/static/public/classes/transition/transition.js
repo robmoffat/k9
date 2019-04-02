@@ -135,7 +135,7 @@ function removeNonElementContent(el) {
 
 
 function reconcileElement(inFrom, inTo, toDelete, tl) {
-	console.log("Reconciling " + inFrom.tagName + ' with ' + inTo.tagName + " " + inFrom.getAttribute("id") + " " + inTo.getAttribute("id"))
+	//console.log("Reconciling " + inFrom.tagName + ' with ' + inTo.tagName + " " + inFrom.getAttribute("id") + " " + inTo.getAttribute("id"))
 	
 	handleTransformAsStyle(inFrom);
 	handleTransformAsStyle(inTo);
@@ -214,7 +214,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 		while (fi < inFrom.childElementCount) {
 			const fromElement = inFrom.children.item(fi);
 			const totalTranslate = getTotalTranslate(fromElement);
-			console.log("removing " + fromElement);
+			//console.log("removing " + fromElement);
 			if (fromElement != toDelete) {
 				toDelete.appendChild(fromElement);
 				fromElement.setAttribute("transform", "translate(" + totalTranslate.x + "," + totalTranslate.y + "); ");
@@ -265,7 +265,7 @@ export class Transition {
 	handleErrors(response) {
 		if (!response.ok) {
 			return response.json().then(j => {
-				console.log(JSON.stringify(j));
+				//console.log(JSON.stringify(j));
 				throw new Error(j.message);
 			});
 		}
