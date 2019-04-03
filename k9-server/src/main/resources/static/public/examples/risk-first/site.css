@@ -13,6 +13,13 @@
 	src: url('../../fonts/GOTHICI.ttf') format('truetype');
 }
 
+@params {
+	shape-palette: url(risk-palette);
+	link-palette: url(link-palette);	
+	align-template-uri:  url(template.xml#align-template);
+	cell-template-uri: url(template.xml#cell-template);
+}
+
 /*
  * Required so we can process old XML content
  */
@@ -55,7 +62,7 @@ agent-artifact {
 	kite9-template: url(template.xml#artifact);
 	kite9-padding: 10px; 
 	kite9-connection-align: 50%;
-	kite9-min-size: 110pt 140px;	
+	kite9-min-size: 110px 140px;	
 }
 
 agent-artifact {
@@ -339,7 +346,7 @@ risk-box {
 	kite9-template: url(template.xml#risk-box);
 	kite9-padding: 10px; 
 	kite9-connection-align: 50%;
-	kite9-min-size: 110pt 140px;
+	kite9-min-size: 110px 140px;
 }
 
 risk {
@@ -358,7 +365,7 @@ image {
 	kite9-type: container;
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-	kite9-min-size: 50pt 50px;
+	kite9-min-size: 50px 50px;
 	kite9-margin: 10px;
 	
 }
@@ -468,7 +475,7 @@ glyph {
 	kite9-type: container;
 	kite9-layout: down;	
 	kite9-template: url(template.xml#glyph);
-	kite9-padding: 6pt 10pt 6pt 10px; 
+	kite9-padding: 6px 10px 6px 10px; 
 	kite9-margin: 10px;
 	kite9-connection-align: 50%;
 	kite9-min-height: 30px;
@@ -481,7 +488,7 @@ glyph.rect {
 
 glyph.circle {
 	kite9-template: url(template.xml#glyph-circle);
-	kite9-min-size: 20pt 20px;
+	kite9-min-size: 20px 20px;
 }
 
 diagram glyph label {
@@ -555,7 +562,7 @@ from.arrow,
 to.arrow {
 	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
 	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
-	kite9-padding: 5pt 12pt 5pt 1px;
+	kite9-padding: 5px 12px 5px 1px;
 	kite9-marker-reserve: 1px;
 }
 
@@ -628,7 +635,7 @@ group > label {
 
 /* Arrow */
 arrow {
-	kite9-padding: 3pt 5pt 3pt 5px; 
+	kite9-padding: 3px 5px 3px 5px; 
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow);
@@ -838,7 +845,7 @@ plinth {
 
 symbol {
 	kite9-type: svg;
-	kite9-margin: 0 2pt 0 2px;
+	kite9-margin: 0 2px 0 2px;
 	kite9-sizing: minimize;
 	kite9-link-inset: 0px;
 	kite9-template: url(template.xml#symbol);
@@ -866,7 +873,7 @@ keyitem > * {
 
 keydesc {
 	kite9-type: container;	
-	kite9-template: url(template.xml#description);
+	kite9-template: url(template.xml#descripxion);
 	font-size: 12px;
 	font-family: "gothic";
 	kite9-padding: 10px;
@@ -880,16 +887,4 @@ fromLabel {
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#connection-label);
 	kite9-margin: 4px;	
-}
-
-* {
-	transition-duration: 1s;
-}
-
-.mouseover.glyph-back {
-	fill: yellow !important;
-}
-
-.selected .glyph-back {
-	fill: green !important;
 }

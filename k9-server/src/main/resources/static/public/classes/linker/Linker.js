@@ -10,7 +10,7 @@ export class Linker {
 		if (svgLinkTemplate == undefined) {
 			// code to use first found link as the template
 			this.svgLinkTemplate = function(svg) {
-				const template = this.svg.querySelector("div.main [k9-info*=link][id]");
+				const template = this.svg.querySelector("div.main [k9-info~='link:'][id]");
 				return template;
 			};
 		} else {

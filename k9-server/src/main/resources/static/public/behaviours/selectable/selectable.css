@@ -4,12 +4,20 @@ svg {
 	cursor: pointer;
 }
 
-.selected > .indicator {
+[k9-indicator=rect] {
+	transition: fill 0.2s;
+}
+
+[k9-indicator=path] {
+	transition: stroke 0.2s;
+}
+
+.selected > [k9-indicator=rect] {
 	fill: rgb(255, 204, 0) !important;
 	fill-opacity: 1 !important;
 }
 
-.selected > .indicator-path {
+.selected > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
 

@@ -4,24 +4,23 @@ svg {
 	cursor: pointer;
 }
 
-.mouseover > .indicator {
+[k9-indicator=rect] {
+	transition: fill 0.2s;
+}
+
+[k9-indicator=path] {
+	transition: stroke 0.2s;
+}
+
+.mouseover > [k9-indicator=rect] {
 	fill: #CCEEFF !important;
 	fill-opacity: 1 !important;
 }
 
-
-.mouseover > .indicator-path {
+.mouseover > [k9-indicator=path] {
 	stroke: #CCEEFF !important;
 }
 
 .mouseover > g > text {
 	fill: #CCEEFF !important;
-}
-
-.indicator {
-	transition: fill 0.2s;
-}
-
-.indicator-path {
-	transition: stroke 0.2s;
 }

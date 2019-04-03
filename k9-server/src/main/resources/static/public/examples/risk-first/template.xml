@@ -102,14 +102,14 @@
   
   <template id="artifact">
     <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="redesign/artifacts/document_v2.svg" />
+        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/document_v2.svg" />
     </image>
     <title><contents /></title>
   </template>
   
   <template id="interface">
     <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="redesign/artifacts/interface_v2.svg" />
+        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/interface_v2.svg" />
     </image>
     <title><contents /></title>
   </template>
@@ -144,7 +144,7 @@
   
   <template id="component">
     <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="redesign/artifacts/component_v2.svg" />
+        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/component_v2.svg" />
     </image>
     <title><contents /></title>
   </template>
@@ -159,14 +159,14 @@
   <template id='hidden'>
     <contents />
     <back style='kite9-usage: decal; kite9-type: svg; kite9-transform: position;'>
-      <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="fill-opacity: 0.2;  kite9-template: url(redesign/decals/hidden_risk_v2.svg);" />
+      <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="fill-opacity: 0.2;  kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
 	</back>
   </template>
   
   
   <template id="users">
     <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="redesign/artifacts/users_v2.svg" />
+        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/users_v2.svg" />
     </image>
     <title><contents /></title>
   </template>
@@ -249,7 +249,7 @@
   </template>
 
   <template id="tick">
-    <tickbox style='kite9-usage: regular; kite9-type: svg; kite9-template: url(redesign/decals/cross_v2.svg); ' />
+    <tickbox style='kite9-usage: regular; kite9-type: svg; kite9-template: url(/public/examples/risk-first/redesign/decals/cross_v2.svg); ' />
   </template>
 
   <template id='risk-box'>
@@ -304,7 +304,7 @@
     <risk-box>
       <code>Risk</code>
       <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="attendant_risk_v2.svg" />
+        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/risks/attendant_risk_v2.svg" />
       </image>
       <title><contents />
       </title>
@@ -315,7 +315,7 @@
     <risk-box>
       <code>Goal</code>
       <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="goal_v2.svg" />
+        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/risks/goal_v2.svg" />
       </image>
       <title><contents />
       </title>
@@ -740,7 +740,7 @@
     <risk-box>
       <code>Method</code>
       <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="redesign/artifacts/methodology_v2.svg" />
+        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/artifacts/methodology_v2.svg" />
       </image>
       <title>
         <contents />
@@ -831,4 +831,17 @@
       </front>
     </svg:g>
   </template>
+  
+  <g class="link invisible align" id="align-template">
+      <from reference="from"></from>
+      <to  reference="to"></to>
+  </g>
+  
+  <g id="cell-template">
+  </g>
+  
+  <link id="link-template" shape="NORMAL" style="" drawDirection="RIGHT">
+      <from reference="id_9" />
+      <to reference="id_10" class="arrow" />
+  </link>
 </svg:svg>
