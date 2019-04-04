@@ -15,15 +15,15 @@
     Methodology</risk>
 
     <arrow id="id_2">
-      <label>employs</label>
+      <label id="lab2">employs</label>
     </arrow>
 
     <group id="id_4" style="kite9-padding: 10pt; ">
-      <action>Practice</action>
+      <action id="praco" >Practice</action>
     </group>
 
     <arrow id="id_6">
-      <label>manages</label>
+      <label id="lab3">manages</label>
     </arrow>
 
     <risk id="id_8" class="attendant">
@@ -32,7 +32,7 @@
     </risk>
 
     <arrow id="id_9">
-      <label>obstructs</label>
+      <label id="lab4">obstructs</label>
     </arrow>
 
     <risk class="goal" id="id_10">

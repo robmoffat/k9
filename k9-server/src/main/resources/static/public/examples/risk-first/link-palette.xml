@@ -2,18 +2,20 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/basic.css");
+    
+      @import url("/public/examples/risk-first/site.css");
+    
     </svg:style>
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
 
-     <g id="from" class="clearbox"></g>
+     <glyph id="from" class="circle"></glyph>
      
-     <g id="to" class="clearbox"></g>
+     <glyph id="to" class="circle"></glyph>
      
-      <link id="link-template" shape="NORMAL" style="" class="default chooseable">
-          <from reference="id_9" />
-          <to reference="id_10" class="arrow" />
+      <link id="link-template" shape="NORMAL" style="" k9-palette="chooseable">
+          <from reference="from" />
+          <to reference="to" class="arrow" />
       </link>
      
    </diagram>

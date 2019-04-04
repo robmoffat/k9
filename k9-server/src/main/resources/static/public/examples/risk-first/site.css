@@ -601,6 +601,7 @@ group {
 	kite9-type: container;
 	kite9-sizing: maximize;
 	kite9-traversal: always;
+	kite9-template: url(template.xml#group);
 }
 
 .context-back {
@@ -634,6 +635,7 @@ group > label {
 }
 
 /* Arrow */
+[kite9-elem=arrow],
 arrow {
 	kite9-padding: 3px 5px 3px 5px; 
 	kite9-type: container;
@@ -642,11 +644,16 @@ arrow {
 	kite9-connections: separate;
 	kite9-connection-align: 50%;
 	kite9-link-inset: 4px;
+	fill: black;	
 }
 
-
-arrow > label {
-	kite9-type: container;
+[k9-elem="arrow"] > [k9-elem="label"] > g > text,
+arrow label {
+	fill: white;
+	stroke: none;
+	font-size: 14px;
+	font-family: "gothic-bold";
+	kite9-type: text;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow-label-text);
 	kite9-horizontal-align: center;
@@ -657,13 +664,6 @@ arrow > label {
 arrow > label > contents {
 	kite9-horizontal-align: center;
 	kite9-vertical-align: center;
-}
-
-.arrow-label-text {
-	fill: white;
-	stroke: none;
-	font-size: 14px;
-	font-family: "gothic-bold";
 }
 
 /* Stereotype */

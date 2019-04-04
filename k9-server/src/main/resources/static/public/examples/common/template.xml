@@ -17,7 +17,7 @@
     <contents />
   </template>
 
-  <template id='box' k9-ui="drag drop delete align connect" k9-drop="rect link" k9-align="yes" k9-delete="single">
+  <template id='box' k9-ui="drag drop delete align connect autoconnect" k9-drop="rect link" k9-align="yes" k9-delete="single">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>

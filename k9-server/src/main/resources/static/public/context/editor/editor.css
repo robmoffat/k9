@@ -25,6 +25,14 @@ diagram {
 	fill: #ff5956 !important;
 }
 
+[k9-ui~=invisible].mouseover > [k9-indicator=path] {
+	stroke: #CCEEFF !important;
+}
+
+[k9-ui~=invisible].mouseover > [k9-indicator=rect] {
+	fill: #CCEEFF !important;
+}
+
 [k9-ui~=invisible].selected > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
@@ -33,11 +41,4 @@ diagram {
 	fill: rgb(255, 204, 0) !important;
 }
 
-[k9-ui~=invisible].mouseover > [k9-indicator=path] {
-	stroke: #CCEEFF !important;
-}
-
-[k9-ui~=invisible].mouseover > [k9-indicator=rect] {
-	fill: #CCEEFF !important;
-}
 

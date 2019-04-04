@@ -32,7 +32,7 @@ public class ADLDelete extends Delete {
 		}
 		
 		ADL out = super.applyCommand(in);
-		ADLReferenceHandler.checkReferences(doc);
+		ADLReferenceHandler.checkConsistency(doc);
 		return out;
 	}
 

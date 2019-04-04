@@ -41,33 +41,47 @@ public class ADLReferenceHandler {
 	}
 	
 	/**
-	 * Removes any link references that are broken.
+	 * Removes any link references that are broken, and orphaned terminators
 	 */
-	public static void checkReferences(Node n) {
-		if (n instanceof ReferencingKite9XMLElement) {
-			if (((ReferencingKite9XMLElement) n).getType() == DiagramElementType.LINK) {
-				
-				String fromId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_FROM_XPATH);
-				String toId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_TO_XPATH);
-				
-				if (n.getOwnerDocument().getElementById(fromId) == null) {
-					n.getParentNode().removeChild(n);
-				} else if (n.getOwnerDocument().getElementById(toId) == null) {
-					n.getParentNode().removeChild(n);
-				}
+	public static void checkConsistency(Node n) {
+	
+		if (isType(n, DiagramElementType.LINK)) {
+			
+			String fromId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_FROM_XPATH);
+			String toId = ((ReferencingKite9XMLElement) n).getIDReference(CSSConstants.LINK_TO_XPATH);
+			
+			if (n.getOwnerDocument().getElementById(fromId) == null) {
+				n.getParentNode().removeChild(n);
+			} else if (n.getOwnerDocument().getElementById(toId) == null) {
+				n.getParentNode().removeChild(n);
 			}
 		}
+		
+		if (isType(n, DiagramElementType.LINK_END)) {
+			if (!isType(n.getParentNode(), DiagramElementType.LINK)) {
+				n.getParentNode().removeChild(n);
+			}
+		}
+		
 		
 		if (n instanceof Element) {
 			NodeList nl = n.getChildNodes();
 			List<Node> copy = copyToList(nl);
 			for (Node c : copy) {
-				checkReferences(c);
+				checkConsistency(c);
 			}
 		}
 		
 		if (n instanceof Document) {
-			checkReferences(((Document) n).getDocumentElement());
+			checkConsistency(((Document) n).getDocumentElement());
+		}
+	}
+
+	protected static boolean isType(Node n, DiagramElementType t) {
+		if (n instanceof ReferencingKite9XMLElement) {
+			return ((ReferencingKite9XMLElement) n).getType() == t;
+		} else {
+			return false;
 		}
 	}
 
