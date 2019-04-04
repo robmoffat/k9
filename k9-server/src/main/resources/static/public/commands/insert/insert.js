@@ -1,15 +1,27 @@
-import { getChangeUri } from '/public/bundles/api.js';
+import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
+import { getMainSvg } from '/public/bundles/screen.js';
+
+function defaultInsertSelector() {
+	return getMainSvg().querySelectorAll("[k9-ui~=insert]");
+}
+
+function defaultInsertableSelector(palette) {
+	return palette.get().querySelectorAll("[id][k9-palette~=insertable]");	
+}
+
 
 /**
  * Provides functionality so that when the user clicks on a 
  * palette element it is inserted into the document.
  */
-export function initInsertPaletteCallback(transition, selector) {
+export function initInsertPaletteCallback(transition, insertableSelector, insertSelector) {
 	
-	if (selector == undefined) {
-		selector = function(palette) {
-			return palette.get().querySelectorAll("[id][k9-elem].insertable");
-		}
+	if (insertableSelector == undefined) {
+		insertableSelector = defaultInsertableSelector;
+	}
+	
+	if (insertSelector == undefined) {
+		insertSelector = defaultInsertSelector;
 	}
 	
 	return function(palette, event) {
@@ -23,15 +35,15 @@ export function initInsertPaletteCallback(transition, selector) {
 		}
 	
 		function click(event) {
-			const selectedElements = document.querySelectorAll("[id][k9-info~='layout:'].selected");
-			const droppingElement = document.querySelector("[id].mouseover")
+			const selectedElements = insertSelector();
+			const droppingElement = palette.get().querySelector("[id].mouseover")
 			const data = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement.getAttribute("id")));
 			palette.destroy();		
 			transition.postCommands(data, getChangeUri());
 			event.stopPropagation();
 		}
 	
-		selector(palette).forEach(function(v) {
+		insertableSelector(palette).forEach(function(v) {
 	    	v.removeEventListener("click", click);
 	    	v.addEventListener("click", click);
 		})
@@ -41,7 +53,7 @@ export function initInsertPaletteCallback(transition, selector) {
 /**
  * Adds insert option into context menu
  */
-export function initInsertContextMenuCallback(palette) {
+export function initInsertContextMenuCallback(palette, selector) {
 	
 	document.addEventListener('keydown', function(event) {
 		if (event.key == 'Escape') {
@@ -49,12 +61,16 @@ export function initInsertContextMenuCallback(palette) {
 		}
 	});
 	
+	if (selector == undefined) {
+		selector = defaultInsertSelector;
+	}
+	
 	/**
 	 * Provides a link option for the context menu
 	 */
 	return function(event, contextMenu) {
 		
-		const selectedElements = document.querySelectorAll("[id][k9-info~='layout:'].lastSelected.selected");
+		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
 		
@@ -65,7 +81,7 @@ export function initInsertContextMenuCallback(palette) {
 			
 			img.setAttribute("title", "Insert");
 			img.setAttribute("src", "/public/commands/insert/insert.svg");
-			img.addEventListener("click", function(event) {
+			img.addEventListener("click", function(event, selector) {
 				contextMenu.destroy();
 				palette.open(event);
 			});

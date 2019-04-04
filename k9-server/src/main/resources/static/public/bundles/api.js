@@ -14,15 +14,19 @@ export function getAlignElementsAndDirections(id1, id2) {
 	 	});
 }
 
-export function hasLastSelected(e) {
+export function hasLastSelected(e, onlyLastSelected) {
 	for (var i = 0; i < e.length; i++) {
 		var item = e[i];
 		if (item.classList.contains("lastSelected")) {
-			return e;
+			if (onlyLastSelected) {
+				return item;
+			} else {
+				return e;
+			}
 		}
 	}
 	
-	return [];
+	return onlyLastSelected ? null : [];
 }
 
 export function getExistingConnections(id1, id2) {

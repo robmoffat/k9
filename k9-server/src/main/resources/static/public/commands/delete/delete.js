@@ -2,11 +2,18 @@ import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri, hasLastSelected } from "/public/bundles/api.js";
 
 
-export function initDeleteContextMenuCallback(transition, selector) {
+export function initDeleteContextMenuCallback(transition, selector, cascade) {
 	
 	if (selector == undefined) {
 		selector = function() {
 			return document.querySelectorAll("[id][k9-ui~='delete'].selected")
+		}
+	}
+	
+	if (cascade == undefined) {
+		cascade = function(e) {
+			var ui = e.getAttribute("k9-ui");
+			return (ui == undefined ? "" : ui).includes('cascade')
 		}
 	}
 	
@@ -15,12 +22,11 @@ export function initDeleteContextMenuCallback(transition, selector) {
 	 */
 	function createDeleteStep(e) {
 		var id = e.getAttribute("id");
-		var ui = e.getAttribute("k9-ui");
 		
 		return {
 			fragmentId: id,
 			type: 'ADLDelete',
-			cascade: ui.includes('cascade')
+			cascade: cascade(e)
 		};
 	}
 
@@ -49,9 +55,9 @@ export function initDeleteContextMenuCallback(transition, selector) {
 	 */
 	return function(event, cm) {
 		
-		const e = selector();
+		const e = hasLastSelected(selector());
 		
-		if ((e) && ('none' != e.getAttribute('delete')) && (e.classList.contains("selected"))){
+		if (e.length > 0){
 			var htmlElement = cm.get(event);
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);

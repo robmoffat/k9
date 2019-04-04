@@ -17,8 +17,12 @@ diagram {
 	stroke-width: 2px;
 }
 
-*[k9-info~="contradicting:"] > .indicator-path {
-	stroke: #ff5956!important;
+*[k9-info~="contradicting:"] > [k9-indicator=path] {
+	stroke: #ff5956 !important;
+}
+
+*[k9-info~="contradicting:"] > [k9-indicator=rect] {
+	fill: #ff5956 !important;
 }
 
 .invisible.selected > .indicator-path {

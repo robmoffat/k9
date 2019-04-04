@@ -36,6 +36,7 @@ import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/commands/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
 import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/commands/layout/layout.js';
+import { initDirectionContextMenuCallback } from '/public/commands/direction/direction.js';
 
 var initialized = false;
 
@@ -71,13 +72,14 @@ function initEditor() {
 		]);
 	
 	var contextMenu = new ContextMenu([ 
-//		initDeleteContextMenuCallback(transition),
-//		initLinkContextMenuCallback(transition, linker, linkTemplateUri),
-//		initInsertContextMenuCallback(shapePalette), 
-//		initEditContextMenuCallback(transition),
+		initDeleteContextMenuCallback(transition),
+		initLinkContextMenuCallback(transition, linker),
+		initInsertContextMenuCallback(shapePalette), 
+		initEditContextMenuCallback(transition),
 //		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
-//		initAutoConnectContextMenuCallback(transition),
+		initDirectionContextMenuCallback(transition),
 //		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition))
+		
 		]); 
 	
 	
@@ -98,9 +100,9 @@ function initEditor() {
 		
 	initHoverable();		// init for main svg area
 	
-	initHoverable(function() { return document.querySelectorAll("#--palette svg [id][k9-elem].insertable"); });
+	initHoverable(function() { return document.querySelectorAll("#--palette svg [id][k9-palette~=insertable]"); });
 
-	initHoverable(function() { return document.querySelectorAll("#--linkpalette svg [id][k9-elem].chooseable"); });
+	initHoverable(function() { return document.querySelectorAll("#--linkpalette svg [id][k9-palette~=chooseable]"); });
 
 	initSelectable();
 

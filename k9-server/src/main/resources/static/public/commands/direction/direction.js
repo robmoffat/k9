@@ -1,4 +1,7 @@
-export function initAutoConnectContextMenuCallback(transition) {
+import { getMainSvg } from '/public/bundles/screen.js';
+import { hasLastSelected, parseInfo, getContainingDiagram, getChangeUri, reverseDirection } from '/public/bundles/api.js';
+
+export function initDirectionContextMenuCallback(transition, selector) {
 	
 	function setDirection(e, direction, contextMenu) {
 		contextMenu.destroy();
@@ -52,37 +55,45 @@ export function initAutoConnectContextMenuCallback(transition) {
 		return img;
 	}
 	
+	if (selector == undefined) {
+		selector = function() {
+			return getMainSvg().querySelectorAll("[id][k9-info~='link:'].selected");
+		}
+	}
+	
 	/**
 	 * Provides a link option for the context menu
 	 */
 	return function(event, contextMenu) {
 		
-		const e = document.querySelector("[id].lastSelected.selected");
-		const debug = parseInfo(e);
-		const direction = debug.direction;
-		
-		if (debug.link) {
-			const contradicting = debug.contradicting == "yes";
-			const reverse = contradicting ? false : (debug.direction == 'LEFT' || debug.direction == 'UP');
+		const e = hasLastSelected(selector(), true);
+		if (e) {
+			const debug = parseInfo(e);
+			const direction = debug.direction;
 			
-			var htmlElement = contextMenu.get(event);
-			var img = drawDirection(htmlElement, direction, reverse);
-			if (contradicting) {
-				img.style.backgroundColor = "#ff5956";
-			}
-			
-			function handleClick() {
-				Array.from(htmlElement.children).forEach(e => {
-					htmlElement.removeChild(e);
-				});
+			if (debug.link) {
+				const contradicting = debug.contradicting == "yes";
+				const reverse = contradicting ? false : (debug.direction == 'LEFT' || debug.direction == 'UP');
 				
-				["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
-					var img2 = drawDirection(htmlElement, s, reverse, direction);
-					img2.addEventListener("click", () => setDirection(e, s, contextMenu));
-				});
+				var htmlElement = contextMenu.get(event);
+				var img = drawDirection(htmlElement, direction, reverse);
+				if (contradicting) {
+					img.style.backgroundColor = "#ff5956";
+				}
+				
+				function handleClick() {
+					Array.from(htmlElement.children).forEach(e => {
+						htmlElement.removeChild(e);
+					});
+					
+					["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
+						var img2 = drawDirection(htmlElement, s, reverse, direction);
+						img2.addEventListener("click", () => setDirection(e, s, contextMenu));
+					});
+				}
+				
+				img.addEventListener("click", handleClick);
 			}
-			
-			img.addEventListener("click", handleClick);
 		}
 	};
 }

@@ -1,23 +1,27 @@
-import { parseInfo, getChangeUri, getContainingDiagram, getAlignElementsAndDirections } from '/public/bundles/api.js';
+import { parseInfo, getChangeUri, getContainingDiagram, getAlignElementsAndDirections, hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
-export function initLinkContextMenuCallback(transition, linker) {
+export function initLinkContextMenuCallback(transition, linker, selector) {
+	
+	if (selector == undefined) {
+		selector = function() {
+			return getMainSvg().querySelectorAll("[id][k9-ui~='connect'].selected");
+		}
+	}
 	
 	/**
 	 * Provides a link option for the context menu
 	 */
 	return function(event, contextMenu) {
 		
-		const e = document.querySelector("[id].lastSelected.selected");
-		const debug = parseInfo(e);
+		const elements = hasLastSelected(selector());
 		
-		if (debug.rectangular=='connected') {
+		if (elements.length > 0) {
 			var htmlElement = contextMenu.get(event);
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Draw Link");
 			img.setAttribute("src", "/public/commands/link/link.svg");
-			const elements = document.querySelectorAll("div.main [id][k9-info~='connected;'].selected");
 			img.addEventListener("click", e => {
 				contextMenu.destroy();
 				linker.start(Array.from(elements), e);
@@ -29,7 +33,13 @@ export function initLinkContextMenuCallback(transition, linker) {
 var templateElement;
 var templateUri;
 
-export function initLinkPaletteCallback() {
+export function initLinkPaletteCallback(selector) {
+	
+	if (selector == undefined) {
+		selector = function(palette) {
+			return palette.get().querySelectorAll("[id][k9-palette~=chooseable]");
+		}
+	}
 	
 	
 	return function(palette, event) {
@@ -49,11 +59,11 @@ export function initLinkPaletteCallback() {
 			event.stopPropagation();
 		}
 	
-		palette.get().querySelectorAll("[id][k9-info~='link:']").forEach(function(v) {
+		selector(palette).forEach(function(v) {
 	    	v.removeEventListener("click", (e) => click(v, e));
 	    	v.addEventListener("click", (e) => click(v, e));
 	    
-	    	if (v.classList.contains("default")) {
+	    	if (templateUri == undefined) {
 	    		var id = v.getAttribute("id");
 	    		templateUri = getElementUri(v);
 	    		templateElement = v;
@@ -101,12 +111,12 @@ export function initLinkLinkerCallback(transition, linkTemplateUri) {
 	
 	return function(linker, evt) {
 		const linkTarget = linker.getLinkTarget(evt.target);
-		const diagramId = getContainingDiagram(linkTarget).getAttribute("id");
-		const linkTargetId = linkTarget.getAttribute("id");
 		
 		if (linkTarget == null) {
 			linker.removeDrawingLinks();
 		} else {
+			const diagramId = getContainingDiagram(linkTarget).getAttribute("id");
+			const linkTargetId = linkTarget.getAttribute("id");
 			linker.get().forEach(e => {
 				var fromId = e.getAttribute("temp-from");
 				var aligns = getAlignElementsAndDirections(fromId, linkTargetId);

@@ -6,11 +6,11 @@ import { createUniqueId, parseInfo } from '/public/bundles/api.js';
  */
 export class Linker {
 	
-	constructor(callbacks, svgLinkTemplate) {
+	constructor(callbacks, svgLinkTemplate, getLinkTarget) {
 		if (svgLinkTemplate == undefined) {
 			// code to use first found link as the template
 			this.svgLinkTemplate = function(svg) {
-				const template = this.svg.querySelector("div.main [k9-info~='link:'][id]");
+				const template = getMainSvg().querySelector("[k9-info~='link:'][id]");
 				return template;
 			};
 		} else {
@@ -21,20 +21,25 @@ export class Linker {
 		this.drawing = [];
 		
 		this.callbacks = callbacks == undefined ? [] : callbacks;
-	}
-	
-	getLinkTarget(v) {
-		if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
-			if (parseInfo(v).rectangular=='connected') {
-				return v;
-			} else {
-				return null;
+		
+		if (getLinkTarget == undefined) {
+			this.getLinkTarget = function(v) {
+				if (v.hasAttribute("k9-ui") && v.hasAttribute("id")) {
+					if (v.getAttribute("k9-ui").includes('connect')) {
+						return v;
+					} else {
+						return null;
+					}
+				} else if (v == getMainSvg()) {
+					return null;
+				} else {
+					return this.getLinkTarget(v.parentNode);
+				}
 			}
-		} else if (v == this.svg) {
-			return null;
 		} else {
-			return this.getLinkTarget(v.parentNode);
+			this.getLinkTarget = getLinkTarget;
 		}
+		
 	}
 	
 	start(selectedElements, evt) {

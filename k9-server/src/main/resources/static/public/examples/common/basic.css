@@ -31,7 +31,6 @@ diagram {
 	kite9-traversal: none;
 	kite9-template: url(template.xml#diagram);
 	background-color: white;
-	kite9-ui: drop;
 }
 
 g.kite9-diagram {
@@ -46,7 +45,6 @@ g.group {
 	fill: white;
 	stroke: black;
 	kite9-padding: 20px;
-	kite9-ui: drag drop delete;	
 }
 
 g.box {
@@ -59,7 +57,6 @@ g.box {
 	fill: #CCCCAA;
 	stroke: #AAAA88;
 	kite9-connection-align: 50%;
-	kite9-ui: drag drop delete connect;
 }
 
 g.clearbox {
@@ -69,7 +66,6 @@ g.clearbox {
 	kite9-margin: 20px;
 	kite9-min-size: 100px 100px;
 	kite9-connection-align: 50%;
-	kite9-ui: drag drop delete connect;
 }
 
 g.text {
@@ -83,7 +79,6 @@ g.text {
 	font-family: "metropolis";
 	text-align: start;
 	font-size: 50px;
-	kite9-ui: delete;
 	kite9-template: url(template.xml#text);
 }
 
@@ -94,6 +89,9 @@ g.grid {
 	kite9-type: container;
 	kite9-template: url(template.xml#grid);
 	kite9-padding: 1px;
+	fill: white;
+	stroke: black;
+	kite9-padding: 20px;
 }
 
 g.cell {

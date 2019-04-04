@@ -11,17 +11,17 @@
      
      <g id="to" class="clearbox"></g>
      
-     <g class="link chooseable" id="arrow-ended">
-      <from id="link1-from" reference="from" class="arrow"></from>
-      <to id="link1-to" class="arrow" reference="to"></to>
-     </g>
-          
-     <g class="link chooseable default" id="plain">
+     <g class="link" k9-palette="chooseable" id="plain">
       <from id="link2-from" reference="from" class="hoverable selectable"></from>
       <to id="link2-to" class="hoverable selectable" reference="to"></to>
      </g>
+
+     <g class="link" k9-palette="chooseable" id="arrow-ended">
+      <from id="link1-from" reference="from" class="arrow"></from>
+      <to id="link1-to" class="arrow" reference="to"></to>
+     </g>
      
-     <g class="link invisible align" id="invisible">
+     <g class="link invisible" id="invisible">
       <from reference="from"></from>
       <to  reference="to"></to>
      </g>
