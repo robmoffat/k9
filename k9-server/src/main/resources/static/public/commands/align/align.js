@@ -1,5 +1,5 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo } from "/public/bundles/api.js";
+import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
@@ -68,7 +68,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 	}
 
 	function performAlign(cm, horiz) {
-		var selectedElements = Array.from(document.querySelectorAll("div.main svg [id][k9-info~='connected'].selected"));
+		var selectedElements = selector();
 		
 		selectedElements.sort((a, b) => {
 			var apos = getElementPageBBox(a);
@@ -109,12 +109,18 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 		}
 	});
 		
+	if (selector == undefined) {
+		selector = function() {
+			return getMainSvg().querySelectorAll("[id][k9-ui~='align'].selected");
+		}
+	}
+	
 	/**
-	 * Provides a delete option for the context menu
+	 * Provides an align option for the context menu
 	 */
 	return function(event, cm) {
 		
-		const e = document.querySelectorAll("div.main svg [id][align*='yes'].selected");
+		const e = hasLastSelected(selector());
 		
 		if (e.length > 1) {
 			var htmlElement = cm.get(event);

@@ -1,3 +1,5 @@
+import { getMainSvg } from '/public/bundles/screen.js';
+
 /**
  * Adds hoverable behaviour
  */
@@ -47,7 +49,7 @@ export function initHoverable(selector, css) {
 	}
 
 	if (selector == undefined) {
-		selector = function() { return document.querySelectorAll("div.main svg [id][k9-elem]"); }
+		selector = function() { return getMainSvg().querySelectorAll("[id][k9-elem]"); }
 	}
 	
 	window.addEventListener('load', function() {

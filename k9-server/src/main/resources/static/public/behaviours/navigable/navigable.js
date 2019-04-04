@@ -1,3 +1,5 @@
+import { getMainSvg } from '/public/bundles/screen.js';
+
 export function initNavigable(transition, selector) {
 
 	function onClick(event) {
@@ -8,7 +10,7 @@ export function initNavigable(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("div.main [href]");
+			return getMainSvg().querySelectorAll("[href]");
 		}
 	}
 

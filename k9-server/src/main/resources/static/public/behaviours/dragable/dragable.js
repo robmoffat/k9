@@ -1,5 +1,5 @@
-import { getSVGCoords } from '/public/bundles/screen.js';
-import { handleTransformAsStyle, getKite9Target } from '/public/bundles/api.js';
+import { getSVGCoords, getMainSvg } from '/public/bundles/screen.js';
+import { handleTransformAsStyle, getKite9Target, isTerminator, isLink, isConnected } from '/public/bundles/api.js';
 
 export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable, canDropHere) {
 	
@@ -17,17 +17,10 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		return out == null ? "" : out;
 	}
 	
-	/**
-	 * Drag and drop is controlled by the 'drag' attribute:
-	 *  - 'yes': the element can be dragged.   
-	 *  - 'target':  you can drop here.
-	 *  - 'from': it's drag-able, but it's the from-end of a link
-	 *  - 'to: it's drag-able, but it's the to-end of a link.
-	 *  - 'link': you can link to it.
-	 */
 	if (isDragable == undefined) {
 		isDragable = function(v) {
-			return dragAttribute(v).includes("yes");
+			var out = v.getAttribute("k9-ui");
+			return out == null ? false : out.includes("drag");
 		} 
 	}
 
@@ -208,18 +201,16 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 				return false;
 			}
 			
-			var dragAtt = dragAttribute(dragTarget);
-			var dropAtt = dropTarget.getAttribute("drop");
+			var out = dropTarget.getAttribute("k9-ui");
+			if (!out.includes("drop")) {
+				return false;
+			}
 			
-			if (dropAtt != null) {
-				
-				// look for matching ids between the two
-				const dragAtts = dragAtt.split(" ");
-				const dropAtts = dropAtt.split(" ");
-				return intersects(dragAtts, dropAtts);
-			} 
+			if (isTerminator(dragTarget)) {
+				return (isConnected(dropTarget));
+			}
 			
-			return false;
+			return true;
 		};
 	}
 
@@ -259,13 +250,13 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("div.main [id][k9-elem]");
+			return getMainSvg().querySelectorAll("[id][k9-elem]");
 		}
 	}
 	
 	window.addEventListener('load', function(event) {
 
-		svg = document.querySelector("div.main svg");
+		svg = getMainSvg();
 		svg.removeEventListener("mousemove", drag);
 		svg.removeEventListener("mouseup", drop);
 		svg.addEventListener("mousemove", drag);

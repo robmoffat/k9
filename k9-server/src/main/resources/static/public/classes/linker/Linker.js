@@ -57,7 +57,7 @@ export class Linker {
 	}
 	
 	setPath(e, from, to) {
-		const path = e.querySelector(".indicator-path path");
+		const path = e.querySelector("[k9-indicator=path] path");
 		path.setAttribute("d", "M"+from.x+" "+from.y+ "L"+to.x+" "+to.y);
 	}
 	

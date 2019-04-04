@@ -1,33 +1,32 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri } from "/public/bundles/api.js";
+import { getChangeUri, hasLastSelected } from "/public/bundles/api.js";
 
 
 export function initDeleteContextMenuCallback(transition, selector) {
+	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("[id][k9-ui~='delete'].selected")
+		}
+	}
 	
 	/**
 	 * Takes a node and creates a delete command.
 	 */
 	function createDeleteStep(e) {
 		var id = e.getAttribute("id");
-		var deleteMode = e.getAttribute("delete");
-		if (deleteMode == 'none') {
-			return null;
-		} 
+		var ui = e.getAttribute("k9-ui");
 		
 		return {
-			fragmentHash: '', 
 			fragmentId: id,
 			type: 'ADLDelete',
-			cascade: deleteMode != 'single'
+			cascade: ui.includes('cascade')
 		};
 	}
 
 	function performDelete(cm) {
-		const selectedElements = document.querySelectorAll("[id].selected");
-		
-		const steps = Array.from(selectedElements)
-			.map(e => createDeleteStep(e))
-			.filter(x => x != null);
+		const steps = Array.from(selector())
+			.forEach(e => createDeleteStep(e));
 		
 		if (steps.length > 0) {
 			cm.destroy();
@@ -50,7 +49,7 @@ export function initDeleteContextMenuCallback(transition, selector) {
 	 */
 	return function(event, cm) {
 		
-		const e = document.querySelector("[id].lastSelected");
+		const e = selector();
 		
 		if ((e) && ('none' != e.getAttribute('delete')) && (e.classList.contains("selected"))){
 			var htmlElement = cm.get(event);

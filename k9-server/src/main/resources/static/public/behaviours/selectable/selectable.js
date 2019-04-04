@@ -1,3 +1,5 @@
+import { getMainSvg } from '/public/bundles/screen.js';
+
 // Adds .selected class when the user mouseups over an element.
 // Adds .lastSelected class to a single element, which is the last one clicked on
 
@@ -52,7 +54,7 @@ export function initSelectable(selector, css) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("div.main *[id]");
+			return getMainSvg().querySelectorAll("[id]");
 		}
 	}
 	

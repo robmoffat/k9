@@ -1,22 +1,6 @@
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 import { parseInfo, createUniqueId, getChangeUri, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target } from '/public/bundles/api.js';
 
-function getElementsInAxis(coords, horiz) {
-	
-	const out = Array.from(document.querySelectorAll("div.main svg [id][align~='yes']"))
-		.filter(e => {
-			var {x, y, width, height} = getElementPageBBox(e);
-			
-			if (!horiz) {
-				return ((y <= coords) && (y+height >= coords));
-			} else {
-				return ((x <= coords) && (x+width >= coords));
-			}
-		});
-	
-	return out;
-}
-
 var link = null;
 var link_to = undefined;
 var link_d = undefined;
@@ -58,7 +42,7 @@ function updateLink(tx, ty, frompos, link_d) {
 	link.setAttribute("d", "M"+fx+" "+fy+" L "+tx+" "+ty);
 }
 
-export function createAutoConnectDragableDropCallback(transition, templateUri) {
+export function initAutoConnectDragableDropCallback(transition, templateUri) {
 	
 	function undoAlignment(transition, e) {
 		const alignOnly = e.classList.contains("align");
@@ -147,24 +131,46 @@ export function createAutoConnectDragableDropCallback(transition, templateUri) {
 	}
 }
 
-export function createAutoConnectDragableMoveCallback() {
+export function initAutoConnectDragableMoveCallback(selector, canAutoConnect) {
 	
 	var maxDistance = 100;
 	var width, height;
 	
-	function canAutoConnect(e, dropTarget) {
-		var info = parseInfo(getKite9Target(dropTarget));
-		var layout = info.layout;
-		
-		if ((layout == null) || (layout == 'null')) {
-			var info = parseInfo(e);
-			return info['connect'];
-		} else {
-			// we don't do auto-connect inside directed containers. Too confusing.
-			return false;
+	if (selector == undefined) {
+		selector = function() {
+			return getMainSvg().querySelectorAll("[id][k9-ui~='autoconnect']");
 		}
+	}
+	
+	if (canAutoConnect == undefined) {
+		canAutoConnect = function(e, dropTarget) {
+			var info = parseInfo(getKite9Target(dropTarget));
+			var layout = info.layout;
+			
+			if ((layout == null) || (layout == 'null')) {
+				var ui = e.getAttribute("k9-ui");
+				return (ui == undefined ? "" : ui).includes("autoconnect");
+			} else {
+				// we don't do auto-connect inside directed containers. Too confusing.
+				return false;
+			}
+		}
+	}
+	
+	function getElementsInAxis(coords, horiz) {
 		
+		const out = Array.from(selector())
+			.filter(e => {
+				var {x, y, width, height} = getElementPageBBox(e);
+				
+				if (!horiz) {
+					return ((y <= coords) && (y+height >= coords));
+				} else {
+					return ((x <= coords) && (x+width >= coords));
+				}
+			});
 		
+		return out;
 	}
 	
     /**
@@ -298,91 +304,3 @@ export function createAutoConnectDragableMoveCallback() {
 
 }
 
-export function initAutoConnectContextMenuCallback(transition) {
-	
-	function setDirection(e, direction, contextMenu) {
-		contextMenu.destroy();
-		const diagramId = getContainingDiagram(e).getAttribute("id");
-		const id = e.getAttribute("id")
-
-		const alignOnly = e.classList.contains("align");
-		
-		if (alignOnly && (direction == 'null')) {
-			transition.postCommands([{
-					type: 'ADLDelete',
-					fragmentId: e.getAttribute("id"),
-					cascade: true
-			}], getChangeUri());
-		} else {
-			if (direction == 'null') {
-				// causes the attribute to be removed.
-				direction = null;	
-			} 
-			
-			transition.postCommands([{
-				fragmentId: id,
-				type: 'SetAttr',
-				name: 'drawDirection',
-				value: direction
-			},{
-				type: 'Move',
-				fragmentId: diagramId,
-				moveId: id,
-			}], getChangeUri());
-		}
-	}
-	
-	function drawDirection(htmlElement, direction, reverse, selected) {
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
-		
-		if (direction != "null") {
-			direction = reverse ? reverseDirection(direction) : direction;
-			img.setAttribute("title", "Link Direction ("+direction+")");
-			img.setAttribute("src", "/public/commands/autoconnect/"+direction.toLowerCase()+".svg");
-		} else {
-			img.setAttribute("title", "Link Direction (undirected)");
-			img.setAttribute("src", "/public/commands/autoconnect/undirected.svg");				
-		}
-		
-		if (selected == direction) {
-			img.setAttribute("class", "selected");
-		}
-		
-		return img;
-	}
-	
-	/**
-	 * Provides a link option for the context menu
-	 */
-	return function(event, contextMenu) {
-		
-		const e = document.querySelector("[id].lastSelected.selected");
-		const debug = parseInfo(e);
-		const direction = debug.direction;
-		
-		if (debug.link) {
-			const contradicting = debug.contradicting == "yes";
-			const reverse = contradicting ? false : (debug.direction == 'LEFT' || debug.direction == 'UP');
-			
-			var htmlElement = contextMenu.get(event);
-			var img = drawDirection(htmlElement, direction, reverse);
-			if (contradicting) {
-				img.style.backgroundColor = "#ff5956";
-			}
-			
-			function handleClick() {
-				Array.from(htmlElement.children).forEach(e => {
-					htmlElement.removeChild(e);
-				});
-				
-				["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
-					var img2 = drawDirection(htmlElement, s, reverse, direction);
-					img2.addEventListener("click", () => setDirection(e, s, contextMenu));
-				});
-			}
-			
-			img.addEventListener("click", handleClick);
-		}
-	};
-}

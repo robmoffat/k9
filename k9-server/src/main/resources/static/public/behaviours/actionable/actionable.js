@@ -1,3 +1,5 @@
+import { getMainSvg } from '/public/bundles/screen.js';
+
 /**
  * Allows the context menu to appear when the user clicks an element with an id
  */    
@@ -14,7 +16,7 @@ export function initActionable(contextMenu, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("div.main [id]");
+			return getMainSvg().querySelectorAll("[id]");
 		}
 	}
 

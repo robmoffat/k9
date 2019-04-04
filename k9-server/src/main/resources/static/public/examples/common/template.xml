@@ -10,53 +10,57 @@
     </svg:marker>
   </svg:defs>
 
-  <template id="diagram" drop="rect">
+  <template id="diagram" k9-ui="drop">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
     </back>
     <contents />
   </template>
 
-  <template id='box' drag="yes rect" drop="rect link" align="yes">
+  <template id='box' k9-ui="drag drop delete align" k9-drop="rect link" k9-align="yes" k9-delete="single">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
   
-  <template id='group' delete="single" drag="yes rect" drop="rect link">
+  <template id='group' k9-ui="drag drop delete">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
 
-  <template id='grid' delete="yes" drag="yes rect">
+  <template id='grid' k9-ui="delete drag align">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
   
-  <template id='cell' delete="none" drag="no" drop="rect link">
+  <template id='cell' k9-ui="orphan drop">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
 
-  <template id="link" drop="rect">
+  <template id="link" k9-ui="delete cascade drop">
     <line class="back" k9-indicator="path" style="kite9-type: svg; kite9-usage: decal;">
       <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
     </line>
     <contents />
   </template>
 
-  <template id='terminator' drag="yes link" delete="none">
+  <template id='terminator' k9-ui="orphan drag">
     <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' k9-indicator="rect" class="terminator" />
   </template>
   
-  <template id='no-terminator' drag="no" delete="none">
+  <template id='no-terminator' k9-ui="drag orphan">
+  </template>
+  
+  <template id="text" k9-ui="orphan text">
+    <contents />
   </template>
 
 <!-- 

@@ -2,7 +2,7 @@
  * This handles moving a block from one place to another on the diagram, via drag and drop.
  * You can't drop into an element unless it has 
  */
-import { getChangeUri, parseInfo } from "/public/bundles/api.js";
+import { getChangeUri, parseInfo, isTerminator } from "/public/bundles/api.js";
 import { getSVGCoords, getElementPageBBox } from '/public/bundles/screen.js';
 
 /**
@@ -11,11 +11,6 @@ import { getSVGCoords, getElementPageBBox } from '/public/bundles/screen.js';
 var moveLinks = [];
 
 const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
-
-
-function isTerminator(debug) {
-	return debug.terminates != undefined;
-}
 
 export function createMoveDragableDropCallback(transition) {
 	
@@ -66,7 +61,7 @@ export function createMoveDragableDropCallback(transition) {
 	}
 	
 	function createMoveCommand(drag, drop, evt, isDragable, dragTargets) {
-		if (!isTerminator(parseInfo(drag))) {
+		if (!isTerminator(drag)) {
 			return {
 				type: 'Move',
 				fragmentId: drop.getAttribute('id'),
@@ -108,14 +103,14 @@ export function createMoveDragableDropCallback(transition) {
 export function moveDragableMoveCallback(dragTargets, evt) {
 	
 	dragTargets.forEach(dt => {
-		const debug = parseInfo(dt);
-		if (isTerminator(debug)) {
+		if (isTerminator(dt)) {
+			const debug = parseInfo(dt);
 			const coords = getSVGCoords(evt);
 			
 			const id = debug.terminates;
 			const linkElem = document.getElementById(id);
 			
-			const path = linkElem.querySelector(".indicator-path path");
+			const path = linkElem.querySelector("[k9-indicator=path] path");
 			if (path) {
 				
 				const d = path.getAttribute("d");

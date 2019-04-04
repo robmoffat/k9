@@ -1,6 +1,6 @@
 import { getChangeUri } from '/public/bundles/api.js';
 
-export function initEditContextMenuCallback(transition) {
+export function initEditContextMenuCallback(transition, selector) {
 	
 	function createEditStep(e, text) {
 		return {
@@ -9,13 +9,19 @@ export function initEditContextMenuCallback(transition) {
 			"newText": text
 		}
 	}
+	
+	if (selector == undefined) {
+		selector = function() {
+			return document.querySelectorAll("[id][k9-ui~='text'].selected");
+		}
+	}
 
 	/**
 	 * Provides a text-edit option for the context menu
 	 */
 	return function(event, cm) {
 		
-		const selectedElements = document.querySelectorAll("[id].selected.text");
+		const selectedElements = selector();
 		
 		if (selectedElements.length > 0) {
 		

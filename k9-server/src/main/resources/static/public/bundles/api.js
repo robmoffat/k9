@@ -1,4 +1,4 @@
-function getAlignElementsAndDirections(id1, id2) {
+export function getAlignElementsAndDirections(id1, id2) {
 	return getExistingConnections(id1, id2)
 	 	.filter(e => e.classList.contains("align"))
 	 	.map(e => {
@@ -14,7 +14,18 @@ function getAlignElementsAndDirections(id1, id2) {
 	 	});
 }
 
-function getExistingConnections(id1, id2) {
+export function hasLastSelected(e) {
+	for (var i = 0; i < e.length; i++) {
+		var item = e[i];
+		if (item.classList.contains("lastSelected")) {
+			return e;
+		}
+	}
+	
+	return [];
+}
+
+export function getExistingConnections(id1, id2) {
 	return Array.from(document.querySelectorAll("div.main svg [id][k9-info*='link:']")).filter(e => {
 		const parsed = parseInfo(e);
 		const link = parsed['link'];
@@ -35,7 +46,7 @@ function getExistingConnections(id1, id2) {
 	});
 }
 
-function reverseDirection(d) {
+export function reverseDirection(d) {
     switch (d) {
     case "LEFT":
             return "RIGHT";
@@ -51,12 +62,12 @@ function reverseDirection(d) {
 };
 
 
-function getChangeUri() {
+export function getChangeUri() {
 	const href = document.URL;
 	return href.replace("/content", "/change")
 }
 
-function parseInfo(t) {
+export function parseInfo(t) {
 	if ((t!= null) &&(t.hasAttribute("k9-info"))) {
 		const parts = t.getAttribute("k9-info").split(';');
 		var out = {}
@@ -75,7 +86,7 @@ function parseInfo(t) {
 	}
 }
 
-function getContainingDiagram(elem) {
+export function getContainingDiagram(elem) {
 	if (elem == null) {
 		return null;
 	}
@@ -87,7 +98,7 @@ function getContainingDiagram(elem) {
 	}
 }
 
-function transformToCss(a) {
+export function transformToCss(a) {
 	var out = '';
 	out = a.scaleX != 1 ? out + "scaleX("+a.scaleX+") " : out;
 	out = a.scaleY != 1 ? out + "scaleY("+a.scaleY+") " : out;	
@@ -97,7 +108,7 @@ function transformToCss(a) {
 }
 
 
-function number(value) {
+export function number(value) {
 	if (value == null) {
 		return null;
 	} else if (value.endsWith("px")) {
@@ -107,7 +118,7 @@ function number(value) {
 	}
 }
 
-function parseTransform(a) {
+export function parseTransform(a) {
     var b={ 
     	translateX: 0,
     	translateY: 0,
@@ -150,7 +161,7 @@ function parseTransform(a) {
     return b;
 }
 
-function suffixIds(e, suffix) {
+export function suffixIds(e, suffix) {
 	if (e.hasAttribute("id")) {
 		var id = e.getAttribute("id");
 		e.setAttribute("id", id+suffix);
@@ -162,7 +173,7 @@ function suffixIds(e, suffix) {
 	}
 }
 
-function handleTransformAsStyle(e) {
+export function handleTransformAsStyle(e) {
 	if (e.hasAttribute('transform')) {
 		const t = parseTransform(e.getAttribute('transform'));
 		const css = transformToCss(t);
@@ -173,7 +184,7 @@ function handleTransformAsStyle(e) {
 
 var lastId = 1;
 
-function createUniqueId() {
+export function createUniqueId() {
 	while (document.getElementById(""+lastId)) {
 		lastId++;
 	}
@@ -182,7 +193,7 @@ function createUniqueId() {
 }
 
 
-function getKite9Target(v) {
+export function getKite9Target(v) {
 	if (v.hasAttribute("k9-elem") && v.hasAttribute("id")) {
 		return v;
 	} else if (v.tagName == 'svg') {
@@ -192,5 +203,18 @@ function getKite9Target(v) {
 	}
 }
 
+export function isTerminator(v) {
+	const att = v.getAttribute("k9-info");
+	return (att == undefined ? "" : att).includes("terminates:");
+}
 
-export { reverseDirection, getKite9Target, getChangeUri, parseInfo, createUniqueId, parseTransform, transformToCss, number, getExistingConnections, handleTransformAsStyle, getContainingDiagram, suffixIds, getAlignElementsAndDirections }
+export function isLink(v) {
+	const att = v.getAttribute("k9-info");
+	return (att == undefined ? "" : att).includes("link:");
+}
+
+export function isConnected(v) {
+	const att = v.getAttribute("k9-info");
+	return (att == undefined ? "" : att).includes("connected");
+}
+

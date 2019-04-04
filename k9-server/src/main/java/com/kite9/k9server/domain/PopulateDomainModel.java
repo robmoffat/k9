@@ -89,6 +89,7 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/common/example.xml"), Charset.forName("UTF-8")));
 		revisionRepository.saveInternal(r);
 		document1.setCurrentRevision(r);
+		documentRepository.saveInternal(document1);
 		
 		// add a risk-first example
 		Revision r2 = new Revision();
@@ -98,7 +99,6 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r2.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/risk-first/pattern_language.xml"), Charset.forName("UTF-8")));
 		revisionRepository.saveInternal(r2);
 		document2.setCurrentRevision(r2);
-		
 		documentRepository.saveInternal(document2);
 	}
 
