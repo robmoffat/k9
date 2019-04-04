@@ -736,7 +736,7 @@
     </risk-box>
   </template>
   
-  <template id="methodology">
+  <template id="methodology" k9-ui="drag delete align connect autoconnect cascade edit" >
     <risk-box>
       <code>Method</code>
       <image>

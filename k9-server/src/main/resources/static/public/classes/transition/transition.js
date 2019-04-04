@@ -65,7 +65,9 @@ function reconcileAttributes(fromElement, toElement, tl) {
 		var fromValue = fromElement.getAttribute(a);
 		var toValue = toElement.getAttribute(a);
 
-		if (fromValue == null) {
+		if ((a.startsWith("xlink:")) && (fromValue !== toValue)) {
+			fromElement.setAttributeNS("http://www.w3.org/1999/xlink", a.substring(a.indexOf(':')+1), toValue);
+		} else if (fromValue == null) {
 			fromElement.setAttribute(a, toValue);
 		} else if (fromValue !== toValue) {
 			if (numeric.indexOf(a) != -1) {
