@@ -68,7 +68,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 	}
 
 	function performAlign(cm, horiz) {
-		var selectedElements = selector();
+		var selectedElements = Array.from(selector());
 		
 		selectedElements.sort((a, b) => {
 			var apos = getElementPageBBox(a);

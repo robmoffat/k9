@@ -2,7 +2,7 @@ import { SHA1 } from "/public/bundles/sha1.js";
 import { getChangeUri, hasLastSelected } from "/public/bundles/api.js";
 
 
-export function initDeleteContextMenuCallback(transition, selector, cascade) {
+export function initDeleteContextMenuCallback(transition, selector, cascade, orphan) {
 	
 	if (selector == undefined) {
 		selector = function() {
@@ -17,22 +17,37 @@ export function initDeleteContextMenuCallback(transition, selector, cascade) {
 		}
 	}
 	
+	if (orphan == undefined) {
+		orphan = function(e) {
+			var ui = e.getAttribute("k9-ui");
+			return (ui == undefined ? "" : ui).includes('orphan')
+		}
+	}
+	
 	/**
 	 * Takes a node and creates a delete command.
 	 */
-	function createDeleteStep(e) {
+	function createDeleteStep(e, steps, cascade) {
 		var id = e.getAttribute("id");
 		
-		return {
+		steps.push({
 			fragmentId: id,
 			type: 'ADLDelete',
-			cascade: cascade(e)
-		};
+			cascade: cascade
+		});
+		
+		if (!cascade) {
+			Array.from(e.children).forEach(f => {
+				if (orphan(f)) {
+					createDeleteStep(f, steps, true);
+				}
+			});
+		}
 	}
 
 	function performDelete(cm) {
-		const steps = Array.from(selector())
-			.forEach(e => createDeleteStep(e));
+		var steps = [];
+		selector().forEach(e => createDeleteStep(e, steps, cascade(e)));
 		
 		if (steps.length > 0) {
 			cm.destroy();

@@ -1,4 +1,4 @@
-import { parseInfo, getChangeUri, getKite9Target, number, createUniqueId } from '/public/bundles/api.js';
+import { parseInfo, getChangeUri, getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
 export function initCellCreator(templateUri, transition) {
@@ -18,10 +18,12 @@ export function initCellCreator(templateUri, transition) {
 	}
 }
 
-export function initLayoutContextMenuCallback(transition, cellCreator) {
+export function initLayoutContextMenuCallback(transition, cellCreator, cellSelector, selector) {
 	
-	const selector = function(e) { 
-		return  document.querySelectorAll("[id='"+e.getAttribute("id")+ "'] > [k9-info~='connected;']");
+	if (cellSelector == undefined) {
+		cellSelector = function(e) { 
+			return getMainSvg().querySelectorAll("[id='"+e.getAttribute("id")+ "'] > [k9-info~='connected;']");
+		}		
 	}
 	
 	function setLayout(e, layout, contextMenu, existing) {
@@ -34,7 +36,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 		
 		if (existing == 'GRID') {
 			// remove all the grid cells within
-			selector(e).forEach(f => {
+			cellSelector(e).forEach(f => {
 				transition.push({
 					type: 'ADLDelete',
 					fragmentId: f.getAttribute("id"),
@@ -132,17 +134,22 @@ export function initLayoutContextMenuCallback(transition, cellCreator) {
 		label.textContent = name+":";
 	}
 	
-	
+	if (selector == undefined) {
+		selector = function() {
+			return getMainSvg().querySelectorAll("[id][k9-ui~=layout].selected");
+		}
+	}
+	 
 	/**
 	 * Provides a layout option for the context menu
 	 */
 	return function(event, contextMenu) {
 		
-		const e = document.querySelector("[id].lastSelected.selected");
-		const debug = parseInfo(e);
+		const e = hasLastSelected(selector(), true);
 		
-		if (debug.layout) {			
+		if (e) {			
 			var htmlElement = contextMenu.get(event);
+			const debug = parseInfo(e);
 			var img = drawLayout(htmlElement, debug.layout);
 			
 			function handleClick() {

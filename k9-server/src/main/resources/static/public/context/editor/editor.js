@@ -76,10 +76,9 @@ function initEditor() {
 		initLinkContextMenuCallback(transition, linker),
 		initInsertContextMenuCallback(shapePalette), 
 		initEditContextMenuCallback(transition),
-//		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
+		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),
-//		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition))
-		
+		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition))		
 		]); 
 	
 	
