@@ -98,6 +98,9 @@ g.cell {
 	kite9-type: container;
 	kite9-min-size: 30px 30px;
 	kite9-template: url(template.xml#cell);
+	kite9-sizing: maximize;
+	stroke: white;
+	fill: white;
 }
 
 /* Links */

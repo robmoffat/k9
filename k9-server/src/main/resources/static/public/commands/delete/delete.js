@@ -39,7 +39,7 @@ export function initDeleteContextMenuCallback(transition, selector, cascade, orp
 		if (!cascade) {
 			Array.from(e.children).forEach(f => {
 				if (orphan(f)) {
-					createDeleteStep(f, steps, true);
+					createDeleteStep(f, steps, false);
 				}
 			});
 		}

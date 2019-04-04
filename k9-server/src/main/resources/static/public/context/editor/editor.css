@@ -7,12 +7,12 @@ diagram {
 	kite9-padding: 120px;	/* ensures enough space to drag in */
 }
 
-.invisible > .indicator-path {
+[k9-ui~=invisible] > [k9-indicator=path] {
 	stroke: #b7c0fe !important;
 	stroke-width: 4px;
 }
 
-.invisible > .indicator {
+[k9-ui~=invisible] > [k9-indicator=rect]  {
 	stroke: #b7c0fe !important;
 	stroke-width: 2px;
 }
@@ -25,11 +25,19 @@ diagram {
 	fill: #ff5956 !important;
 }
 
-.invisible.selected > .indicator-path {
+[k9-ui~=invisible].selected > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
 
-.invisible.mouseover > .indicator-path {
+[k9-ui~=invisible].selected > [k9-indicator=rect] {
+	fill: rgb(255, 204, 0) !important;
+}
+
+[k9-ui~=invisible].mouseover > [k9-indicator=path] {
 	stroke: #CCEEFF !important;
+}
+
+[k9-ui~=invisible].mouseover > [k9-indicator=rect] {
+	fill: #CCEEFF !important;
 }
 

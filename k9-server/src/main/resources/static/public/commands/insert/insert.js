@@ -2,7 +2,7 @@ import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
 function defaultInsertSelector() {
-	return getMainSvg().querySelectorAll("[k9-ui~=insert]");
+	return getMainSvg().querySelectorAll("[k9-ui~=insert].selected");
 }
 
 function defaultInsertableSelector(palette) {

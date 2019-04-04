@@ -10,7 +10,7 @@
     </svg:marker>
   </svg:defs>
 
-  <template id="diagram" k9-ui="drop layout">
+  <template id="diagram" k9-ui="drop layout insert">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
     </back>
@@ -31,7 +31,7 @@
     <contents />
   </template>
   
-  <template id='cell' k9-ui="orphan drop invisible layout">
+  <template id='cell' k9-ui="orphan drop invisible layout insert">
     <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
