@@ -1,6 +1,6 @@
-import { getChangeUri } from '/public/bundles/api.js';
+import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
 
-export function initEditContextMenuCallback(transition, selector) {
+export function initEditContextMenuCallback(transition, selector, defaultSelector) {
 	
 	function createEditStep(e, text) {
 		return {
@@ -12,7 +12,14 @@ export function initEditContextMenuCallback(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("[id][k9-ui~='text'].selected");
+			return document.querySelectorAll("[id][k9-ui~='edit'].selected");
+		}
+	}
+	
+	if (defaultSelector == undefined) {
+		defaultSelector = function(e) {
+			const text = e.querySelector("[k9-ui~='text']");
+			return (text != null) ? text : e;
 		}
 	}
 
@@ -21,7 +28,7 @@ export function initEditContextMenuCallback(transition, selector) {
 	 */
 	return function(event, cm) {
 		
-		const selectedElements = selector();
+		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
 		
@@ -34,8 +41,7 @@ export function initEditContextMenuCallback(transition, selector) {
 			img.setAttribute("src", "/public/commands/edit/edit.svg");
 			
 			img.addEventListener("click", function(event) {
-				
-				const defaultText = document.querySelector(".lastSelected text").textContent;
+				const defaultText = defaultSelector(hasLastSelected(selectedElements, true)).textContent.trim();
 				const newText = prompt("Enter New Text", defaultText);
 				cm.destroy();
 				

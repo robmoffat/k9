@@ -12,12 +12,14 @@ svg {
 	transition: stroke 0.2s;
 }
 
-.selected > [k9-indicator=rect] {
+.selected > [k9-indicator=rect],
+.selected > :not([id]) > [k9-indicator=rect] {
 	fill: rgb(255, 204, 0) !important;
 	fill-opacity: 1 !important;
 }
 
-.selected > [k9-indicator=path] {
+.selected > [k9-indicator=path],
+.selected > :not([id]) > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
 

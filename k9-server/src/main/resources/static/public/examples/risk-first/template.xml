@@ -33,7 +33,7 @@
   </svg:defs>
   
   <template id="group" k9-ui="drag drop delete insert align connect layout invisible">
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  fill: white; '>
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
     <contents />
@@ -85,7 +85,7 @@
     </svg:g>
   </template>
   
-  <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect">
+  <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit">
     <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; stroke-width: 1px;' k9-indicator="rect">
       <svg:polygon points='0 0, #{$width - 15} 0, #{$width} #{$height div 2}, #{$width - 15 } #{$height}, 0 #{$height}'  />
     </back>
@@ -96,7 +96,7 @@
     </front>
   </template>
   
-  <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect">
+  <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect edit">
     <back style='kite9-usage: decal; kite9-type: svg; '>
       <svg:polygon points='0 #{$height div 2}, 15 0, #{$width} 0, #{$width} #{$height}, 15 #{$height} 0, #{$height div 2}' style='fill: url(#risk-background); stroke: black; stroke-width: 1px;' />
     </back>
@@ -205,7 +205,7 @@
     <contents />
   </template>
 
-  <template id="arrow-label-text" k9-ui="text orphan">
+  <template id="arrow-label-text" k9-ui="edit orphan">
     <contents />
   </template>
 
@@ -253,8 +253,8 @@
   </template>
 
   <template id='risk-box' k9-ui="">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' style='fill: url(#risk-background); ' class="risk-back" />
+    <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); ' k9-indicator="rect" > 
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' class="risk-back" />
     </back>
     <svg:g class="risk">
       <contents />
@@ -294,19 +294,19 @@
   </template>
 
   <template id="diagram" k9-ui="drop insert layout">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' class="diagram-back" />
+    <back style='kite9-usage: decal; kite9-type: svg; fill: white; ' k9-indicator="rect">
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="diagram-back" />
     </back>
     <contents />
   </template>
 
-  <template id="attendant" k9-ui="drag delete align connect autoconnect cascade">
+  <template id="attendant" k9-ui="drag delete align connect autoconnect cascade edit" >
     <risk-box>
       <code>Risk</code>
       <image>
         <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/risks/attendant_risk_v2.svg" />
       </image>
-      <title><contents />
+      <title k9-ui="text"><contents />
       </title>
     </risk-box>
   </template>

@@ -52,7 +52,7 @@
   <template id='no-terminator' k9-ui="drag orphan">
   </template>
   
-  <template id="text" k9-ui="orphan text">
+  <template id="text" k9-ui="orphan edit">
     <contents />
   </template>
 

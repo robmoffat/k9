@@ -9,12 +9,12 @@ diagram {
 
 [k9-ui~=invisible] > [k9-indicator=path] {
 	stroke: #b7c0fe !important;
-	stroke-width: 4px;
+	stroke-width: 4px !important;
 }
 
 [k9-ui~=invisible] > [k9-indicator=rect]  {
 	stroke: #b7c0fe !important;
-	stroke-width: 2px;
+	stroke-width: 2px !important;
 }
 
 *[k9-info~="contradicting:"] > [k9-indicator=path] {
