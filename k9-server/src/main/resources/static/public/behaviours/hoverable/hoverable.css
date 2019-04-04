@@ -12,12 +12,14 @@ svg {
 	transition: stroke 0.2s;
 }
 
-.mouseover > [k9-indicator=rect] {
+.mouseover > [k9-indicator=rect],
+.mouseover > :not([id]) > [k9-indicator=rect] {
 	fill: #CCEEFF !important;
 	fill-opacity: 1 !important;
 }
 
-.mouseover > [k9-indicator=path] {
+.mouseover > [k9-indicator=path],
+.mouseover > :not([id]) > [k9-indicator=path] {
 	stroke: #CCEEFF !important;
 }
 
