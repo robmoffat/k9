@@ -10,9 +10,7 @@
   <diagram xmlns="http://www.kite9.org/schema/adl" id="diagram-129" name="Pattern Language">
 
 
-    <risk class="methodology" id="id_0">
-    Software 
-    Methodology</risk>
+    <risk class="methodology" id="id_0"> Software Methodology</risk>
 
     <arrow id="id_2">
       <label id="lab2">employs</label>

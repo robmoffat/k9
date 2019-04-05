@@ -244,6 +244,13 @@
     </link-body>
   </template>
 
+  <template id="align" k9-ui="delete align invisible">
+    <contents />
+    <body style="kite9-type: svg; kite9-usage: decal;"  k9-indicator="path">
+      <svg:path d="#{$path}" style="stroke-dasharray: 8; fill: none;" />
+    </body>
+  </template>
+
   <template id="grey-link" k9-ui="delete">
     <contents />
     <link-body style="kite9-type: svg; kite9-usage: decal;">

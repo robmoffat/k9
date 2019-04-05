@@ -16,7 +16,7 @@
 @params {
 	shape-palette: url(risk-palette);
 	link-palette: url(link-palette);	
-	align-template-uri:  url(template.xml#align-template);
+	align-template-uri:  url(link-palette.xml#align-element);
 	cell-template-uri: url(template.xml#cell-template);
 }
 
@@ -107,6 +107,7 @@ hidden {
 risk {
 	kite9-type: container;
 	fill: black;
+	kite9-sizing: minimize;
 }
 
 container {
@@ -273,8 +274,8 @@ risk.security {
 	kite9-template: url(template.xml#fixed) "S" url(redesign/risks/security_risk_v2.svg) "Security Risk";
 }
 
-risk.methdology {
-	kite9-template: url(template.xml#methodology) "" url(redesign/risks/methodology_v2.svg) "Complexity Risk";
+risk.methodology {
+	kite9-template: url(template.xml#fixed) "Method" url(redesign/artifacts/methodology_v2.svg) "Software Methodology";
 }
 
 
@@ -456,6 +457,11 @@ diagram glyph label {
 }
 
 /* Links */
+
+align {
+	kite9-type: link;
+	kite9-template: url(template.xml#align);
+}
 
 link {
 	kite9-type: link;

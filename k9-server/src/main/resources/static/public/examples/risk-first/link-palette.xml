@@ -17,6 +17,11 @@
           <from reference="from" />
           <to reference="to" class="arrow" />
       </link>
+      
+      <align id="align-element" class="align" k9-ui="invisible">
+        <from reference="from" />
+        <to reference="to" />
+      </align>
      
    </diagram>
 </svg:svg>
