@@ -7,37 +7,37 @@ diagram {
 	kite9-padding: 120px;	/* ensures enough space to drag in */
 }
 
-[k9-ui~=invisible] > [k9-indicator=path] {
+div.main [k9-ui~=invisible] > [k9-indicator=path] {
 	stroke: #b7c0fe !important;
 	stroke-width: 4px !important;
 }
 
-[k9-ui~=invisible] > [k9-indicator=rect]  {
+div.main [k9-ui~=invisible] > [k9-indicator=rect]  {
 	stroke: #b7c0fe !important;
 	stroke-width: 2px !important;
 }
 
-*[k9-info~="contradicting:"] > [k9-indicator=path] {
+div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {
 	stroke: #ff5956 !important;
 }
 
-*[k9-info~="contradicting:"] > [k9-indicator=rect] {
+div.main *[k9-info~="contradicting:"] > [k9-indicator=rect] {
 	fill: #ff5956 !important;
 }
 
-[k9-ui~=invisible].mouseover > [k9-indicator=path] {
+div.main [k9-ui~=invisible].mouseover > [k9-indicator=path] {
 	stroke: #CCEEFF !important;
 }
 
-[k9-ui~=invisible].mouseover > [k9-indicator=rect] {
+div.main [k9-ui~=invisible].mouseover > [k9-indicator=rect] {
 	fill: #CCEEFF !important;
 }
 
-[k9-ui~=invisible].selected > [k9-indicator=path] {
+div.main [k9-ui~=invisible].selected > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
 
-[k9-ui~=invisible].selected > [k9-indicator=rect] {
+div.main [k9-ui~=invisible].selected > [k9-indicator=rect] {
 	fill: rgb(255, 204, 0) !important;
 }
 

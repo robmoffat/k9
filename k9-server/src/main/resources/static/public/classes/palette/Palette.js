@@ -48,6 +48,11 @@ export class Palette {
 			cancel.addEventListener("click", () => this.destroy());
 			palette.appendChild(cancel);
 			
+			// create scrollable area
+			var scrollable = document.createElement("div");
+			scrollable.setAttribute("class", "scrollable");
+			palette.appendChild(scrollable);
+			
 			// populate it
 			fetch(this.paletteUri+".svg", {
 				credentials: 'include',
@@ -67,12 +72,7 @@ export class Palette {
 			.then(doc => {
 				// set new ids
 				suffixIds(doc.documentElement, this.id);
-				
-				// create scrollable area
-				this.scrollable = document.createElement("div");
-				this.scrollable.setAttribute("class", "scrollable");
-				palette.appendChild(this.scrollable);
-				this.scrollable.appendChild(doc.documentElement);
+				scrollable.appendChild(doc.documentElement);
 				this.callbacks.forEach(cb => cb(this, event));
 				
 				// force the load event to occur again
@@ -110,21 +110,19 @@ export class Palette {
 	open(event) {
 		var darken = document.getElementById("--darken");
 		var palette = document.getElementById(this.id);
+		var scrollable = palette.querySelector(".scrollable");
+		var svg = scrollable.querySelector("svg");
 		
-		if (this.paletteWidth == undefined) {
-			// ensure the palette appears in the centre of the screen
-			var {width, height} = this.scrollable.getBoundingClientRect();
-			this.paletteWidth = width;
-			this.paletteHeight = height;
-		}
-		
-		var width = Math.min(this.paletteWidth, window.innerWidth-100);
-		var height = Math.min(this.paletteHeight, window.innerHeight-100);
+		// ensure the palette appears in the centre of the screen
+		var paletteWidth = svg.width.baseVal.valueInSpecifiedUnits;
+		var paletteHeight = svg.height.baseVal.valueInSpecifiedUnits;
+		var width = Math.min(paletteWidth+30, window.innerWidth-100);
+		var height = Math.min(paletteHeight+30, window.innerHeight-100);
 		
 		palette.style.marginTop= (-height/2)+"px";
 		palette.style.marginLeft= (-width/2)+"px";
-		palette.style.width = (width)+"px";
-		palette.style.height = (height)+"px";
+		scrollable.style.width = (width)+"px";
+		scrollable.style.height = (height)+"px";
 		palette.style.visibility = 'visible';
 		darken.style.display = 'block';
 		

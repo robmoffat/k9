@@ -32,6 +32,34 @@
 
   </svg:defs>
   
+   <template id="generic" k9-ui="drag delete align connect autoconnect edit">
+    <risk-box>
+      <code>
+        <contents xpath="$template-1" type="string" />
+      </code>
+      <image style="kite9-vertical-align: center; kite9-min-size: 50px 50px;">
+        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="#{$template-2}" />
+      </image>
+      <title>
+        <contents />
+      </title>
+    </risk-box>
+  </template>
+  
+  <template id="fixed" k9-ui="drag delete align connect autoconnect" k9-palette="insertable">
+    <risk-box>
+      <code>
+        <contents xpath="$template-1" type="string" />
+      </code>
+      <image style="kite9-vertical-align: center; kite9-min-size: 50px 50px;">
+        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="#{$template-2}" />
+      </image>
+      <title>
+        <contents xpath="$template-3" type="string"/>
+      </title>
+    </risk-box>
+  </template>
+  
   <template id="group" k9-ui="drag drop delete insert align connect layout invisible">
     <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
@@ -289,6 +317,9 @@
     <svg:g class="title-label-front">
       <front style="kite9-type: text; ">
         <contents />
+        <svg:flowRegion>          
+          <svg:path d="M0,0 H100 V250 H-100 z" />        
+        </svg:flowRegion> 
       </front>
     </svg:g>
   </template>
@@ -298,442 +329,6 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="diagram-back" />
     </back>
     <contents />
-  </template>
-
-  <template id="attendant" k9-ui="drag delete align connect autoconnect cascade edit" >
-    <risk-box>
-      <code>Risk</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/risks/attendant_risk_v2.svg" />
-      </image>
-      <title k9-ui="text"><contents />
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="goal" k9-ui="drag delete align connect autoconnect">
-    <risk-box>
-      <code>Goal</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/risks/goal_v2.svg" />
-      </image>
-      <title><contents />
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="feature">
-    <risk-box>
-      <code>F</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_risk_v2.svg" />
-      </image>
-      <title>Feature
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="communication">
-    <risk-box>
-      <code>Co</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="communication_risk_v2.svg" />
-      </image>
-      <title>Communication
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  
-
-
-  <template id="coordination">
-    <risk-box>
-      <code>Cr</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="coordination_risk_v2.svg" />
-      </image>
-      <title>Coordination
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="invisibility">
-    <risk-box>
-      <code>I</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="invisibility_risk_v2.svg" />
-      </image>
-      <title>Invisibility
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="complexity">
-    <risk-box>
-      <code>Cx</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="complexity_risk_v2.svg" />
-      </image>
-      <title>Complexity
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="boundary">
-    <risk-box>
-      <code>B</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="boundary_risk_v2.svg" />
-      </image>
-      <title>Boundary
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="agency">
-    <risk-box>
-      <code>A</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="agency_risk_v2.svg" />
-      </image>
-      <title>Agency
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="channel">
-    <risk-box>
-      <code>Ch</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="channel_risk_v2.svg" />
-      </image>
-      <title>Channel
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="protocol">
-    <risk-box>
-      <code>Pr</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="protocol_risk_v2.svg" />
-      </image>
-      <title>Protocol
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="trust">
-    <risk-box>
-      <code>T</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="trust_belief_risk_v2.svg" />
-      </image>
-      <title>Trust &amp; Belief
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="learning-curve">
-    <risk-box>
-      <code>Lc</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="learning_curve_risk_v2.svg" />
-      </image>
-      <title>Learning
-        Curve Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="map-and-territory">
-    <risk-box>
-      <code>MT</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="map_and_territory_risk_v2.svg" />
-      </image>
-      <title>Map and
-        Territory Risk
-      </title>
-    </risk-box>
-  </template>  
-  <template id="message">
-    <risk-box>
-      <code>M</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="message_risk_v2.svg" />
-      </image>
-      <title>Message
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="internal-model">
-    <risk-box>
-      <code>IM</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="internal_model_risk_v2.svg" />
-      </image>
-      <title>Internal
-        Model Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="feature-fit">
-    <risk-box>
-      <code>FF</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_fit_risk_v2.svg" />
-      </image>
-      <title>Feature 
-      Fit Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="implementation">
-    <risk-box>
-      <code>F-Im</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_implementation_risk_v2.svg" />
-      </image>
-      <title>Implementation
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="feature-drift">
-    <risk-box>
-      <code>F-D</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_drift_risk_v2.svg" />
-      </image>
-      <title>Feature
-        Drift Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="feature-access">
-    <risk-box>
-      <code>F-A</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_access_risk_v2.svg" />
-      </image>
-      <title>Feature
-        Access Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="regression">
-    <risk-box>
-      <code>F-R</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_regression_risk_v2.svg" />
-      </image>
-      <title>Regression
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="market">
-    <risk-box>
-      <code>F-Ma</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="feature_market_risk_v2.svg" />
-      </image>
-      <title>Market
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="conceptual-integrity">
-    <risk-box>
-      <code>F-CI</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="conceptual_integrity_risk_v2.svg" />
-      </image>
-      <title>Conceptual
-        Integrity Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="codebase">
-    <risk-box>
-      <code>Cb</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="codebase_risk_v2.svg" />
-      </image>
-      <title>Codebase
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="dependency">
-    <risk-box>
-      <code>D</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_risk_v2.svg" />
-      </image>
-      <title>Dependency
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="dead-end">
-    <risk-box>
-      <code>De</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dead_end_risk_v2.svg" />
-      </image>
-      <title>Dead-End
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="reliability">
-    <risk-box>
-      <code>D-R</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_reliability_risk_v2.svg" />
-      </image>
-      <title>Reliability
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="scarcity">
-    <risk-box>
-      <code>D-Sc</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_scarcity_risk_v2.svg" />
-      </image>
-      <title>Scarcity
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="operational">
-    <risk-box>
-      <code>Op</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="operational_risk_v2.svg" />
-      </image>
-      <title>Operational
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="schedule">
-    <risk-box>
-      <code>D-Sh</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_schedule_risk_v2.svg" />
-      </image>
-      <title>Schedule
-        Risk
-      </title>
-    </risk-box>
-  </template>
-
-  <template id="opportunity">
-    <risk-box>
-      <code>D-Opp</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_opportunity_risk_v2.svg" />
-      </image>
-      <title>Opportunity
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="deadline">
-    <risk-box>
-      <code>D-Dl</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_deadline_risk_v2.svg" />
-      </image>
-      <title>Deadline
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="funding">
-    <risk-box>
-      <code>D-Fu</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_funding_risk_v2.svg" />
-      </image>
-      <title>Funding
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="red-queen">
-    <risk-box>
-      <code>D-Rq</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_red_queen_risk_v2.svg" />
-      </image>
-      <title>Red Queen
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="staff">
-    <risk-box>
-      <code>D-St</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="staff_risk_v2.svg" />
-      </image>
-      <title>Staff
-        Risk
-      </title>
-    </risk-box>
-  </template>
-  <template id="process">
-    <risk-box>
-      <code>D-Pr</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_process_risk_v2.svg" />
-      </image>
-      <title>Process
-        Risk
-      </title>
-    </risk-box>
-  </template>
- 
-  <template id="software-dependency">
-    <risk-box>
-      <code>D-Sw</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="dependency_software_risk_v2.svg" />
-      </image>
-      <title>Software
-       Dependency Risk
-      </title>
-    </risk-box>
-  </template>
-  
-  <template id="security">
-    <risk-box>
-      <code>S</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="security_risk_v2.svg" />
-      </image>
-      <title>Security
-        Risk
-      </title>
-    </risk-box>
   </template>
   
   <template id="methodology" k9-ui="drag delete align connect autoconnect cascade edit" >
