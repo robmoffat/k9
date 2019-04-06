@@ -15,12 +15,22 @@ export function getHtmlCoords(evt) {
 	return out;
 }
 
-export function getSVGCoords(evt) {
+export function getSVGCoords(evt, draw) {
 	var out = getHtmlCoords(evt);
 	var transform = getMainSvg().style.transform;
 	var t = parseTransform(transform);
 	out.x = out.x / t.scaleX;
 	out.y = out.y / t.scaleY;
+	
+	if (draw) {
+		var el = document.createElementNS("http://www.w3.org/2000/svg", "ellipse")
+		el.setAttribute("cx", out.x);
+		el.setAttribute("cy", out.y);
+		el.setAttribute("rx", "4px");
+		el.setAttribute("ry", "4px");
+		getMainSvg().appendChild(el);
+	}
+	
 	return out;
 }
 

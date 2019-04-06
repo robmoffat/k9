@@ -106,6 +106,10 @@ export class Palette {
 	get(event) {
 		return document.getElementById(this.id);
 	}
+	
+	getOpenEvent() {
+		return this.openEvent;
+	}
 		
 	open(event) {
 		var darken = document.getElementById("--darken");
@@ -125,6 +129,8 @@ export class Palette {
 		scrollable.style.height = (height)+"px";
 		palette.style.visibility = 'visible';
 		darken.style.display = 'block';
+		
+		this.openEvent = event;
 		
 		return palette;	
 	}

@@ -1,5 +1,7 @@
 import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
+import { getBeforeId } from '/public/bundles/ordering.js';
+
 
 function defaultInsertSelector() {
 	return getMainSvg().querySelectorAll("[k9-ui~=insert].selected");
@@ -27,10 +29,13 @@ export function initInsertPaletteCallback(transition, insertableSelector, insert
 	return function(palette, event) {
 
 		function createInsertStep(e, id) {
+			const beforeId = getBeforeId(e, palette.getOpenEvent(), []);
+			
 			return {
 				"type": 'Copy',
 				"fragmentId": e.getAttribute('id'),
-				"uriStr": palette.getUri()+".xml#"+id.substring(0, id.length-palette.getId().length)
+				"uriStr": palette.getUri()+".xml#"+id.substring(0, id.length-palette.getId().length),
+				"beforeFragmentId" : beforeId
 			}
 		}
 	
@@ -81,7 +86,7 @@ export function initInsertContextMenuCallback(palette, selector) {
 			
 			img.setAttribute("title", "Insert");
 			img.setAttribute("src", "/public/commands/insert/insert.svg");
-			img.addEventListener("click", function(event, selector) {
+			img.addEventListener("click", function(e2, selector) {
 				contextMenu.destroy();
 				palette.open(event);
 			});
