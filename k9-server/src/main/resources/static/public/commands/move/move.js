@@ -4,6 +4,7 @@
  */
 import { getChangeUri, parseInfo, isTerminator } from "/public/bundles/api.js";
 import { getSVGCoords, getElementPageBBox } from '/public/bundles/screen.js';
+import { getBeforeId } from '/public/bundles/ordering.js';
 
 /**
  * Keeps track of any links we've animated moving.
@@ -14,59 +15,15 @@ const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
 
 export function createMoveDragableDropCallback(transition) {
 	
-	function doSort(drop, isDragable, horiz, c, drag) {
-		var sorted = Array.from(drop.children)
-			.filter(e => isDragable(e))
-			.filter(e => drag.indexOf(e) == -1)
-			.map(e => {
-				const box = getElementPageBBox(e);
-				const pos = horiz ? (box.x + box.width) : (box.y + box.height);
-				const val = c < 0 ? ( 0 -c - pos) : (pos - c);
-				const out = { 
-						p: val,
-						e: e };
-				console.log(out);
-				return out;
-			})
-			.filter(pos => pos.p >= 0)
-			.sort((a, b) => a.p - b.p);
-			
-		if (sorted.length == 0) {
-			return null;
-		} else {
-			return sorted[0].e.getAttribute("id");
-		}
-	}
-	
-	function getBeforeId(drop, evt, isDragable, drag) {
-		const info = parseInfo(drop);
-		const layout = info.layout;
-		const pos = getSVGCoords(evt);
-	
-		switch(layout) {
-		  case 'null':
-		  case 'RIGHT':
-		  case 'HORIZONTAL':
-		    return doSort(drop, isDragable, true, pos.x, drag);
-		  case 'DOWN':
-		  case 'VERTICAL':
-   		    return doSort(drop, isDragable, false, pos.y, drag);
-		  case 'LEFT':
-		    return doSort(drop, isDragable, true, -pos.x, drag);
-		  case 'UP':		  
-			return doSort(drop, isDragable, false, -pos.y, drag);
-		  default:
-		    return null;
-		}
-	}
-	
+
 	function createMoveCommand(drag, drop, evt, isDragable, dragTargets) {
+		var beforeId = getBeforeId(drop, evt, dragTargets);
 		if (!isTerminator(drag)) {
 			return {
 				type: 'Move',
 				fragmentId: drop.getAttribute('id'),
 				moveId: drag.getAttribute('id'),
-				beforeFragmentId: getBeforeId(drop, evt, isDragable, dragTargets)
+				beforeFragmentId: beforeId
 			}
 		} else {
 			return {
@@ -95,7 +52,6 @@ export function createMoveDragableDropCallback(transition) {
 		}
 	}
 }
-
 
 /**
  * This shows the user where links will go.
