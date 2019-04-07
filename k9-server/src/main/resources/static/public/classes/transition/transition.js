@@ -274,7 +274,7 @@ export class Transition {
 		return response;
 	}
 
-	mainHandler(p) {
+	mainHandler(p, rollbackUri) {
 		p
 			.then(this.handleErrors)
 			.then(response => {
@@ -287,7 +287,12 @@ export class Transition {
 				return parser.parseFromString(text, "image/svg+xml");
 			})
 			.then(doc => this.transition(doc.documentElement))
-			.catch(e => alert(e));
+			.catch(e => {
+				if (rollbackUri != undefined) {
+					this.get(rollbackUri);
+				}
+				alert(e);
+			});
 	}
 
 	get(uri) {
@@ -311,7 +316,7 @@ export class Transition {
 				"Content-Type": "application/json; charset=utf-8",
 				"Accept": "image/svg+xml, application/json"
 			}
-		}));
+		}), document.URL);
 	}
 		
 	/**

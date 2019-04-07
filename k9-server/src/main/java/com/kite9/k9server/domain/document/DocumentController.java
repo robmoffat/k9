@@ -106,8 +106,11 @@ public class DocumentController extends AbstractADLContentController<Document> {
 			rNew.setXml(out.getAsXMLString());
 			revisions.save(rNew);
 			System.out.println("AFTER: "+new XMLHelper().toXML(out.getAsDocument()));
-
-			return addDocumentMeta(out, rNew);
+			addDocumentMeta(out, rNew);
+			
+			// this will render the representation, and force a rollback if it's no good.
+			out.getSVGRepresentation();
+			return out;
 		}
 	}
 	

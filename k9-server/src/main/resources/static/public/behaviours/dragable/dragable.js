@@ -27,6 +27,8 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 	function getDragTarget(v) {
 		if (isDragable(v)) {
 			return v;
+		} else if (v == null) {
+			return null;
 		} else {
 			return getDragTarget(v.parentNode);
 		}
@@ -64,7 +66,10 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		var out = []
 		
 		svg.querySelectorAll("[id].selected,.mouseover").forEach(e => {
-			if (isDragable(e)) {
+			
+			e = getDragTarget(e);
+			
+			if (e) {
 				
 				handleTransformAsStyle(e);
 				
@@ -263,15 +268,12 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 		svg.addEventListener("mouseup", drop);
 
 		selector().forEach(function(v) {
-			//console.log("Adding e.l. to " + v.getAttribute("id"))
 			v.removeEventListener("mousemove", drag);
 			v.removeEventListener("mouseup", drop);
 			v.removeEventListener("mousedown", grab);
-			if (isDragable(v)) {
-				v.addEventListener("mousedown", grab);
-				v.addEventListener("mousemove", drag);
-				v.addEventListener("mouseup", drop);
-			}
+			v.addEventListener("mousedown", grab);
+			v.addEventListener("mousemove", drag);
+			v.addEventListener("mouseup", drop);
 		})
 	})
 }

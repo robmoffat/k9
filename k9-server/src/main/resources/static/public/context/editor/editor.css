@@ -4,17 +4,17 @@
 @script url(editor.js);
 
 diagram {
-	kite9-padding: 120px;	/* ensures enough space to drag in */
+	kite9-padding: 200px;	/* ensures enough space to drag in */
 }
 
 div.main [k9-ui~=invisible] > [k9-indicator=path] {
-	stroke: #b7c0fe !important;
-	stroke-width: 4px !important;
+	stroke: #b7c0fe;
+	stroke-width: 4px;
 }
 
 div.main [k9-ui~=invisible] > [k9-indicator=rect]  {
-	stroke: #b7c0fe !important;
-	stroke-width: 2px !important;
+	stroke: #b7c0fe;
+	stroke-width: 2px;
 }
 
 div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {
