@@ -1,6 +1,5 @@
 package com.kite9.k9server.adl.renderer;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 

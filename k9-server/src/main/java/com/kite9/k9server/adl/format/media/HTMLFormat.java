@@ -5,17 +5,11 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import org.apache.batik.transcoder.Transcoder;
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
-import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 
 /**
  * Will eventually render the GUI, I guess?  Although, maybe we won't do it this way.
@@ -24,7 +18,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
  *
  */
 public class HTMLFormat implements Format {
-
+	
 	private static final String HEADERS_SEPARATOR = "{headers}";
 	private static final String CONTENT_SEPARATOR = "{content}";
 	public final String pageTemplateStart;
@@ -62,30 +56,13 @@ public class HTMLFormat implements Format {
 			baos.write("\" />".getBytes());
 		}
 		baos.write(pageTemplateMiddle.getBytes());
-		baos.write(getSVGRepresentation(adl));
+		TranscoderOutput to = new TranscoderOutput(baos);
+		adl.getTranscoder().writeSVGToOutput(adl.getSVGRepresentation(), to);
 		baos.write(pageTemplateEnd.getBytes());
 	}
 
 	public String getExtension() {
 		return ".html";
-	}
-	
-	/**
-	 * Returns just the content element, not the DOCTYPE, PI etc.
-	 */
-	public byte[] getSVGRepresentation(ADL data) throws Exception {
-		try {
-			Transcoder transcoder = data.getTranscoder();
-			TranscoderInput in = new TranscoderInput(data.getAsDocument());
-			in.setURI(data.getUri().toString());
-			TranscoderOutput to = new TranscoderOutput();
-			transcoder.transcode(in, to);
-			Element e = to.getDocument().getDocumentElement();
-			String xmlString = ADLImpl.toXMLString(e, true);
-			return xmlString.getBytes();
-		} catch (TranscoderException e) {
-			throw new Kite9ProcessingException(e);
-		}
 	}
 
 }

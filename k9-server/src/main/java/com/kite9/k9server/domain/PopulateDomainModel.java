@@ -96,7 +96,7 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r2.setDocument(document2);
 		r2.setAuthor(TEST_USER);
 		r2.setDateCreated(new Date());
-		r2.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/risk-first/pattern_language.xml"), Charset.forName("UTF-8")));
+		r2.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/risk-first/example.xml"), Charset.forName("UTF-8")));
 		revisionRepository.saveInternal(r2);
 		document2.setCurrentRevision(r2);
 		documentRepository.saveInternal(document2);

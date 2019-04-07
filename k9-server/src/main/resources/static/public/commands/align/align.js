@@ -1,5 +1,5 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected } from "/public/bundles/api.js";
+import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected, reverseDirection } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
@@ -26,9 +26,9 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 				});
 			} else {
 				const debug = parseInfo(c);
-				const direction = debug.direction;
+				const existingDirection = debug.direction;
 
-				if (direction != 'null') {
+				if (existingDirection != 'null') {
 					steps.push({
 						fragmentId: c.getAttribute("id"),
 						type: 'SetAttr',
@@ -39,6 +39,12 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 				
 				if (toUseId == null) {
 					toUseId = c.getAttribute("id");
+					// check to see if we need to reverse the align
+					const parsed = parseInfo(c);
+					const link = parsed['link'];
+					const ids = link.split(" ");
+					const reversed = ids[0] == to.getAttribute("id");
+					direction = reversed ? reverseDirection(direction) : direction;
 				}
 			}
 		})

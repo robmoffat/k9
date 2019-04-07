@@ -36,6 +36,15 @@ public class PublicController {
 		return new ADLImpl(xml, new URI(url));
 	}
 	
+	@GetMapping(path="/public/**/*.png", produces=MediaType.IMAGE_PNG_VALUE)
+	public @ResponseBody ADL loadStaticPng(HttpServletRequest request) throws Exception {
+		String url = request.getRequestURL().toString();
+		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".png"));
+		String resourceName = "/static/public/"+stub;
+		String xml = loadXML(resourceName);
+		return new ADLImpl(xml, new URI(url));
+	}
+	
 	@GetMapping(path="/public/**/*.svg", produces=MediaTypes.SVG_VALUE)
 	public @ResponseBody ADL loadStaticSvg(HttpServletRequest request) throws Exception {
 		String url = request.getRequestURL().toString();

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.kite9.framework.common.Kite9ProcessingException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -44,5 +46,11 @@ public interface ADL {
 	 * Information about the editing, creation etc. of the document.
 	 */
 	Map<String, String> getMetaData();
+	
+	/**
+	 * Performs the transformation to create the SVG representation.
+	 * This will be cached once created.
+	 */
+	Document getSVGRepresentation() throws Kite9ProcessingException;
 	
 }

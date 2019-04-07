@@ -18,11 +18,11 @@ div.main [k9-ui~=invisible] > [k9-indicator=rect]  {
 }
 
 div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {
-	stroke: #ff5956 !important;
+	stroke: #ff5956;
 }
 
 div.main *[k9-info~="contradicting:"] > [k9-indicator=rect] {
-	fill: #ff5956 !important;
+	fill: #ff5956;
 }
 
 div.main [k9-ui~=invisible].mouseover > [k9-indicator=path] {

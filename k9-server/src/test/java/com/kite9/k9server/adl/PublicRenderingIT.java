@@ -4,6 +4,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,14 @@ public class PublicRenderingIT extends AbstractRestIT {
 		return back.getBody();
 	}
 	
+	protected byte[] loadStaticPNG(String page) throws Exception {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.IMAGE_PNG));
+		HttpEntity<Void> ent = new HttpEntity<>(headers);
+		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+page), HttpMethod.GET, ent, byte[].class);
+		return back.getBody();
+	}
+	
 	protected byte[] loadStaticSVG(String page) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaTypes.SVG));
@@ -36,7 +45,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	
 	@Test
 	public void testExampleHTML() throws Exception {
-		byte[] html = loadStaticHtml("/public/examples/risk-first/dependency-risk-fit.html");
+		byte[] html = loadStaticHtml("/public/examples/risk-first/example.html");
 		persistInAFile(html, "testExampleHTML", "diagram.html");
 		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.html"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected, new String(html));
@@ -44,9 +53,17 @@ public class PublicRenderingIT extends AbstractRestIT {
 	
 	@Test
 	public void testExampleSVG() throws Exception {
-		byte[] html = loadStaticSVG("/public/examples/risk-first/dependency-risk-fit.svg");
-		persistInAFile(html, "testExampleSVG", "diagram.svg");
+		byte[] svg = loadStaticSVG("/public/examples/risk-first/example.svg");
+		persistInAFile(svg, "testExampleSVG", "diagram.svg");
 		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.svg"), Charset.forName("UTF-8"));
-		XMLCompare.compareXML(new String(html), expected);
+		XMLCompare.compareXML(new String(svg), expected);
+	}
+	
+	@Test
+	public void testExamplePNG() throws Exception {
+		byte[] png = loadStaticPNG("/public/examples/risk-first/example.png");
+		persistInAFile(png, "testExamplePNG", "diagram.png");
+		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.png"));
+		Assert.assertEquals(expected.length, png.length);
 	}
 }

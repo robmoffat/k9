@@ -15,12 +15,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.batik.dom.util.DocumentFactory;
+import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.util.SVG12Constants;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.util.StreamUtils;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -196,5 +201,21 @@ public class ADLImpl implements ADL {
 		return metadata;
 	}
 	
+	private Document svgRepresentation = null;
 	
+	public Document getSVGRepresentation() throws Kite9ProcessingException {
+		if (svgRepresentation == null) {
+			try {
+				Transcoder transcoder = getTranscoder();
+				TranscoderInput in = new TranscoderInput(getAsDocument());
+				in.setURI(getUri().toString());
+				TranscoderOutput out = new TranscoderOutput();
+				transcoder.transcode(in, out);
+				svgRepresentation = out.getDocument();
+			} catch (TranscoderException e) {
+				throw new Kite9ProcessingException(e);
+			}
+		}
+		return svgRepresentation;
+	}
 }
