@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+    
+      @import url("/public/examples/risk-first/site.css");
+    
+    </svg:style>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
+
+     <glyph id="from" class="circle"></glyph>
+     
+     <glyph id="to" class="circle"></glyph>
+     
+      <link id="link-template" shape="NORMAL" style="" k9-palette="chooseable">
+          <from reference="from" />
+          <to reference="to" class="arrow" />
+      </link>
+      
+      <align id="align-element" class="align" k9-ui="invisible">
+        <from reference="from" />
+        <to reference="to" />
+      </align>
+     
+   </diagram>
+</svg:svg>

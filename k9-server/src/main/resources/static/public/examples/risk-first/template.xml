@@ -32,7 +32,7 @@
 
   </svg:defs>
   
-   <template id="generic" k9-ui="drag delete align connect autoconnect edit">
+   <template id="generic" k9-ui="drag delete align connect autoconnect edit" k9-palette="insert">
     <risk-box>
       <code>
         <contents xpath="$template-1" type="string" />
@@ -46,7 +46,7 @@
     </risk-box>
   </template>
   
-  <template id="fixed" k9-ui="drag delete align connect autoconnect" k9-palette="insertable">
+  <template id="fixed" k9-ui="drag delete align connect autoconnect" k9-palette="insert">
     <risk-box>
       <code>
         <contents xpath="$template-1" type="string" />
@@ -67,7 +67,7 @@
     <contents />
   </template>
 
-  <template id='context' k9-ui="drag drop delete insert align connect layout">
+  <template id='context' k9-ui="drag drop delete insert align connect layout" k9-palette="insert">
     <contents />
     <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px' class="context-back" />
@@ -113,7 +113,7 @@
     </svg:g>
   </template>
   
-  <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit">
+  <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
     <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; stroke-width: 1px;' k9-indicator="rect">
       <svg:polygon points='0 0, #{$width - 15} 0, #{$width} #{$height div 2}, #{$width - 15 } #{$height}, 0 #{$height}'  />
     </back>
@@ -124,7 +124,7 @@
     </front>
   </template>
   
-  <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect edit">
+  <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
     <back style='kite9-usage: decal; kite9-type: svg; '>
       <svg:polygon points='0 #{$height div 2}, 15 0, #{$width} 0, #{$width} #{$height}, 15 #{$height} 0, #{$height div 2}' style='fill: url(#risk-background); stroke: black; stroke-width: 1px;' />
     </back>
@@ -137,49 +137,7 @@
   
   <template id="artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
     <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/document_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-  <template id="interface" k9-ui="drag drop delete insert align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/interface_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-   <template id="internal-model-artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="internal_model_risk_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-  <template id="agent-artifact" k9-ui="drag delete align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="agency_risk_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-  <template id="protocol-artifact" k9-ui="drag delete align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="protocol_risk_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-   <template id="channel-artifact" k9-ui="drag delete align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="channel_risk_v2.svg" />
-    </image>
-    <title><contents /></title>
-  </template>
-  
-  <template id="component" k9-ui="drag delete align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/component_v2.svg" />
+        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="#{$template-1}" />
     </image>
     <title><contents /></title>
   </template>
@@ -196,14 +154,6 @@
     <back style='kite9-usage: decal; kite9-type: svg; kite9-transform: position;'>
       <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="fill-opacity: 0.2;  kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
 	</back>
-  </template>
-  
-  
-  <template id="users" k9-ui="drag delete align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/examples/risk-first/redesign/artifacts/users_v2.svg" />
-    </image>
-    <title><contents /></title>
   </template>
   
   <template id="glyph-label-text" k9-ui="orphan text">

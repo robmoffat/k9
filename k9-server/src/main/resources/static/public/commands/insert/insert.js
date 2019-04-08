@@ -88,7 +88,7 @@ export function initInsertContextMenuCallback(palette, selector) {
 			img.setAttribute("src", "/public/commands/insert/insert.svg");
 			img.addEventListener("click", function(e2, selector) {
 				contextMenu.destroy();
-				palette.open(event);
+				palette.open(event, "insert");
 			});
 		}
 	}

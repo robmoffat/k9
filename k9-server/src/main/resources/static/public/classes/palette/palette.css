@@ -18,26 +18,34 @@
 	padding: 3px;
 }
 
-.palette .scrollable {
-	overflow: auto;
+.palette .concertina {
 	padding: 0;
+	overflow: hidden;
 }
 
-.palette img.cancel {
+.palette div.control {
 	position: absolute;
 	left: -50px;
 	top: 0;
+	width: 40px;
+}
+
+.palette div.control img {
 	width: 40px;
 	height: 40px;
 	cursor: pointer;
 	border-radius: 20px;
 	background-color: #EEEEEE;
-	margin: 0 2px 0 2px;
+	margin: 2px 2px 2px 2px;
 	float: left;
 }
 
-.palette img.cancel:hover {
+.palette div.control img:hover {
 	background-color: #DDDDDD;
+}
+
+.palette div.control img.selected {
+	background-color: rgb(255, 204, 0);
 }
 
 .darken {
@@ -51,4 +59,11 @@
 	background-color: white;
 	opacity: .5;
 	
+}
+
+.palette div.palette-item {
+  overflow: hidden;
+  transition: max-height .3s;	
+  border: 1px solid white;
+  overflow: scroll;
 }

@@ -83,7 +83,7 @@ export function linkTemplateUri() {
 }
 	
 
-export function initLinkInstrumentationCallback(linkPalette) {
+export function initLinkInstrumentationCallback(palette) {
 	
 	return function(nav) {
 		const name = 'linkmenu';
@@ -94,7 +94,7 @@ export function initLinkInstrumentationCallback(linkPalette) {
 			b.setAttribute("title", "Link Menu");
 			b.setAttribute("src", "/public/commands/link/"+name+".svg");
 			b.style.backgroundColor = '#EEEEEE';
-			b.addEventListener("click", (evt) => linkPalette.open(evt));
+			b.addEventListener("click", (evt) => linkPalette.open(evt, "link"));
 		    nav.appendChild(b);
 		}
 	}	

@@ -52,13 +52,10 @@ function initEditor() {
 		zoomableTransitionCallback
 	]);
 	
-	var shapePalette = new Palette("--palette", [
-		initInsertPaletteCallback(transition)
-	], document.params['shape-palette']);
-
-	var linkPalette = new Palette("--linkpalette", [
+	var palette = new Palette("--palette", [
+		initInsertPaletteCallback(transition),
 		initLinkPaletteCallback()
-	], document.params['link-palette']);
+	], document.params['palettes']);
 	
 	var linker = new Linker([
 		initLinkLinkerCallback(transition, linkTemplateUri)
@@ -68,13 +65,13 @@ function initEditor() {
 		identityInstrumentationCallback,
 		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
-		initLinkInstrumentationCallback(linkPalette)
+		initLinkInstrumentationCallback(palette)
 		]);
 	
 	var contextMenu = new ContextMenu([ 
 		initDeleteContextMenuCallback(transition),
 		initLinkContextMenuCallback(transition, linker),
-		initInsertContextMenuCallback(shapePalette), 
+		initInsertContextMenuCallback(palette), 
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),

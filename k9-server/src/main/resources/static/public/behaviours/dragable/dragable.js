@@ -27,7 +27,7 @@ export function initDragable(moveCallbacks, dropCallbacks, selector, isDragable,
 	function getDragTarget(v) {
 		if (isDragable(v)) {
 			return v;
-		} else if (v == null) {
+		} else if (v.tagName == 'svg') {
 			return null;
 		} else {
 			return getDragTarget(v.parentNode);

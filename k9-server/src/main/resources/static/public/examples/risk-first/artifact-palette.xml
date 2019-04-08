@@ -1,0 +1,50 @@
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> @import url("/public/examples/risk-first/site.css"); </svg:style>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram" style="kite9-layout: down; kite9-padding: 0;">
+
+    <table style="kite9-grid-size: 4 4; kite9-margin: 0; kite9-padding: 0">
+      <cell style="kite9-occupies: 0 0; " class="shaded">
+        <agent-artifact id="agent">Agent</agent-artifact>
+      </cell>
+      <cell style="kite9-occupies: 1 0;  " class="shaded">
+        <users id="users">Users</users>
+      </cell>
+      <cell style="kite9-occupies: 2 0; " class="shaded">
+        <interface id="interface">Interface</interface>
+      </cell>
+      <cell style="kite9-occupies: 3 0; " class="shaded">
+        <internal-model-artifact id="ima">Internal Model</internal-model-artifact>
+      </cell>
+
+      <cell style="kite9-occupies: 0 1; ">
+        <channel-artifact id="channel">Channel</channel-artifact>
+      </cell>
+      <cell style="kite9-occupies: 1 1;  ">
+        <component id="component">Some component</component>
+      </cell>
+      <cell style="kite9-occupies: 2 1; ">
+        <risk id="attendant" class="attendant">Attendant Risk</risk>
+      </cell>
+
+      <cell style="kite9-occupies: 0 2; ">
+        <action id="praco">Practice</action>
+      </cell>
+      <cell style="kite9-occupies: 1 2; ">
+        <action id="praco2" class="left">Practice</action>
+      </cell>
+      <cell style="kite9-occupies: 2 2; ">
+        <context id="context" style="kite9-min-size: 60px 60px" >
+          
+        </context>
+      </cell>
+      <cell style="kite9-occupies: 3 2; ">
+        <context id="context" class="dotted" style="kite9-min-size: 60px 60px" >
+          
+        </context>
+      </cell>
+    </table>
+  </diagram>
+
+</svg:svg>
