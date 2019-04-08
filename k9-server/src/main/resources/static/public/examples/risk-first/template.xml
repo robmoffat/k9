@@ -125,7 +125,7 @@
   </template>
   
   <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
+    <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
       <svg:polygon points='0 #{$height div 2}, 15 0, #{$width} 0, #{$width} #{$height}, 15 #{$height} 0, #{$height div 2}' style='fill: url(#risk-background); stroke: black; stroke-width: 1px;' />
     </back>
     <front style="kite9-usage: regular; kite9-type: container; kite9-layout: down; 	kite9-padding: 10px; kite9-padding-left: 40px; ">

@@ -9,7 +9,7 @@ import { Metadata } from "/public/classes/metadata/metadata.js";
 import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
 import { Transition } from '/public/classes/transition/transition.js';
 import { Linker } from '/public/classes/linker/Linker.js';
-import { Palette } from '/public/classes/palette/Palette.js';
+import { Palette, initPaletteHoverableAllowed } from '/public/classes/palette/Palette.js';
 
 // Behaviours
 
@@ -96,10 +96,8 @@ function initEditor() {
 		
 	initHoverable();		// init for main svg area
 	
-	initHoverable(function() { return document.querySelectorAll("#--palette svg [id][k9-palette~=insertable]"); });
-
-	initHoverable(function() { return document.querySelectorAll("#--linkpalette svg [id][k9-palette~=chooseable]"); });
-
+	initHoverable(() => palette.get().querySelectorAll("[k9-elem][id]"), initPaletteHoverableAllowed(palette));
+	
 	initSelectable();
 
 }

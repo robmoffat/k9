@@ -36,30 +36,32 @@ var templateUri;
 export function initLinkPaletteCallback(selector) {
 	
 	if (selector == undefined) {
-		selector = function(palette) {
-			return palette.get().querySelectorAll("[id][k9-palette~=chooseable]");
+		selector = function(palettePanel) {
+			return palettePanel.querySelectorAll("[id][k9-palette~=chooseable]");
 		}
 	}
 	
 	
-	return function(palette, event) {
+	return function(palette, palettePanel) {
 
 		function getElementUri(e) {
-			var paletteId = palette.getId();
+			var paletteId = palettePanel.getAttribute("id");
 			var id = e.getAttribute("id");
-			return palette.getUri()+".xml#"+id.substring(0, id.length - paletteId.length);	
+			return palettePanel.getAttribute("k9-palette-uri")+".xml#"+id.substring(0, id.length - paletteId.length);	
 		}
 		
 		function click(elem, event) {
-			templateElement.classList.remove("selected");
-			templateElement = elem;
-			templateElement.classList.add("selected");
-			templateUri = getElementUri(elem);
-			palette.destroy();		
-			event.stopPropagation();
+			if (palette.getCurrentSelector() == 'link') {
+				templateElement.classList.remove("selected");
+				templateElement = elem;
+				templateElement.classList.add("selected");
+				templateUri = getElementUri(elem);
+				palette.destroy();		
+				event.stopPropagation();
+			}
 		}
 	
-		selector(palette).forEach(function(v) {
+		selector(palettePanel).forEach(function(v) {
 	    	v.removeEventListener("click", (e) => click(v, e));
 	    	v.addEventListener("click", (e) => click(v, e));
 	    
@@ -94,7 +96,7 @@ export function initLinkInstrumentationCallback(palette) {
 			b.setAttribute("title", "Link Menu");
 			b.setAttribute("src", "/public/commands/link/"+name+".svg");
 			b.style.backgroundColor = '#EEEEEE';
-			b.addEventListener("click", (evt) => linkPalette.open(evt, "link"));
+			b.addEventListener("click", (evt) => palette.open(evt, "link"));
 		    nav.appendChild(b);
 		}
 	}	

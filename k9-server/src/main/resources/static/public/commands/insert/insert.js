@@ -7,10 +7,9 @@ function defaultInsertSelector() {
 	return getMainSvg().querySelectorAll("[k9-ui~=insert].selected");
 }
 
-function defaultInsertableSelector(palette) {
-	return palette.get().querySelectorAll("[id][k9-palette~=insertable]");	
+function defaultInsertableSelector(palettePanel) {
+	return palettePanel.querySelectorAll("[id][k9-palette~=insert]");	
 }
-
 
 /**
  * Provides functionality so that when the user clicks on a 
@@ -26,29 +25,37 @@ export function initInsertPaletteCallback(transition, insertableSelector, insert
 		insertSelector = defaultInsertSelector;
 	}
 	
-	return function(palette, event) {
+	return function(palette, palettePanel) {
+		
+		function getElementUri(e) {
+			var paletteId = palettePanel.getAttribute("id");
+			var id = e.getAttribute("id");
+			return palettePanel.getAttribute("k9-palette-uri")+".xml#"+id.substring(0, id.length - paletteId.length);	
+		}
 
-		function createInsertStep(e, id) {
+		function createInsertStep(e, drop) {
 			const beforeId = getBeforeId(e, palette.getOpenEvent(), []);
 			
 			return {
 				"type": 'Copy',
 				"fragmentId": e.getAttribute('id'),
-				"uriStr": palette.getUri()+".xml#"+id.substring(0, id.length-palette.getId().length),
+				"uriStr": getElementUri(drop),
 				"beforeFragmentId" : beforeId
 			}
 		}
 	
 		function click(event) {
-			const selectedElements = insertSelector();
-			const droppingElement = palette.get().querySelector("[id].mouseover")
-			const data = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement.getAttribute("id")));
-			palette.destroy();		
-			transition.postCommands(data, getChangeUri());
-			event.stopPropagation();
+			if (palette.getCurrentSelector() == 'insert') {
+				const selectedElements = insertSelector();
+				const droppingElement = palette.get().querySelector("[id].mouseover")
+				const data = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement));
+				palette.destroy();		
+				transition.postCommands(data, getChangeUri());
+				event.stopPropagation();
+			}
 		}
 	
-		insertableSelector(palette).forEach(function(v) {
+		insertableSelector(palettePanel).forEach(function(v) {
 	    	v.removeEventListener("click", click);
 	    	v.addEventListener("click", click);
 		})

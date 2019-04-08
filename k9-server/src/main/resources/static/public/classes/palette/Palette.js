@@ -64,6 +64,7 @@ export class Palette {
 				var item = document.createElement("div");
 				item.setAttribute("k9-uses", p.selector);
 				item.setAttribute("class", "palette-item");
+				item.setAttribute("k9-palette-uri", p.uri);
 				item.setAttribute("id", id);
 				concertina.appendChild(item);
 				
@@ -104,17 +105,16 @@ export class Palette {
 					item.appendChild(doc.documentElement);
 					item.removeChild(loading);
 					
-					// force the load event to occur again
+					this.callbacks.forEach(cb => {
+						cb(this, item);
+					})
+					
 					var evt = document.createEvent('Event');
 					evt.initEvent('load', false, false);
 					window.dispatchEvent(evt);
 				});
 			})
 		}
-	}
-	
-	getUri() {
-		return this.paletteUri;
 	}
 	
 	getId() {
@@ -128,9 +128,14 @@ export class Palette {
 	getOpenEvent() {
 		return this.openEvent;
 	}
+	
+	getCurrentSelector() {
+		return this.currentSelector;
+	}
 		
 	open(event, selector) {
 		this.openEvent = event;
+		this.currentSelector = selector;
 		
 		var darken = document.getElementById("--darken");
 		var palette = document.getElementById(this.id);
@@ -213,4 +218,13 @@ export class Palette {
 		palette.style.visibility = 'hidden';
 		darken.style.display = 'none';
 	}
+}
+
+export function initPaletteHoverableAllowed(palette) {
+	
+	return function(v) {
+		const currentSelector = palette.getCurrentSelector();
+		return v.getAttribute("k9-palette").includes(currentSelector);
+	}
+	
 }
