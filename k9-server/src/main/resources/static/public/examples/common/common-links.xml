@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+      @import url("/public/examples/common/common.css");
+    </svg:style>
+  </svg:defs>
+  <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+
+    <group style="kite9-layout: right; kite9-min-with: 300px; ">
+      <common-holder id="from1"></common-holder>
+      <common-holder id="to1"></common-holder>
+    </group>
+
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from2"></common-holder>
+      <common-holder id="to2"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from3"></common-holder>
+      <common-holder id="to3"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from4"></common-holder>
+      <common-holder id="to4"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from5"></common-holder>
+      <common-holder id="to5"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from6"></common-holder>
+      <common-holder id="to6"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from7"></common-holder>
+      <common-holder id="to7"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from8"></common-holder>
+      <common-holder id="to8"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from9"></common-holder>
+      <common-holder id="to9"></common-holder>
+    </group>
+
+    <group style="kite9-layout: right; ">
+      <common-holder id="from10"></common-holder>
+      <common-holder id="to10"></common-holder>
+    </group>
+
+
+    <svg:g style="kite9-link-minimum-length: 200px; ">
+
+      <link id="l1">
+        <from id="l1-f" reference="from1" />
+        <to id="l1-t" reference="to1" />
+      </link>
+
+      <link id="l2">
+        <from id="l2-f" reference="from2" />
+        <to id="l2-t" reference="to2" class="arrow" />
+      </link>
+
+      <link id="l3">
+        <from id="l3-f" reference="from3" />
+        <to id="l3-t" reference="to3" class="circle" />
+      </link>
+
+      <link id="l4">
+        <from id="l4-f" reference="from4" />
+        <to id="l4-t" reference="to4" class="diamond" />
+      </link>
+
+      <link id="l5">
+        <from id="l5-f" reference="from5" />
+        <to id="l5-t" reference="to5" class="open-diamond" />
+      </link>
+
+      <link id="l6">
+        <from id="l6-f" reference="from6" />
+        <to id="l6-t" reference="to6" class="barbed-arrow" />
+      </link>
+
+      <link id="l7">
+        <from id="l7-f" reference="from7" />
+        <to id="l7-t" reference="to7" class="open-arrow" />
+      </link>
+
+      <link id="l8">
+        <from id="l8-f" reference="from8" />
+        <to id="l8-t" reference="to8" class="gap" />
+      </link>
+
+      <link id="l9" class="grey">
+        <from id="l9-f" reference="from9" />
+        <to id="l9-t" reference="to9" />
+      </link>
+
+      <link id="l10" class="thick">
+        <from id="l10-f" reference="from10" />
+        <to id="l10-t" reference="to10" />
+      </link>
+    </svg:g>
+
+  </common-diagram>
+</svg:svg>

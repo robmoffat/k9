@@ -1,0 +1,77 @@
+/* Bootstrap for common examples */
+
+g[k9-elem=common-diagram],
+common-diagram {
+	kite9-type: diagram;
+	fill: white;
+}
+
+common-holder,
+g[k9-elem=common-holder] {
+	kite9-type: container;
+	kite9-padding: 10px;
+	kite9-margin: 10px;
+	kite9-template: url(common-template.xml#background);
+	fill: #EEEEEE;
+}
+
+/**
+ * Groups.  These are a pretty useful abstraction.
+ */
+group,
+g[k9-elem=group] {
+	kite9-type: container;
+	kite9-sizing: maximize;
+	kite9-traversal: always;
+	kite9-template: url(common-template.xml#group);
+}
+
+/* Links */
+
+link,
+g[k9-elem=link] {
+	kite9-type: link;
+	kite9-template: url(common-template.xml#basic-link);
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}
+
+link.invisible,
+g[k9-elem=link].invisible {
+	stroke: none;
+}
+
+link.dotted,
+g[k9-elem=link].dotted {
+	stroke-dasharray: 8;
+}
+
+link.thick,
+g[k9-elem=link].thick {
+	stroke-width: 4px;
+}
+
+link.grey,
+g[k9-elem=link].grey {
+	stroke: #CCCCCC;
+}
+
+/* Terminators */
+
+g[k9-elem=from],
+g[k9-elem=to] {
+	stroke: none;
+	fill: none;
+}
+
+from, to {
+	kite9-type: link-end;
+	kite9-template: url(common-template.xml#round-terminator);
+	kite9-padding: 6px 6px 6px 6px;
+}
+
+from.gap,
+to.gap {
+	kite9-marker-reserve: 2px;
+}
