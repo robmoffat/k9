@@ -67,11 +67,11 @@
     <contents />
   </template>
 
-  <template id='round-terminator' k9-palette="end" k9-ui="drag invisible">
+  <template id='round-terminator' k9-palette="end" k9-ui="drag invisible end">
     <svg:ellipse k9-indicator="rect" cx='6' cy='6' rx="6" ry="6" />
   </template>
 
-  <template id="basic-link" k9-ui="delete" k9-palette="link">
+  <template id="basic-link" k9-ui="delete link" k9-palette="link">
     <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
       <svg:path d="#{$path}"
         style="

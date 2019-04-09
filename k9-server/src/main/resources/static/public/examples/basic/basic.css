@@ -19,10 +19,8 @@
 }
 
 @params {
-	palettes: url(shape-palette) "insert" 
-   	      url(/public/examples/common/links/common-links) "link"
-          url(surround-palette) "contain insert"
-          url(terminator-palette) "terminator";
+	palettes: url(shape-palette) "insert surround" 
+   	      url(/public/examples/common/links/common-links) "link end";
           
 	cell-template-uri: url(shape-palette.xml#cell);
 }

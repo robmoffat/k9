@@ -9,6 +9,8 @@
 
      <g id="b1" class="box" k9-palette="insert"><g id="fs1" class="text">Box</g></g>
      
+      <g id="b2" class="box" k9-palette="insert" style="fill: #AA5500; "><g id="fs1" class="text">Box 2</g></g>
+     
      <g id="grid" class="group" style="kite9-layout: grid; kite9-grid-size: 2 2;" k9-palette="insert"><g id="cell" class="cell "></g><g id="cell-2" class="cell "></g><g id="cell-3" class="cell"></g><g id="cell-4" class="cell"></g></g>
       
    </diagram>

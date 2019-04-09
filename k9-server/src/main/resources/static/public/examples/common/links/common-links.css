@@ -73,7 +73,8 @@ g[k9-elem=link].grey {
 g[k9-elem=from],
 g[k9-elem=to] {
 	stroke: none;
-	fill: none;
+	fill: white;		/* This is set so we can select these */
+	fill-opacity: .05;
 }
 
 from, to {

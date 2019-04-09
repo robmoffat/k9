@@ -59,7 +59,7 @@
     </group>
 
 
-    <svg:g style="kite9-link-minimum-length: 200px; ">
+    <svg:g style="kite9-link-minimum-length: 200px !important; ">
 
       <link id="l1">
         <from id="l1-f" reference="from1" />

@@ -37,6 +37,7 @@ import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallbac
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
 import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/commands/layout/layout.js';
 import { initDirectionContextMenuCallback } from '/public/commands/direction/direction.js';
+import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/commands/replace/replace.js';
 
 var initialized = false;
 
@@ -54,7 +55,10 @@ function initEditor() {
 	
 	var palette = new Palette("--palette", [
 		initInsertPaletteCallback(transition),
-		initLinkPaletteCallback()
+		initLinkPaletteCallback(),
+		initReplacePaletteCallback(transition, 'end'),
+		initReplacePaletteCallback(transition, 'link'),
+		initReplacePaletteCallback(transition, 'replace-connected'),
 	], document.params['palettes']);
 	
 	var linker = new Linker([
@@ -72,10 +76,13 @@ function initEditor() {
 		initDeleteContextMenuCallback(transition),
 		initLinkContextMenuCallback(transition, linker),
 		initInsertContextMenuCallback(palette), 
+		initReplaceContextMenuCallback(palette, 'end'),
+		initReplaceContextMenuCallback(palette, 'link'),
+		initReplaceContextMenuCallback(palette, 'replace-connected'),
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),
-		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition))		
+		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition)),
 		]); 
 	
 	
