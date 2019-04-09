@@ -11,9 +11,14 @@ g[k9-elem=common-holder] {
 	kite9-type: container;
 	kite9-padding: 10px;
 	kite9-margin: 10px;
-	kite9-template: url(common-template.xml#background);
+	kite9-template: url(common-links-template.xml#background);
 	fill: #EEEEEE;
 }
+
+@params {
+	align-template-uri:  url(common-links.xml#align);
+}
+
 
 /**
  * Groups.  These are a pretty useful abstraction.
@@ -23,7 +28,14 @@ g[k9-elem=group] {
 	kite9-type: container;
 	kite9-sizing: maximize;
 	kite9-traversal: always;
-	kite9-template: url(common-template.xml#group);
+	kite9-template: url(common-links-template.xml#group);
+}
+
+/* Align */
+
+align {
+	kite9-type: link;
+	kite9-template: url(common-links-template.xml#align);
 }
 
 /* Links */
@@ -31,15 +43,10 @@ g[k9-elem=group] {
 link,
 g[k9-elem=link] {
 	kite9-type: link;
-	kite9-template: url(common-template.xml#basic-link);
+	kite9-template: url(common-links-template.xml#basic-link);
 	stroke: black;
 	stroke-width: 2px;
 	fill: none;
-}
-
-link.invisible,
-g[k9-elem=link].invisible {
-	stroke: none;
 }
 
 link.dotted,
@@ -67,8 +74,13 @@ g[k9-elem=to] {
 
 from, to {
 	kite9-type: link-end;
-	kite9-template: url(common-template.xml#round-terminator);
+	kite9-template: url(common-links-template.xml#round-terminator);
 	kite9-padding: 6px 6px 6px 6px;
+}
+
+align from,
+align to {
+	kite9-template: none;	
 }
 
 from.gap,

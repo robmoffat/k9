@@ -1,4 +1,4 @@
-@import url('/public/examples/common/common.css');
+@import url('/public/examples/common/links/common-links.css');
 
 @font-face {
 	font-family: "metropolis";
@@ -20,11 +20,10 @@
 
 @params {
 	palettes: url(shape-palette) "insert" 
-   	      url(/public/examples/common/common-links) "link"
+   	      url(/public/examples/common/links/common-links) "link"
           url(surround-palette) "contain insert"
           url(terminator-palette) "terminator";
           
-	align-template-uri:  url(link-palette.xml#invisible);
 	cell-template-uri: url(shape-palette.xml#cell);
 }
 

@@ -2,7 +2,7 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css">
-      @import url("/public/examples/common/common.css");
+      @import url("common-links.css");
     </svg:style>
   </svg:defs>
   <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
@@ -110,7 +110,14 @@
         <from id="l10-f" reference="from10" />
         <to id="l10-t" reference="to10" />
       </link>
+
     </svg:g>
+
+
+    <align id="align">
+      <from id="align-f" reference="from10" />
+      <to id="align-t" reference="to10" />
+    </align>
 
   </common-diagram>
 </svg:svg>
