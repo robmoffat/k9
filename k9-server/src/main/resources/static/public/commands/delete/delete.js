@@ -1,5 +1,5 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, hasLastSelected } from "/public/bundles/api.js";
+import { hasLastSelected } from "/public/bundles/api.js";
 
 
 export function initDeleteContextMenuCallback(transition, selector, cascade, orphan) {
@@ -51,7 +51,7 @@ export function initDeleteContextMenuCallback(transition, selector, cascade, orp
 		
 		if (steps.length > 0) {
 			cm.destroy();
-			transition.postCommands(steps, getChangeUri());
+			transition.postCommands(steps);
 			console.log("delete complete");
 		}
 	}

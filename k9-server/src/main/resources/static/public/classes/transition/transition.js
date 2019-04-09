@@ -230,12 +230,13 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(loadCallbacks, animationCallbacks) {
+	constructor(getChangeUri, getReloadUri, loadCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 		this.commandList = [];
+		this.getChangeUri = getChangeUri;
+		this.getReloadUri = getReloadUri;
 	}
-
 	
 	transition(documentElement) {
 
@@ -274,8 +275,8 @@ export class Transition {
 		return response;
 	}
 
-	mainHandler(p, rollbackUri) {
-		p
+	mainHandler(p) {
+		return p
 			.then(this.handleErrors)
 			.then(response => {
 				this.loadCallbacks.forEach(cb => cb(response));
@@ -287,12 +288,6 @@ export class Transition {
 				return parser.parseFromString(text, "image/svg+xml");
 			})
 			.then(doc => this.transition(doc.documentElement))
-			.catch(e => {
-				if (rollbackUri != undefined) {
-					this.get(rollbackUri);
-				}
-				alert(e);
-			});
 	}
 
 	get(uri) {
@@ -306,9 +301,10 @@ export class Transition {
 		}));
 	}
 
-	postCommands(commands, uri) {
-
-		return this.mainHandler(fetch(uri, {
+	postCommands(commands) {
+		const postUri = this.getChangeUri();
+		const reloadUri = this.getReloadUri();
+		return this.mainHandler(fetch(postUri, {
 			credentials: 'include',
 			method: 'POST',
 			body: JSON.stringify(commands),
@@ -316,7 +312,10 @@ export class Transition {
 				"Content-Type": "application/json; charset=utf-8",
 				"Accept": "image/svg+xml, application/json"
 			}
-		}), document.URL);
+		})).catch(e => {
+			this.get(reloadUri);
+			alert(e);
+		});
 	}
 		
 	/**
@@ -326,9 +325,9 @@ export class Transition {
 		this.commandList.push(command);
 	}
 	
-	postCommandList(uri) {
+	postCommandList() {
 		if (this.commandList.length > 0) {
-			this.postCommands(this.commandList, uri);
+			this.postCommands(this.commandList);
 			this.commandList = [];
 		}
 	}

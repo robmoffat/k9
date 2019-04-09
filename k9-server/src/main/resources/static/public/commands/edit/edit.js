@@ -1,4 +1,4 @@
-import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
+import { hasLastSelected } from '/public/bundles/api.js';
 
 export function initEditContextMenuCallback(transition, selector, defaultSelector) {
 	
@@ -47,7 +47,7 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 				
 				if (newText) {
 					const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
-					transition.postCommands(steps, getChangeUri());
+					transition.postCommands(steps);
 				}
 				
 				

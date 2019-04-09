@@ -37,6 +37,10 @@ public class RevisionController extends AbstractADLContentController<Revision> {
 
 	@Override
 	public String createContentControllerUrl(Long id) {
+		return revisionUrl(id);
+	}
+
+	public static String revisionUrl(Long id) {
 		String url = ControllerLinkBuilder.linkTo(RevisionController.class).toString();
 		return url + "/"+id;
 	}

@@ -47,11 +47,11 @@ function initEditor() {
 		identityMetadataCallback, 
 		undoableMetadataCallback ]);
 	
-	var transition = new Transition([
-		(r) => metadata.transitionCallback(r),
-	],[
-		zoomableTransitionCallback
-	]);
+	var transition = new Transition(
+			() => metadata.get('change'),		//change uri
+			() => metadata.get('content'),		// reload uri
+			[(r) => metadata.transitionCallback(r)],
+			[ zoomableTransitionCallback ]);
 	
 	var palette = new Palette("--palette", [
 		initInsertPaletteCallback(transition),

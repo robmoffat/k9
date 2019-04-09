@@ -1,5 +1,5 @@
 import { SHA1 } from "/public/bundles/sha1.js";
-import { getChangeUri, getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected, reverseDirection } from "/public/bundles/api.js";
+import { getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected, reverseDirection } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
 
@@ -99,7 +99,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 		}
 		
 		cm.destroy();
-		transition.postCommands(steps, getChangeUri());
+		transition.postCommands(steps);
 	}
 
 	/**

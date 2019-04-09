@@ -65,12 +65,6 @@ export function reverseDirection(d) {
     return d;
 };
 
-
-export function getChangeUri() {
-	const href = document.URL;
-	return href.replace("/content", "/change")
-}
-
 export function parseInfo(t) {
 	if ((t!= null) &&(t.hasAttribute("k9-info"))) {
 		const parts = t.getAttribute("k9-info").split(';');

@@ -1,4 +1,4 @@
-import { parseInfo, getChangeUri, getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
+import { parseInfo, getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
 export function initCellCreator(templateUri, transition) {
@@ -98,7 +98,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 		});
 
-		transition.postCommandList(getChangeUri());
+		transition.postCommandList();
 	}
 
 	function drawLayout(htmlElement, layout, selected) {

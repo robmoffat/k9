@@ -1,4 +1,4 @@
-import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
+import { hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
 /**
@@ -52,7 +52,7 @@ export function initReplacePaletteCallback(transition, type, rules, replaceChoic
 				const droppingElement = palette.get().querySelector("[id].mouseover")
 				const data = Array.from(selectedElements).map(e => createReplaceStep(e, droppingElement));
 				palette.destroy();		
-				transition.postCommands(data, getChangeUri());
+				transition.postCommands(data);
 				event.stopPropagation();
 			}
 		}

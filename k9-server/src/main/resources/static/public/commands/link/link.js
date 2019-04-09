@@ -1,4 +1,4 @@
-import { parseInfo, getChangeUri, getContainingDiagram, getAlignElementsAndDirections, hasLastSelected } from '/public/bundles/api.js';
+import { parseInfo, getContainingDiagram, getAlignElementsAndDirections, hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
 export function initLinkContextMenuCallback(transition, linker, selector) {
@@ -156,7 +156,7 @@ export function initLinkLinkerCallback(transition, linkTemplateUri) {
 				
 			});
 			
-			transition.postCommandList(getChangeUri());
+			transition.postCommandList();
 			linker.clear();
 		}
 	};

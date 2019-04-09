@@ -2,7 +2,7 @@
  * This handles moving a block from one place to another on the diagram, via drag and drop.
  * You can't drop into an element unless it has 
  */
-import { getChangeUri, parseInfo, isTerminator } from "/public/bundles/api.js";
+import { parseInfo, isTerminator } from "/public/bundles/api.js";
 import { getSVGCoords, getElementPageBBox } from '/public/bundles/screen.js';
 import { getBeforeId } from '/public/bundles/ordering.js';
 
@@ -97,7 +97,7 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 export function initCompleteDragable(transition) {
 	
 	return function() {
-		transition.postCommandList(getChangeUri());
+		transition.postCommandList();
 	}
 }
 

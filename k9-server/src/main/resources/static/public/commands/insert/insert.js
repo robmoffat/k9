@@ -1,4 +1,4 @@
-import { getChangeUri, hasLastSelected } from '/public/bundles/api.js';
+import { hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 import { getBeforeId } from '/public/bundles/ordering.js';
 
@@ -50,7 +50,7 @@ export function initInsertPaletteCallback(transition, insertableSelector, insert
 				const droppingElement = palette.get().querySelector("[id].mouseover")
 				const data = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement));
 				palette.destroy();		
-				transition.postCommands(data, getChangeUri());
+				transition.postCommands(data);
 				event.stopPropagation();
 			}
 		}

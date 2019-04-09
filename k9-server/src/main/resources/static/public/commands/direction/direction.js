@@ -1,5 +1,5 @@
 import { getMainSvg } from '/public/bundles/screen.js';
-import { hasLastSelected, parseInfo, getContainingDiagram, getChangeUri, reverseDirection } from '/public/bundles/api.js';
+import { hasLastSelected, parseInfo, getContainingDiagram, reverseDirection } from '/public/bundles/api.js';
 
 export function initDirectionContextMenuCallback(transition, selector) {
 	
@@ -15,7 +15,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 					type: 'ADLDelete',
 					fragmentId: e.getAttribute("id"),
 					cascade: true
-			}], getChangeUri());
+			}]);
 		} else {
 			if (direction == 'null') {
 				// causes the attribute to be removed.
@@ -31,7 +31,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 				type: 'Move',
 				fragmentId: diagramId,
 				moveId: id,
-			}], getChangeUri());
+			}]);
 		}
 	}
 	

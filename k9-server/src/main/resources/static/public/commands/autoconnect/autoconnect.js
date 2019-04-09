@@ -1,5 +1,5 @@
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
-import { parseInfo, createUniqueId, getChangeUri, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target } from '/public/bundles/api.js';
+import { parseInfo, createUniqueId, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target } from '/public/bundles/api.js';
 
 var link = null;
 var link_to = undefined;

@@ -37,6 +37,10 @@ export class Metadata {
 			cb(this.metadata);
 		});
 	};
+	
+	get(item) {
+		return this.metadata[item];
+	}
 }
 
 

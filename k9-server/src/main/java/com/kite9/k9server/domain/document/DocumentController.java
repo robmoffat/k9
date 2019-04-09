@@ -29,6 +29,7 @@ import com.kite9.k9server.domain.AbstractADLContentController;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.document.commands.HasDocument;
 import com.kite9.k9server.domain.revision.Revision;
+import com.kite9.k9server.domain.revision.RevisionController;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
@@ -71,6 +72,10 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	private ADL addDocumentMeta(ADL adl, Revision r) {
 		adl.setMeta("redo", ""+(r.getNextRevision() != null));
 		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
+		adl.setMeta("revision", RevisionController.revisionUrl(r.getId())+CONTENT_URL);
+		String documentUrl = DocumentController.documentUrl(r.getDocument().getId());
+		adl.setMeta(CHANGE_REL, documentUrl+CHANGE_URL);
+		adl.setMeta(CONTENT_REL, documentUrl+CONTENT_URL);
 		adl.setMeta("author", r.getAuthor().getUsername());
 		return adl;
 	}
@@ -144,6 +149,10 @@ public class DocumentController extends AbstractADLContentController<Document> {
 
 	@Override
 	public String createContentControllerUrl(Long id) {
+		return documentUrl(id);
+	}
+	
+	public static String documentUrl(Long id) {
 		String url = ControllerLinkBuilder.linkTo(DocumentController.class).toString();
 		return url + "/"+id;
 	}
