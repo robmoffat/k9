@@ -9,7 +9,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 
 public class Copy extends AbstractLocatedCommand {
 
@@ -41,8 +40,8 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
-	protected Element performCopy(URI baseUri, ADLDocument doc, String newId) throws URISyntaxException {
-		Element insert = getElementToInsert(doc, baseUri, uriStr);
+	protected Element performCopy(URI baseUri, ADLDocument doc, String newId) {
+		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);
@@ -69,22 +68,6 @@ public class Copy extends AbstractLocatedCommand {
 				replaceIds((Element) n);
 			}
 		}
-	}
-
-
-	public Element getElementToInsert(ADLDocument currentDoc, URI baseUri, String uriStr) throws URISyntaxException {
-		String id = uriStr.substring(uriStr.indexOf("#")+1);
-		String location = uriStr.substring(0, uriStr.indexOf("#"));
-		
-		if (location.length() > 0) {
-			// referencing a different doc.
-			URI uri = baseUri.resolve(location);
-			currentDoc = new ADLImpl(uri).getAsDocument();
-		} 
-		
-		Element template = currentDoc.getElementById(id);
-		Element out = (Element) template.cloneNode(true);	
-		return out;
 	}
 
 	

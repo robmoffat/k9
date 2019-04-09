@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.kite9.k9server.adl.command.ADLDelete;
+import com.kite9.k9server.adl.command.ADLReplace;
 import com.kite9.k9server.adl.command.CopyLink;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.document.commands.Redo;
@@ -26,7 +27,7 @@ import com.kite9.k9server.domain.document.commands.Undo;
 	@Type(Move.class), 
 	@Type(SetText.class),
 	@Type(SetAttr.class),
-	@Type(SetXML.class),
+	@Type(Replace.class),
 	@Type(AppendXML.class),
 	@Type(SetStyle.class),
 	
@@ -36,7 +37,8 @@ import com.kite9.k9server.domain.document.commands.Undo;
 	
 	// ADL-Specific
 	@Type(CopyLink.class),
-	@Type(ADLDelete.class)
+	@Type(ADLDelete.class),
+	@Type(ADLReplace.class)
 	
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 

@@ -4,11 +4,13 @@
     <glyph id="one">
       <label id="one-label">One</label>
     </glyph>
-    <glyph id="two"><stereo id="two-stereo"/><label id="two-label">Two</label></glyph>
-    <link id="link" rank="4">
+    <glyph id="two">
+      <label id="two-label">Two</label>
+    </glyph>
+    <glyph id="link" rank="4">
       <from reference="one" id="link-from"/>
       <to reference="two" class="arrow" id="link-to"/>
-    </link>
+    </glyph>
   </diagram>
 
 </svg:svg>

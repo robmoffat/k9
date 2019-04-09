@@ -1,11 +1,14 @@
 package com.kite9.k9server.command;
 
+import java.net.URI;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.ADLImpl;
 
 /**
  * Contains a hash, which is used to make sure that the command is operating on a fresh version
@@ -51,5 +54,20 @@ public abstract class AbstractCommand implements Command {
 //		if (!computed.equals(fragmentHash)) {
 //			throw new CommandException("Fragment hash doesn't match: "+computed, this);
 //		}
+	}
+
+	public Element getForeignElementCopy(ADLDocument currentDoc, URI baseUri, String uriStr, boolean deep) {
+		String id = uriStr.substring(uriStr.indexOf("#")+1);
+		String location = uriStr.substring(0, uriStr.indexOf("#"));
+		
+		if (location.length() > 0) {
+			// referencing a different doc.
+			URI uri = baseUri.resolve(location);
+			currentDoc = new ADLImpl(uri).getAsDocument();
+		} 
+		
+		Element template = currentDoc.getElementById(id);
+		Element out = (Element) template.cloneNode(deep);	
+		return out;
 	}
 }

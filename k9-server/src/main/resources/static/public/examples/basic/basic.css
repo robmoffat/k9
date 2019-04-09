@@ -19,7 +19,7 @@
 }
 
 @params {
-	palettes: url(shape-palette) "insert surround" 
+	palettes: url(shape-palette) "insert replace-connected" 
    	      url(/public/examples/common/links/common-links) "link end";
           
 	cell-template-uri: url(shape-palette.xml#cell);

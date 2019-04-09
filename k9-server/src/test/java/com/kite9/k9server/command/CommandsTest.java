@@ -1,8 +1,8 @@
 package com.kite9.k9server.command;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.XMLCompare;
-import com.kite9.k9server.command.Delete;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
@@ -45,17 +44,17 @@ public class CommandsTest {
 	
 
 	@Test
-	public void testSetXMLCommand() throws CommandException, Exception {
+	public void testReplaceCommand() throws CommandException, Exception {
 		ADL in = getInitialADL();
-
 		
-		SetXML setXML = new SetXML();
-		setXML.newState =  START_SVG_DOCUMENT+"<glyph id=\"two\"><stereo id=\"two-stereo\" /><label id=\"two-label\" /></glyph>"+END_SVG_DOCUMENT;
-		setXML.fragmentId="two";
-		setXML.fragmentHash = "5e9a0d9f2773b0209b111884bae251e26e1c1d88";
+		Replace replace = new Replace();
+		replace.fragmentId = "link";
+		replace.fromUri= "#one";
+		replace.replaceContents = false;
+		replace.keptAttributes = Arrays.asList("rank", "id");
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(setXML), in);
-		performSaveAndCheck(out, "setxml");
+		ADL out = commandController.applyCommand(Collections.singletonList(replace), in);
+		performSaveAndCheck(out, "replace");
 
 	}
 	
