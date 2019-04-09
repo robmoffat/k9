@@ -5,14 +5,17 @@ import java.util.List;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
 
 public class Replace extends AbstractCommand {
 
-	String fromUri;
-	boolean replaceContents = false;
+	public enum Approach { DEEP, SHALLOW, ATTRIBUTES }
+	
+	String uriStr;
+	Approach approach = Approach.DEEP;
 	List<String> keptAttributes = Arrays.asList("id");	// just keep ID by default.
 	
 	
@@ -20,43 +23,49 @@ public class Replace extends AbstractCommand {
 		super();
 	}
 
-	public Replace(String fragmentId, String fragmentHash, String fromUri, boolean replaceContents, List<String> keptAttributes) {
+	public Replace(String fragmentId, String fragmentHash, String fromUri, Approach approach, List<String> keptAttributes) {
 		super(fragmentId, fragmentHash);
-		this.replaceContents = replaceContents;
+		this.approach = approach;
 		this.keptAttributes = keptAttributes;
-		this.fromUri = fromUri;
+		this.uriStr = fromUri;
 	}
 
 	@Override
 	public ADL applyCommand(ADL adl) throws CommandException {
-		ensureNotNull(this, "setXML", "fromuri", fromUri);
+		ensureNotNull(this, "Replace", "fromuri", uriStr);
 		
 		ADLDocument doc = adl.getAsDocument();
 		validateFragmentHash(adl);
 		Element e = findFragmentElement(doc);
-		Element n = getForeignElementCopy(doc, adl.getUri(), fromUri, replaceContents);
+		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP);
 		
-
-		if (!replaceContents) {
-			moveContents(e, n);
+		
+		if (approach == Approach.ATTRIBUTES) {
+			// here, we keep the original, 
+			// moving attributes from n -> e where they don't match the exclusion
+			copyAttributes(n, e, false);
+		} else {
+			doc.adoptNode(n);
+			if (approach == Approach.SHALLOW) {
+				moveContents(e, n);
+			}
+			
+			copyAttributes(e, n, true);
+			// replace the old with the new
+			e.getParentNode().replaceChild(n, e);
 		}
 		
-		handleKeptAttributes(e, n);
-		
-		// replace the old with the new
-		doc.adoptNode(n);
-		e.getParentNode().replaceChild(n, e);
-		
-		LOG.info("Processed setXML of "+fragmentId);
+		LOG.info("Processed Replace of "+fragmentId);
 		return adl;
 	}
 	
-	private void handleKeptAttributes(Element e, Element n) {
-		keptAttributes.forEach(a -> {
-			if (e.hasAttribute(a)) {
-				n.setAttribute(a, e.getAttribute(a));
+	private void copyAttributes(Element from, Element to, boolean matching) {
+		for (int i = 0; i < from.getAttributes().getLength(); i++) {
+			Node item = from.getAttributes().item(i);
+			if (matching == (keptAttributes.contains(item.getNodeName()))) {
+				to.setAttribute(item.getNodeName(), item.getNodeValue());
 			}
-		});
+		}
 	}
 
 	private void moveContents(Element from, Element to) {

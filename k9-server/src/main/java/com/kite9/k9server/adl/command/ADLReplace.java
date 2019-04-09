@@ -2,6 +2,8 @@ package com.kite9.k9server.adl.command;
 
 import java.util.List;
 
+import org.kite9.diagram.dom.elements.ADLDocument;
+
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.Replace;
@@ -16,14 +18,18 @@ public class ADLReplace extends Replace {
 		super();
 	}
 
-	public ADLReplace(String fragmentId, String fragmentHash, String fromUri, boolean replaceContents, List<String> keptAttributes) {
-		super(fragmentId, fragmentHash, fromUri, replaceContents, keptAttributes);
+
+	public ADLReplace(String fragmentId, String fragmentHash, String fromUri, Approach approach, List<String> keptAttributes) {
+		super(fragmentId, fragmentHash, fromUri, approach, keptAttributes);
 	}
+
 
 	@Override
 	public ADL applyCommand(ADL adl) throws CommandException {
 		ADL out = super.applyCommand(adl);
-		ADLReferenceHandler.checkConsistency(out.getAsDocument().getDocumentElement());
+		ADLDocument d = out.getAsDocument();
+		adl.getTranscoder().ensureCSSEngine(d);
+		ADLReferenceHandler.checkConsistency(d.getDocumentElement());
 		return out;
 	}
 

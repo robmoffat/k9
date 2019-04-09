@@ -39,7 +39,7 @@ export function initReplacePaletteCallback(transition, type, rules, replaceChoic
 
 		function createReplaceStep(e, drop) {			
 			return {
-				"type": 'SetXML',
+				"type": 'ADLReplace',
 				"fragmentId": e.getAttribute('id'),
 				"uriStr": getElementUri(drop),
 				...rules

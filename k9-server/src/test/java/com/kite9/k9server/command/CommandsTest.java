@@ -44,17 +44,47 @@ public class CommandsTest {
 	
 
 	@Test
-	public void testReplaceCommand() throws CommandException, Exception {
+	public void testReplaceCommand1() throws CommandException, Exception {
 		ADL in = getInitialADL();
 		
 		Replace replace = new Replace();
 		replace.fragmentId = "link";
-		replace.fromUri= "#one";
-		replace.replaceContents = false;
+		replace.uriStr= "#one";
+		replace.approach = Replace.Approach.SHALLOW;
 		replace.keptAttributes = Arrays.asList("rank", "id");
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(replace), in);
 		performSaveAndCheck(out, "replace");
+
+	}
+	
+	@Test
+	public void testReplaceCommand2() throws CommandException, Exception {
+		ADL in = getInitialADL();
+		
+		Replace replace = new Replace();
+		replace.fragmentId = "link";
+		replace.uriStr= "#one";
+		replace.approach = Replace.Approach.DEEP;
+		replace.keptAttributes = Arrays.asList("rank", "id");
+		
+		ADL out = commandController.applyCommand(Collections.singletonList(replace), in);
+		performSaveAndCheck(out, "replace-all");
+
+	}
+	
+	@Test
+	public void testReplaceCommand3() throws CommandException, Exception {
+		ADL in = getInitialADL();
+		
+		Replace replace = new Replace();
+		replace.fragmentId = "one";
+		replace.uriStr= "#link-to";
+		replace.approach = Replace.Approach.ATTRIBUTES;
+		replace.keptAttributes = Arrays.asList("rank", "id");
+		
+		ADL out = commandController.applyCommand(Collections.singletonList(replace), in);
+		performSaveAndCheck(out, "replace-attr");
 
 	}
 	

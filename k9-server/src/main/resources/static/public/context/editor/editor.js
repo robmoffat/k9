@@ -56,8 +56,8 @@ function initEditor() {
 	var palette = new Palette("--palette", [
 		initInsertPaletteCallback(transition),
 		initLinkPaletteCallback(),
-		initReplacePaletteCallback(transition, 'end'),
-		initReplacePaletteCallback(transition, 'link'),
+		initReplacePaletteCallback(transition, 'end', {keptAttributes: ['id', 'reference'], approach: 'ATTRIBUTES'}),
+		initReplacePaletteCallback(transition, 'link', {replaceContents: false, approach: 'SHALLOW'}),
 		initReplacePaletteCallback(transition, 'replace-connected'),
 	], document.params['palettes']);
 	
