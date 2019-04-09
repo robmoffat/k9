@@ -112,7 +112,10 @@ export class Palette {
 					var evt = document.createEvent('Event');
 					evt.initEvent('load', false, false);
 					window.dispatchEvent(evt);
-				});
+				})
+				.catch(e => {
+					alert("Problem loading palette: "+ e);
+				})
 			})
 		}
 	}
@@ -173,7 +176,9 @@ export class Palette {
 			e.style.maxHeight = height+"px";
 			expandInfo[selector] = e;
 			control.querySelectorAll("img").forEach(e => e.classList.remove("selected"));
-			dot.classList.add("selected");
+			if (dot != null) {
+				dot.classList.add("selected");
+			}
 		}
 
 		
@@ -187,13 +192,16 @@ export class Palette {
 				paletteWidth = Math.max(svg.width.baseVal.valueInSpecifiedUnits, paletteWidth);
 				paletteHeight = Math.max(svg.height.baseVal.valueInSpecifiedUnits,paletteHeight);
 			}
-			var dot = document.createElement("img");
-			dot.setAttribute("src", "/public/classes/palette/dot.svg");
-			dot.addEventListener("click", () => expandPanel(e, dot));
-			if (e == expandInfo[selector]) {
-				selectedDot = dot;
+			
+			if (toShow.length > 1) {
+				var dot = document.createElement("img");
+				dot.setAttribute("src", "/public/classes/palette/dot.svg");
+				dot.addEventListener("click", () => expandPanel(e, dot));
+				if (e == expandInfo[selector]) {
+					selectedDot = dot;
+				}
+				control.appendChild(dot);
 			}
-			control.appendChild(dot);
 		});
 		
 		// ensure the palette appears in the centre of the screen
@@ -224,7 +232,7 @@ export function initPaletteHoverableAllowed(palette) {
 	
 	return function(v) {
 		const currentSelector = palette.getCurrentSelector();
-		return v.getAttribute("k9-palette").includes(currentSelector);
+		return v.hasAttribute("k9-palette") ? v.getAttribute("k9-palette").includes(currentSelector) : false;
 	}
 	
 }

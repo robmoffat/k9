@@ -47,7 +47,7 @@
       <svg:polygon points="2,4 6,2 6,6" class="arrow-marker"></svg:polygon>
     </svg:marker>
 
-    <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="6" refY="4" orient="auto">
+    <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="4" refY="4" orient="auto">
        <svg:polygon points="6,4 2,2 2,6" class="arrow-marker"></svg:polygon>
    </svg:marker>
     
@@ -67,18 +67,18 @@
     <contents />
   </template>
 
-  <template id='round-terminator' k9-indicator="rect">
+  <template id='round-terminator' k9-indicator="rect" k9-palette="end" k9-ui="drag invisible">
     <svg:ellipse cx='6' cy='6' rx="6" ry="6"/>
   </template>
   
-  <template id="basic-link" k9-ui="delete">
-    <contents />
+  <template id="basic-link" k9-ui="delete" k9-palette="link">
     <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
       <svg:path d="#{$path}" 
       style="
         marker-start: url(##{../../adl:from/@class}-start-marker); 
         marker-end: url(##{../..//adl:to/@class}-end-marker);" />
     </link-body>
+    <contents />
   </template>
   
 </svg:svg>

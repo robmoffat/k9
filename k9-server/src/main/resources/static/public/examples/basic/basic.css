@@ -1,3 +1,5 @@
+@import url('/public/examples/common/common.css');
+
 @font-face {
 	font-family: "metropolis";
 	src: url('/public/fonts/metropolis/Metropolis-Regular.ttf')
@@ -17,8 +19,11 @@
 }
 
 @params {
-	shape-palette: url(shape-palette);
-	link-palette: url(link-palette);	
+	palettes: url(shape-palette) "insert" 
+   	      url(../common/common-links) "link"
+          url(surround-palette) "contain insert"
+          url(terminator-palette) "terminator";
+          
 	align-template-uri:  url(link-palette.xml#invisible);
 	cell-template-uri: url(shape-palette.xml#cell);
 }
