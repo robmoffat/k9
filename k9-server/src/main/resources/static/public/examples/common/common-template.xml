@@ -67,8 +67,8 @@
     <contents />
   </template>
 
-  <template id='round-terminator' k9-indicator="rect" k9-palette="end" k9-ui="drag invisible">
-    <svg:ellipse cx='6' cy='6' rx="6" ry="6"/>
+  <template id='round-terminator'  k9-palette="end" k9-ui="drag invisible">
+    <svg:ellipse k9-indicator="rect" cx='6' cy='6' rx="6" ry="6"/>
   </template>
   
   <template id="basic-link" k9-ui="delete" k9-palette="link">

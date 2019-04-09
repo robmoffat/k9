@@ -33,12 +33,14 @@ export function initLinkContextMenuCallback(transition, linker, selector) {
 var templateElement;
 var templateUri;
 
+function defaultLinkableSelector(palettePanel) {
+	return palettePanel.querySelectorAll("[id][k9-palette~=link]");	
+}
+
 export function initLinkPaletteCallback(selector) {
 	
 	if (selector == undefined) {
-		selector = function(palettePanel) {
-			return palettePanel.querySelectorAll("[id][k9-palette~=chooseable]");
-		}
+		selector = defaultLinkableSelector;
 	}
 	
 	

@@ -20,7 +20,7 @@
 
 @params {
 	palettes: url(shape-palette) "insert" 
-   	      url(../common/common-links) "link"
+   	      url(/public/examples/common/common-links) "link"
           url(surround-palette) "contain insert"
           url(terminator-palette) "terminator";
           
@@ -106,48 +106,4 @@ g.cell {
 	kite9-sizing: maximize;
 	stroke: white;
 	fill: white;
-}
-
-/* Links */
-
-g.link {
-	kite9-type: link;
-	kite9-template: url(template.xml#link);
-	kite9-link-minimum-length: 20px;
-	kite9-link-corner-radius: 20px;
-	stroke: black;
-	stroke-width: 5px;
-	fill: none;
-}
-
-g.link.invisible {
-	kite9-link-minimum-length: 0px;
-	kite9-link-corner-radius: 0px;
-	stroke-width: 2px;
-	stroke: none;
-}
-
-rect.terminator {
-	fill: green;
-	fill-opacity: 0.1;
-	stroke: none;
-}
-
-from, to {
-	kite9-type: link-end;
-	kite9-template: url(template.xml#terminator);
-	kite9-padding: 12px 24px 12px 0px;
-}
-
-g.link.align from,
-g.link.align to {
-	kite9-template: url(template.xml#no-terminator);;
-}
-
-from.arrow, to.arrow {
-	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
-	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
-	kite9-padding: 12px 24px 12px 0px;
-	kite9-marker-reserve: 7px;
-	fill: none;
 }

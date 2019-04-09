@@ -13,8 +13,8 @@ div.main [k9-ui~=invisible] > [k9-indicator=path] {
 }
 
 div.main [k9-ui~=invisible] > [k9-indicator=rect]  {
-	stroke: #b7c0fe;
-	stroke-width: 2px;
+	fill: #b7c0fe;
+	fill-opacity: 0.6;
 }
 
 div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {

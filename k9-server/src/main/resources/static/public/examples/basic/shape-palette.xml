@@ -2,18 +2,14 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/common.css");
+       @import url("/public/examples/basic/basic.css");
     </svg:style>
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
 
-     <g id="b1" class="box" k9-palette="insertable"><g id="fs1" class="text hoverable">Pick Me 1</g></g>
+     <g id="b1" class="box" k9-palette="insert"><g id="fs1" class="text">Box</g></g>
      
-     <g id="b2" class="box" k9-palette="insertable"><g id="fs1" class="text hoverable">Pick Me 2</g></g>
-     
-     <g id="b3" class="box" k9-palette="insertable"><g id="fs1" class="text hoverable">Pick Me 3</g></g>
-     
-     <g id="grid" class="group" style="kite9-layout: grid; kite9-grid-size: 2 2;" k9-palette="insertable"><g id="cell" class="cell "></g><g id="cell-2" class="cell "></g><g id="cell-3" class="cell"></g><g id="cell-4" class="cell"></g></g>
+     <g id="grid" class="group" style="kite9-layout: grid; kite9-grid-size: 2 2;" k9-palette="insert"><g id="cell" class="cell "></g><g id="cell-2" class="cell "></g><g id="cell-3" class="cell"></g><g id="cell-4" class="cell"></g></g>
       
    </diagram>
 </svg:svg>
