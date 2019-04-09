@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,20 +40,23 @@ public class Replace extends AbstractCommand {
 		Element e = findFragmentElement(doc);
 		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP);
 		
-		
 		if (approach == Approach.ATTRIBUTES) {
 			// here, we keep the original, 
 			// moving attributes from n -> e where they don't match the exclusion
 			copyAttributes(n, e, false);
 		} else {
+			// this is a bit complex, but retains the accuracy of the id-element map in the doc.
 			doc.adoptNode(n);
+			replaceIds(n);
+			e.getParentNode().insertBefore(n, e);
+			ensureParentElements(e.getParentNode(), n);
+			copyAttributes(e, n, true);
+			
 			if (approach == Approach.SHALLOW) {
 				moveContents(e, n);
 			}
 			
-			copyAttributes(e, n, true);
-			// replace the old with the new
-			e.getParentNode().replaceChild(n, e);
+			e.getParentNode().removeChild(e);
 		}
 		
 		LOG.info("Processed Replace of "+fragmentId);
@@ -61,7 +65,7 @@ public class Replace extends AbstractCommand {
 	
 	private void copyAttributes(Element from, Element to, boolean matching) {
 		for (int i = 0; i < from.getAttributes().getLength(); i++) {
-			Node item = from.getAttributes().item(i);
+			Attr item = (Attr) from.getAttributes().item(i);
 			if (matching == (keptAttributes.contains(item.getNodeName()))) {
 				to.setAttribute(item.getNodeName(), item.getNodeValue());
 			}

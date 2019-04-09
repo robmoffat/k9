@@ -5,8 +5,6 @@ import java.net.URISyntaxException;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
 
@@ -53,21 +51,6 @@ public class Copy extends AbstractLocatedCommand {
 		}
 		
 		return insert;
-	}
-
-
-	protected void replaceIds(Element insert) {
-		if (insert.hasAttribute("id")) {
-			insert.setAttribute("id", ((ADLDocument) insert.getOwnerDocument()).createUniqueId()); 
-		}
-		
-		NodeList children = insert.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			Node n = children.item(i);
-			if (n instanceof Element) {
-				replaceIds((Element) n);
-			}
-		}
 	}
 
 	
