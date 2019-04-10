@@ -63,4 +63,14 @@ export class ContextMenu {
 			ctxMenu.parentElement.removeChild(ctxMenu);
 		}
 	}
+
+	addControl(event, imageUrl, title, clickListener) {
+		var htmlElement = this.get(event);
+		var img = document.createElement("img");
+		htmlElement.appendChild(img);
+		img.setAttribute("title", title);
+		img.setAttribute("src", imageUrl);
+		img.addEventListener("click", clickListener);
+	}
+
 }

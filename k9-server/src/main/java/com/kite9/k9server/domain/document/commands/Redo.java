@@ -31,7 +31,7 @@ public class Redo extends AbstractDocumentCommand {
 		
 		this.currentRevision = rNext;
 		
-		return new ADLImpl(rNext.getXml(), url);
+		return new ADLImpl(rNext.getXml(), url, in.getHeaders());
 	}
 
 }

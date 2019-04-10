@@ -7,6 +7,7 @@ import org.apache.batik.dom.AbstractElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -62,14 +63,14 @@ public abstract class AbstractCommand implements Command {
 //		}
 	}
 
-	public Element getForeignElementCopy(ADLDocument currentDoc, URI baseUri, String uriStr, boolean deep) {
+	public Element getForeignElementCopy(ADLDocument currentDoc, URI baseUri, String uriStr, boolean deep, HttpHeaders headers) {
 		String id = uriStr.substring(uriStr.indexOf("#")+1);
 		String location = uriStr.substring(0, uriStr.indexOf("#"));
 		
 		if (location.length() > 0) {
 			// referencing a different doc.
 			URI uri = baseUri.resolve(location);
-			currentDoc = new ADLImpl(uri).getAsDocument();
+			currentDoc = new ADLImpl(uri, headers).getAsDocument();
 		} 
 		
 		Element template = currentDoc.getElementById(id);

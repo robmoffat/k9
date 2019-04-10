@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,8 +34,8 @@ public class PostController {
 	}
 	
 	@RequestMapping(path="/api/renderer/test")
-	public @ResponseBody ADL testCard(HttpServletRequest request) throws Exception {
+	public @ResponseBody ADL testCard(RequestEntity<ADL> request) throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test-card.xml"), Charset.defaultCharset());
-		return new ADLImpl(xml, new URI(request.getRequestURL().toString()));
+		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
 	}
 }

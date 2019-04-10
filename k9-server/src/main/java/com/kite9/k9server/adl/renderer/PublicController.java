@@ -2,13 +2,11 @@ package com.kite9.k9server.adl.renderer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.Charset;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,30 +26,30 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 public class PublicController {
 	
 	@GetMapping(path="/public/**/*.html", produces=MediaType.TEXT_HTML_VALUE)
-	public @ResponseBody ADL loadStaticHtml(HttpServletRequest request) throws Exception {
-		String url = request.getRequestURL().toString();
+	public @ResponseBody ADL loadStaticHtml(RequestEntity<?> request) throws Exception {
+		String url = request.getUrl().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".html"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, new URI(url));
+		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
 	}
 	
 	@GetMapping(path="/public/**/*.png", produces=MediaType.IMAGE_PNG_VALUE)
-	public @ResponseBody ADL loadStaticPng(HttpServletRequest request) throws Exception {
-		String url = request.getRequestURL().toString();
+	public @ResponseBody ADL loadStaticPng(RequestEntity<?> request) throws Exception {
+		String url = request.getUrl().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".png"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, new URI(url));
+		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
 	}
 	
 	@GetMapping(path="/public/**/*.svg", produces=MediaTypes.SVG_VALUE)
-	public @ResponseBody ADL loadStaticSvg(HttpServletRequest request) throws Exception {
-		String url = request.getRequestURL().toString();
+	public @ResponseBody ADL loadStaticSvg(RequestEntity<?> request) throws Exception {
+		String url = request.getUrl().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".svg"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, new URI(url));
+		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
 	}
 	
 	private String loadXML(String resourceName) throws IOException {

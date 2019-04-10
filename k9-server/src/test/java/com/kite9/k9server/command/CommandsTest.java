@@ -38,7 +38,7 @@ public class CommandsTest {
 	
 	public ADL getInitialADL() throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command1.xml"), Charset.forName("UTF-8"));
-		ADL adl = new ADLImpl(xml, new URI("/public/commands/test_command1.xml"));
+		ADL adl = new ADLImpl(xml, new URI("/public/commands/test_command1.xml"), null);
 		return adl;
 	}
 	

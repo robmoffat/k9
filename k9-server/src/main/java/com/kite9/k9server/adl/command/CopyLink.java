@@ -32,7 +32,7 @@ public class CopyLink extends Copy {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			Element insert = performCopy(adl.getUri(), doc, newId);
+			Element insert = performCopy(adl.getUri(), doc, newId, adl.getHeaders());
 						
 			List<String> refs = Arrays.asList(fromId, toId);
 		

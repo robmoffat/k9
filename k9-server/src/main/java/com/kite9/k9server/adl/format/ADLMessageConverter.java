@@ -56,7 +56,7 @@ public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
 		StreamHelp.streamCopy(inputMessage.getBody(), baos, true);
 		String s = baos.toString(charset.name());
 		URI uri = inputMessage.getHeaders().getLocation();
-		ADL adl = new ADLImpl(s, uri);
+		ADL adl = new ADLImpl(s, uri, inputMessage.getHeaders());
 		return adl;
 	}
 

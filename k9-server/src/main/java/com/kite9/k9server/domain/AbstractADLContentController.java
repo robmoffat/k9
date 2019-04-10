@@ -3,12 +3,11 @@ package com.kite9.k9server.domain;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.http.RequestEntity;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
@@ -38,9 +37,9 @@ public abstract class AbstractADLContentController<X extends AbstractLongIdEntit
 		resource.add(new Link(createContentControllerUrl(r.getId()) + CONTENT_URL, CONTENT_REL));
 	}
 	
-	public ADL buildADL(HttpServletRequest request, Revision r) throws URISyntaxException {
-		URI url = new URI(request.getRequestURL().toString());
-		return new ADLImpl(r.getXml(), url);
+	public ADL buildADL(RequestEntity<?> request, Revision r) {
+		URI url =request.getUrl();
+		return new ADLImpl(r.getXml(), url, request.getHeaders());
 	}
 
 	protected abstract boolean appliesTo(Object content);

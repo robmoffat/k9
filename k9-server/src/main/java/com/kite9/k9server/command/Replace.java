@@ -6,7 +6,6 @@ import java.util.List;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -38,7 +37,7 @@ public class Replace extends AbstractCommand {
 		ADLDocument doc = adl.getAsDocument();
 		validateFragmentHash(adl);
 		Element e = findFragmentElement(doc);
-		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP);
+		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP, adl.getHeaders());
 		
 		if (approach == Approach.ATTRIBUTES) {
 			// here, we keep the original, 

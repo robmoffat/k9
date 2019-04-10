@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -29,7 +30,7 @@ public class Copy extends AbstractLocatedCommand {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			performCopy(adl.getUri(), doc, newId);
+			performCopy(adl.getUri(), doc, newId, adl.getHeaders());
 		} catch (Exception e) {
 			throw new CommandException("Couldn't copy", e, this);
 		}
@@ -38,8 +39,8 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
-	protected Element performCopy(URI baseUri, ADLDocument doc, String newId) {
-		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true);
+	protected Element performCopy(URI baseUri, ADLDocument doc, String newId, HttpHeaders headers) {
+		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true, headers);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);

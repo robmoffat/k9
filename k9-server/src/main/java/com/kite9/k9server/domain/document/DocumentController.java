@@ -1,10 +1,8 @@
 package com.kite9.k9server.domain.document;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.kite9.diagram.dom.XMLHelper;
@@ -13,10 +11,10 @@ import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -61,7 +59,7 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	 * Returns the current revision contents.
 	 */
 	@RequestMapping(path = "/{documentId}"+CONTENT_URL, method= {RequestMethod.GET}) 
-	public @ResponseBody ADL input(@PathVariable("documentId") long id, HttpServletRequest request) throws Exception {
+	public @ResponseBody ADL input(@PathVariable("documentId") long id, RequestEntity<ADL> request) throws Exception {
 		Revision r = getCurrentRevision(id);
 		return addDocumentMeta(buildADL(request, r), r);
 	}
@@ -87,14 +85,14 @@ public class DocumentController extends AbstractADLContentController<Document> {
 	@RequestMapping(path = "/{documentId}"+CHANGE_URL, method = RequestMethod.POST) 
 	public @ResponseBody ADL change(
 			@PathVariable("documentId") long id, 
-			HttpServletRequest request, 
-			@RequestBody List<Command> steps) throws Exception {
+			RequestEntity<List<Command>> request) throws Exception {
 		Revision rOld = getCurrentRevision(id);
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		User u = userRepository.findByUsername(username);
 		
 		Document d = rOld.getDocument();
 		ADL adl = buildADL(request, rOld);
+		List<Command> steps = request.getBody();
 		
 		if (isUndoRedo(request, steps, rOld)) {
 			ADL out = command.applyCommand(steps, adl);
@@ -119,12 +117,12 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		}
 	}
 	
-	private boolean isUndoRedo(HttpServletRequest request, List<Command> steps, Revision r) throws Exception {
+	private boolean isUndoRedo(RequestEntity<?> request, List<Command> steps, Revision r) throws Exception {
 		boolean contextSet = false;
 		
 		for (Command command : steps) {
 			if (command instanceof HasDocument) {
-				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, new URI(request.getRequestURL().toString()));
+				((HasDocument)command).setCommandContext((DocumentRepository) repo, r, request.getUrl());
 				contextSet = true;
 			}
 		}

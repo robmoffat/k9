@@ -6,6 +6,7 @@ import java.util.Map;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -52,5 +53,11 @@ public interface ADL {
 	 * This will be cached once created.
 	 */
 	Document getSVGRepresentation() throws Kite9ProcessingException;
+
+	/**
+	 * Returns the HTTPHeaders that were responsible for loading this 
+	 * ADL.  Useful for passing around credentials.
+	 */
+	HttpHeaders getHeaders();
 	
 }

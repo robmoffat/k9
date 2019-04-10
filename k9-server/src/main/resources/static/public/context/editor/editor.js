@@ -38,6 +38,8 @@ import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
 import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/commands/layout/layout.js';
 import { initDirectionContextMenuCallback } from '/public/commands/direction/direction.js';
 import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/commands/replace/replace.js';
+import { initXCPContextMenuCallback } from '/public/commands/xcp/xcp.js';
+
 
 var initialized = false;
 
@@ -83,6 +85,7 @@ function initEditor() {
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),
 		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition)),
+		initXCPContextMenuCallback(transition, metadata),
 		]); 
 	
 	

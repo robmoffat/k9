@@ -82,13 +82,13 @@ g[k9-elem=to] {
 	fill-opacity: .05;
 }
 
-link[drawDirection] from,
+/*link[drawDirection] from,
 link[drawDirection] to,
 link[drawDirection] g[k9-elem=from],
 link[drawDirection] g[k9-elem=to]  {
 	kite9-template: url(common-links-template.xml#directed-terminator);
-	fill-opacity: .25;	/* Make these a bit more visible */
-}
+	fill-opacity: .25;	/* Make these a bit more visible 
+}*/
 
 align from,
 align to {

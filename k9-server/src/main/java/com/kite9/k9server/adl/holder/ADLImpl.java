@@ -24,6 +24,7 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.util.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -44,7 +45,7 @@ import com.kite9.k9server.security.Hash;
  */
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, isGetterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class ADLImpl implements ADL {
-
+	
 	enum Mode {
 		STRING, DOM, URI
 	};
@@ -62,17 +63,21 @@ public class ADLImpl implements ADL {
 	
 	private Map<String, String> metadata = new HashMap<>();
 	
+	private HttpHeaders requestHeaders;
+	
 	public ADLImpl() {
 	}
 
-	public ADLImpl(URI uri) {
+	public ADLImpl(URI uri, HttpHeaders requestHeaders) {
 		this.uri = uri;
+		this.requestHeaders = requestHeaders;
 	}
 
-	public ADLImpl(String content, URI uri) {
+	public ADLImpl(String content, URI uri, HttpHeaders requestHeaders) {
 		this.xml = content;
 		this.uri = uri;
 		this.xmlHash = Hash.generateSHA1Hash(content);
+		this.requestHeaders = requestHeaders;
 	}
 
 	@Override
@@ -217,5 +222,10 @@ public class ADLImpl implements ADL {
 			}
 		}
 		return svgRepresentation;
+	}
+
+	@Override
+	public HttpHeaders getHeaders() {
+		return requestHeaders;
 	}
 }
