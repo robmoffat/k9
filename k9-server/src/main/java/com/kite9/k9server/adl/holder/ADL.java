@@ -25,7 +25,7 @@ public interface ADL {
 	
 	String getAsXMLString();
 	
-	ADLDocument loadXMLDocument(String content, String uri);
+	ADLDocument parseDocument(String content, String uri);
 	
 	ADLDocument getAsDocument();
 

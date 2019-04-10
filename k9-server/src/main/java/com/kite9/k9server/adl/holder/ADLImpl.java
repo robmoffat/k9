@@ -1,10 +1,10 @@
 package com.kite9.k9server.adl.holder;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,18 +14,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.batik.dom.util.DocumentFactory;
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.util.SVG12Constants;
+import org.kite9.diagram.batik.bridge.Kite9DocumentLoader;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
-import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -83,9 +80,10 @@ public class ADLImpl implements ADL {
 	@Override
 	public String getAsXMLString() {
 		if (getMode() == Mode.URI) {
-			xml = toXMLString(uri);
-			xmlHash = Hash.generateSHA1Hash(xml);
-		} else if (getMode() == Mode.DOM) {
+			doc = loadDocument(uri);
+		}
+		
+		if (getMode() == Mode.DOM) {
 			xml = toXMLString(doc, false);
 			xmlHash = Hash.generateSHA1Hash(xml);
 			doc = null;
@@ -107,25 +105,18 @@ public class ADLImpl implements ADL {
 	@Override
 	public ADLDocument getAsDocument() {
 		if (getMode() == Mode.URI) {
-			xml = toXMLString(uri);
-			xmlHash = Hash.generateSHA1Hash(xml);
-		}
-		
-		if (getMode() == Mode.STRING) {
-			doc = loadXMLDocument(xml, uri.toString());
+			doc = loadDocument(uri);
+			xml = null;
+			xmlHash = null;
+		} else if (getMode() == Mode.STRING) {
+			doc = parseDocument(xml, uri.toString());
 			xml = null;
 		}
+		
 		return doc;
 	}
 
-	public static String toXMLString(URI uri) {
-		try {
-			InputStream in = uri.toURL().openStream();
-			return StreamUtils.copyToString(in, Charset.forName("UTF-8"));
-		} catch (Exception u) {
-			throw new Kite9ProcessingException("Couldn't get content from: " + uri, u);
-		}
-	}
+
 	
 	public static String toXMLString(Node n, boolean omitDeclaration) {
 		try {
@@ -140,14 +131,21 @@ public class ADLImpl implements ADL {
 			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
 		}
 	}
-
-	public ADLDocument loadXMLDocument(String content, String uri2) {
-		DocumentFactory f = transcoder.getDocFactory();
-		StringReader sr = new StringReader(content);
+	
+	public ADLDocument loadDocument(URI uri2) {
 		try {
-			ADLDocument document = (ADLDocument) f.createDocument(ADLExtensibleDOMImplementation.SVG_NAMESPACE_URI, SVG12Constants.SVG_SVG_TAG, uri2, sr);
-			document.setDocumentURI(uri2);
-			return document;
+			Kite9DocumentLoader l = transcoder.getDocLoader();
+			return (ADLDocument) l.loadDocument(uri2.toString());
+		} catch (IOException u) {
+			throw new Kite9ProcessingException("Couldn't get content from: " + uri, u);
+		}
+	}
+
+	public ADLDocument parseDocument(String content, String uri2) {
+		try {
+			Kite9DocumentLoader l = transcoder.getDocLoader();
+			InputStream is = new ByteArrayInputStream(content.getBytes());
+			return (ADLDocument) l.loadDocument(uri2, is);
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't load XML into DOM: ", e);
 		}
