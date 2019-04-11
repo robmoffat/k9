@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -138,11 +139,16 @@ public class ADLImpl implements ADL {
 	
 	public String loadText(URI uri2) {
 		try {
-			RequestEntity<?> request = new RequestEntity<>(requestHeaders, HttpMethod.GET, uri2);
-			RestTemplate template = new RestTemplate();
-			ResponseEntity<String> out = template.exchange(request, String.class);
-			return out.getBody();
-		} catch (RestClientException e) {
+			if (uri2.getScheme().equals("file")) {
+				// this is used a lot for testing.
+				return StreamUtils.copyToString(uri2.toURL().openStream(), StandardCharsets.UTF_8);
+			} else {
+				RequestEntity<?> request = new RequestEntity<>(requestHeaders, HttpMethod.GET, uri2);
+				RestTemplate template = new RestTemplate();
+				ResponseEntity<String> out = template.exchange(request, String.class);
+				return out.getBody();
+			}
+		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't request XML from: "+uri2, e);
 		}
 	}
