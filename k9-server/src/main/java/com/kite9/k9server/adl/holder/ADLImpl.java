@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import org.w3c.dom.Node;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.security.Hash;
 
 /**
@@ -143,7 +145,7 @@ public class ADLImpl implements ADL {
 				// this is used a lot for testing.
 				return StreamUtils.copyToString(uri2.toURL().openStream(), StandardCharsets.UTF_8);
 			} else {
-				RequestEntity<?> request = new RequestEntity<>(requestHeaders, HttpMethod.GET, uri2);
+				RequestEntity<?> request = new RequestEntity<>(requestADLHeaders(requestHeaders), HttpMethod.GET, uri2);
 				RestTemplate template = new RestTemplate();
 				ResponseEntity<String> out = template.exchange(request, String.class);
 				return out.getBody();
@@ -153,6 +155,12 @@ public class ADLImpl implements ADL {
 		}
 	}
 	
+	private HttpHeaders requestADLHeaders(HttpHeaders rh) {
+		HttpHeaders headers2 = HttpHeaders.writableHttpHeaders(rh);
+		headers2.setAccept(Arrays.asList(MediaTypes.ADL_SVG));
+		return headers2;
+	}
+
 	public ADLDocument loadDocument(URI uri2) {
 		String content = loadText(uri2);
 		return parseDocument(content, uri2);

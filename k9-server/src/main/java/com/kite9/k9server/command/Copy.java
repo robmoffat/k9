@@ -44,6 +44,7 @@ public class Copy extends AbstractLocatedCommand {
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);
+		ensureParentElements(insert.getParentNode(), insert);
 		
 		replaceIds(insert);
 		
