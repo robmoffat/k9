@@ -7,7 +7,6 @@ import org.apache.batik.dom.AbstractElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
-import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -15,7 +14,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 
 /**
  * Contains a hash, which is used to make sure that the command is operating on a fresh version
@@ -63,14 +61,14 @@ public abstract class AbstractCommand implements Command {
 //		}
 	}
 
-	public Element getForeignElementCopy(ADLDocument currentDoc, URI baseUri, String uriStr, boolean deep, HttpHeaders headers) {
+	public Element getForeignElementCopy(ADLDocument currentDoc, URI baseUri, String uriStr, boolean deep, ADL context) {
 		String id = uriStr.substring(uriStr.indexOf("#")+1);
 		String location = uriStr.substring(0, uriStr.indexOf("#"));
 		
 		if (location.length() > 0) {
 			// referencing a different doc.
 			URI uri = baseUri.resolve(location);
-			currentDoc = new ADLImpl(uri, headers).getAsDocument();
+			currentDoc = context.loadDocument(uri);
 		} 
 		
 		Element template = currentDoc.getElementById(id);

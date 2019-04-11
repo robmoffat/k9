@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.domain.document.DocumentController;
+import com.kite9.k9server.domain.revision.RevisionController;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
@@ -26,6 +27,8 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		RevisionResource rr = createARevisionResource(dr);
 		
 		URI uri = new URI(dr.getLink(DocumentController.CHANGE_REL).getHref());
+		URI revUri = new URI(rr.getLink(RevisionController.CONTENT_REL).getHref());
+		
 		byte[] back1 = postCommand("[{\"type\": \"SetText\", \"fragmentId\": 0, \"fragmentHash\": \"ce8e7037744567a648dccec273d88c604954f114\", \"newText\": \"This is some text\"}]", uri);
 		persistInAFile(back1, "revisions", "state1.xml");
 		
@@ -40,8 +43,7 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		Assert.assertTrue(!rr2.getId().equals(rr.getId()));
 		persistInAFile(rr2.xml.getBytes(), "revisions", "state2.1.xml");
 		XMLCompare.compareXML(new String(back2), rr2.xml);
-		
-		
+				
 		// if we perform undo, we should arrive back at the original document.
 		String hash = Hash.generateSHA1Hash(new String(back2));
 		byte[] back3 = postCommand("[{\"type\": \"Undo\", \"fragmentHash\": \""+hash+"\"}]", uri);
@@ -51,10 +53,13 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		// if we perform a redo, we should arrive back at the document after-edit
 		hash = Hash.generateSHA1Hash(new String(back1));
 		byte[] back4 = postCommand("[{\"type\": \"Redo\", \"fragmentHash\": \""+hash+"\"}]", uri);
-
 		persistInAFile(back4, "revisions", "state4.xml");
 		XMLCompare.compareXML(new String(back2), new String(back4));
 		
+		// we should be able to perform an operation using a previous revision (although this does nothing)
+		byte[] back5 = postCommand("[{\"type\": \"ADLReplace\", \"fragmentId\": \"0\", \"approach\": \"ATTRIBUTES\", \"uriStr\": \""+revUri.toString()+"#0\"}]", uri);
+		persistInAFile(back5, "revisions", "state5.xml");
+		XMLCompare.compareXML(new String(back2), new String(back5));		
 	}
 
 	private byte[] postCommand(String commands, URI uri) {

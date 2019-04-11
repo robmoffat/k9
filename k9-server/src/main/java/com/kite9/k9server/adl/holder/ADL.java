@@ -25,8 +25,6 @@ public interface ADL {
 	
 	String getAsXMLString();
 	
-	ADLDocument parseDocument(String content, String uri);
-	
 	ADLDocument getAsDocument();
 
 	Kite9SVGTranscoder getTranscoder();
@@ -59,5 +57,17 @@ public interface ADL {
 	 * ADL.  Useful for passing around credentials.
 	 */
 	HttpHeaders getHeaders();
+	
+	/**
+	 * For loading up a referenced document.
+	 */
+	ADLDocument loadDocument(URI uri);
+	
+	/**
+	 * For parsing a referenced document.
+	 */
+	ADLDocument parseDocument(String content, URI uri);
+	
+
 	
 }

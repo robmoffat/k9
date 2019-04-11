@@ -30,7 +30,7 @@ public class Copy extends AbstractLocatedCommand {
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
-			performCopy(adl.getUri(), doc, newId, adl.getHeaders());
+			performCopy(adl.getUri(), doc, newId, adl);
 		} catch (Exception e) {
 			throw new CommandException("Couldn't copy", e, this);
 		}
@@ -39,8 +39,8 @@ public class Copy extends AbstractLocatedCommand {
 		return adl;
 	}
 
-	protected Element performCopy(URI baseUri, ADLDocument doc, String newId, HttpHeaders headers) {
-		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true, headers);
+	protected Element performCopy(URI baseUri, ADLDocument doc, String newId, ADL adl) {
+		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true, adl);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);

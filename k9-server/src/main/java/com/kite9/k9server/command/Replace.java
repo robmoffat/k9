@@ -37,7 +37,7 @@ public class Replace extends AbstractCommand {
 		ADLDocument doc = adl.getAsDocument();
 		validateFragmentHash(adl);
 		Element e = findFragmentElement(doc);
-		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP, adl.getHeaders());
+		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP, adl);
 		
 		if (approach == Approach.ATTRIBUTES) {
 			// here, we keep the original, 

@@ -47,7 +47,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	public void testExampleHTML() throws Exception {
 		byte[] html = loadStaticHtml("/public/examples/risk-first/example.html");
 		persistInAFile(html, "testExampleHTML", "diagram.html");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.html"), Charset.forName("UTF-8"));
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleHTML/diagram.html"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected, new String(html));
 	}
 	
@@ -55,7 +55,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	public void testExampleSVG() throws Exception {
 		byte[] svg = loadStaticSVG("/public/examples/risk-first/example.svg");
 		persistInAFile(svg, "testExampleSVG", "diagram.svg");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.svg"), Charset.forName("UTF-8"));
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/textExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(new String(svg), expected);
 	}
 	
@@ -63,7 +63,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	public void testExamplePNG() throws Exception {
 		byte[] png = loadStaticPNG("/public/examples/risk-first/example.png");
 		persistInAFile(png, "testExamplePNG", "diagram.png");
-		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/dependency_risk_fit_output.png"));
+		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/testExamplePNG/diagram.png"));
 		Assert.assertEquals(expected.length, png.length);
 	}
 }

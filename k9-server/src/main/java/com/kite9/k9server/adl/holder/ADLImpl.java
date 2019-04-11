@@ -1,7 +1,6 @@
 package com.kite9.k9server.adl.holder;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
@@ -23,6 +22,11 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -109,7 +113,7 @@ public class ADLImpl implements ADL {
 			xml = null;
 			xmlHash = null;
 		} else if (getMode() == Mode.STRING) {
-			doc = parseDocument(xml, uri.toString());
+			doc = parseDocument(xml, uri);
 			xml = null;
 		}
 		
@@ -132,20 +136,27 @@ public class ADLImpl implements ADL {
 		}
 	}
 	
-	public ADLDocument loadDocument(URI uri2) {
+	public String loadText(URI uri2) {
 		try {
-			Kite9DocumentLoader l = transcoder.getDocLoader();
-			return (ADLDocument) l.loadDocument(uri2.toString());
-		} catch (IOException u) {
-			throw new Kite9ProcessingException("Couldn't get content from: " + uri, u);
+			RequestEntity<?> request = new RequestEntity<>(requestHeaders, HttpMethod.GET, uri2);
+			RestTemplate template = new RestTemplate();
+			ResponseEntity<String> out = template.exchange(request, String.class);
+			return out.getBody();
+		} catch (RestClientException e) {
+			throw new Kite9ProcessingException("Couldn't request XML from: "+uri2, e);
 		}
 	}
+	
+	public ADLDocument loadDocument(URI uri2) {
+		String content = loadText(uri2);
+		return parseDocument(content, uri2);
+	}
 
-	public ADLDocument parseDocument(String content, String uri2) {
+	public ADLDocument parseDocument(String content, URI uri2) {
 		try {
 			Kite9DocumentLoader l = transcoder.getDocLoader();
 			InputStream is = new ByteArrayInputStream(content.getBytes());
-			return (ADLDocument) l.loadDocument(uri2, is);
+			return (ADLDocument) l.loadDocument(uri2.toString(), is);
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't load XML into DOM: ", e);
 		}
