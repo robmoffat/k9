@@ -55,7 +55,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	public void testExampleSVG() throws Exception {
 		byte[] svg = loadStaticSVG("/public/examples/risk-first/example.svg");
 		persistInAFile(svg, "testExampleSVG", "diagram.svg");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/textExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(new String(svg), expected);
 	}
 	

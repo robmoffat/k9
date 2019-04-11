@@ -192,7 +192,9 @@ public abstract class AbstractRestIT {
 	
 	public void persistInAFile(byte[] back, String test, String filename) throws IOException, FileNotFoundException {
 		File f = TestingHelp.prepareFileName(this.getClass(),test, filename);
-		RepositoryHelp.streamCopy(new ByteArrayInputStream(back), new FileOutputStream(f), true);
+		FileOutputStream fos = new FileOutputStream(f);
+		ByteArrayInputStream zis = new ByteArrayInputStream(back);
+		StreamUtils.copy(zis, fos);
 	}
 
 }

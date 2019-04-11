@@ -59,7 +59,7 @@
                     >
       <g k9-elem="image" style="kite9-vertical-align: center; kite9-min-size: 50px 50px;" class=" kite9-image" transform="translate(30.0,43.0)" k9-info="positioning: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; d-bounds: [240.0,253.0] [50.0,50.0]; "
                     >
-        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:55419/public/examples/risk-first/redesign/artifacts/methodology_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
+        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:57011/public/examples/risk-first/redesign/artifacts/methodology_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
                       />
       </g
                       >
@@ -224,7 +224,7 @@
                                                                 >
       <g k9-elem="image" style="kite9-vertical-align: center; kite9-min-size: 50px 50px;" class=" kite9-image" transform="translate(30.0,43.0)" k9-info="positioning: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; d-bounds: [759.0,253.0] [50.0,50.0]; "
                                                                 >
-        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:55419/public/examples/risk-first/redesign/risks/attendant_risk_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
+        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:57011/public/examples/risk-first/redesign/risks/attendant_risk_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
                                                                   />
       </g
                                                                   >
@@ -319,7 +319,7 @@
                                                                                         >
       <g k9-elem="image" style="kite9-vertical-align: center; kite9-min-size: 50px 50px;" class=" kite9-image" transform="translate(30.0,43.0)" k9-info="positioning: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; d-bounds: [1029.0,253.0] [50.0,50.0]; "
                                                                                         >
-        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:55419/public/examples/risk-first/redesign/risks/goal_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
+        <image x="0" y="0" width="50px" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://localhost:57011/public/examples/risk-first/redesign/risks/goal_v2.svg" xlink:type="simple" xlink:actuate="onLoad" height="50px" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
                                                                                           />
       </g
                                                                                           >
@@ -562,14 +562,14 @@
                                                                                                                                                             >
 
   <script xlink:actuate="onLoad" xlink:type="simple" xlink:show="other" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                                                                                                                            >document.params = { 'palettes' : ['http://localhost:55419/public/examples/risk-first/risk-palette', 'insert', 'http://localhost:55419/public/examples/risk-first/artifact-palette', 'insert', 'http://localhost:55419/public/examples/risk-first/link-palette', 'link', 'http://localhost:55419/public/examples/risk-first/surround-palette', 'contain insert', 'http://localhost:55419/public/examples/risk-first/terminator-palette', 'terminator'] , 
- 'align-template-uri' : 'http://localhost:55419/public/examples/risk-first/link-palette.xml#align-element', 
- 'cell-template-uri' : 'http://localhost:55419/public/examples/risk-first/template.xml#cell-template'
+                                                                                                                                                            >document.params = { 'palettes' : ['http://localhost:57011/public/examples/risk-first/risk-palette', 'insert', 'http://localhost:57011/public/examples/risk-first/artifact-palette', 'insert', 'http://localhost:57011/public/examples/risk-first/link-palette', 'link', 'http://localhost:57011/public/examples/risk-first/surround-palette', 'contain insert', 'http://localhost:57011/public/examples/risk-first/terminator-palette', 'terminator'] , 
+ 'align-template-uri' : 'http://localhost:57011/public/examples/risk-first/link-palette.xml#align-element', 
+ 'cell-template-uri' : 'http://localhost:57011/public/examples/risk-first/template.xml#cell-template'
  } 
 </script
                                                                                                                                                             ><script xlink:actuate="onLoad" xlink:type="simple" xlink:show="other" type="module" xmlns:xlink="http://www.w3.org/1999/xlink"
                                                                                                                                                             >
-import "http://localhost:55419/public/context/editor/editor.js";
+import "http://localhost:57011/public/context/editor/editor.js";
 </script
                                                                                                                                                           ></defs
                                                                                                                                                         ></svg

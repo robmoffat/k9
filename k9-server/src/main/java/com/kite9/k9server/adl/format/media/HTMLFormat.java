@@ -5,11 +5,19 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+import org.apache.batik.transcoder.Transcoder;
+import org.apache.batik.transcoder.TranscoderException;
+import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
+import org.kite9.diagram.dom.elements.ADLDocument;
+import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.ADLImpl;
 
 /**
  * Will eventually render the GUI, I guess?  Although, maybe we won't do it this way.
@@ -56,9 +64,18 @@ public class HTMLFormat implements Format {
 			baos.write("\" />".getBytes());
 		}
 		baos.write(pageTemplateMiddle.getBytes());
-		TranscoderOutput to = new TranscoderOutput(baos);
-		adl.getTranscoder().writeSVGToOutput(adl.getSVGRepresentation(), to);
+		baos.write(getSVGRepresentation(adl));
 		baos.write(pageTemplateEnd.getBytes());
+	}
+	
+	/**
+	 * Returns just the content element, not the DOCTYPE, PI etc.
+	 */
+	public byte[] getSVGRepresentation(ADL data) throws Exception {
+		Document svg = data.getSVGRepresentation();
+		Element e = svg.getDocumentElement();
+		String xmlString = ADLImpl.toXMLString(e, true);
+		return xmlString.getBytes();
 	}
 
 	public String getExtension() {

@@ -24,7 +24,8 @@ public class XMLCompare {
 		diff.addDifferenceListener(new ComparisonListener() {
 
 			public void comparisonPerformed(Comparison comparison, ComparisonResult outcome) {
-				if ((!comparison.getControlDetails().getValue().toString().contains("file:")) 
+				String item = comparison.getControlDetails().getValue().toString();
+				if ((!item.contains("file:") && (!item.contains("http:"))) 
 						&& (comparison.getType() != ComparisonType.XML_ENCODING)) {
 					Assert.fail("found a difference: " + comparison);
 				}
