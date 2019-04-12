@@ -1,26 +1,9 @@
 @import url('/public/examples/common/links/common-links.css');
-
-@font-face {
-	font-family: "metropolis";
-	src: url('/public/fonts/metropolis/Metropolis-Regular.ttf')
-		format('truetype');
-}
-
-@font-face {
-	font-family: "metropolis";
-	font-weight: bold;
-	src: url('/public/fonts/metropolis/Metropolis-Bold.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: "metropolis";
-	font-style: italic;
-	src: url('/public/fonts/metropolis/Metropolis-RegularItalic.ttf') format('truetype');
-}
+@import url('/public/fonts/metropolis/metropolis.css');
 
 @params {
 	palettes: url(shape-palette) "insert replace-connected" 
-   	      url(/public/examples/common/links/common-links) "link end";
+   	          url(/public/examples/common/links/common-links) "link end";
           
 	cell-template-uri: url(shape-palette.xml#cell);
 }
