@@ -21,6 +21,7 @@ svg {
 .selected > [k9-indicator=path],
 .selected > :not([id]) > [k9-indicator=path] {
 	stroke: rgb(255, 204, 0) !important;
+	stroke-opacity: 1 !important;
 }
 
 .selected > g > text {

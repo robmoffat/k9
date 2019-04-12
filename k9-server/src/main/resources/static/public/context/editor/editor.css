@@ -7,9 +7,20 @@ diagram {
 	kite9-padding: 200px;	/* ensures enough space to drag in */
 }
 
+[k9-ui~=grab][k9-indicator=path] {
+	stroke: #b7c0fe;
+	stroke-width: 10px;
+	stroke-opacity: 0.01;
+}
+
+[k9-ui~=grab][k9-indicator=rect] {
+	stroke: #b7c0fe;
+	stroke-width: 16px;
+	stroke-opacity: 0.01;
+}
+
 div.main [k9-ui~=invisible] > [k9-indicator=path] {
 	stroke: #b7c0fe;
-	stroke-width: 4px;
 }
 
 div.main [k9-ui~=invisible] > [k9-indicator=rect]  {

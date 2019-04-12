@@ -1,10 +1,8 @@
 package com.kite9.k9server.command;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
-import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;

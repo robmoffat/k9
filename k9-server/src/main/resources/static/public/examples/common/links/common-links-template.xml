@@ -67,8 +67,10 @@
     <contents />
   </template>
 
-  <template id='round-terminator' k9-palette="end" k9-ui="drag invisible end">
-    <svg:ellipse k9-indicator="rect" cx='6' cy='6' rx="6" ry="6" />
+  <template id='round-terminator' k9-palette="end" k9-ui="drag end">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+      <svg:ellipse k9-indicator="rect" cx='6' cy='6' rx="6" ry="6" />
+    </grab>
   </template>
   
   <template id='directed-terminator' k9-palette="end" k9-ui="drag invisible end">
@@ -76,6 +78,9 @@
   </template>
 
   <template id="basic-link" k9-ui="delete link" k9-palette="link">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
+      <svg:path d="#{$path}" />
+    </grab>
     <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
       <svg:path d="#{$path}"
         style="

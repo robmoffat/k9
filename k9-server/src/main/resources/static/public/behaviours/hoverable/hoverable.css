@@ -21,6 +21,7 @@ svg {
 .mouseover > [k9-indicator=path],
 .mouseover > :not([id]) > [k9-indicator=path] {
 	stroke: #CCEEFF !important;
+	stroke-opacity: 1 !important;
 }
 
 .mouseover > g > text {
