@@ -60,59 +60,6 @@
     </risk-box>
   </template>
   
-  <template id="group" k9-ui="drag drop delete insert align connect layout invisible">
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
-    </back>
-    <contents />
-  </template>
-
-  <template id='context' k9-ui="drag drop delete insert align connect layout" k9-palette="insert">
-    <contents />
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px' class="context-back" />
-    </back>
-  </template>
-
-  <template id='context-dotted' k9-ui="drag drop delete insert align connect layout">
-    <contents />
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="context-dotted" />
-    </back>
-  </template>
-
-  <template id='container-label' k9-ui="delete orphan">
-    <svg:g k9-indicator="rect" class="container-label-front">
-      <front style="kite9-type: text; ">
-        <contents />
-      </front>
-    </svg:g>
-  </template>
-
-  <template id='glyph-circle' k9-ui="drag drop delete insert align connect layout autoconnect">
-   <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
-	    <svg:ellipse rx='20' ry='20' cy='20' cx='20' stroke-width="1px" style='fill: url(#risk-background); '  class="glyph-back"/>
-    </back>
-  </template>
-  
-  <template id='glyph-rect' k9-ui="drag drop delete insert align connect layout autoconnect">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: url(#risk-background); ' class="glyph-back" />
-    </back>
-    <svg:g class="glyph">
-      <text style="kite9-type: text;">d</text>
-    </svg:g>
-  </template>
-
-  <template id='glyph' k9-ui="drag drop delete insert align connect layout autoconnect">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' style='fill: url(#risk-background); ' class="glyph-back" />
-    </back>
-    <svg:g class="glyph">
-      <contents />
-    </svg:g>
-  </template>
-  
   <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
     <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; stroke-width: 1px;' k9-indicator="rect">
       <svg:polygon points='0 0, #{$width - 15} 0, #{$width} #{$height div 2}, #{$width - 15 } #{$height}, 0 #{$height}'  />
@@ -156,20 +103,6 @@
 	</back>
   </template>
   
-  <template id="glyph-label-text" k9-ui="orphan text">
-      <text-label style="kite9-type: text;" >
-        <contents />
-      </text-label>
-  </template>
-
-  <template id="glyph-stereotype-text" k9-ui="orphan text">
-    <svg:g class="glyph-stereotype-text">
-      <text-label style="kite9-type: text;">
-        <contents />
-      </text-label>
-    </svg:g>
-  </template>
-
   <template id="generic-text" k9-ui="orphan text">
     <text-label style="kite9-type: text;" class="generic-text">
       <contents />
@@ -187,77 +120,11 @@
     <contents />
   </template>
 
-  <template id="link" k9-ui="delete">
-    <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;" class="link" k9-indicator="path">
-      <svg:path d="#{$path}" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
-    </link-body>
-  </template>
-
-  <template id="align" k9-ui="delete align invisible">
-    <contents />
-    <body style="kite9-type: svg; kite9-usage: decal;"  k9-indicator="path">
-      <svg:path d="#{$path}" style="stroke-dasharray: 8; fill: none;" />
-    </body>
-  </template>
-
-  <template id="grey-link" k9-ui="delete">
-    <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;">
-      <svg:path d="#{$path}" class="grey-link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
-    </link-body>
-  </template>
-
-  <template id="thick-link" k9-ui="delete">
-    <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;">
-      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}; stroke-width: 4px;" />
-    </link-body>
-  </template>
-    
-  <template id="dotted-link" k9-ui="delete">
-    <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;">
-      <svg:path d="#{$path}" class="link" style="marker-start: #{$markerstart}; marker-end: #{$markerend}; stroke-dasharray: 4;" />
-    </link-body>
-  </template>
-
-  <template id="invisible-link">
-    <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;">
-      <svg:path d="#{$path}" class="" style="marker-start: #{$markerstart}; marker-end: #{$markerend}" />
-    </link-body>
-  </template>
-
-  <template id='empty-terminator'>
-    <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: none; stroke: none ' />
-  </template>
-
-  <template id="tick">
-    <tickbox style='kite9-usage: regular; kite9-type: svg; kite9-template: url(/public/examples/risk-first/redesign/decals/cross_v2.svg); ' />
-  </template>
-
   <template id='risk-box' k9-ui="">
     <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); ' k9-indicator="rect" > 
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' class="risk-back" />
     </back>
     <svg:g class="risk">
-      <contents />
-    </svg:g>
-  </template>
-
-  <template id='table'>
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' />
-    </back>
-    <contents />
-  </template>
-
-  <template id="container">
-    <back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' class="container-back" />
-    </back>
-    <svg:g class="container">
       <contents />
     </svg:g>
   </template>
@@ -288,50 +155,6 @@
     <contents />
   </template>
   
-  <template id="methodology" k9-ui="drag delete align connect autoconnect cascade edit" >
-    <risk-box>
-      <code>Method</code>
-      <image>
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="/public/examples/risk-first/redesign/artifacts/methodology_v2.svg" />
-      </image>
-      <title>
-        <contents />
-      </title>
-    </risk-box>
-  </template>
-  
-  <!-- tables -->
-  
-  <template id="shaded">
-    <back style='kite9-usage: decal; kite9-type: svg;  '>
-      <svg:rect x="0" y="5px" width="#{$width}" height="#{$height - (5 ) }" style="fill: #EEEEEE;" />
-    </back>
-  	<contents />
-  </template>
-
-  <template id="celltext">
-    <text-label style="kite9-type: text;">
-      <svg:flowRegion>
-        <svg:rect width="950px" height="400px" />
-      </svg:flowRegion>
-      <contents />
-    </text-label>
-  </template>
-  
-  <template id="bulleted" style="kite9-type: container; kite9-layout: right;" >
-   	<text-label style="kite9-type: text; kite9-vertical-align: top; kite9-padding-right: 15px;">
-   	  &#8226; 
-   	</text-label> 
-    <text-label style="kite9-type: text; kite9-vertical-align: top;">
-      <svg:flowRegion>
-        <svg:rect width="950px" height="400px" />
-      </svg:flowRegion>
-      <contents />
-    </text-label>
-  </template>
-  
-  
-  
   <template id="description">
     <text-label style="kite9-type: text; kite9-padding: 0; " >
       <svg:flowRegion>
@@ -340,59 +163,5 @@
       <contents />
     </text-label>
   </template>
-  
-  <!-- Steve McConnell Stuff -->
-
  
-   <template id="leg">
-   <back style='kite9-usage: decal; kite9-type: svg; '>
-     <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: url(#risk-background); ' class="glyph-back" />
-   </back>     
-   <leg-text style="kite9-type: text; kite9-padding: 10px; kite9-padding-top: 50px; text-align: middle; ">
-     <contents />
-   </leg-text>
-  </template>
- 
- <plinth id="plinth" style="kite9-type: container;">
-   <back style='kite9-usage: decal; kite9-type: svg; '>
-     <svg:polygon points="0, #{$height} #{$width div 2},0 #{$width}, #{$height}" style='fill: url(#risk-background); ' class="glyph-back" />
-   </back>
-   <plinth-text style="kite9-type: text; kite9-padding: 10px; kite9-padding-top: 15px; "><contents /></plinth-text>
- </plinth>
- 
- <!-- risk matrix -->
- 
- <template id="symbol">
-   <svg:g transform="translate(#{../@ox  }, #{../@oy})">
-    <svg:circle style="fill: #A0A0A0;  stroke: none" cx="6px" cy="6px" r="8px" />
-    <svg:text x=".35px" y="1px" class="symbol-text"><contents xpath="substring(@theChar,1, 1)" type="string"/></svg:text>
-   </svg:g>
-  </template>
-  
-  <template id="box">
-  	<back style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="glyph-back" />
-    </back>   
-    <contents />
-  </template>
-  
-  <template id='connection-label'>
-    <svg:g class="container-label-front">
-      <front style="kite9-type: text; ">
-        <contents />
-      </front>
-    </svg:g>
-  </template>
-  
-  <template class="link invisible align" id="align-template">
-      <from reference="from"></from>
-      <to  reference="to"></to>
-  </template>
-  
-  <template id="cell-template" />
-  
-  <link id="link-template" shape="NORMAL" style="" drawDirection="RIGHT">
-      <from reference="id_9" />
-      <to reference="id_10" class="arrow" />
-  </link>
 </svg:svg>

@@ -1,0 +1,13 @@
+/**
+ * This highlights contradicting elements
+ */
+ 
+ 
+div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {
+	stroke: #ff5956;
+}
+
+div.main *[k9-info~="contradicting:"] > [k9-indicator=rect] {
+	fill: #ff5956;
+}
+ 

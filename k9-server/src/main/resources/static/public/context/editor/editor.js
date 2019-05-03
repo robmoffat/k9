@@ -8,7 +8,6 @@ import { Instrumentation } from "/public/classes/instrumentation/instrumentation
 import { Metadata } from "/public/classes/metadata/metadata.js";
 import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
 import { Transition } from '/public/classes/transition/transition.js';
-import { Linker } from '/public/classes/linker/Linker.js';
 import { Palette, initPaletteHoverableAllowed } from '/public/classes/palette/Palette.js';
 
 // Behaviours

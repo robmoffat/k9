@@ -1,0 +1,60 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+      @import url("common-containers.css");
+      @Import url("/public/fonts/metropolis/metropolis.css")
+    </svg:style>
+  </svg:defs>
+  <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+  
+  <!-- Groupings.  Right, Down, Unordered -->
+  
+  
+  <table style="kite9-grid-size: 3 4; kite9-margin: 0; kite9-padding: 0; kite9-font-size: 15px; ">
+  
+    <celltext>Undirected</celltext>
+    <celltext>Left-To-Right</celltext>
+    <celltext>Top-To-Bottom</celltext>
+  
+  </table>
+  
+  <group style="kite9-layout: right; ">
+    <group id="g1" layout="right" style="kite9-min-size: 30px 30px; ">
+    
+    </group>
+    
+    <group id="g2" layout="down" style="kite9-min-size: 30px 30px; ">
+    
+    </group>
+    
+    <group id="g3" style="kite9-min-size: 30px 30px; ">
+    
+    </group>
+    
+  </group>
+  
+   <group style="kite9-layout: right; ">
+   
+      <container id="c1" layout="right" style="kite9-min-size: 30px 30px; ">
+        <label id="lab1">Unordered Container</label>
+      </container>
+   
+      <container id="c1" layout="right" style="kite9-min-size: 30px 30px; ">
+        <label id="lab1">Left-To-Right Container</label>
+      </container>
+      
+      <container id="c2" layout="down" style="kite9-min-size: 30px 30px; ">
+        <label id="lab1">Top-To-Bottom Container</label>
+      </container>
+   
+   
+   </group>
+  
+  <!-- Containers.  Right, Down, Unordered (with labels) -->
+  
+  <!-- Tables, Cells (permeable) . -->
+  
+  
+  
+  </common-diagram>
+</svg:svg>

@@ -72,7 +72,7 @@
       <svg:ellipse k9-indicator="rect" cx='6' cy='6' rx="6" ry="6" />
     </grab>
   </template>
-  
+
   <template id='directed-terminator' k9-palette="end" k9-ui="drag invisible end">
     <svg:rect k9-indicator="rect" x='0' cy='0' width="6" height="6" />
   </template>
@@ -91,6 +91,9 @@
   </template>
 
   <template id="align" k9-ui="delete invisible">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
+      <svg:path d="#{$path}" />
+    </grab>
     <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
       <svg:path d="#{$path}" />
     </link-body>

@@ -7,49 +7,6 @@ diagram {
 	kite9-padding: 200px;	/* ensures enough space to drag in */
 }
 
-[k9-ui~=grab][k9-indicator=path] {
-	stroke: #b7c0fe;
-	stroke-width: 10px;
-	stroke-opacity: 0.01;
-}
-
-[k9-ui~=grab][k9-indicator=rect] {
-	stroke: #b7c0fe;
-	stroke-width: 16px;
-	stroke-opacity: 0.01;
-}
-
-div.main [k9-ui~=invisible] > [k9-indicator=path] {
-	stroke: #b7c0fe;
-}
-
-div.main [k9-ui~=invisible] > [k9-indicator=rect]  {
-	fill: #b7c0fe;
-	fill-opacity: 0.2;
-}
-
-div.main *[k9-info~="contradicting:"] > [k9-indicator=path] {
-	stroke: #ff5956;
-}
-
-div.main *[k9-info~="contradicting:"] > [k9-indicator=rect] {
-	fill: #ff5956;
-}
-
-div.main [k9-ui~=invisible].mouseover > [k9-indicator=path] {
-	stroke: #CCEEFF !important;
-}
-
-div.main [k9-ui~=invisible].mouseover > [k9-indicator=rect] {
-	fill: #CCEEFF !important;
-}
-
-div.main [k9-ui~=invisible].selected > [k9-indicator=path] {
-	stroke: rgb(255, 204, 0) !important;
-}
-
-div.main [k9-ui~=invisible].selected > [k9-indicator=rect] {
-	fill: rgb(255, 204, 0) !important;
-}
-
-
+@import url(grab.css);
+@import url(invisible.css);
+@import url(contradictions.css);

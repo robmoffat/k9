@@ -1,0 +1,95 @@
+/* Bootstrap for common examples */
+
+g[k9-elem=common-diagram],
+common-diagram {
+	kite9-type: diagram;
+	fill: white;
+}
+
+common-holder,
+g[k9-elem=common-holder] {
+	kite9-type: container;
+	kite9-padding: 10px;
+	kite9-margin: 10px;
+	kite9-template: url(common-links-template.xml#background);
+	fill: #EEEEEE;
+}
+
+/* Groups: Invisible containers */
+
+group,
+[k9-elem=group] {
+	kite9-type: container;
+	kite9-sizing: minimize;
+	kite9-traversal: always;
+	kite9-template: url(common-containers-template.xml#group-undirected);
+}
+
+group[layout],
+[k9-elem=group][layout] {
+	kite9-template: url(common-containers-template.xml#group-directed);
+}
+
+/* Containers: Have a border */
+
+container,
+[k9-elem=container] {
+	kite9-type: container;
+	kite9-padding: 15px;
+	kite9-margin: 15px;
+	kite9-template: url(common-containers-template.xml#container-undirected);
+	stroke: black;
+	fill: white;
+}
+
+container[layout],
+[k9-elem=container] {
+	kite9-template: url(common-containers-template.xml#container-directed);
+}
+
+container.dotted,
+[k9-elem=container].dotted {
+	stroke: black;
+	stroke-width: 1px;
+	stroke-dasharray: 4 4;	
+}
+
+
+
+.container-back {
+	stroke: black;
+	stroke-width: 2px;
+}
+
+*[layout=right] {
+	kite9-layout: right;
+}
+
+*[layout=down] {
+	kite9-layout: down;
+}
+
+*[layout=up] {
+	kite9-layout: up;
+}
+
+*[layout=left] {
+	kite9-layout: left;
+}
+
+
+/* Labels */
+
+container label,
+[k9-elem=container] [k9-elem=label] {
+	kite9-usage: label;
+	kite9-type: container; 
+	kite9-sizing: minimize;
+	kite9-template: url(common-containers-template.xml#label);
+	kite9-padding: 4px;
+	kite9-horizontal-align: center;
+	fill: black;
+}
+
+
+

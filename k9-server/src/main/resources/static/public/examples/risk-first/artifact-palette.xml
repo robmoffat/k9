@@ -1,6 +1,8 @@
 <svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
-    <svg:style type="text/css"> @import url("/public/examples/risk-first/site.css"); </svg:style>
+    <svg:style type="text/css">
+      @import url("/public/examples/risk-first/risk-first.css");
+    </svg:style>
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram" style="kite9-layout: down; kite9-padding: 0;">
 
@@ -35,13 +37,13 @@
         <action id="praco2" class="left">Practice</action>
       </cell>
       <cell style="kite9-occupies: 2 2; ">
-        <context id="context" style="kite9-min-size: 60px 60px" >
-          
+        <context id="context" style="kite9-min-size: 60px 60px">
+
         </context>
       </cell>
       <cell style="kite9-occupies: 3 2; ">
-        <context id="context" class="dotted" style="kite9-min-size: 60px 60px" >
-          
+        <context id="context" class="dotted" style="kite9-min-size: 60px 60px">
+
         </context>
       </cell>
     </table>

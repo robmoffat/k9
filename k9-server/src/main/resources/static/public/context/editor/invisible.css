@@ -1,0 +1,29 @@
+/**
+ * Highlights invisible elements like "align" links,
+ * direction indicators and layout groups.
+ */
+
+div.main [k9-ui~=invisible][id] > [k9-indicator=path] {
+	stroke: #b7c0fe;
+}
+
+div.main [k9-ui~=invisible][id] > [k9-indicator=rect]  {
+	fill: #b7c0fe;
+	fill-opacity: 0.2;
+}
+
+div.main [id][k9-ui~=invisible].mouseover > [k9-indicator=path] {
+	stroke: #CCEEFF !important;
+}
+
+div.main [id][k9-ui~=invisible].mouseover > [k9-indicator=rect] {
+	fill: #CCEEFF !important;
+}
+
+div.main [id][k9-ui~=invisible].selected > [k9-indicator=path] {
+	stroke: rgb(255, 204, 0) !important;
+}
+
+div.main [id][k9-ui~=invisible].selected > [k9-indicator=rect] {
+	fill: rgb(255, 204, 0) !important;
+}

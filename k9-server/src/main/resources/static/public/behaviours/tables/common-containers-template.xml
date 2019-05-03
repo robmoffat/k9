@@ -1,0 +1,93 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.kite9.org/schema/adl' xmlns:xlink="http://www.w3.org/1999/xlink">
+
+
+  <template id='context' k9-ui="drag drop delete insert align connect layout" k9-palette="insert">
+    <contents />
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px' class="context-back" />
+    </back>
+  </template>
+
+  <template id='context-dotted' k9-ui="drag drop delete insert align connect layout">
+    <contents />
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="context-dotted" />
+    </back>
+  </template>
+
+  <template id='container-label' k9-ui="delete orphan">
+    <svg:g k9-indicator="rect" class="container-label-front">
+      <front style="kite9-type: text; ">
+        <contents />
+      </front>
+    </svg:g>
+  </template>
+  
+   <template id="group" k9-ui="drag drop delete insert align connect layout invisible">
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
+    </back>
+    <contents />
+  </template>
+  
+  <!-- tables -->
+  
+  <template id="shaded">
+    <back style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x="0" y="5px" width="#{$width}" height="#{$height - (5 ) }" style="fill: #EEEEEE;" />
+    </back>
+    
+    <contents />
+  </template>
+
+  <template id="celltext">
+    <text-label style="kite9-type: text;">
+      <svg:flowRegion>
+        <svg:rect width="950px" height="400px" />
+      </svg:flowRegion>
+      <contents />
+    </text-label>
+  </template>
+  
+  <template id="bulleted" style="kite9-type: container; kite9-layout: right;" >
+    <text-label style="kite9-type: text; kite9-vertical-align: top; kite9-padding-right: 15px;">
+      &#8226; 
+    </text-label> 
+    <text-label style="kite9-type: text; kite9-vertical-align: top;">
+      <svg:flowRegion>
+        <svg:rect width="950px" height="400px" />
+      </svg:flowRegion>
+      <contents />
+    </text-label>
+  </template>
+  
+   <template id='table'>
+    <back style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' style='fill: white; ' />
+    </back>
+    <contents />
+  </template>
+  
+  
+  <template id="container">
+    <back style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' class="container-back" />
+    </back>
+    <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
+      <svg:image x="0" y="0" width="#{$width}" height="#{$height}" xlink:href="left.svg" />
+    </indicator>
+    <svg:g class="container">
+      <contents />
+    </svg:g>
+  </template>
+  
+  <template id='container-label' k9-ui="delete orphan">
+    <svg:g k9-indicator="rect" class="container-label-front">
+      <front style="kite9-type: text; ">
+        <contents />
+      </front>
+    </svg:g>
+  </template>
+  
+  
+</svg:svg>

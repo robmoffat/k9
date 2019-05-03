@@ -1,10 +1,11 @@
 import { getMainSvg } from '/public/bundles/screen.js';
+import { Linker } from '/public/classes/Linker.js';
 
 /**
  * Contains the functionality for linking drawing links between selected elements 
  * and a target.
  */
-export function initLinkable(linker, selector)  {
+export function initLinkable(selector)  {
 	
 	function move(event) {
 		linker.move(event);
