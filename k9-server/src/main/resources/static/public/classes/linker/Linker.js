@@ -5,7 +5,7 @@ import { createUniqueId, parseInfo } from '/public/bundles/api.js';
  * Provides functionality for drawing links on the diagram, and keeping track of them.
  */
 export class Linker {
-	
+	 
 	constructor(callbacks, svgLinkTemplate, getLinkTarget) {
 		if (svgLinkTemplate == undefined) {
 			// code to use first found link as the template

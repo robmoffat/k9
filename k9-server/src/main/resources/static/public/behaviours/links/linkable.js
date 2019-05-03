@@ -1,5 +1,5 @@
 import { getMainSvg } from '/public/bundles/screen.js';
-import { Linker } from '/public/classes/Linker.js';
+import { Linker } from '/public/classes/linker.js';
 
 /**
  * Contains the functionality for linking drawing links between selected elements 

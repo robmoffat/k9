@@ -1,0 +1,14 @@
+
+
+/* Labels */
+
+container label,
+[k9-elem=container] [k9-elem=label] {
+	kite9-usage: label;
+	kite9-type: container; 
+	kite9-sizing: minimize;
+	kite9-template: url(common-containers-template.xml#label);
+	kite9-padding: 4px;
+	kite9-horizontal-align: center;
+	fill: black;
+}

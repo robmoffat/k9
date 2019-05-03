@@ -1,9 +1,9 @@
-@import url('/public/behaviours/linkable/common-links.css');
+@import url('/public/behaviours/links/common-links.css');
 @import url('/public/fonts/metropolis/metropolis.css');
 
 @params {
 	palettes: url(shape-palette) "insert replace-connected" 
-   	          url(/public/behaviours/linkable/common-links) "link end";
+   	          url(/public/behaviours/links/common-links) "link end";
           
 	cell-template-uri: url(shape-palette.xml#cell);
 }

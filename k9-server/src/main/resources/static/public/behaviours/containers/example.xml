@@ -2,7 +2,6 @@
   <svg:defs>
     <svg:style type="text/css">
       @import url("common-containers.css");
-      @import url("/public/fonts/metropolis/metropolis.css");
       @import url("/public/context/editor/invisible.css");
       @import url("/public/behaviours/hoverable/hoverable.css");
       
@@ -26,42 +25,24 @@
     <group style="kite9-layout: right; ">
 
         <container id="c1">
-          <label id="lab1">Unordered Container</label>
         </container>
 
         <container id="c1" layout="right">
-          <label id="lab1">Left-To-Right Container</label>
         </container>
 
         <container id="c2" layout="down">
-          <label id="lab1">Top-To-Bottom Container</label>
         </container>
     </group>
     
     <group style="kite9-layout: right; ">
 
         <container id="c1" class="dotted">
-          <label id="lab1">Unordered Container</label>
         </container>
 
         <container id="c1" layout="right" class="dotted">
-          <label id="lab1">Left-To-Right Container</label>
         </container>
 
         <container id="c2" layout="down" class="dotted">
-          <label id="lab1">Top-To-Bottom Container</label>
-        </container>
-    </group>
-    
-    <group style="kite9-layout: right; ">
-
-        <container id="c1">
-        </container>
-
-        <container id="c1" layout="right">
-        </container>
-
-        <container id="c2" layout="down">
         </container>
     </group>
 

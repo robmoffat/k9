@@ -1,10 +1,10 @@
-@import url('/public/examples/common/links/common-links.css');
+@import url('/public/behaviours/links/common-links.css');
 @import url('/public/fonts/metropolis/metropolis.css');
 
 @params {
 	palettes: url(risk-palette) "insert" 
 			  url(artifact-palette) "insert"
-	   	      url(/public/examples/common/links/common-links) "link end";
+	   	      url(/public/behaviours/links/common-links) "link end";
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);
 	cell-template-uri: url(template.xml#cell-template);
