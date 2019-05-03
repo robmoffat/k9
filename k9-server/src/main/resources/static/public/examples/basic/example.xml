@@ -11,11 +11,11 @@
 
      <g id="b1" class="box"><g id="fs1" class="text">b1</g></g>
      
-     <g class="group" id="bigbox" style="kite9-layout: horizontal; ">
+     <container id="bigbox" layout="horizontal">
        <g id="b2" class="box"><g id="fs2" class="text">b2</g></g>
        
        <g id="b3" class="box"><g id="fs3" class="text">b3</g></g>
-     </g>
+     </container>
      
      <link id="link1" r="r">
       <from id="link1-from" reference="b1" class="arrow"></from>

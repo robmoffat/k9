@@ -40,6 +40,7 @@ container,
 	kite9-template: url(common-containers-template.xml#container-undirected);
 	stroke: black;
 	fill: white;
+	kite9-sizing: minimize;
 }
 
 container[layout],

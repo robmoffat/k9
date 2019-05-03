@@ -1,9 +1,12 @@
 @import url('/public/behaviours/links/common-links.css');
+@import url('/public/behaviours/containers/common-containers.css');
+
 @import url('/public/fonts/metropolis/metropolis.css');
 
 @params {
 	palettes: url(shape-palette) "insert replace-connected" 
-   	          url(/public/behaviours/links/common-links) "link end";
+   	          url(/public/behaviours/links/common-links) "link end"
+   	          url(/public/behaviours/containers/common-containers) "insert replace-connected contain";
           
 	cell-template-uri: url(shape-palette.xml#cell);
 }
@@ -20,16 +23,6 @@ diagram {
 
 g.kite9-diagram {
 	fill: white;
-}
-
-g.group {
-	kite9-type: container;
-	kite9-sizing: maximize;
-	kite9-traversal: always;
-	kite9-template: url(template.xml#group);
-	fill: white;
-	stroke: black;
-	kite9-padding: 20px;
 }
 
 g.box {

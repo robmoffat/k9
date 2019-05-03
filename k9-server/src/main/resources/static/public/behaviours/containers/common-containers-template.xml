@@ -11,36 +11,36 @@
     </svg:filter>
   </svg:defs>
 
-   <template id="group-undirected" k9-ui="drag drop delete insert align connect layout invisible">
+   <template id="group-undirected" k9-ui="drag drop delete insert align connect layout copy invisible" k9-palette="contain insert">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
     <contents />
   </template>
   
-  <template id="group-directed" k9-ui="drag drop delete insert align connect layout invisible">
+  <template id="group-directed" k9-ui="drag drop delete insert align connect layout copy invisible" k9-palette="contain insert">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
-      <svg:image x="#{$width div 2 - 20}" y="#{$height div 2 - 20}" width="40" height="40" xlink:href="#{../../@layout}.svg" filter="url(#invisible)" />
+      <svg:image x="#{$width div 2 - 20}" y="#{$height div 2 - 20}" width="40" height="40" xlink:href="/public/behaviours/containers/#{../../@layout}.svg" filter="url(#invisible)" />
     </indicator>
     <contents />
   </template>
   
-   <template id="container-directed">
+   <template id="container-directed" k9-palette="contain insert"  k9-ui="drag drop delete insert align connect layout copy invisible">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
-      <svg:image  x="#{$width div 2 - 20}" y="#{$height div 2 - 20}" width="40" height="40" xlink:href="#{../../@layout}.svg" filter="url(#invisible)" />
+      <svg:image  x="#{$width div 2 - 20}" y="#{$height div 2 - 20}" width="40" height="40" xlink:href="/public/behaviours/containers/#{../../@layout}.svg" filter="url(#invisible)" />
     </indicator>
     <svg:g class="container">
       <contents />
     </svg:g>
   </template>
   
-  <template id="container-undirected">
+  <template id="container-undirected" k9-palette="contain insert"  k9-ui="drag drop delete insert align connect layout copy invisible">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>

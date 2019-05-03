@@ -8,8 +8,6 @@
       container, group {
         kite9-min-size: 200px 100px;
         kite9-margin: 15px;
-        font-family: metropolis;
-        font-size: 11px;
       }
     </svg:style>
     
