@@ -1,7 +1,8 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css">
-      @import url("common-containers.css");
+      @import url("/public/behaviours/containers/common-containers.css");
+      @import url("/public/context/editor/invisible.css");
       
       container, group {
         kite9-min-size: 200px 100px;
@@ -16,22 +17,22 @@
         <container id="c1">
         </container>
 
-        <container id="c1" layout="right">
+        <container id="c2" layout="right">
         </container>
 
-        <container id="c2" layout="down">
+        <container id="c3" layout="down">
         </container>
     </group>
     
     <group style="kite9-layout: right; ">
 
-        <container id="c1" class="dotted">
+        <container id="c4" class="dotted">
         </container>
 
-        <container id="c1" layout="right" class="dotted">
+        <container id="c5" layout="right" class="dotted">
         </container>
 
-        <container id="c2" layout="down" class="dotted">
+        <container id="c6" layout="down" class="dotted">
         </container>
     </group>
 

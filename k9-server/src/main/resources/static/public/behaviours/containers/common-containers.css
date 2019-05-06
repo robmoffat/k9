@@ -23,6 +23,7 @@ group,
 	kite9-sizing: minimize;
 	kite9-traversal: always;
 	kite9-template: url(common-containers-template.xml#group-undirected);
+	kite9-min-size: 40px 40px;
 }
 
 group[layout],

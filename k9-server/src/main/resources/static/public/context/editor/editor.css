@@ -1,3 +1,7 @@
+@import url(/public/context/editor/grab.css);
+@import url(/public/context/editor/invisible.css);
+@import url(/public/context/editor/contradictions.css);
+
 /*
  Compose the functionality.
 */
@@ -7,6 +11,3 @@ diagram {
 	kite9-padding: 200px;	/* ensures enough space to drag in */
 }
 
-@import url(grab.css);
-@import url(invisible.css);
-@import url(contradictions.css);
