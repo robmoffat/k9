@@ -34,7 +34,7 @@ import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/publi
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/commands/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/commands/align/align.js';
-import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/commands/layout/layout.js';
+import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/behaviours/containers/layout/layout.js';
 import { initDirectionContextMenuCallback } from '/public/commands/direction/direction.js';
 import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/commands/replace/replace.js';
 import { initXCPContextMenuCallback } from '/public/commands/xcp/xcp.js';

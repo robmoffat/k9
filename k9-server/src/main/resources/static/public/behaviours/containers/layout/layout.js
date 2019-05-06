@@ -1,5 +1,15 @@
-import { parseInfo, getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
+import { getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
+
+function getLayout(e) {
+	if (e==null) {
+		return 'none';
+	} else {
+		var l = e.getAttribute("layout");
+		l = l == null ? "none" : l;
+		return l;
+	}
+}
 
 export function initCellCreator(templateUri, transition) {
 
@@ -37,7 +47,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 				return;
 			}
 
-			if (existing == 'GRID') {
+			if (existing == 'grid') {
 				// remove all the grid cells within
 				cellSelector(e).forEach(f => {
 					transition.push({
@@ -55,13 +65,9 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 				}))
 			}
 
-			if (layout == 'null') {
-				layout = 'NONE';
-			}
-
 			var firstCellId;
 
-			if (layout == 'GRID') {
+			if (layout == 'grid') {
 				for (var x = 0; x < cols; x++) {
 					for (var y = 0; y < rows; y++) {
 						var cellId = cellCreator(id, x, y);
@@ -91,9 +97,9 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 			transition.push({
 				fragmentId: id,
-				type: 'SetStyle',
-				name: 'kite9-layout',
-				value: layout
+				type: 'SetAttr',
+				name: 'layout',
+				value: layout == 'none' ? null : layout
 			});
 
 		});
@@ -109,7 +115,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 			layout = "none";
 		}
 		img.setAttribute("title", "Layout (" + layout + ")");
-		img.setAttribute("src", "/public/commands/layout/" + layout.toLowerCase() + ".svg");
+		img.setAttribute("src", "/public/behaviours/containers/layout/" + layout.toLowerCase() + ".svg");
 		img.style.borderRadius = "0px";
 
 		if (selected == layout) {
@@ -154,8 +160,8 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 		if (e.length> 0) {
 			var htmlElement = contextMenu.get(event);
-			const debug = parseInfo(hasLastSelected(e, true));
-			var img = drawLayout(htmlElement, debug.layout);
+			const layout = getLayout(hasLastSelected(e, true));
+			var img = drawLayout(htmlElement, layout);
 
 			function handleClick() {
 				// remove the other stuff from the context menu
@@ -163,16 +169,16 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 					htmlElement.removeChild(e);
 				});
 
-				["NONE", "RIGHT", "DOWN", "HORIZONTAL", "VERTICAL", "LEFT", "UP"].forEach(s => {
-					var img2 = drawLayout(htmlElement, s, debug.layout);
-					img2.addEventListener("click", () => setLayout(e, s, contextMenu, debug.layout));
+				["none", "right", "down", "horizontal", "vertical", "left", "up"].forEach(s => {
+					var img2 = drawLayout(htmlElement, s, layout);
+					img2.addEventListener("click", () => setLayout(e, s, contextMenu, layout));
 				});
 
 				var hr = document.createElement("hr");
 				htmlElement.appendChild(hr);
 
-				var img2 = drawLayout(htmlElement, 'GRID', debug.layout);
-				img2.addEventListener("click", () => setLayout(Array.from(selector()), 'GRID', contextMenu, debug.layout));
+				var img2 = drawLayout(htmlElement, 'grid', layout);
+				img2.addEventListener("click", () => setLayout(Array.from(selector()), 'grid', contextMenu, layout));
 
 				addField(htmlElement, "rows", rows, (evt) => rows = number(evt.target.value));
 				addField(htmlElement, "cols", cols, (evt) => cols = number(evt.target.value));
@@ -232,8 +238,7 @@ export function initLayoutDragableMoveCallback() {
 	return function (dragTargets, event) {
 
 		const dropInto = getKite9Target(event.target);
-		const info = parseInfo(dropInto);
-		const layout = info.layout;
+		const layout = getLayout(dropInto);
 		if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL")) {
 			// draw the horizontal bar
 			updateBar(event, dropInto, true);
