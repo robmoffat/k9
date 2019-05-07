@@ -1,19 +1,3 @@
-export function getAlignElementsAndDirections(id1, id2) {
-	return getExistingConnections(id1, id2)
-	 	.filter(e => e.classList.contains("align"))
-	 	.map(e => {
-	 		const parsed = parseInfo(e);
-	 		const d = parsed['direction'];
-	 		const link = parsed['link'];
-	 		const ids = link.split(" ");
-	 		const reversed = ids[0] == id2;	
-	 		return { 
-	 			element: e,
-	 			direction: reversed ? reverseDirection(d) : d
-	 		}
-	 	});
-}
-
 export function hasLastSelected(e, onlyLastSelected) {
 	for (var i = 0; i < e.length; i++) {
 		var item = e[i];

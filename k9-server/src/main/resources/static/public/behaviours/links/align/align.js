@@ -1,4 +1,3 @@
-import { SHA1 } from "/public/bundles/sha1.js";
 import { getContainingDiagram, createUniqueId, getExistingConnections, parseInfo, hasLastSelected, reverseDirection } from "/public/bundles/api.js";
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
 
@@ -133,13 +132,13 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Horizontal Align");
-			img.setAttribute("src", "/public/commands/align/align-horiz.svg");
+			img.setAttribute("src", "/public/behaviours/links/align/align-horiz.svg");
 			img.addEventListener("click", () => performAlign(cm, true));
 			
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Vertical Align");
-			img.setAttribute("src", "/public/commands/align/align-vert.svg");
+			img.setAttribute("src", "/public/behaviours/links/align/align-vert.svg");
 			img.addEventListener("click", () => performAlign(cm, false));
 		}
 	}

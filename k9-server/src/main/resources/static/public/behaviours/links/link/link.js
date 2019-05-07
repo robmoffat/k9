@@ -1,5 +1,6 @@
-import { parseInfo, getContainingDiagram, getAlignElementsAndDirections, hasLastSelected } from '/public/bundles/api.js';
+import { parseInfo, getContainingDiagram, hasLastSelected } from '/public/bundles/api.js';
 import { getMainSvg } from '/public/bundles/screen.js';
+import { getAlignElementsAndDirections } from '/public/behaviours/links/linkable.js'
 
 export function initLinkContextMenuCallback(transition, linker, selector) {
 	
@@ -21,7 +22,7 @@ export function initLinkContextMenuCallback(transition, linker, selector) {
 			var img = document.createElement("img");
 			htmlElement.appendChild(img);
 			img.setAttribute("title", "Draw Link");
-			img.setAttribute("src", "/public/commands/link/link.svg");
+			img.setAttribute("src", "/public/behaviours/links/link/link.svg");
 			img.addEventListener("click", e => {
 				contextMenu.destroy();
 				linker.start(Array.from(elements), e);
@@ -96,7 +97,7 @@ export function initLinkInstrumentationCallback(palette) {
 			var b = document.createElement("img");
 			b.setAttribute("class", name);
 			b.setAttribute("title", "Link Menu");
-			b.setAttribute("src", "/public/commands/link/"+name+".svg");
+			b.setAttribute("src", "/public/behaviours/links/link/"+name+".svg");
 			b.style.backgroundColor = '#EEEEEE';
 			b.addEventListener("click", (evt) => palette.open(evt, "link"));
 		    nav.appendChild(b);

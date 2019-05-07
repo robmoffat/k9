@@ -42,10 +42,10 @@ export function initDirectionContextMenuCallback(transition, selector) {
 		if (direction != "null") {
 			direction = reverse ? reverseDirection(direction) : direction;
 			img.setAttribute("title", "Link Direction ("+direction+")");
-			img.setAttribute("src", "/public/commands/direction/"+direction.toLowerCase()+".svg");
+			img.setAttribute("src", "/public/behaviours/links/direction/"+direction.toLowerCase()+".svg");
 		} else {
 			img.setAttribute("title", "Link Direction (undirected)");
-			img.setAttribute("src", "/public/commands/direction/undirected.svg");				
+			img.setAttribute("src", "/public/behaviours/links/direction/undirected.svg");				
 		}
 		
 		if (selected == direction) {

@@ -6,7 +6,7 @@ import { createUniqueId, parseInfo } from '/public/bundles/api.js';
  */
 export class Linker {
 	 
-	constructor(callbacks, svgLinkTemplate, getLinkTarget) {
+	constructor(callbacks, svgLinkTemplate, animate, getLinkTarget) {
 		if (svgLinkTemplate == undefined) {
 			// code to use first found link as the template
 			this.svgLinkTemplate = function(svg) {
@@ -19,6 +19,7 @@ export class Linker {
 		
 		this.svg = getMainSvg();
 		this.drawing = [];
+		this.animate = animate;
 		
 		this.callbacks = callbacks == undefined ? [] : callbacks;
 		
@@ -57,19 +58,13 @@ export class Linker {
 			this.drawing.push(newLink);
 			newLink.start = from;
 			newLink.setAttributeNS(null, 'pointer-events', 'none');
-			this.setPath(newLink, from, this.mouseCoords);
-		});
-	}
-	
-	setPath(e, from, to) {
-		const path = e.querySelectorAll("[k9-indicator=path] path").forEach(e => {
-			e.setAttribute("d", "M"+from.x+" "+from.y+ "L"+to.x+" "+to.y);
+			this.animate(newLink, from, this.mouseCoords);
 		});
 	}
 	
 	move(evt) {
 		this.mouseCoords = getSVGCoords(evt);
-		this.drawing.forEach(e => this.setPath(e, e.start, this.mouseCoords));
+		this.drawing.forEach(e => this.animate(e, e.start, this.mouseCoords));
 	}
 
 	removeDrawingLinks() {
