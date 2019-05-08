@@ -23,7 +23,7 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
-      <svg:image x="#{$width - 35}" y="#{$height - 35}" width="30" height="30" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#invisible)" />
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#invisible)" />
     </indicator>
     <contents />
   </template>
@@ -33,7 +33,7 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
-      <svg:image x="#{$width - 35}" y="#{$height - 35}" width="30" height="30" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#invisible)" />
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#invisible)" />
     </indicator>
     <svg:g class="container">
       <contents />

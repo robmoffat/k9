@@ -1,4 +1,5 @@
 import { getMainSvg } from '/public/bundles/screen.js';
+import { getExistingConnections} from '/public/bundles/api.js';
 
 /**
  * Contains the functionality for linking drawing links between selected elements 

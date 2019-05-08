@@ -47,6 +47,10 @@ g[k9-elem=link] {
 	kite9-margin: 20px;
 	kite9-link-minimum-length: 20px;
 	kite9-link-corner-radius: 10px;
+}
+
+link-body,
+g[k9-elem=link-body] {
 	stroke: black;
 	stroke-width: 2px;
 	fill: none;
@@ -80,18 +84,36 @@ g[k9-elem=to] {
 	kite9-type: link-end;
 	kite9-template: url(common-links-template.xml#round-terminator);
 	kite9-padding: 6px 6px 6px 6px;
-	stroke: none;
-	fill: white;		/* This is set so we can select these */
-	fill-opacity: .05;
 }
 
-/*link[drawDirection] from,
-link[drawDirection] to,
-link[drawDirection] g[k9-elem=from],
-link[drawDirection] g[k9-elem=to]  {
-	kite9-template: url(common-links-template.xml#directed-terminator);
-	fill-opacity: .25;	/* Make these a bit more visible 
-}*/
+[drawDirection~=DOWN] from,
+[drawDirection~=UP] to,
+[drawDirection~=DOWN] g[k9-elem=from],
+[drawDirection~=UP] g[k9-elem=to]  {
+	kite9-template: url(common-links-template.xml#up-terminator);
+}
+
+[drawDirection~=UP] from,
+[drawDirection~=DOWN] to,
+[drawDirection~=UP] g[k9-elem=from],
+[drawDirection~=DOWN] g[k9-elem=to]  {
+	kite9-template: url(common-links-template.xml#down-terminator);
+}
+
+[drawDirection~=RIGHT] from,
+[drawDirection~=LEFT] to,
+[drawDirection~=RIGHT] g[k9-elem=from],
+[drawDirection~=LEFT] g[k9-elem=to]  {
+	kite9-template: url(common-links-template.xml#left-terminator);
+}
+
+[drawDirection~=LEFT] from,
+[drawDirection~=RIGHT] to,
+[drawDirection~=LEFT] g[k9-elem=from],
+[drawDirection~=RIGHT] g[k9-elem=to]  {
+	kite9-template: url(common-links-template.xml#right-terminator);
+}
+
 
 align from,
 align to {
