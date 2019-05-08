@@ -66,8 +66,8 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 			const id = debug.terminates;
 			const linkElem = document.getElementById(id);
 			
-			const path = linkElem.querySelector("[k9-indicator=path] path");
-			if (path) {
+			const paths = linkElem.querySelectorAll("[k9-indicator=path] path");
+			Array.from(paths).forEach(path => {
 				
 				const d = path.getAttribute("d");
 				
@@ -89,7 +89,7 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 				}
 				
 				path.setAttribute("d", from+" "+to);
-			}
+			});
 		}
 	});
 }
