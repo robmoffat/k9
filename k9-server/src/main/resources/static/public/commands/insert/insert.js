@@ -47,6 +47,7 @@ export function initInsertPaletteCallback(transition, insertableSelector, insert
 		function click(event) {
 			if (palette.getCurrentSelector() == 'insert') {
 				const selectedElements = insertSelector();
+				const lastSelectedElement = hasLastSelected(selectedElements);
 				const droppingElement = palette.get().querySelector("[id].mouseover")
 				const data = Array.from(selectedElements).map(e => createInsertStep(e, droppingElement));
 				palette.destroy();		

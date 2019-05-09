@@ -17,14 +17,24 @@ public abstract class AbstractLocatedCommand extends AbstractCommand {
 	}
 
 	protected void insert(ADLDocument doc, Element e) {
-		ensureNotNull(this, "insert", "fragment", fragmentId);
 		
-		Element into = findFragmentElement(doc);
-		
+		Element into = null;
 		Element before = null;
+
+		if (fragmentId != null) {
+			into = findFragmentElement(doc);
+		}
+		
 		if (beforeFragmentId != null) {
 			before = doc.getElementById(beforeFragmentId);
+			
+			if ((into == null) && (before != null)) {
+				into = (Element) before.getParentNode();
+			}
 		}
+		
+		ensureNotNull(this, "insert", "into", into);
+
 		
 		into.insertBefore(e, before);
 		ensureParentElements(into, e);

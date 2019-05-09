@@ -32,6 +32,7 @@ import { createMoveDragableDropCallback, moveDragableMoveCallback, initCompleteD
 import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
 import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/behaviours/links/link/link.js';
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
+import { initContainPaletteCallback, initContainContextMenuCallback } from '/public/behaviours/containers/contain/contain.js';
 import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
 import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/behaviours/links/autoconnect/autoconnect.js';
 import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
@@ -57,6 +58,7 @@ function initEditor() {
 	
 	var palette = new Palette("--palette", [
 		initInsertPaletteCallback(transition),
+		initContainPaletteCallback(transition),
 		initLinkPaletteCallback(),
 		initReplacePaletteCallback(transition, 'end', {keptAttributes: ['id', 'reference'], approach: 'ATTRIBUTES'}),
 		initReplacePaletteCallback(transition, 'link', {replaceContents: false, approach: 'SHALLOW'}),
@@ -78,6 +80,7 @@ function initEditor() {
 		initDeleteContextMenuCallback(transition),
 		initLinkContextMenuCallback(transition, linker),
 		initInsertContextMenuCallback(palette), 
+		initContainContextMenuCallback(palette), 
 		initReplaceContextMenuCallback(palette, 'end'),
 		initReplaceContextMenuCallback(palette, 'link'),
 		initReplaceContextMenuCallback(palette, 'replace-connected'),
