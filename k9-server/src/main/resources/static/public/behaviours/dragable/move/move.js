@@ -66,7 +66,7 @@ export function moveDragableMoveCallback(dragTargets, evt) {
 			const id = debug.terminates;
 			const linkElem = document.getElementById(id);
 			
-			const paths = linkElem.querySelectorAll("[k9-indicator=path] path");
+			const paths = linkElem.querySelectorAll("[k9-animate=link]");
 			Array.from(paths).forEach(path => {
 				
 				const d = path.getAttribute("d");

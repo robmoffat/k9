@@ -79,6 +79,12 @@ container.dotted,
 	kite9-layout: left;
 }
 
+*[layout=horizontal] {
+	kite9-layout: horizontal;
+}
 
+*[layout=vertical] {
+	kite9-layout: vertical;
+}
 
 

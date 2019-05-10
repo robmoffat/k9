@@ -37,7 +37,7 @@ import { identityInstrumentationCallback, identityMetadataCallback } from "/publ
 
 // undo
 import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/undoable/undoable.js";
-import { createUndoCallback, createRedoCallback } from '/public/behaviours/undoable/undo/undo.js';
+import { createUndoCallback, createRedoCallback } from '/public/behaviours/undoable/undoredo/undoredo.js';
 
 // Containers
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';

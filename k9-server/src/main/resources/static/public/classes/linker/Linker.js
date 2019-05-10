@@ -64,7 +64,9 @@ export class Linker {
 	
 	move(evt) {
 		this.mouseCoords = getSVGCoords(evt);
-		this.drawing.forEach(e => this.animate(e, e.start, this.mouseCoords));
+		this.drawing.forEach(e => {
+			this.animate(e, e.start, this.mouseCoords);
+		});
 	}
 
 	removeDrawingLinks() {

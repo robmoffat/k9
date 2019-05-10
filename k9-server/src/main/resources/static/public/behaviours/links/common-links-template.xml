@@ -108,24 +108,24 @@
 
   <template id="basic-link" k9-ui="delete link" k9-palette="link">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
-      <svg:path d="#{$path}" />
+      <svg:path d="#{$path}" k9-animate="link"/>
     </grab>
     <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
-      <svg:path d="#{$path}"
+    <link-body style="kite9-type: svg; kite9-usage: decal;">
+      <svg:path k9-animate="link" d="#{$path}"
         style="
-        marker-start: url(##{../../adl:from/@class}-start-marker); 
-        marker-end: url(##{../..//adl:to/@class}-end-marker);" />
+        marker-start: url(#{../../adl:from/@class}-start-marker); 
+        marker-end: url(#{../..//adl:to/@class}-end-marker);" />
     </link-body>
   </template>
 
   <template id="align" k9-ui="delete invisible">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
-      <svg:path d="#{$path}" />
+      <svg:path k9-animate="link" d="#{$path}" />
     </grab>
     <contents />
     <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
-      <svg:path d="#{$path}" />
+      <svg:path k9-animate="link" d="#{$path}" />
     </link-body>
   </template>
 </svg:svg>

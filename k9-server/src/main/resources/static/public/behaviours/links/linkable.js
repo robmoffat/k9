@@ -44,8 +44,8 @@ export function initLinkable(linker, selector)  {
  * This is for updating links when they are being dragged.
  */
 export function updateLink(e, from, to) {
-	const path = e.querySelectorAll("[k9-indicator=path] path").forEach(e => {
-		e.setAttribute("d", "M"+from.x+" "+from.y+ "L"+to.x+" "+to.y);
+	e.querySelectorAll("[k9-animate=link]").forEach(f => {
+		f.setAttribute("d", "M"+from.x+" "+from.y+ "L"+to.x+" "+to.y);
 	});
 }
 
