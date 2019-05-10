@@ -114,8 +114,8 @@
     <link-body style="kite9-type: svg; kite9-usage: decal;">
       <svg:path k9-animate="link" d="#{$path}"
         style="
-        marker-start: url(#{../../adl:from/@class}-start-marker); 
-        marker-end: url(#{../..//adl:to/@class}-end-marker);" />
+        marker-start: url(##{../../adl:from/@class}-start-marker); 
+        marker-end: url(##{../../adl:to/@class}-end-marker);" />
     </link-body>
   </template>
 
