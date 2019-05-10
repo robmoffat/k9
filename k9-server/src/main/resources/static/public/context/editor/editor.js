@@ -14,32 +14,45 @@ import { Linker } from '/public/classes/linker/Linker.js';
 // Behaviours
 
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
+
+// dragable
 import { initDragable } from '/public/behaviours/dragable/dragable.js' 
-import { initLinkable, updateLink } from '/public/behaviours/links/linkable.js';
+import { createMoveDragableDropCallback, moveDragableMoveCallback, initCompleteDragable } from '/public/behaviours/dragable/move/move.js';
+
+// selectable
 import { initSelectable } from '/public/behaviours/selectable/selectable.js';
+import { initDeleteContextMenuCallback } from '/public/behaviours/selectable/delete/delete.js';
+import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/behaviours/selectable/replace/replace.js';
+import { initXCPContextMenuCallback } from '/public/behaviours/selectable/xcp/xcp.js';
+
+// hoverable
 import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
 
-// Instrumentation Imports
 
+//zoomable
 import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/public/behaviours/zoomable/zoomable.js";
+
+// identity
 import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
+
+// undo
 import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/undoable/undoable.js";
+import { createUndoCallback, createRedoCallback } from '/public/behaviours/undoable/undo/undo.js';
 
-// Commands
-
-import { createUndoCallback, createRedoCallback } from '/public/commands/undo/undo.js';
-import { createMoveDragableDropCallback, moveDragableMoveCallback, initCompleteDragable } from '/public/commands/move/move.js';
-import { initDeleteContextMenuCallback } from '/public/commands/delete/delete.js';
-import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/behaviours/links/link/link.js';
-import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/commands/insert/insert.js';
+// Containers
+import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';
 import { initContainPaletteCallback, initContainContextMenuCallback } from '/public/behaviours/containers/contain/contain.js';
-import { initEditContextMenuCallback } from '/public/commands/edit/edit.js';
-import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/behaviours/links/autoconnect/autoconnect.js';
-import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
 import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/behaviours/containers/layout/layout.js';
+
+// Links
+import { initLinkable, updateLink } from '/public/behaviours/links/linkable.js';
+import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/behaviours/links/autoconnect/autoconnect.js';
+import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/behaviours/links/link/link.js';
 import { initDirectionContextMenuCallback } from '/public/behaviours/links/direction/direction.js';
-import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/commands/replace/replace.js';
-import { initXCPContextMenuCallback } from '/public/commands/xcp/xcp.js';
+import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
+
+// text
+import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 
 var initialized = false;

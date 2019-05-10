@@ -238,7 +238,7 @@ export function initLayoutDragableMoveCallback() {
 	return function (dragTargets, event) {
 
 		const dropInto = getKite9Target(event.target);
-		const layout = getLayout(dropInto);
+		const layout = getLayout(dropInto).toUpperCase();
 		if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL")) {
 			// draw the horizontal bar
 			updateBar(event, dropInto, true);

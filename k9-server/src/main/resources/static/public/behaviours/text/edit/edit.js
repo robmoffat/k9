@@ -38,7 +38,7 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 			htmlElement.appendChild(img);
 			
 			img.setAttribute("title", "Edit Text");
-			img.setAttribute("src", "/public/commands/edit/edit.svg");
+			img.setAttribute("src", "/public/behaviours/text/edit/edit.svg");
 			
 			img.addEventListener("click", function(event) {
 				const defaultText = defaultSelector(hasLastSelected(selectedElements, true)).textContent.trim();

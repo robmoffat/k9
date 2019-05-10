@@ -93,7 +93,7 @@ export function initReplaceContextMenuCallback(palette, type, selector) {
 			htmlElement.appendChild(img);
 			
 			img.setAttribute("title", "Replace");
-			img.setAttribute("src", "/public/commands/replace/replace.svg");
+			img.setAttribute("src", "/public/behaviours/selectable/replace/replace.svg");
 			img.addEventListener("click", function(e2, selector) {
 				contextMenu.destroy();
 				palette.open(event, type);
