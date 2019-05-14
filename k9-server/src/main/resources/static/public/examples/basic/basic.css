@@ -1,6 +1,6 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
-
+@import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/fonts/metropolis/metropolis.css');
 
 @params {
@@ -35,6 +35,7 @@ g.box {
 	fill: #CCCCAA;
 	stroke: #AAAA88;
 	kite9-connection-align: 50%;
+	stroke-dasharray: none;
 }
 
 g.clearbox {
@@ -79,4 +80,15 @@ g.cell {
 	kite9-sizing: maximize;
 	stroke: white;
 	fill: white;
+}
+
+/* Labels */
+
+[k9-elem=label],
+g.label,
+label {
+	fill: black;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 25px;
 }

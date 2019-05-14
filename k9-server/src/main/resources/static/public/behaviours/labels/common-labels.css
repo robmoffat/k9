@@ -1,14 +1,28 @@
+/* Bootstrap for common examples */
 
+g[k9-elem=common-diagram],
+common-diagram {
+	kite9-type: diagram;
+	fill: white;
+}
 
 /* Labels */
 
-container label,
-[k9-elem=container] [k9-elem=label] {
+label,
+[k9-elem=label] {
 	kite9-usage: label;
 	kite9-type: container; 
 	kite9-sizing: minimize;
-	kite9-template: url(common-containers-template.xml#label);
-	kite9-padding: 4px;
-	kite9-horizontal-align: center;
-	fill: black;
+	kite9-template: url(common-labels-template.xml#label);
 }
+
+@params {
+	label-template-uri:  url(common-labels.xml#label);
+}
+
+/* Stipulates the location to find either label from a link */ 
+* {
+	kite9-link-from-label-xpath: './adl:from/adl:label';
+	kite9-link-to-label-xpath: './adl:to/adl:label';
+}
+

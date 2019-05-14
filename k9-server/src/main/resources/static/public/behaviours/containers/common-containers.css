@@ -49,6 +49,13 @@ container[layout],
 	kite9-template: url(common-containers-template.xml#container-directed);
 }
 
+container.solid,
+[k9-elem=container].solid {
+	stroke: black;
+	stroke-width: 1px;
+	stroke-dasharray: none;
+}
+
 container.dotted,
 [k9-elem=container].dotted {
 	stroke: black;

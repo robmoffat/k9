@@ -14,13 +14,13 @@
 
     <group style="kite9-layout: right; ">
 
-        <container id="c1">
+        <container id="c1" class="solid">
         </container>
 
-        <container id="c2" layout="right">
+        <container id="c2" layout="right" class="solid">
         </container>
 
-        <container id="c3" layout="down">
+        <container id="c3" layout="down" class="solid">
         </container>
     </group>
     
