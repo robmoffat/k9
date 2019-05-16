@@ -77,6 +77,14 @@ g[k9-elem=link].grey {
 
 /* Terminators */
 
+from {
+	kite9-link-end: from;
+}
+
+to {
+	kite9-link-end: to;
+}
+
 from, 
 to,
 g[k9-elem=from],
