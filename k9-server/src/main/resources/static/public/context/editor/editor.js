@@ -52,7 +52,7 @@ import { initDirectionContextMenuCallback } from '/public/behaviours/links/direc
 import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
 
 // labels
-import { initLabelContextMenuCallback } from '/public/behaviours/labels/label/label.js'; 
+import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback } from '/public/behaviours/labels/label/label.js'; 
 
 // text
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
@@ -95,7 +95,8 @@ function initEditor() {
 	var contextMenu = new ContextMenu([ 
 		initDeleteContextMenuCallback(transition),
 		initLinkContextMenuCallback(transition, linker),
-		initLabelContextMenuCallback(transition, document.params['label-template-uri']),
+		initContainerLabelContextMenuCallback(transition, document.params['label-template-uri']),
+		initLinkLabelContextMenuCallback(transition, document.params['label-template-uri']),
 		initInsertContextMenuCallback(palette), 
 		initContainContextMenuCallback(palette), 
 		initReplaceContextMenuCallback(palette, 'end'),

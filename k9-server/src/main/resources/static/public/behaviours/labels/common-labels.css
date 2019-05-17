@@ -20,9 +20,11 @@ label,
 	label-template-uri:  url(common-labels.xml#label);
 }
 
-/* Stipulates the location to find either label from a link */ 
-* {
-	kite9-link-from-label-xpath: './adl:from/adl:label';
-	kite9-link-to-label-xpath: './adl:to/adl:label';
+label[end=to] {
+	kite9-link-end: to;
+}
+
+label[end=from] {
+	kite9-link-end: from;
 }
 

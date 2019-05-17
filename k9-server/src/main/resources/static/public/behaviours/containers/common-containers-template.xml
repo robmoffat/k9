@@ -35,18 +35,14 @@
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
       <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#invisible)" />
     </indicator>
-    <svg:g class="container">
-      <contents />
-    </svg:g>
+    <contents />
   </template>
   
   <template id="container-undirected" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
-    <svg:g class="container">
-      <contents />
-    </svg:g>
+    <contents />
   </template>
   
 </svg:svg>

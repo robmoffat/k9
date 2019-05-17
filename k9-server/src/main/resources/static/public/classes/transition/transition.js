@@ -195,7 +195,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 				// here, we have non-id elements, so we really just need 
 				// to be sure there are the right number
 
-				if ((fromElement == null) || (fromElement.tagName != toElement.tagName)) {
+				if ((fromElement == null) || (fromElement.tagName != toElement.tagName) || (fromElement.hasAttribute("id"))) {
 					// treat as an insertion.
 					console.log("creating new element " + toElement.tagName)
 					const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);

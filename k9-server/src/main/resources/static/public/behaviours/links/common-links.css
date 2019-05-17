@@ -94,38 +94,54 @@ g[k9-elem=to] {
 	kite9-padding: 6px 6px 6px 6px;
 }
 
-[drawDirection~=DOWN] from,
-[drawDirection~=UP] to,
-[drawDirection~=DOWN] g[k9-elem=from],
-[drawDirection~=UP] g[k9-elem=to]  {
+[drawDirection=DOWN] from,
+[drawDirection=UP] to,
+[drawDirection=DOWN] g[k9-elem=from],
+[drawDirection=UP] g[k9-elem=to]  {
 	kite9-template: url(common-links-template.xml#up-terminator);
 }
 
-[drawDirection~=UP] from,
-[drawDirection~=DOWN] to,
-[drawDirection~=UP] g[k9-elem=from],
-[drawDirection~=DOWN] g[k9-elem=to]  {
+[drawDirection=UP] from,
+[drawDirection=DOWN] to,
+[drawDirection=UP] g[k9-elem=from],
+[drawDirection=DOWN] g[k9-elem=to]  {
 	kite9-template: url(common-links-template.xml#down-terminator);
 }
 
-[drawDirection~=RIGHT] from,
-[drawDirection~=LEFT] to,
-[drawDirection~=RIGHT] g[k9-elem=from],
-[drawDirection~=LEFT] g[k9-elem=to]  {
+[drawDirection=RIGHT] from,
+[drawDirection=LEFT] to,
+[drawDirection=RIGHT] g[k9-elem=from],
+[drawDirection=LEFT] g[k9-elem=to]  {
 	kite9-template: url(common-links-template.xml#left-terminator);
 }
 
-[drawDirection~=LEFT] from,
-[drawDirection~=RIGHT] to,
-[drawDirection~=LEFT] g[k9-elem=from],
-[drawDirection~=RIGHT] g[k9-elem=to]  {
+[drawDirection=LEFT] from,
+[drawDirection=RIGHT] to,
+[drawDirection=LEFT] g[k9-elem=from],
+[drawDirection=RIGHT] g[k9-elem=to]  {
 	kite9-template: url(common-links-template.xml#right-terminator);
 }
 
+[drawDirection=LEFT] {
+	kite9-direction: left;
+}
+
+[drawDirection=RIGHT] {
+	kite9-direction: right;
+}
+
+[drawDirection=UP] {
+	kite9-direction: up;
+}
+
+[drawDirection=DOWN] {
+	kite9-direction: down;
+}
 
 align from,
 align to {
 	kite9-template: none;	
+	kite9-type: none;
 }
 
 from.gap,
