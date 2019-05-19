@@ -6,15 +6,6 @@ common-diagram {
 	fill: white;
 }
 
-common-holder,
-g[k9-elem=common-holder] {
-	kite9-type: container;
-	kite9-padding: 10px;
-	kite9-margin: 10px;
-	kite9-template: url(common-links-template.xml#background);
-	fill: #EEEEEE;
-}
-
 /* Groups: Invisible containers */
 
 group,

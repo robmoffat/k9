@@ -1,0 +1,89 @@
+/* Bootstrap for common examples */
+
+g[k9-elem=common-diagram],
+common-diagram {
+	kite9-type: diagram;
+	fill: white;
+	kite9-padding: 10px;
+}
+
+common-holder,
+g[k9-elem=common-holder] {
+	kite9-type: container;
+	kite9-padding: 10px;
+	kite9-margin: 10px;
+	kite9-template: url(common-grid-template.xml#background);
+	fill: #EEEEEE;
+}
+
+text-label,
+[k9-elem=text-label] {
+	kite9-type: text;
+	kite9-template: url(common-grid-template.xml#text-label);
+}
+
+back {
+	kite9-usage: decal; 
+	kite9-type: svg; 
+	kite9-template: url(common-grid-template.xml#rect) "5px" "5px";
+}
+
+*[layout=grid] {
+	kite9-layout: grid;
+}
+
+/* tables */
+
+table,
+[k9-elem=table] {
+	kite9-layout: grid;
+	kite9-type: container;
+	kite9-template: url(common-grid-template.xml#table);
+	stroke: black;
+	kite9-padding: 10px;
+	stroke-width: 2px;
+}
+
+cell,
+[k9-cell=cell] {
+	kite9-template: url(common-grid-template.xml#cell) "0px" "0px";
+	kite9-usage: regular;
+	kite9-type: container;
+	kite9-vertical-align: center;
+	kite9-horizontal-align: center;
+	kite9-sizing: minimize;
+}
+
+cell.left {
+	kite9-horizontal-align: left;
+}
+
+cell.right {
+	kite9-horizontal-align: right;
+}
+
+cell.bottom {
+	kite9-vertical-align: bottom;
+}
+
+cell.top {
+	kite9-vertical-align: top;
+}
+
+cell.text {
+	kite9-template: url(common-grid-template.xml#cell-text);
+	kite9-minimum-height: 250px;
+	kite9-padding: 10px;
+	font-size: 40px;
+	fill: black;
+	font-family: "metropolis";
+	stroke: none;
+}
+
+cell.bordered {
+	stroke: black;
+}
+
+cell.shaded {
+	
+}

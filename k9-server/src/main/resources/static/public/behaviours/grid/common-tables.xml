@@ -1,0 +1,42 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+      @import url("/public/behaviours/grid/common-grid.css");
+      @import url("/public/context/editor/invisible.css");
+      @import url("/public/fonts/metropolis/metropolis.css");
+      
+      cell {
+         kite9-min-size: 40px 15px;
+         kite9-margin: 15px;
+      }
+      
+      text-label {
+         kite9-padding: 20px;
+         kite9-horizontal-align: middle;
+         kite9-vertical-align: middle;  
+      }
+      
+      cell text,
+      [k9-elem=cell] text {
+        fill: black;
+        font-family: metropolis;
+        font-size: 20px;
+      }
+    </svg:style>
+  </svg:defs>
+ <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+
+    <table id="t1" style="kite9-grid-size: 3 4; ">
+      <cell id="c1" class="text left">Left</cell>
+      <cell id="c2" class="text">Middle</cell>
+      <cell id="c3" class="text right">Right</cell>
+      <cell id="c4" class="shaded left"></cell>
+      <cell id="c5" class="shaded"></cell>
+      <cell id="c6" class="shaded right"></cell>
+      <cell id="c7" class="bordered"></cell>
+    </table>
+
+
+
+  </common-diagram>
+</svg:svg>

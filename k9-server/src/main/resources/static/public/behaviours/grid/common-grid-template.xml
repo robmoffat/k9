@@ -1,0 +1,30 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.kite9.org/schema/adl' xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- tables -->
+  
+  <template id="rect" k9-indicator="path">
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx="#{$template-1}" ry="#{$template-2}" />
+  </template>
+  
+  <template id='table'>
+    <back />
+    <contents />
+  </template>
+  
+  <template id="cell" k9-ui="invisible">
+    <back />
+    <contents />
+  </template>
+
+  <template id="cell-text" k9-ui="invisible">
+    <back />
+    <text-label k9-ui="edit">
+      <contents />    
+    </text-label>
+  </template>
+
+  <template id="text-label" >
+     <contents />
+  </template>
+   
+</svg:svg>
