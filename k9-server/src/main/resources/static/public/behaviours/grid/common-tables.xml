@@ -14,27 +14,38 @@
          kite9-padding: 20px;
          kite9-horizontal-align: middle;
          kite9-vertical-align: middle;  
+        font-family: metropolis;
+        font-size: 40px;
       }
       
-      cell text,
-      [k9-elem=cell] text {
-        fill: black;
-        font-family: metropolis;
-        font-size: 20px;
+      cell.text,
+      [k9-elem=cell].text text {
+         fill: black;
       }
     </svg:style>
   </svg:defs>
  <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
 
-    <table id="t1" style="kite9-grid-size: 3 4; ">
+    <table id="t1" style="kite9-grid-size: 4 4; ">
       <cell id="c1" class="text left">Left</cell>
       <cell id="c2" class="text">Middle</cell>
       <cell id="c3" class="text right">Right</cell>
-      <cell id="c4" class="shaded left"></cell>
-      <cell id="c5" class="shaded"></cell>
-      <cell id="c6" class="shaded right"></cell>
-      <cell id="c7" class="bordered"></cell>
+      <cell id="t1" class="right"></cell>
+      <cell id="c1.1" class="text shaded left">Left</cell>
+      <cell id="c2.1" class="text shaded">Middle</cell>
+      <cell id="c3.3" class="text shaded right">Right</cell>
+      <cell id="t2" class="shaded"></cell>
+      <cell id="c4" class="text shaded bordered left">Left</cell>
+      <cell id="c5" class="text shaded bordered">Middle</cell>
+      <cell id="c6" class="text shaded bordered right">Right</cell>
+      <cell id="t3" class="shaded bordered"></cell>
+      <cell id="c7" class="text bordered left">Left</cell>
+      <cell id="c8" class="text bordered">Middle</cell>
+      <cell id="c9" class="text bordered right">Right</cell>
+      <cell id="t4" class="bordered"></cell>
     </table>
+
+
 
 
 

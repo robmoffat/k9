@@ -25,7 +25,7 @@ text-label,
 back {
 	kite9-usage: decal; 
 	kite9-type: svg; 
-	kite9-template: url(common-grid-template.xml#rect) "5px" "5px";
+	kite9-template: url(common-grid-template.xml#rect);
 }
 
 *[layout=grid] {
@@ -52,14 +52,17 @@ cell,
 	kite9-vertical-align: center;
 	kite9-horizontal-align: center;
 	kite9-sizing: minimize;
+	text-align: middle;
 }
 
 cell.left {
 	kite9-horizontal-align: left;
+	text-align: start;
 }
 
 cell.right {
 	kite9-horizontal-align: right;
+	text-align: end;
 }
 
 cell.bottom {
@@ -74,16 +77,18 @@ cell.text {
 	kite9-template: url(common-grid-template.xml#cell-text);
 	kite9-minimum-height: 250px;
 	kite9-padding: 10px;
-	font-size: 40px;
 	fill: black;
-	font-family: "metropolis";
 	stroke: none;
 }
 
-cell.bordered {
+[k9-elem=cell].bordered > [k9-elem=back],
+cell.bordered > back {
 	stroke: black;
+	stroke-width: 2px;
 }
 
-cell.shaded {
-	
+[k9-elem=cell].shaded > [k9-elem=back],
+cell.shaded > back {
+	fill: #CECECE;
+	path: #CECECE;
 }
