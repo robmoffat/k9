@@ -77,8 +77,9 @@ function initEditor() {
 		initContainPaletteCallback(transition),
 		initLinkPaletteCallback(),
 		initReplacePaletteCallback(transition, 'end', {keptAttributes: ['id', 'reference'], approach: 'ATTRIBUTES'}),
-		initReplacePaletteCallback(transition, 'link', {replaceContents: false, approach: 'SHALLOW'}),
-		initReplacePaletteCallback(transition, 'replace-connected'),
+		initReplacePaletteCallback(transition, 'link', {approach: 'SHALLOW'}),
+		initReplacePaletteCallback(transition, 'replace-cell', {approach: 'SHALLOW', keptAttributes: ['id']}),
+		initReplacePaletteCallback(transition, 'replace-connected', {approach: 'SHALLOW', keptAttributes: ['id']}),
 	], document.params['palettes']);
 	
 	var linker = new Linker([
@@ -102,6 +103,7 @@ function initEditor() {
 		initReplaceContextMenuCallback(palette, 'end'),
 		initReplaceContextMenuCallback(palette, 'link'),
 		initReplaceContextMenuCallback(palette, 'replace-connected'),
+		initReplaceContextMenuCallback(palette, 'replace-cell'),
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),

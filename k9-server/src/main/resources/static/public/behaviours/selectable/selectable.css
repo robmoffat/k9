@@ -4,22 +4,22 @@ svg {
 	cursor: pointer;
 }
 
-[k9-indicator=rect] {
+[k9-indicator~=rect] {
 	transition: fill 0.2s;
 }
 
-[k9-indicator=path] {
+[k9-indicator~=path] {
 	transition: stroke 0.2s;
 }
 
-.selected > [k9-indicator=rect],
-.selected > :not([id]) > [k9-indicator=rect] {
+.selected > [k9-indicator~=rect],
+.selected > :not([id]) > [k9-indicator~=rect] {
 	fill: rgb(255, 204, 0) !important;
 	fill-opacity: 1 !important;
 }
 
-.selected > [k9-indicator=path],
-.selected > :not([id]) > [k9-indicator=path] {
+.selected > [k9-indicator~=path],
+.selected > :not([id]) > [k9-indicator~=path] {
 	stroke: rgb(255, 204, 0) !important;
 	stroke-opacity: 1 !important;
 }

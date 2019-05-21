@@ -16,12 +16,6 @@ g[k9-elem=common-holder] {
 	fill: #EEEEEE;
 }
 
-text-label,
-[k9-elem=text-label] {
-	kite9-type: text;
-	kite9-template: url(common-grid-template.xml#text-label);
-}
-
 back {
 	kite9-usage: decal; 
 	kite9-type: svg; 
@@ -53,6 +47,8 @@ cell,
 	kite9-horizontal-align: center;
 	kite9-sizing: minimize;
 	text-align: middle;
+	kite9-min-size: 10px 10px;
+	kite9-traversal: always;
 }
 
 cell.left {
@@ -71,14 +67,6 @@ cell.bottom {
 
 cell.top {
 	kite9-vertical-align: top;
-}
-
-cell.text {
-	kite9-template: url(common-grid-template.xml#cell-text);
-	kite9-minimum-height: 250px;
-	kite9-padding: 10px;
-	fill: black;
-	stroke: none;
 }
 
 [k9-elem=cell].bordered > [k9-elem=back],

@@ -1,24 +1,30 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
 @import url('/public/behaviours/labels/common-labels.css');
+@import url('/public/behaviours/grid/common-grid.css');
 @import url('/public/fonts/metropolis/metropolis.css');
+
 
 @params {
 	palettes: url(shape-palette) "insert replace-connected" 
    	          url(/public/behaviours/links/common-links) "link end"
-   	          url(/public/behaviours/containers/common-containers) "insert replace-connected contain";
+   	          url(/public/behaviours/containers/common-containers) "insert replace-connected contain"
+   	          url(/public/behaviours/grid/common-tables) "replace-cell";
           
-	cell-template-uri: url(shape-palette.xml#cell);
+	cell-template-uri: url(/public/behaviours/grid/common-tables.xml#t1);
 }
 
 /* On every example */
 
-diagram {
+diagram,
+[k9-elem=diagram] {
 	kite9-type: diagram;
 	kite9-padding: 15px;
 	kite9-traversal: none;
 	kite9-template: url(template.xml#diagram);
 	background-color: white;
+	font-size: 50px;
+	font-family: metropolis;
 }
 
 g.kite9-diagram {
@@ -59,27 +65,6 @@ g.text {
 	text-align: start;
 	font-size: 50px;
 	kite9-template: url(template.xml#text);
-}
-
-/* Grid */
-
-g.grid {
-	kite9-layout: grid;
-	kite9-type: container;
-	kite9-template: url(template.xml#grid);
-	kite9-padding: 1px;
-	fill: white;
-	stroke: black;
-	kite9-padding: 20px;
-}
-
-g.cell {
-	kite9-type: container;
-	kite9-min-size: 30px 30px;
-	kite9-template: url(template.xml#cell);
-	kite9-sizing: maximize;
-	stroke: white;
-	fill: white;
 }
 
 /* Labels */

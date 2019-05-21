@@ -11,14 +11,14 @@
     </svg:filter>
   </svg:defs>
 
-   <template id="group-undirected" k9-ui="drag drop delete insert align connect layout copy invisible" k9-palette="contain insert replace-connected">
+   <template id="group-undirected" k9-ui="drag drop delete insert align connect layout copy invisible replace-connected" k9-palette="contain insert replace-connected">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
     <contents />
   </template>
   
-  <template id="group-directed" k9-ui="drag drop delete insert align connect layout copy invisible" k9-palette="contain insert replace-connected">
+  <template id="group-directed" k9-ui="drag drop delete insert align connect layout copy invisible replace-connected" k9-palette="contain insert replace-connected">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px'  />
     </back>
@@ -28,7 +28,7 @@
     <contents />
   </template>
   
-   <template id="container-directed" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label">
+   <template id="container-directed" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
@@ -38,7 +38,7 @@
     <contents />
   </template>
   
-  <template id="container-undirected" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label">
+  <template id="container-undirected" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
     <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>

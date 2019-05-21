@@ -3,27 +3,27 @@
  * direction indicators and layout groups.
  */
 
-[k9-ui~=invisible] > [k9-indicator=path] {
+[k9-ui~=invisible] > [k9-indicator~=path] {
 	stroke: #b7c0fe;
 }
 
-[k9-ui~=invisible] > [k9-indicator=rect]  {
+[k9-ui~=invisible] > [k9-indicator~=rect]  {
 	fill: #b7c0fe;
 	fill-opacity: 0.5;
 }
 
-[k9-ui~=invisible].mouseover > [k9-indicator=path] {
+[k9-ui~=invisible].mouseover > [k9-indicator~=path] {
 	stroke: #CCEEFF !important;
 }
 
-[k9-ui~=invisible].mouseover > [k9-indicator=rect] {
+[k9-ui~=invisible].mouseover > [k9-indicator~=rect] {
 	fill: #CCEEFF !important;
 }
 
-[k9-ui~=invisible].selected > [k9-indicator=path] {
+[k9-ui~=invisible].selected > [k9-indicator~=path] {
 	stroke: rgb(255, 204, 0) !important;
 }
 
-[k9-ui~=invisible].selected > [k9-indicator=rect] {
+[k9-ui~=invisible].selected > [k9-indicator~=rect] {
 	fill: rgb(255, 204, 0) !important;
 }
