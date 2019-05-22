@@ -106,7 +106,7 @@
     <contents />
   </template>
 
-  <template id="basic-link" k9-ui="delete link" k9-palette="link">
+  <template id="basic-link" k9-ui="delete link cascade" k9-palette="link">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
       <svg:path d="#{$path}" k9-animate="link"/>
     </grab>
@@ -119,7 +119,7 @@
     </link-body>
   </template>
 
-  <template id="align" k9-ui="delete invisible">
+  <template id="align" k9-ui="delete invisible cascade">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
       <svg:path k9-animate="link" d="#{$path}" />
     </grab>

@@ -1,8 +1,5 @@
 package com.kite9.k9server.adl.command;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.kite9.diagram.dom.CSSConstants;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.diagram.dom.elements.ReferencingKite9XMLElement;

@@ -2,7 +2,7 @@
 
   <!-- tables -->
   
-  <template id="rect" k9-indicator="path rect">
+  <template id="rect" k9-indicator="path">
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx="#{$template-1}" ry="#{$template-2}" />
   </template>
   
