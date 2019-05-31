@@ -37,13 +37,35 @@ export function initDragable(dragger, selector, css) {
 	})
 }
 
-export function initDragableDragLocator(isDragable) {
+function basicIsDragable(v) {
+	var out = v.getAttribute("k9-ui");
+	return out == null ? false : out.includes("drag");
+}
+
+/**
+ * Returns the objects that are selected being dragged
+ */
+export function initDragableSelectedDragLocator(selector) {
+	
+	if (selector == undefined) {
+		selector = function() {
+			return Array.from(document.querySelectorAll("[id][k9-ui~='drag'].selected"))
+		}
+	}
+	
+	return function() {
+		return selector();
+	}
+ 	
+}
+
+/**
+ * Returns the object under the pointer being dragged.
+ */
+export function initDragableEventDragLocator(isDragable) {
 
 	if (isDragable == undefined) {
-		isDragable = function(v) {
-			var out = v.getAttribute("k9-ui");
-			return out == null ? false : out.includes("drag");
-		} 
+		isDragable = basicIsDragable;
 	}
 	
 	return function(evt) {

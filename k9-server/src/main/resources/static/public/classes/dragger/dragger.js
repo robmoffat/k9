@@ -63,34 +63,35 @@ export class Dragger {
 	beginMove(evt) {
 		var out = []
 		
-		this.dragLocators
-			.forEach(dl => dl(evt)
-				.forEach(e => {
-					handleTransformAsStyle(e);
-					
-					if (this.shapeLayer == null) {
-						this.shapeLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
-						this.shapeLayer.setAttributeNS(null, 'pointer-events', 'none');
-						this.shapeLayer.setAttribute("id", "--moveLayer");
-						this.svg.appendChild(this.shapeLayer);
-					}
-					
-					var shapeOrigin = this.getTranslate(e);
-					var embeddedShapeOrigin = this.getDifferentialTranslate(e);
-					
-					out.push({
-						dragTarget: e,
-						dragParent: e.parentElement,
-						dragBefore: e.nextSibling,
-						shapeOrigin: shapeOrigin,
-						embeddedShapeOrigin: embeddedShapeOrigin
-					})
-					
-					this.shapeLayer.appendChild(e);
-					e.setAttributeNS(null, 'pointer-events', 'none');
-					e.style.setProperty('transform', 'translateX(' + shapeOrigin.x + 'px) translateY('
-							+ shapeOrigin.y + 'px)');
-				}));
+		const elements = this.dragLocators.flatMap(dl => dl(evt));
+		const uniqueElements = [...new Set(elements)];
+			
+		uniqueElements.forEach(e => {
+			handleTransformAsStyle(e);
+			
+			if (this.shapeLayer == null) {
+				this.shapeLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+				this.shapeLayer.setAttributeNS(null, 'pointer-events', 'none');
+				this.shapeLayer.setAttribute("id", "--moveLayer");
+				this.svg.appendChild(this.shapeLayer);
+			}
+			
+			var shapeOrigin = this.getTranslate(e);
+			var embeddedShapeOrigin = this.getDifferentialTranslate(e);
+			
+			out.push({
+				dragTarget: e,
+				dragParent: e.parentElement,
+				dragBefore: e.nextSibling,
+				shapeOrigin: shapeOrigin,
+				embeddedShapeOrigin: embeddedShapeOrigin
+			})
+			
+			this.shapeLayer.appendChild(e);
+			e.setAttributeNS(null, 'pointer-events', 'none');
+			e.style.setProperty('transform', 'translateX(' + shapeOrigin.x + 'px) translateY('
+					+ shapeOrigin.y + 'px)');
+		});
 		
 		if (out.length > 0) {
 			this.dragOrigin = getSVGCoords(evt);
@@ -178,16 +179,25 @@ export class Dragger {
 
 	endMove(reset) {
 		if (this.state) {
-			this.state.forEach(s => {
-				s.dragParent.insertBefore(s.dragTarget, s.dragBefore);
-				
-				var x = s.embeddedShapeOrigin.x + ( reset ? 0 : this.delta.x );
-				var y = s.embeddedShapeOrigin.y + ( reset ? 0 : this.delta.y );
-				
-				s.dragTarget.style.setProperty('transform', 'translateX(' + x + 'px) translateY('
-						+ y + 'px)');
-				s.dragTarget.setAttributeNS(null, 'pointer-events', 'all');
-			})
+			while (this.state.length > 0) {
+				for (var i = 0; i<this.state.length; i++) {
+					const s = this.state[i];
+					console.log("moving: "+s.dragTarget.getAttribute("id"))
+					
+					if ((s.dragParent.contains(s.dragBefore)) || (s.dragBefore==null)) {
+						s.dragParent.insertBefore(s.dragTarget, s.dragBefore);
+						
+						var x = s.embeddedShapeOrigin.x + ( reset ? 0 : this.delta.x );
+						var y = s.embeddedShapeOrigin.y + ( reset ? 0 : this.delta.y );
+						
+						s.dragTarget.style.setProperty('transform', 'translateX(' + x + 'px) translateY('
+								+ y + 'px)');
+						s.dragTarget.setAttributeNS(null, 'pointer-events', 'all');
+						this.state.splice(i, 1);
+					} 
+				}
+				console.log("going again")
+			}
 			
 			this.state = null;
 			this.svg.removeChild(this.shapeLayer);

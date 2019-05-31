@@ -18,7 +18,7 @@ import { Dragger } from '/public/classes/dragger/dragger.js';
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
 
 // dragable
-import { initDragable, initCompleteDragable, initDragableDragLocator, initDragableDropLocator, initDragableDropCallback } from '/public/behaviours/dragable/dragable.js' 
+import { initDragable, initCompleteDragable, initDragableEventDragLocator, initDragableDropLocator, initDragableDropCallback, initDragableSelectedDragLocator } from '/public/behaviours/dragable/dragable.js' 
 
 // selectable
 import { initSelectable } from '/public/behaviours/selectable/selectable.js';
@@ -127,7 +127,8 @@ function initEditor() {
 			initCompleteDragable(transition)
 		],
 		[
-			initDragableDragLocator()
+			initDragableEventDragLocator(),
+			initDragableSelectedDragLocator()
 		],
 		[
 			initDragableDropLocator()
