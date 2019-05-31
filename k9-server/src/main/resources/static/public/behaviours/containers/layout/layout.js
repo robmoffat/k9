@@ -244,6 +244,8 @@ export function initLayoutDragableMoveCallback() {
 			updateBar(event, dropInto, true);
 		} else if ((layout == 'LEFT') || (layout == 'RIGHT') || (layout == 'HORIZONTAL')) {
 			updateBar(event, dropInto, false);
+		} else if (layout == 'GRID') {
+			updateBar(event, dropInto, true);
 		} else {
 			clearBar();
 		}

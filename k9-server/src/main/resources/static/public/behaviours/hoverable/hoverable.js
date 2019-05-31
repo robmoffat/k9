@@ -1,9 +1,9 @@
 import { getMainSvg } from '/public/bundles/screen.js';
+import { ensureCss } from '/public/bundles/css.js';
 
 /**
  * Adds hoverable behaviour
  */
-
 export function initHoverable(selector, allowed, css) {
 	
 	var selectedElement;
@@ -47,16 +47,7 @@ export function initHoverable(selector, allowed, css) {
 		css = '/public/behaviours/hoverable/hoverable.css';
 	}
 	
-	if (!document.getElementById(css)) {
-	    var head  = document.getElementsByTagName('head')[0];
-	    var link  = document.createElement('link');
-	    link.id   = css;
-	    link.rel  = 'stylesheet';
-	    link.type = 'text/css';
-	    link.href = css;
-	    link.media = 'all';
-	    head.appendChild(link);
-	}
+	ensureCss(css);
 
 	if (selector == undefined) {
 		selector = function() { return getMainSvg().querySelectorAll("[id][k9-elem]"); }

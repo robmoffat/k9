@@ -4,12 +4,11 @@
  */
 
 [k9-ui~=invisible] > [k9-indicator~=path] {
-	stroke: #b7c0fe;
+	stroke: #b7c0feAA;
 }
 
 [k9-ui~=invisible] > [k9-indicator~=rect]  {
-	fill: #b7c0fe;
-	fill-opacity: 0.5;
+	fill: #b7c0feAA;
 }
 
 [k9-ui~=invisible].mouseover > [k9-indicator~=path] {

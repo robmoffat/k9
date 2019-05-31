@@ -78,3 +78,7 @@ label {
 	font-size: 16px;
 	kite9-padding: 10px;
 }
+
+cell {
+	kite9-min-size: 40px 40px;
+}

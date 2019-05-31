@@ -11,7 +11,7 @@
     <contents />
   </template>
   
-  <template id="cell" k9-ui="drop insert layout copy invisible replace-cell" k9-palette="replace-cell">
+  <template id="cell" k9-ui="delete-grid drag drop insert layout copy invisible replace-cell" k9-palette="replace-cell">
     <back />
     <contents />
   </template>

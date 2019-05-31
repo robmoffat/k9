@@ -68,6 +68,15 @@ export function parseInfo(t) {
 	}
 }
 
+export function getParentElement(elem) {
+	var p = elem.parentElement;
+	while ((p != null) && (!p.hasAttribute("k9-elem"))) {
+		p = p.parentElement;
+	}
+	
+	return p;
+}
+
 export function getContainingDiagram(elem) {
 	if (elem == null) {
 		return null;

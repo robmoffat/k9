@@ -98,8 +98,8 @@
   
   <template id='hidden' k9-ui="drag delete align connect layout autoconnect">
     <contents />
-    <back style='kite9-usage: decal; kite9-type: svg; kite9-transform: position;'>
-      <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="fill-opacity: 0.2;  kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
+    <back style='kite9-usage: decal; kite9-type: svg; fill-opacity: 0.2; kite9-transform: position;' class="tranparent">
+      <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
 	</back>
   </template>
   

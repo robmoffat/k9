@@ -41,11 +41,13 @@ export function getBeforeId(container, evt, ignore) {
 			return doSort(container, true, pos.x, ignore);
 		case 'DOWN':
 		case 'VERTICAL':
+		case 'GRID': 
 			return doSort(container, false, pos.y, ignore);
 		case 'LEFT':
 			return doSort(container, true, -pos.x, ignore);
 		case 'UP':
 			return doSort(container, false, -pos.y, ignore);
+		
 		default:
 			return null;
 	}

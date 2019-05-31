@@ -10,14 +10,15 @@ import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
 import { Transition } from '/public/classes/transition/transition.js';
 import { Palette, initPaletteHoverableAllowed } from '/public/classes/palette/Palette.js';
 import { Linker } from '/public/classes/linker/Linker.js';
+import { Overlay } from '/public/classes/overlay/overlay.js';
+import { Dragger } from '/public/classes/dragger/dragger.js';
 
 // Behaviours
 
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
 
 // dragable
-import { initDragable } from '/public/behaviours/dragable/dragable.js' 
-import { createMoveDragableDropCallback, moveDragableMoveCallback, initCompleteDragable } from '/public/behaviours/dragable/move/move.js';
+import { initDragable, initCompleteDragable, initDragableDragLocator, initDragableDropLocator, initDragableDropCallback } from '/public/behaviours/dragable/dragable.js' 
 
 // selectable
 import { initSelectable } from '/public/behaviours/selectable/selectable.js';
@@ -50,6 +51,7 @@ import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallbac
 import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/behaviours/links/link/link.js';
 import { initDirectionContextMenuCallback } from '/public/behaviours/links/direction/direction.js';
 import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
+import { initLinkDropCallback, initLinkMoveCallback } from '/public/behaviours/links/move/move.js';
 
 // labels
 import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback } from '/public/behaviours/labels/label/label.js'; 
@@ -114,8 +116,26 @@ function initEditor() {
 	
 	initActionable(contextMenu);
 	
-	initDragable([
-		() => contextMenu.destroy(),
+	var dragger = new Dragger(
+		[
+			() => contextMenu.destroy(),
+			initLinkMoveCallback()
+		],
+		[
+			initDragableDropCallback(transition),
+			initLinkDropCallback(transition),
+			initCompleteDragable(transition)
+		],
+		[
+			initDragableDragLocator()
+		],
+		[
+			initDragableDropLocator()
+		]);
+	
+	initDragable(dragger); 
+	
+	/*[
 		moveDragableMoveCallback,
 		initAutoConnectDragableMoveCallback(),
 		initLayoutDragableMoveCallback()
@@ -123,7 +143,7 @@ function initEditor() {
 		createMoveDragableDropCallback(transition),	
 		initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
 		initCompleteDragable(transition)
-	]);
+	]);*/
 	
 	initLinkable(linker);
 		
