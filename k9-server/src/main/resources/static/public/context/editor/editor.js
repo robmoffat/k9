@@ -52,6 +52,7 @@ import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCal
 import { initDirectionContextMenuCallback } from '/public/behaviours/links/direction/direction.js';
 import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
 import { initLinkDropCallback, initLinkMoveCallback } from '/public/behaviours/links/move/move.js';
+import { initLinkDropLocator } from '/public/behaviours/links/drop/drop.js';
 
 // labels
 import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback } from '/public/behaviours/labels/label/label.js'; 
@@ -131,7 +132,8 @@ function initEditor() {
 			initDragableSelectedDragLocator()
 		],
 		[
-			initDragableDropLocator()
+			initDragableDropLocator(),
+			initLinkDropLocator()
 		]);
 	
 	initDragable(dragger); 

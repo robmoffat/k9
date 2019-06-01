@@ -1,0 +1,8 @@
+
+.dropping [k9-indicator~=rect] {
+	fill: #b7c0fe44 !important;
+}
+
+.dropping [k9-indicator~=path] {
+	stroke: #b7c0feAA !important;
+}

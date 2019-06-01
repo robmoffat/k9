@@ -1,6 +1,7 @@
 @import url(/public/context/editor/grab.css);
 @import url(/public/context/editor/invisible.css);
 @import url(/public/context/editor/contradictions.css);
+@import url(/public/context/editor/dragable.css);
 
 /*
  Compose the functionality.

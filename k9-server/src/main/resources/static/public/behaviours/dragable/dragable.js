@@ -1,6 +1,5 @@
 import { getSVGCoords, getMainSvg } from '/public/bundles/screen.js';
 import { handleTransformAsStyle, getKite9Target, isConnected, isDiagram, getParentElement } from '/public/bundles/api.js';
-import { ensureCss } from '/public/bundles/css.js';
 import { getBeforeId } from '/public/bundles/ordering.js';
 
 
@@ -15,8 +14,6 @@ export function initDragable(dragger, selector, css) {
 	if (css == undefined) {
 		css = '/public/behaviours/dragable/dragable.css';
 	}
-	
-	ensureCss(css);
 	
 	window.addEventListener('load', function(event) {
 
@@ -97,8 +94,21 @@ export function initDragableDropLocator() {
 	
 	const svg = getMainSvg();
 	
+	var lastDropTarget = null;
+	var lastDragIds = null;
+	
+	function dragIds(dragTargets) {
+		return dragTargets
+			.map(dt => dt.getAttribute("id"))
+			.reduce((a,b) => a+","+b, "");
+	}
+	
 	function canDropHere(dragTarget, dropTarget) {
 		if (dropTarget == null) {
+			return false;
+		}
+		
+		if ((!isConnected(dropTarget)) && ((!isDiagram(dropTarget)))) {
 			return false;
 		}
 		
@@ -119,11 +129,21 @@ export function initDragableDropLocator() {
 				.reduce((a,b) => a&&b, true);
 		
 			if (ok) {
+				lastDragIds = dragIds(dragTargets);
+				lastDropTarget = dropTarget;
 				return [ dropTarget ];
-			} else {
+			} else if (isConnected(dropTarget)) {
 				dropTarget = getParentElement(dropTarget);
+			} else {
+				dropTarget = null;
 			}
 		}
+		
+		// if the drag targets are the same as before, we may be
+		// hovering over a link, so keep dropTarget the same.
+		if (lastDragIds == dragIds(dragTargets)) {
+			return [ lastDropTarget ]
+		} 
 		
 		return [ ];
 	}	

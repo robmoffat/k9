@@ -29,7 +29,7 @@
   </template>
   
    <template id="container-directed" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
-    <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="rect">
@@ -39,7 +39,7 @@
   </template>
   
   <template id="container-undirected" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
-    <back k9-indicator="path" style='kite9-usage: decal; kite9-type: svg; '>
+    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <contents />
