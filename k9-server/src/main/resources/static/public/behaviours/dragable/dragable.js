@@ -1,5 +1,5 @@
 import { getSVGCoords, getMainSvg } from '/public/bundles/screen.js';
-import { handleTransformAsStyle, getKite9Target, isConnected, getParentElement } from '/public/bundles/api.js';
+import { handleTransformAsStyle, getKite9Target, isConnected, isDiagram, getParentElement } from '/public/bundles/api.js';
 import { ensureCss } from '/public/bundles/css.js';
 import { getBeforeId } from '/public/bundles/ordering.js';
 
@@ -106,11 +106,7 @@ export function initDragableDropLocator() {
 		if (!out.includes("drop")) {
 			return false;
 		}
-//		
-//		if (isTerminator(dragTarget)) {
-//			return (isConnected(dropTarget));
-//		}
-//		
+
 		return true;
 	};
 
@@ -123,20 +119,23 @@ export function initDragableDropLocator() {
 				.reduce((a,b) => a&&b, true);
 		
 			if (ok) {
-				return dropTarget;
+				return [ dropTarget ];
 			} else {
 				dropTarget = getParentElement(dropTarget);
 			}
 		}
 		
-		return null;
+		return [ ];
 	}	
 }
 
 export function initDragableDropCallback(transition) {
 	
-	return function(dragTargets, evt, dropTarget) {
-		if (dropTarget) {
+	return function(dragTargets, evt, dropTargets) {
+		const connectedDropTargets = dropTargets.filter(t => isConnected(t) || isDiagram(t));
+		
+		if (connectedDropTargets.length == 1) {
+			const dropTarget = connectedDropTargets[0];
 			var beforeId = getBeforeId(dropTarget, evt, dragTargets);
 			Array.from(dragTargets).forEach(dt => {
 				if (isConnected(dt)) {

@@ -22,7 +22,7 @@ export class Dragger {
 		this.shapeLayer = null;
 		this.mouseDown = false;
 		this.delta = null;
-		this.dropTarget = null;
+		this.dropTargets = [];
 
 		// plugged-in functionality.
 		this.moveCallbacks = moveCallbacks;
@@ -148,33 +148,32 @@ export class Dragger {
 			
 			this.moveCallbacks.forEach(mc => mc(dragTargets, evt));
 			
-			var newDropTarget = null;
+			var newDropTargets = [];
 			this.dropLocators.forEach(dl => {
-				if (!newDropTarget) {
-					newDropTarget = dl(dragTargets, evt);
-				}
+				newDropTargets = newDropTargets.concat(dl(dragTargets, evt));
 			})
 			
-			if (newDropTarget != this.dropTarget) {
-				this.updateDropTarget(newDropTarget);
-			}
+			this.updateDropTargets(newDropTargets);
 		} 
 	}
 	
-	updateDropTarget(newDropTarget) {
-
-		if (newDropTarget) {
+	updateDropTargets(newDropTargets) {
+		
+		const leaving = this.dropTargets
+			.filter(t => newDropTargets.indexOf(t) == -1)
+			.forEach(t => t.classList.remove("dropping"));
+		
+		const joining = newDropTargets
+			.filter(t => this.dropTargets.indexOf(t) == -1)
+			.forEach(t => t.classList.add("dropping"));
+		
+		if (newDropTargets.length > 0) {
 			this.svg.style.cursor = "grabbing";
-			newDropTarget.classList.add("dropping");
 		} else {
 			this.svg.style.cursor = "not-allowed";
 		}
 		
-		if (this.dropTarget) {
-			this.dropTarget.classList.remove("dropping");
-		} 
-		
-		this.dropTarget = newDropTarget;
+		this.dropTargets = newDropTargets;
 	}
 
 	endMove(reset) {
@@ -204,7 +203,7 @@ export class Dragger {
 			this.svg.style.cursor = null;
 			this.shapeLayer = null;
 			this.dragOrigin = null;
-			this.dropTarget.classList.remove("dropping")
+			this.dropTargets.forEach(t => t.classList.remove("dropping"));
 		}
 	}
 	
@@ -214,12 +213,12 @@ export class Dragger {
 		if (this.state) {
 			const dragTargets = this.state.map(s => s.dragTarget);
 			
-			if (this.dropTarget) {
+			if (this.dropTargets.length > 0) {
 				var result = this.dropCallbacks
-					.map(dc => dc(dragTargets, evt, this.dropTarget))
+					.map(dc => dc(dragTargets, evt, this.dropTargets))
 					.reduce((a,b) => (a | b), false);
 				this.endMove(false);
-				this.dropTarget = undefined;
+				this.dropTargets = [];
 			} else {
 				this.endMove(true);			
 			}

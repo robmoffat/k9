@@ -209,3 +209,8 @@ export function isConnected(v) {
 	return (att == undefined ? "" : att).includes("connected");
 }
 
+export function isDiagram(v) {
+	const att = v.getAttribute("k9-info");
+	return (att == undefined ? "" : att).includes("diagram");
+}
+
