@@ -13,18 +13,18 @@ var moveLinks = [];
 
 const SVG_PATH_REGEX = /[MLQTCSAZ][^MLQTCSAZ]*/gi;
 
-export function initLinkDropCallback(transition) {
+export function initTerminatorDropCallback(transition) {
 	
 
-	return function(dragTargets, evt, dropTarget) {
-		if (dropTarget) {
+	return function(dragTargets, evt, dropTargets) {
+		if (dropTargets.length == 1) {
 			Array.from(dragTargets).forEach(dt => {
 				if (isTerminator(dt)) {
 					transition.push(  {
 						type: 'SetAttr',
 						fragmentId: dt.getAttribute('id'),
 						name: 'reference',
-						value: dropTarget.getAttribute('id')
+						value: dropTargets[0].getAttribute('id')
 					});
 				}	
 			});
@@ -38,7 +38,7 @@ export function initLinkDropCallback(transition) {
 /**
  * This shows the user where links will go.
  */
-export function initLinkMoveCallback() {
+export function initTerminatorMoveCallback() {
 
 	return function(dragTargets, evt) {
 	

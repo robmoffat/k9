@@ -26,8 +26,8 @@ public class CopyLink extends Copy {
 	@Override
 	public ADL applyCommand(ADL adl) throws CommandException {
 		ensureNotNull(this, "create-link", "uri", uriStr);
-		ensureNotNull(this, "create-link", "from", fromId);
-		ensureNotNull(this, "create-link", "to", toId);
+		ensureNotNull(this, "create-link", "fromId", fromId);
+		ensureNotNull(this, "create-link", "toId", toId);
 		
 		try {
 			ADLDocument doc = adl.getAsDocument();
