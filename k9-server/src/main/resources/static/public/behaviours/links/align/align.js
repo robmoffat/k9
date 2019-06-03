@@ -40,8 +40,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 					toUseId = c.getAttribute("id");
 					// check to see if we need to reverse the align
 					const parsed = parseInfo(c);
-					const link = parsed['link'];
-					const ids = link.split(" ");
+					const ids = parsed['link'];
 					const reversed = ids[0] == to.getAttribute("id");
 					direction = reversed ? reverseDirection(direction) : direction;
 				}

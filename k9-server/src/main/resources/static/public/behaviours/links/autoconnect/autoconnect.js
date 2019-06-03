@@ -67,8 +67,7 @@ export function initAutoConnectDragableDropCallback(transition, templateUri) {
 		getExistingConnections(id).forEach(e => {
 			const parsed = parseInfo(e);
 			const d = parsed['direction'];
-			const link = parsed['link'];
-			const ids = link.split(" ");
+			const ids = parsed['link'];
 			const reversed = ids[0] == id;
 			const dUse = reversed ? reverseDirection(d1) : d1;
 			
@@ -111,8 +110,7 @@ export function initAutoConnectDragableDropCallback(transition, templateUri) {
 			} else {
 				const firstLink = existingLinks[0];
 				const parsed = parseInfo(firstLink);
-				const link = parsed['link'];
-				const ids = link.split(" ");
+				const ids = parsed['link'];
 				const reversed = ids[0] == id_to;
 				const direction = reversed ? link_d : reverseDirection(link_d);
 				transition.push({

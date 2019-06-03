@@ -44,7 +44,7 @@ export function initLinkDropCallback(transition) {
 		const drop = connectionDropTargets[0];
 		const drag = dragTargets[0];
 		const info = parseInfo(drop);
-		const ends = info['link'].split(" ");
+		const ends = info['link'];
 		
 		const dragId = drag.getAttribute("id");
 		const dropId = drop.getAttribute("id");

@@ -18,7 +18,7 @@ import { Dragger } from '/public/classes/dragger/dragger.js';
 import { initActionable } from '/public/behaviours/actionable/actionable.js' 
 
 // dragable
-import { initDragable, initCompleteDragable, initDragableEventDragLocator, initDragableDropLocator, initDragableDropCallback, initDragableSelectedDragLocator } from '/public/behaviours/dragable/dragable.js' 
+import { initDragable, initCompleteDragable, initDragableDropLocator, initDragableDropCallback, initDragableDragLocator } from '/public/behaviours/dragable/dragable.js' 
 
 // selectable
 import { initSelectable } from '/public/behaviours/selectable/selectable.js';
@@ -59,6 +59,9 @@ import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback
 
 // text
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
+
+// grid
+import { initCellDropLocator, initCellDragLocator } from '/public/behaviours/grid/cell/cell.js';
 
 
 var initialized = false;
@@ -120,34 +123,26 @@ function initEditor() {
 	var dragger = new Dragger(
 		[
 			() => contextMenu.destroy(),
-			initTerminatorMoveCallback()
+			initTerminatorMoveCallback(),
+			initAutoConnectDragableMoveCallback(),
+			initLayoutDragableMoveCallback()
 		],
 		[
 			initDragableDropCallback(transition),
 			initLinkDropCallback(transition),
 			initTerminatorDropCallback(transition),
+			initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
 			initCompleteDragable(transition)
 		],
 		[
-			initDragableEventDragLocator(),
-			initDragableSelectedDragLocator()
+			initCellDragLocator(initDragableDragLocator()),
 		],
 		[
-			initDragableDropLocator(),
+			initCellDropLocator(initDragableDropLocator()),
 			initLinkDropLocator()
 		]);
 	
 	initDragable(dragger); 
-	
-	/*[
-		moveDragableMoveCallback,
-		initAutoConnectDragableMoveCallback(),
-		initLayoutDragableMoveCallback()
-	], [
-		createMoveDragableDropCallback(transition),	
-		initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
-		initCompleteDragable(transition)
-	]);*/
 	
 	initLinkable(linker);
 		

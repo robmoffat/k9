@@ -42,45 +42,19 @@ function basicIsDragable(v) {
 /**
  * Returns the objects that are selected being dragged
  */
-export function initDragableSelectedDragLocator(selector) {
+export function initDragableDragLocator(selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return Array.from(document.querySelectorAll("[id][k9-ui~='drag'].selected"))
+			return Array.from(document.querySelectorAll("[id][k9-ui~='drag'].selected, [id][k9-ui~='drag'].mouseover"))
 		}
 	}
 	
 	return function() {
-		return selector();
+		var out = selector();
+		return out;
 	}
  	
-}
-
-/**
- * Returns the object under the pointer being dragged.
- */
-export function initDragableEventDragLocator(isDragable) {
-
-	if (isDragable == undefined) {
-		isDragable = basicIsDragable;
-	}
-	
-	return function(evt) {
-		var v = evt.currentTarget;
-		
-		while (v) {
-			if (isDragable(v)) {
-				return  [ v ];
-			} else if (v.tagName == 'svg') {
-				return [];
-			} 
-			
-			v = v.parentNode;
-		}
-
-		return [];
-
-	}
 }
 
 export function initCompleteDragable(transition) {
@@ -105,6 +79,10 @@ export function initDragableDropLocator() {
 	
 	function canDropHere(dragTarget, dropTarget) {
 		if (dropTarget == null) {
+			return false;
+		}
+		
+		if (dragTarget==dropTarget) {
 			return false;
 		}
 		

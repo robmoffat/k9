@@ -34,6 +34,7 @@ export class ContextMenu {
 			ctxMenu = document.createElement("div");
 			ctxMenu.setAttribute("id", "contextMenu");
 			ctxMenu.setAttribute("class", "contextMenu");
+			//ctxMenu.addEventListener("click", () => this.destroy());
 			
 			const coords = getHtmlCoords(event);
 			

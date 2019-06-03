@@ -16,10 +16,9 @@ export function hasLastSelected(e, onlyLastSelected) {
 export function getExistingConnections(id1, id2) {
 	return Array.from(document.querySelectorAll("div.main svg [id][k9-info*='link:']")).filter(e => {
 		const parsed = parseInfo(e);
-		const link = parsed['link'];
+		const ids = parsed['link'];
 		
-		if (link) {
-			const ids = link.split(" ");
+		if (ids) {
 			
 			if (id2) {
 				return ((ids[0] == id1) && (ids[1] == id2)) || 
@@ -58,7 +57,14 @@ export function parseInfo(t) {
 			const colon = p.indexOf(":");
 			if (colon > -1) {
 				const name = p.substring(0, colon).trim();
-				const value = p.substring(colon+1).trim();
+				var value = p.substring(colon+1).trim();
+				
+				if (value.startsWith("[") && value.endsWith("]")) {
+					value = value.substring(1, value.length-1)
+						.split(",")
+						.map(s => parseFloat(s.trim()));
+				}
+				
 				out[name]=value;
 			}
 		});

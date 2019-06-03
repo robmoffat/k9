@@ -55,8 +55,7 @@ export function getAlignElementsAndDirections(id1, id2) {
 	 	.map(e => {
 	 		const parsed = parseInfo(e);
 	 		const d = parsed['direction'];
-	 		const link = parsed['link'];
-	 		const ids = link.split(" ");
+	 		const ids = parsed['link'];
 	 		const reversed = ids[0] == id2;	
 	 		return { 
 	 			element: e,
