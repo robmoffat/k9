@@ -43,7 +43,7 @@ import { createUndoCallback, createRedoCallback } from '/public/behaviours/undoa
 // Containers
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';
 import { initContainPaletteCallback, initContainContextMenuCallback } from '/public/behaviours/containers/contain/contain.js';
-import { initLayoutDragableMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/behaviours/containers/layout/layout.js';
+import { initLayoutMoveCallback, initLayoutContextMenuCallback, initCellCreator } from '/public/behaviours/containers/layout/layout.js';
 
 // Links
 import { initLinkable, updateLink } from '/public/behaviours/links/linkable.js';
@@ -61,7 +61,7 @@ import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 // grid
-import { initCellDropLocator, initCellDragLocator } from '/public/behaviours/grid/cell/cell.js';
+import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
 
 
 var initialized = false;
@@ -125,10 +125,10 @@ function initEditor() {
 			() => contextMenu.destroy(),
 			initTerminatorMoveCallback(),
 			initAutoConnectDragableMoveCallback(),
-			initLayoutDragableMoveCallback()
+			initCellMoveCallback(initLayoutMoveCallback())
 		],
 		[
-			initDragableDropCallback(transition),
+			initCellDropCallback(transition, initDragableDropCallback(transition)),
 			initLinkDropCallback(transition),
 			initTerminatorDropCallback(transition),
 			initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),

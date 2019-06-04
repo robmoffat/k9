@@ -25,7 +25,7 @@ function determineSelected(targets) {
 	targets.forEach(t => {
 		const info = parseInfo(t);
 		if (info['grid-x']) {
-			const xr = info['grid-x'];
+			const xr = info['grid-y'];
 			for (var i = xr[0]; i < xr[1]; i++) {
 				rows.add(i);
 			}
@@ -46,15 +46,15 @@ function determineSelected(targets) {
 		return NORMAL;
 	} else if (others) {
 		return MIXED;
-//	} else if (inTables.size == 1) {
-//		// cells from a single table
-//		const table = inTables.entries().next().value[0];
-//		const size = parseInfo(table)['grid-size'];
-//		const allRows = containsAll(rows, size[1]);
-//
-//		if (allRows && isSquare) {
-//			return COLUMNS;
-//		} 
+	} else if (inTables.size == 1) {
+		// cells from a single table
+		const table = inTables.entries().next().value[0];
+		const size = parseInfo(table)['grid-size'];
+		const allRows = containsAll(rows, size[1]);
+
+		if (allRows) {
+			return COLUMNS;
+		} 
 	}	
 	
 	return CELLS;
@@ -121,6 +121,54 @@ export function initCellDropLocator(mainDropLocator) {
 			case CELLS:
 				return dropTargets.map(dt => getParentElement(dt));
 			}
+		}
+	}
+}
+
+export function initCellDropCallback(transition, mainCallback) {
+	
+	return function(dragTargets, evt, dropTargets) {
+		
+		switch (cellsInType) {
+		case COLUMNS:
+			const connectedDropTargets = dropTargets.filter(t => isConnected(t) || isDiagram(t));
+			
+			if (connectedDropTargets.length == 1) {
+				const dropTarget = connectedDropTargets[0];
+				var beforeId = getBeforeId(dropTarget, evt, dragTargets);
+				Array.from(dragTargets).forEach(dt => {
+					if (isConnected(dt)) {
+						transition.push( {
+							type: 'Move',
+							fragmentId: dropTarget.getAttribute('id'),
+							moveId: dt.getAttribute('id'),
+							beforeFragmentId: beforeId
+						});
+					}	
+				});
+				return true;
+			} 
+		case CELLS:
+			break;
+		default:
+			return mainCallback(dragTargets, evt, dropTargets);
+		}
+	}
+	
+}
+
+export function initCellMoveCallback(mainCallback) {
+	
+	return function(dragTargets, event, dropTargets) {
+		switch (cellsInType) {
+		case COLUMNS:
+			mainCallback(dragTargets, event, dropTargets, false);
+			break;
+		case CELLS:
+			mainCallback(dragTargets, event, dropTargets, true);
+			break;
+		default:
+			return mainCallback(dragTargets, evt, dropTargets);
 		}
 	}
 	

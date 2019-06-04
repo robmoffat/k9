@@ -146,14 +146,15 @@ export class Dragger {
 			
 			const dragTargets = this.state.map(s => s.dragTarget)
 			
-			this.moveCallbacks.forEach(mc => mc(dragTargets, evt));
-			
 			var newDropTargets = [];
 			this.dropLocators.forEach(dl => {
 				newDropTargets = newDropTargets.concat(dl(dragTargets, evt));
 			})
 			
 			this.updateDropTargets(newDropTargets);
+
+			this.moveCallbacks.forEach(mc => mc(dragTargets, evt, this.dropTargets));
+			
 		} 
 	}
 	

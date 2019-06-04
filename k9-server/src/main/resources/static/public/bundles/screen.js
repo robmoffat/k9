@@ -44,3 +44,14 @@ export function getElementPageBBox(e) {
 		height: bbox.height
 	}
 }
+
+export function getElementsPageBBox(elements) {
+	return elements
+		.map(e => getElementPageBBox(e))
+		.reduce((a, b) => { return {
+			x: Math.min(a.x, b.x),
+			y: Math.min(a.y, b.y),
+			width: Math.max(a.x + a.width, b.x + b.width) - Math.min(a.x, b.x),
+			height: Math.max(a.y + a.height, b.y + b.height) - Math.min(a.y, b.y)
+		}});
+}

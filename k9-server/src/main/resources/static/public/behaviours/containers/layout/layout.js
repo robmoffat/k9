@@ -1,4 +1,4 @@
-import { getKite9Target, number, createUniqueId, hasLastSelected } from '/public/bundles/api.js';
+import { getKite9Target, number, createUniqueId, hasLastSelected, isConnected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
 function getLayout(e) {
@@ -193,7 +193,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 }
 
-export function initLayoutDragableMoveCallback() {
+export function initLayoutMoveCallback() {
 
 	var bar = null;
 
@@ -235,20 +235,27 @@ export function initLayoutDragableMoveCallback() {
 		bar.setAttribute("d", "M" + fx + " " + fy + " L " + tx + " " + ty);
 	}
 
-	return function (dragTargets, event) {
-
-		const dropInto = getKite9Target(event.target);
-		const layout = getLayout(dropInto).toUpperCase();
-		if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL")) {
-			// draw the horizontal bar
-			updateBar(event, dropInto, true);
-		} else if ((layout == 'LEFT') || (layout == 'RIGHT') || (layout == 'HORIZONTAL')) {
-			updateBar(event, dropInto, false);
-		} else if (layout == 'GRID') {
-			updateBar(event, dropInto, true);
-		} else {
-			clearBar();
+	return function (dragTargets, event, dropTargets, barDirectionOverrideHoriz) {
+		var connectedDropTargets = dropTargets.filter(dt => isConnected(dt));
+		
+		if (connectedDropTargets.length == 1) {
+			const dropInto = connectedDropTargets[0];
+			const layout = getLayout(dropInto).toUpperCase();
+			if (barDirectionOverrideHoriz != undefined) {
+				updateBar(event, dropInto, barDirectionOverrideHoriz);
+				return;
+			} else if ((layout == 'UP') || (layout == 'DOWN') || (layout == "VERTICAL")) {
+				// draw the horizontal bar
+				updateBar(event, dropInto, true);
+				return;
+			} else if ((layout == 'LEFT') || (layout == 'RIGHT') || (layout == 'HORIZONTAL')) {
+				updateBar(event, dropInto, false);
+				return;
+			} 
 		}
+		
+		clearBar();
+
 	}
 
 }

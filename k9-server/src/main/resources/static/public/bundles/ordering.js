@@ -8,7 +8,7 @@ function doSort(container, horiz, c, ignore) {
 		.filter(e => e.hasAttribute("k9-info"))
 		.map((e, i) => {
 			const box = getElementPageBBox(e);
-			const pos = horiz ? (box.x + box.width) : (box.y + box.height);
+			const pos = horiz ? (box.x + box.width/2) : (box.y + box.height/2);
 			const val = c < 0 ? (0 - c - pos) : (pos - c);
 			const out = {
 				p: val,
@@ -42,7 +42,7 @@ export function getBeforeId(container, evt, ignore) {
 		case 'DOWN':
 		case 'VERTICAL':
 		case 'GRID': 
-			return doSort(container, false, pos.y, ignore);
+			return doSort(container, true, pos.x, ignore);
 		case 'LEFT':
 			return doSort(container, true, -pos.x, ignore);
 		case 'UP':
