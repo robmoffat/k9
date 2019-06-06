@@ -11,7 +11,7 @@
     <contents />
   </template>
   
-  <template id="cell" k9-ui="drag delete cascade drop insert layout copy invisible replace-cell" k9-palette="replace-cell">
+  <template id="cell" k9-ui="drag delete cascade orphan drop insert layout copy invisible replace-cell" k9-palette="replace-cell">
     <back />
     <contents />
   </template>

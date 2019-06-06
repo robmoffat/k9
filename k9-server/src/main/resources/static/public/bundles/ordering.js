@@ -1,4 +1,4 @@
-import { parseInfo} from "/public/bundles/api.js";
+import { parseInfo, getContainerChildren } from "/public/bundles/api.js";
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 
 function doSort(contents, horiz, c, ignore) {
@@ -31,11 +31,7 @@ export function getBefore(container, evt, ignore) {
 	const layout = info.layout;
 	const pos = getSVGCoords(evt);
 	
-	const allChildren = Array.from(container.children)
-		.filter(e => ignore.indexOf(e) == -1)
-		.filter(e => e.hasAttribute("id"))
-		.filter(e => e.hasAttribute("k9-info"));
-
+	const allChildren = getContainerChildren(container, ignore);
 
 	switch (layout) {
 		case 'null':

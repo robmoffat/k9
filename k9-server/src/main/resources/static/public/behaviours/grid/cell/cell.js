@@ -1,4 +1,4 @@
-import { parseInfo, getParentElement, isConnected, isDiagram } from '/public/bundles/api.js';
+import { parseInfo, getParentElement, isConnected, isDiagram, getContainerChildren } from '/public/bundles/api.js';
 import { drawBar, getBefore, clearBar } from '/public/bundles/ordering.js';
 import { getElementPageBBox } from '/public/bundles/screen.js';
 
@@ -8,14 +8,15 @@ import { getElementPageBBox } from '/public/bundles/screen.js';
 const NORMAL = 0;		// not cells, not dropping into tables.
 const MIXED = 1;		// mix of cells and not-cells.		
 const CELLS = 2;		// just cells, possibly from multiple tables
-const COLUMNS = 3;		// whole columns of a single table selected.
+const RECT = 3;			// rectangular area of table selected
 const TABLES = 4;		// just tables selected
 
 /**
  * For the selected elements, returns one of the values above.
  */
 function determineSelected(targets) {
-	var cols = {}
+	var cols = new Set();
+	var rows = new Set();
 	var inTables = new Set();
 	var others = false;
 	var cells  = 0;
@@ -28,17 +29,11 @@ function determineSelected(targets) {
 			const yc = info['grid-x'];
 			
 			for (var x = yc[0]; x < yc[1]; x++) {
-				// ensure row
-				var row = cols[x];
-				if (row == undefined) {
-					row = new Set();
-					cols[x] = row;
-				}
+				cols.add(x);
+			}
 				
-				// populate row
-				for (var y = xr[0]; y < xr[1]; y++) {
-					row.add(y);
-				}
+			for (var y = xr[0]; y < xr[1]; y++) {
+				row.add(y);
 			}
 			
 			inTables.add(getParentElement(t));
@@ -64,7 +59,7 @@ function determineSelected(targets) {
 		const incompleteCols = Object.values(cols).map(c => c.size).filter(c => c < size[1]).length;
 
 		if (incompleteCols == 0) {
-			return COLUMNS;
+			return RECT;
 		} 
 	}	
 	
@@ -172,7 +167,9 @@ export function initCellMoveCallback(mainCallback) {
 			const box = getElementPageBBox(before);
 			x = box.x;
 		} else {
-			const box = getElementPageBBox(dropTarget);
+			const allChildren = getContainerChildren(dropTarget, dragTargets);
+			const lastChild = allChildren[allChildren.length-1];
+			const box = getElementPageBBox(lastChild);
 			x = box.x + box.width;
 		}
 		
@@ -196,10 +193,12 @@ export function initCellMoveCallback(mainCallback) {
 			ye = box.y + box.height;
 			x = box.x;
 		} else {
-			const box = getElementPageBBox(dropTarget);
+			const allChildren = getContainerChildren(dropTarget, dragTargets);
+			const lastChild = allChildren[allChildren.length-1];
+			const box = getElementPageBBox(lastChild);
+			x = box.x + box.width;
 			ys = box.y;
 			ye = box.y + box.height;
-			x = box.x + box.width;
 		}
 		
 		drawBar(x, ys, x, ye);
@@ -223,23 +222,58 @@ export function initCellMoveCallback(mainCallback) {
 
 export function initCellDropCallback(transition, mainCallback) {
 	
+	function columnFindBefore(col, row, dt, allChildren) {
+		for (var i = 0; i < allChildren.length; i++) {
+			// relying on children being in order
+			const cand = allChildren[i];
+			const info = parseInfo(cand);
+			const dcol = info['grid-x'][0];
+			const drow = info['grid-y'][0];
+			if (drow > row) {
+				return cand.getAttribute("id");
+			} else if (drow == row) {
+				if (dcol == col) {
+					return cand.getAttribute("id");
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	return function(dragTargets, evt, dropTargets) {
 		
 		switch (cellsInType) {
 		case COLUMNS:
-			break;
+			const dropTargetC = mainDropTarget(dropTargets);
+			const col = before ? parseInfo(before)['grid-x'][0] : parseInfo(dropTarget)['grid-size'][0];
+			const allChildren = getContainerChildren(dropTarget, dragTargets);
+			var row = 0;
+			dragTargets.forEach(dt => {
+				transition.push( {
+					type: 'Move',
+					fragmentId: dropTargetC.getAttribute('id'),
+					moveId: dt.getAttribute('id'),
+					beforeFragmentId: columnFindBefore(col, row++, dt, allChildren)
+				});
+				
+			});
+			
+			before = null;
+			clearBar();
+			return true;
+			
 		case CELLS:
 			const dropTarget = mainDropTarget(dropTargets);
-			var beforeId = before == null ? null : before.getAttribute("id");
-			Array.from(dragTargets).forEach(dt => {
-				if (isConnected(dt)) {
-					transition.push( {
-						type: 'Move',
-						fragmentId: dropTarget.getAttribute('id'),
-						moveId: dt.getAttribute('id'),
-						beforeFragmentId: beforeId
-					});
-				}	
+			const beforeId = before == null ? null : before.getAttribute("id");
+			dragTargets.forEach(dt => {
+				transition.push( {
+					type: 'Move',
+					fragmentId: dropTarget.getAttribute('id'),
+					moveId: dt.getAttribute('id'),
+					beforeFragmentId: beforeId
+				});
+				
 			});
 			
 			before = null;

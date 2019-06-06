@@ -220,3 +220,11 @@ export function isDiagram(v) {
 	return (att == undefined ? "" : att).includes("diagram");
 }
 
+
+export function getContainerChildren(container, ignore = []) {
+	const allChildren = Array.from(container.children)
+	.filter(e => ignore.indexOf(e) == -1)
+	.filter(e => e.hasAttribute("id"))
+	.filter(e => e.hasAttribute("k9-info"));
+	return allChildren;
+}
