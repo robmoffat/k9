@@ -176,7 +176,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 						x: localFromTranslate.x + parentFromTranslate.x - parentToTranslate.x,
 						y: localFromTranslate.y + parentFromTranslate.y - parentToTranslate.y
 					};
-					console.log("from moving" + newTranslate);
+					//console.log("from moving" + newTranslate);
 					inFrom.insertBefore(missingFrom, fromElement);
 					missingFrom.setAttribute("transform", "translate(" + newTranslate.x + "," + newTranslate.y + ")");
 					reconcileElement(missingFrom, toElement, toDelete, tl);
@@ -184,7 +184,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 					fi++;
 				} else {
 					// to element is new	
-					console.log("creating new element " + toElement.tagName)
+					//console.log("creating new element " + toElement.tagName)
 					const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
 					inFrom.insertBefore(newFromElement, fromElement);
 					reconcileElement(newFromElement, toElement, toDelete, tl);
@@ -197,7 +197,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 				if ((fromElement == null) || (fromElement.tagName != toElement.tagName) || (fromElement.hasAttribute("id"))) {
 					// treat as an insertion.
-					console.log("creating new element " + toElement.tagName)
+					//console.log("creating new element " + toElement.tagName)
 					const newFromElement = document.createElementNS(toElement.namespaceURI, toElement.tagName);
 					inFrom.insertBefore(newFromElement, fromElement);
 					reconcileElement(newFromElement, toElement, toDelete, tl);

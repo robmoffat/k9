@@ -1,5 +1,6 @@
 import { getKite9Target, number, createUniqueId, hasLastSelected, isConnected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
+import { drawBar, clearBar } from  '/public/bundles/ordering.js';
 
 function getLayout(e) {
 	if (e==null) {
@@ -188,21 +189,10 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 			img.addEventListener("click", handleClick);
 		}
 	};
-
-
-
 }
 
+
 export function initLayoutMoveCallback() {
-
-	var bar = null;
-
-	function clearBar() {
-		if (bar != null) {
-			bar.parentNode.removeChild(bar);
-			bar = null;
-		}
-	}
 
 	function updateBar(event, inside, horiz) {
 		var fx, fy, tx, ty;
@@ -222,19 +212,9 @@ export function initLayoutMoveCallback() {
 			fy = contain.y;
 			ty = contain.y + contain.height;
 		}
-
-		if (bar == null) {
-			var svg = getMainSvg();
-			bar = document.createElementNS("http://www.w3.org/2000/svg", "path");
-			bar.style.stroke = '#b7c0fe';
-			bar.style.strokeWidth = '6px';
-			bar.setAttributeNS(null, 'pointer-events', 'none');
-			svg.appendChild(bar);
-		}
-
-		bar.setAttribute("d", "M" + fx + " " + fy + " L " + tx + " " + ty);
+		drawBar(fx, fy, tx, ty);
 	}
-
+	
 	return function (dragTargets, event, dropTargets, barDirectionOverrideHoriz) {
 		var connectedDropTargets = dropTargets.filter(dt => isConnected(dt));
 		

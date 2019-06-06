@@ -1,4 +1,3 @@
-import { SHA1 } from "/public/bundles/sha1.js";
 import { hasLastSelected } from "/public/bundles/api.js";
 
 

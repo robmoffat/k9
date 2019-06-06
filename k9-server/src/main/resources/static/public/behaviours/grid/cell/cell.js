@@ -1,4 +1,7 @@
-import { parseInfo, getParentElement } from '/public/bundles/api.js';
+import { parseInfo, getParentElement, isConnected, isDiagram } from '/public/bundles/api.js';
+import { drawBar, getBefore, clearBar } from '/public/bundles/ordering.js';
+import { getElementPageBBox } from '/public/bundles/screen.js';
+
 
 // defines different types of drag we can do, based on the 
 // elements being dragged.
@@ -8,15 +11,11 @@ const CELLS = 2;		// just cells, possibly from multiple tables
 const COLUMNS = 3;		// whole columns of a single table selected.
 const TABLES = 4;		// just tables selected
 
-function containsAll(numbers, range) {
-	const notIncluded = Array.from(new Array(range).keys())
-		.filter(k => !numbers.has(k));
-	
-	return notIncluded.length == 0;
-}
-
+/**
+ * For the selected elements, returns one of the values above.
+ */
 function determineSelected(targets) {
-	var rows = new Set();
+	var cols = {}
 	var inTables = new Set();
 	var others = false;
 	var cells  = 0;
@@ -26,8 +25,20 @@ function determineSelected(targets) {
 		const info = parseInfo(t);
 		if (info['grid-x']) {
 			const xr = info['grid-y'];
-			for (var i = xr[0]; i < xr[1]; i++) {
-				rows.add(i);
+			const yc = info['grid-x'];
+			
+			for (var x = yc[0]; x < yc[1]; x++) {
+				// ensure row
+				var row = cols[x];
+				if (row == undefined) {
+					row = new Set();
+					cols[x] = row;
+				}
+				
+				// populate row
+				for (var y = xr[0]; y < xr[1]; y++) {
+					row.add(y);
+				}
 			}
 			
 			inTables.add(getParentElement(t));
@@ -50,9 +61,9 @@ function determineSelected(targets) {
 		// cells from a single table
 		const table = inTables.entries().next().value[0];
 		const size = parseInfo(table)['grid-size'];
-		const allRows = containsAll(rows, size[1]);
+		const incompleteCols = Object.values(cols).map(c => c.size).filter(c => c < size[1]).length;
 
-		if (allRows) {
+		if (incompleteCols == 0) {
 			return COLUMNS;
 		} 
 	}	
@@ -114,10 +125,10 @@ export function initCellDropLocator(mainDropLocator) {
 			switch (cellsOutType) {
 			case NORMAL:
 			case MIXED:
-			case COLUMNS:
 				return [];
 			case TABLES:
 				return dropTargets;
+			case COLUMNS:
 			case CELLS:
 				return dropTargets.map(dt => getParentElement(dt));
 			}
@@ -125,48 +136,116 @@ export function initCellDropLocator(mainDropLocator) {
 	}
 }
 
+function mainDropTarget(dropTargets) {
+	const connectedDropTargets = dropTargets.filter(t => isConnected(t) || isDiagram(t));
+	if (connectedDropTargets.length == 1) {
+		return connectedDropTargets[0];
+	} else {
+		return null;
+	}
+}
+
+/**
+ * These keeps track of whereabouts we are going to drop.
+ */
+var before;
+
+/**
+ * Handles the drawing of the bar when the layout is grid.
+ */
+export function initCellMoveCallback(mainCallback) {
+	
+	function columnBar(dragTargets, event, dropTargets) {
+		const dropTarget = mainDropTarget(dropTargets);
+		
+		if (dropTarget == null) {
+			clearBar();
+			return;
+		}
+		
+		before = getBefore(dropTarget, event, dragTargets);
+		const mainBox = getElementPageBBox(dropTarget);
+
+		var x;
+		var ys = mainBox.y, ye = mainBox.y+mainBox.height;
+		if (before != null) {
+			const box = getElementPageBBox(before);
+			x = box.x;
+		} else {
+			const box = getElementPageBBox(dropTarget);
+			x = box.x + box.width;
+		}
+		
+		drawBar(x, ys, x, ye);
+	}
+	
+	function cellBar(dragTargets, event, dropTargets) {
+		const dropTarget = mainDropTarget(dropTargets);
+		
+		if (dropTarget == null) {
+			clearBar();
+			return;
+		}
+		
+		before = getBefore(dropTarget, event, dragTargets);
+		var x;
+		var ys, ye;
+		if (before != null) {
+			const box = getElementPageBBox(before);
+			ys = box.y;
+			ye = box.y + box.height;
+			x = box.x;
+		} else {
+			const box = getElementPageBBox(dropTarget);
+			ys = box.y;
+			ye = box.y + box.height;
+			x = box.x + box.width;
+		}
+		
+		drawBar(x, ys, x, ye);
+	}
+	
+	return function(dragTargets, event, dropTargets) {
+		switch (cellsInType) {
+		case COLUMNS:
+			columnBar(dragTargets, event, dropTargets);
+			break;
+		case CELLS:
+			cellBar(dragTargets, event, dropTargets);
+			break;
+		default:
+			return mainCallback(dragTargets, event, dropTargets);
+		}
+	}
+	
+}
+
+
 export function initCellDropCallback(transition, mainCallback) {
 	
 	return function(dragTargets, evt, dropTargets) {
 		
 		switch (cellsInType) {
 		case COLUMNS:
-			const connectedDropTargets = dropTargets.filter(t => isConnected(t) || isDiagram(t));
+			break;
+		case CELLS:
+			const dropTarget = mainDropTarget(dropTargets);
+			var beforeId = before == null ? null : before.getAttribute("id");
+			Array.from(dragTargets).forEach(dt => {
+				if (isConnected(dt)) {
+					transition.push( {
+						type: 'Move',
+						fragmentId: dropTarget.getAttribute('id'),
+						moveId: dt.getAttribute('id'),
+						beforeFragmentId: beforeId
+					});
+				}	
+			});
 			
-			if (connectedDropTargets.length == 1) {
-				const dropTarget = connectedDropTargets[0];
-				var beforeId = getBeforeId(dropTarget, evt, dragTargets);
-				Array.from(dragTargets).forEach(dt => {
-					if (isConnected(dt)) {
-						transition.push( {
-							type: 'Move',
-							fragmentId: dropTarget.getAttribute('id'),
-							moveId: dt.getAttribute('id'),
-							beforeFragmentId: beforeId
-						});
-					}	
-				});
-				return true;
-			} 
-		case CELLS:
-			break;
-		default:
-			return mainCallback(dragTargets, evt, dropTargets);
-		}
-	}
-	
-}
+			before = null;
+			clearBar();
+			return true;
 
-export function initCellMoveCallback(mainCallback) {
-	
-	return function(dragTargets, event, dropTargets) {
-		switch (cellsInType) {
-		case COLUMNS:
-			mainCallback(dragTargets, event, dropTargets, false);
-			break;
-		case CELLS:
-			mainCallback(dragTargets, event, dropTargets, true);
-			break;
 		default:
 			return mainCallback(dragTargets, evt, dropTargets);
 		}
