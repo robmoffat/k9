@@ -8,8 +8,11 @@ import { getElementPageBBox } from '/public/bundles/screen.js';
 const NORMAL = 0;		// not cells, not dropping into tables.
 const MIXED = 1;		// mix of cells and not-cells.		
 const CELLS = 2;		// just cells, possibly from multiple tables
-const RECT = 3;			// rectangular area of table selected
+const RECT = 3 			// a rectangle of cells from one table.
 const TABLES = 4;		// just tables selected
+
+var cellsInType;
+var rectDimensions;
 
 /**
  * For the selected elements, returns one of the values above.
@@ -33,7 +36,7 @@ function determineSelected(targets) {
 			}
 				
 			for (var y = xr[0]; y < xr[1]; y++) {
-				row.add(y);
+				rows.add(y);
 			}
 			
 			inTables.add(getParentElement(t));
@@ -47,26 +50,22 @@ function determineSelected(targets) {
 	});
 	
 	if ((inTables.size == 0) && (selectedTables.size > 0)) {
-		return TABLES;
+		return {shape: TABLES };
 	} else if (inTables.size == 0) {
-		return NORMAL;
+		return {shape: NORMAL };
 	} else if (others) {
-		return MIXED;
+		return {shape: MIXED };
 	} else if (inTables.size == 1) {
-		// cells from a single table
-		const table = inTables.entries().next().value[0];
-		const size = parseInfo(table)['grid-size'];
-		const incompleteCols = Object.values(cols).map(c => c.size).filter(c => c < size[1]).length;
-
-		if (incompleteCols == 0) {
-			return RECT;
+		if (cells == cols.size * rows.size) {
+			return {
+				shape: RECT, 
+				dimensions: [cols.size, rows.size]
+			};
 		} 
 	}	
 	
-	return CELLS;
+	return {shape: CELLS};
 }
-
-var cellsInType;
 
 /**
  * Modifies the drag locator to track what type of drag we are about to do.
@@ -75,7 +74,9 @@ export function initCellDragLocator(mainDragLocator) {
 	
 	return function(evt) {
 		var dragTargets = mainDragLocator(evt);
-		cellsInType = determineSelected(dragTargets);
+		var {shape, dimensions} = determineSelected(dragTargets);
+		cellsInType = shape;
+		rectDimensions = dimensions;
 		return dragTargets;
 	}
 }
@@ -99,7 +100,8 @@ export function initCellDropLocator(mainDropLocator) {
 			return [];	// you can't drop to multiple/no places.
 		}
 		
-		const cellsOutType = determineSelected(dropTargets);
+		const { shape }  = determineSelected(dropTargets);
+		const cellsOutType = shape;
 		
 		switch (cellsInType) {
 		case NORMAL: 
@@ -107,6 +109,7 @@ export function initCellDropLocator(mainDropLocator) {
 			switch (cellsOutType) {
 			case NORMAL:
 			case CELLS:
+			case RECT:
 				// normal drop approach
 				return dropTargets;
 			default:
@@ -115,7 +118,7 @@ export function initCellDropLocator(mainDropLocator) {
 			}
 		case MIXED:
 			return [];	// you can't do anything with mixed.
-		case COLUMNS:
+		case RECT:
 		case CELLS:
 			switch (cellsOutType) {
 			case NORMAL:
@@ -123,7 +126,7 @@ export function initCellDropLocator(mainDropLocator) {
 				return [];
 			case TABLES:
 				return dropTargets;
-			case COLUMNS:
+			case RECT:
 			case CELLS:
 				return dropTargets.map(dt => getParentElement(dt));
 			}
@@ -169,8 +172,12 @@ export function initCellMoveCallback(mainCallback) {
 		} else {
 			const allChildren = getContainerChildren(dropTarget, dragTargets);
 			const lastChild = allChildren[allChildren.length-1];
-			const box = getElementPageBBox(lastChild);
-			x = box.x + box.width;
+			if (lastChild) {
+				const box = getElementPageBBox(lastChild);
+				x = box.x + box.width;
+			} else {
+				return;
+			}
 		}
 		
 		drawBar(x, ys, x, ye);
@@ -195,10 +202,14 @@ export function initCellMoveCallback(mainCallback) {
 		} else {
 			const allChildren = getContainerChildren(dropTarget, dragTargets);
 			const lastChild = allChildren[allChildren.length-1];
-			const box = getElementPageBBox(lastChild);
-			x = box.x + box.width;
-			ys = box.y;
-			ye = box.y + box.height;
+			if (lastChild) {
+				const box = getElementPageBBox(lastChild);
+				x = box.x + box.width;
+				ys = box.y;
+				ye = box.y + box.height;
+			} else {
+				return;
+			}
 		}
 		
 		drawBar(x, ys, x, ye);
@@ -206,9 +217,18 @@ export function initCellMoveCallback(mainCallback) {
 	
 	return function(dragTargets, event, dropTargets) {
 		switch (cellsInType) {
-		case COLUMNS:
-			columnBar(dragTargets, event, dropTargets);
-			break;
+		case RECT:
+			const dropTarget = mainDropTarget(dropTargets);
+			if (dropTarget) {
+				const info = parseInfo(dropTarget);
+				const height = info['grid-size'][1];
+				if (height == rectDimensions[1]) {
+					return columnBar(dragTargets, event, dropTargets);
+				}
+			}
+			
+			// otherwise, drop through
+			
 		case CELLS:
 			cellBar(dragTargets, event, dropTargets);
 			break;
@@ -244,24 +264,30 @@ export function initCellDropCallback(transition, mainCallback) {
 	return function(dragTargets, evt, dropTargets) {
 		
 		switch (cellsInType) {
-		case COLUMNS:
+		case RECT:
 			const dropTargetC = mainDropTarget(dropTargets);
-			const col = before ? parseInfo(before)['grid-x'][0] : parseInfo(dropTarget)['grid-size'][0];
-			const allChildren = getContainerChildren(dropTarget, dragTargets);
-			var row = 0;
-			dragTargets.forEach(dt => {
-				transition.push( {
-					type: 'Move',
-					fragmentId: dropTargetC.getAttribute('id'),
-					moveId: dt.getAttribute('id'),
-					beforeFragmentId: columnFindBefore(col, row++, dt, allChildren)
+			const info = parseInfo(dropTargetC);
+			const height = info['grid-size'][1];
+			if (height == rectDimensions[1]) {
+				const col = before ? parseInfo(before)['grid-x'][0] : parseInfo(dropTargetC)['grid-size'][0];
+				const allChildren = getContainerChildren(dropTargetC, dragTargets);
+				var row = 0;
+				dragTargets.forEach(dt => {
+					transition.push( {
+						type: 'Move',
+						fragmentId: dropTargetC.getAttribute('id'),
+						moveId: dt.getAttribute('id'),
+						beforeFragmentId: columnFindBefore(col, row++, dt, allChildren)
+					});
+					
 				});
 				
-			});
+				before = null;
+				clearBar();
+				return true;
+			}
 			
-			before = null;
-			clearBar();
-			return true;
+			// drop through
 			
 		case CELLS:
 			const dropTarget = mainDropTarget(dropTargets);
