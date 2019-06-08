@@ -1,8 +1,6 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/diagrams/common-diagrams.css');
 @import url('/public/behaviours/containers/common-containers.css');
-@import url('/public/behaviours/labels/common-labels.css');
-@import url('/public/behaviours/grid/common-grid.css');
 @import url('/public/fonts/metropolis/metropolis.css');
 
 
@@ -13,23 +11,6 @@
    	          url(/public/behaviours/grid/common-tables) "replace-cell";
           
 	cell-template-uri: url(/public/behaviours/grid/common-tables.xml#t1);
-}
-
-/* On every example */
-
-diagram,
-[k9-elem=diagram] {
-	kite9-type: diagram;
-	kite9-padding: 15px;
-	kite9-traversal: none;
-	kite9-template: url(template.xml#diagram);
-	background-color: white;
-	font-size: 50px;
-	font-family: metropolis;
-}
-
-g.kite9-diagram {
-	fill: white;
 }
 
 g.box {

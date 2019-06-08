@@ -4,7 +4,6 @@
       @import url("/public/behaviours/diagrams/common-diagrams.css");
       @import url("/public/behaviours/containers/common-containers.css");
       @import url("/public/context/editor/indicators.css");
-      @import url("/public/behaviours/hoverable/hoverable.css");
       
       container, group {
         kite9-min-size: 200px 100px;
@@ -19,7 +18,7 @@
     
     </svg:script>
   </svg:defs>
-  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+  <diagram xmlns="http://www.kite9.org/schema/adl">
 
     <group style="kite9-layout: right; ">
 

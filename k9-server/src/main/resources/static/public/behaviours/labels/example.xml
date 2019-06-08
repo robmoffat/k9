@@ -3,6 +3,19 @@
     <svg:style type="text/css">
        @import url("/public/behaviours/diagrams/common-diagrams.css");
        @import url("/public/behaviours/labels/common-labels.css");
+       @import url('/public/fonts/metropolis/metropolis.css');
+       
+       label front,
+       [k9-elem=label] [k9-elem=front] {
+         fill: black;
+         font-face: metropolis;
+       }
+       
+       label back,
+       [k9-elem=label] [k9-elem=back] {
+         stroke: blue;
+       }
+       
     </svg:style>
   </svg:defs>
  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">

@@ -6,29 +6,44 @@
 
 [id] > [k9-indicator~=stroke] {
 	stroke: #b7c0feAA;
+	transition: stroke 0.2s;
 }
 
 [id] > [k9-indicator~=fill]  {
 	fill: #b7c0feAA;
+	transition: fill 0.2s;
 }
 
 .mouseover > [k9-indicator~=stroke],
 .mouseover > [k9-indicator~=outline] {
 	stroke: #CCEEFF !important;
+	transition: stroke 0.2s;
 }
 
 .mouseover > [k9-indicator~=pulse],
 .mouseover > [k9-indicator~=rect] {
 	fill: #CCEEFF !important;
+	transition: fill 0.2s;
 }
 
 .selected > [k9-indicator~=outline],
 .selected > [k9-indicator~=stroke] {
 	stroke: rgb(255, 204, 0) !important;
 	stroke-width: 2px;
+	transition: stroke 0.2s;
 }
 
 .selected > [k9-indicator~=pulse],
 .selected > [k9-indicator~=fill] {
 	fill: rgb(255, 204, 0) !important;
+	transition: stroke 0.2s;
+}
+
+[id].selected > g > text {
+	fill: rgb(255, 204, 0) !important;
+	
+}
+
+.mouseover > g > text {
+	fill: #CCEEFF !important;
 }

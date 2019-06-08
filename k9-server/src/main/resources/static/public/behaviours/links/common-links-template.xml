@@ -53,61 +53,47 @@
 
   </svg:defs>
 
-  <template id="background">
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;'>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
-    </back>
-    <contents />
-  </template>
-
-  <template id="group" k9-ui="drag drop delete insert align connect layout invisible">
-    <back k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;'>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='12px' ry='12px' />
-    </back>
-    <contents />
-  </template>
-
   <template id='round-terminator' k9-palette="end" k9-ui="drag end invisible label">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="fill">
       <svg:ellipse cx='6' cy='6' rx="6" ry="6" />
     </grab>
     <contents />
   </template>
 
   <template id='up-terminator' k9-palette="end" k9-ui="drag invisible end label">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="fill">
       <svg:polygon points="0 12, 6 0, 12 12"  />
     </grab>
-    <svg:polygon points="0 12, 6 0, 12 12"  k9-indicator="rect"/>
+    <svg:polygon points="0 12, 6 0, 12 12"  k9-indicator="fill"/>
     <contents />
   </template>
   
   <template id='down-terminator' k9-palette="end" k9-ui="drag invisible end label">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="fill">
       <svg:polygon points="0 0, 6 12, 12 0" />
     </grab>
-    <svg:polygon points="0 0, 6 12, 12 0" k9-indicator="rect"/>
+    <svg:polygon points="0 0, 6 12, 12 0" k9-indicator="fill"/>
     <contents />
   </template>
   
   <template id='left-terminator' k9-palette="end" k9-ui="drag invisible end label">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="fill">
       <svg:polygon points="12 0, 0 6, 12 12" />
     </grab>
-    <svg:polygon points="12 0, 0 6, 12 12" k9-indicator="rect" />
+    <svg:polygon points="12 0, 0 6, 12 12" k9-indicator="fill" />
     <contents />
   </template>
   
   <template id='right-terminator' k9-palette="end" k9-ui="drag invisible end label">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="rect">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="fill">
       <svg:polygon points="0 0, 12 6, 0 12" />
     </grab>
-    <svg:polygon points="0 0, 12 6, 0 12" k9-indicator="rect"/>
+    <svg:polygon points="0 0, 12 6, 0 12" k9-indicator="fill"/>
     <contents />
   </template>
 
   <template id="basic-link" k9-ui="delete link cascade drop" k9-palette="link">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="outline">
       <svg:path d="#{$path}" k9-animate="link"/>
     </grab>
     <contents />
@@ -120,11 +106,11 @@
   </template>
 
   <template id="align" k9-ui="delete invisible cascade">
-    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="path">
+    <grab style="kite9-type: svg; kite9-usage: decal;" k9-ui="grab" k9-indicator="outline">
       <svg:path k9-animate="link" d="#{$path}" />
     </grab>
     <contents />
-    <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="path">
+    <link-body style="kite9-type: svg; kite9-usage: decal;" k9-indicator="outline">
       <svg:path k9-animate="link" d="#{$path}" />
     </link-body>
   </template>

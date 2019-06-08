@@ -1,10 +1,3 @@
-/* Bootstrap for common examples */
-
-g[k9-elem=common-diagram],
-common-diagram {
-	kite9-type: diagram;
-	fill: white;
-}
 
 /* Labels */
 
@@ -13,7 +6,10 @@ label,
 	kite9-usage: label;
 	kite9-type: container; 
 	kite9-sizing: minimize;
-	kite9-template: url(common-labels-template.xml#label);
+	kite9-template: url(common-labels-template.xml#label) '4px';
+	kite9-padding: 4px;
+	kite9-margin: 4px;
+	kite9-sizing: minimize;
 }
 
 @params {

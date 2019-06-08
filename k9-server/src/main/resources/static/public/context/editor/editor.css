@@ -12,3 +12,11 @@ diagram {
 	kite9-padding: 200px;	/* ensures enough space to drag in */
 }
 
+/* 
+ * Prevents the original selection process 
+ */
+svg {
+	user-select: none; 
+	-webkit-user-select: none;
+	cursor: pointer;
+}

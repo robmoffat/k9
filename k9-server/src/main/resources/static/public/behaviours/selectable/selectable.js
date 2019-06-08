@@ -4,7 +4,7 @@ import { ensureCss } from '/public/bundles/css.js';
 // Adds .selected class when the user mouseups over an element.
 // Adds .lastSelected class to a single element, which is the last one clicked on
 
-export function initSelectable(selector, css) {
+export function initSelectable(selector) {
 	
 	function mouseup(event) {
 		var v = event.currentTarget;
@@ -37,12 +37,6 @@ export function initSelectable(selector, css) {
 		
 		event.stopPropagation();
 	}
-	
-	if (css == undefined) {
-		css = '/public/behaviours/selectable/selectable.css';
-	}
-	
-	ensureCss(css);
 	
 	if (selector == undefined) {
 		selector = function() {

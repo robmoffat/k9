@@ -4,7 +4,7 @@ import { ensureCss } from '/public/bundles/css.js';
 /**
  * Adds hoverable behaviour
  */
-export function initHoverable(selector, allowed, css) {
+export function initHoverable(selector, allowed) {
 	
 	var selectedElement;
 	
@@ -43,12 +43,6 @@ export function initHoverable(selector, allowed, css) {
 		}
 	}
 	
-	if (css == undefined) {
-		css = '/public/behaviours/hoverable/hoverable.css';
-	}
-	
-	ensureCss(css);
-
 	if (selector == undefined) {
 		selector = function() { return getMainSvg().querySelectorAll("[id][k9-elem]"); }
 	}

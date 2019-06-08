@@ -1,25 +1,12 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl'>
 
-  <template id="diagram" k9-ui="drop layout insert">
-    <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
-    </back>
-    <contents />
-  </template>
-
   <template id='box' k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-palette="insert replace-connected">
-    <back class="back" k9-indicator="rect" style='kite9-usage: decal; kite9-type: svg;  '>
+    <back class="back" k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
     <contents />
   </template>
   
-  <template id='cell' k9-ui="orphan drop invisible layout insert">
-    <back class="back" k9-indicator="path" style='kite9-usage: decal; kite9-type: svg;  '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
-    </back>
-    <contents />
-  </template>
 
   
   <template id="text" k9-ui="orphan edit">

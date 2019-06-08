@@ -2,17 +2,18 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/basic.css");
-       @import url("/public/behaviours/selectable/selectable.css");
-
+       @import url("/public/examples/basic/basic.css");
+       @import url("/public/context/editor/indicators.css");
     </svg:style>
     
     <svg:script type="module">
       import { Linker } from "/public/classes/linker/linker.js"
       import { initLinkable } from "./linkable.js";
       import { initSelectable } from '/public/behaviours/selectable/selectable.js'
+      import { initHoverable } from '/public/behaviours/hoverable/hoverable.js'
       
       initSelectable();
+      initHoverable();
       initLinkable(new Linker([ (l, e) => l.removeDrawingLinks() ]));
     </svg:script>
     
@@ -21,22 +22,22 @@
 
      <g id="b1" drag="yes rect" drop="*" class="box"><g id="fs1" class="text">Press L to Link</g></g>
      
-     <g class="group" drag="yes target" id="bigbox" style="kite9-layout: horizontal; ">
+     <container drag="yes target" id="bigbox" style="kite9-layout: horizontal; ">
        <g id="b2" drag="yes rect" drop="link" class="box"><g id="fs2" class="text">B</g></g>
        
        <g id="b3" drag="no" drop="link rect" class="box"><g id="fs3" class="text">Can't Drag</g></g>
-     </g>
+     </container>
      
-     <g class="link" id="link2" drop="rect">
+     <link id="link2" drop="rect" drawDirection="RIGHT">
       <from drag="yes from" id="link2-from" reference="b1" class="arrow"></from>
       <to drag="yes to" id="link2-to" class="arrow" reference="b3"></to>
-     </g>
+     </link>
      
      
-     <g class="link" id="link2" drop="rect">
+     <link id="link2" drop="rect">
       <from drag="yes from" id="link2-from" reference="b1" class="hoverable"></from>
       <to drag="yes to" id="link2-to" class="hoverable" reference="b2"></to>
-     </g>
+     </link>
 
   </diagram>
 </svg:svg>

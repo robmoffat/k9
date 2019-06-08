@@ -6,13 +6,13 @@ group,
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-traversal: always;
-	kite9-template: url(common-containers-template.xml#group-undirected);
+	kite9-template: url(common-containers-template.xml#group-undirected) '15px';
 	kite9-min-size: 40px 40px;
 }
 
 group[layout],
 [k9-elem=group][layout] {
-	kite9-template: url(common-containers-template.xml#group-directed);
+	kite9-template: url(common-containers-template.xml#group-directed) '15px';
 }
 
 /* Containers: Have a border */
@@ -22,7 +22,7 @@ container,
 	kite9-type: container;
 	kite9-padding: 15px;
 	kite9-margin: 15px;
-	kite9-template: url(common-containers-template.xml#container-undirected);
+	kite9-template: url(common-containers-template.xml#container-undirected) '15px';
 	stroke: black;
 	fill: white;
 	kite9-sizing: minimize;
@@ -30,7 +30,7 @@ container,
 
 container[layout],
 [k9-elem=container] {
-	kite9-template: url(common-containers-template.xml#container-directed);
+	kite9-template: url(common-containers-template.xml#container-directed) '15px';
 }
 
 container.solid,
