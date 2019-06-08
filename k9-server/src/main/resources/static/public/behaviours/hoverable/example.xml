@@ -2,7 +2,7 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/basic.css");
+       @import url("/public/examples/basic/basic.css");
     </svg:style>
     
     <svg:script type="module">
@@ -23,16 +23,16 @@
        <g id="b3" class="box"><g id="fs3" class="text">C</g></g>
      </g>
      
-     <g class="link" id="link2">
+     <link id="link2">
       <from id="link2-from" reference="b1" class="arrow"></from>
       <to id="link2-to" class="arrow" reference="b3"></to>
-     </g>
+     </link>
      
      
-     <g class="link" id="link2">
+     <link id="link2">
       <from id="link2-from" reference="b1"></from>
       <to id="link2-to" reference="b2"></to>
-     </g>
+     </link>
 
   </diagram>
 </svg:svg>

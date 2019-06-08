@@ -1,0 +1,22 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+      @import url("/public/behaviours/diagrams/common-diagrams.css");
+      @import url("/public/context/editor/indicators.css");
+      @import url("/public/behaviours/hoverable/hoverable.css");
+      @import url("/public/behaviours/selectable/selectable.css");
+    </svg:style>
+    
+     <svg:script type="module">
+      import {initHoverable} from '../hoverable/hoverable.js';
+      import {initSelectable} from '../selectable/selectable.js';
+      
+      initHoverable();
+      initSelectable();
+    
+    </svg:script>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia">
+
+  </diagram>
+</svg:svg>

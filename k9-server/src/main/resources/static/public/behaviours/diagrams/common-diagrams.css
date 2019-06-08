@@ -1,0 +1,10 @@
+diagram,
+[k9-elem=diagram] {
+	kite9-type: diagram;
+	kite9-padding: 15px;
+	kite9-traversal: none;
+	kite9-template: url(common-diagrams-template.xml#diagram);
+	fill: white;
+	font-size: 50px;
+	font-family: metropolis;
+}

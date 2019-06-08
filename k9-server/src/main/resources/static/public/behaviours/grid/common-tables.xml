@@ -2,7 +2,7 @@
   <svg:defs>
     <svg:style type="text/css">
       @import url("/public/behaviours/grid/common-grid.css");
-      @import url("/public/context/editor/invisible.css");
+      @import url("/public/context/editor/indicators.css");
       
       cell {
          kite9-min-size: 40px 15px;
