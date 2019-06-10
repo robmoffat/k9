@@ -1,7 +1,6 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css">
-      @import url("/public/behaviours/diagrams/common-diagrams.css");
       @import url("/public/behaviours/containers/common-containers.css");
       @import url("/public/context/editor/indicators.css");
       

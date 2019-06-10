@@ -1,3 +1,17 @@
+diagram,
+[k9-elem=diagram] {
+	kite9-type: diagram;
+	kite9-padding: 15px;
+	kite9-traversal: none;
+	kite9-template: url(common-containers-template.xml#diagram-undirected);
+	fill: white;
+}
+
+diagram[layout],
+[k9-elem=diagram][layout]  {
+	kite9-template: url(common-containers-template.xmldiagram-directed);
+	
+}
 
 /* Groups: Invisible containers */
 

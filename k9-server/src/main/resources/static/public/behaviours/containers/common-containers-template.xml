@@ -45,4 +45,24 @@
     <contents />
   </template>
   
+
+  <template id="diagram-undirected" k9-ui="drop layout insert">
+    <back class="back" k9-indicator="pulse stroke" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
+    </back>
+    <contents />
+  </template>
+  
+  
+  <template id="diagram-directed" k9-ui="drop layout insert">
+    <back class="back" k9-indicator="pulse stroke" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
+    </back>
+    <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="stroke">
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#layout-filter)" />
+    </indicator>
+    <contents />
+  </template>
+  
+  
 </svg:svg>

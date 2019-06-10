@@ -22,13 +22,13 @@
 
      <g id="b1" drag="yes rect" drop="*" class="box"><g id="fs1" class="text">Press L to Link</g></g>
      
-     <container drag="yes target" id="bigbox" style="kite9-layout: horizontal; ">
+     <container drag="yes target" id="bigbox" style="kite9-layout: vertical; ">
        <g id="b2" drag="yes rect" drop="link" class="box"><g id="fs2" class="text">B</g></g>
        
        <g id="b3" drag="no" drop="link rect" class="box"><g id="fs3" class="text">Can't Drag</g></g>
      </container>
      
-     <link id="link2" drop="rect" drawDirection="RIGHT">
+     <link id="link2" drop="rect" drawDirection="DOWN">
       <from drag="yes from" id="link2-from" reference="b1" class="arrow"></from>
       <to drag="yes to" id="link2-to" class="arrow" reference="b3"></to>
      </link>
@@ -38,6 +38,11 @@
       <from drag="yes from" id="link2-from" reference="b1" class="hoverable"></from>
       <to drag="yes to" id="link2-to" class="hoverable" reference="b2"></to>
      </link>
+     
+     <align id="a" drawDirection="DOWN">
+      <from reference="b2" />
+      <to reference="b3" />
+     </align>
 
   </diagram>
 </svg:svg>

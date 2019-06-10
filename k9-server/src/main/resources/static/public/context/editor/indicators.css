@@ -31,12 +31,14 @@
 	stroke: rgb(255, 204, 0) !important;
 	stroke-width: 2px;
 	transition: stroke 0.2s;
+	stroke-opacity: .8;
 }
 
 .selected > [k9-indicator~=pulse],
 .selected > [k9-indicator~=fill] {
 	fill: rgb(255, 204, 0) !important;
 	transition: stroke 0.2s;
+	fill-opacity: .8;
 }
 
 [id].selected > g > text {
@@ -46,4 +48,12 @@
 
 .mouseover > g > text {
 	fill: #CCEEFF !important;
+}
+
+/*
+ * This includes CSS directives for making it easier to grab small elements in the diagram.
+ */
+[k9-indicator~=grab] {
+	stroke: #FFFFFF01;
+	stroke-width: 10px !important;
 }

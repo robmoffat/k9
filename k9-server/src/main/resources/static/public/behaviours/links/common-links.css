@@ -26,6 +26,7 @@ g[k9-elem=link] {
 	kite9-margin: 20px;
 	kite9-link-minimum-length: 20px;
 	kite9-link-corner-radius: 10px;
+	fill: none;
 }
 
 link-body,
@@ -35,7 +36,7 @@ g[k9-elem=link-body] {
 	fill: none;
 }
 
-g[k9-elem=grab] {
+[k9-elem=grab] {
 	stroke: none;
 }
 
