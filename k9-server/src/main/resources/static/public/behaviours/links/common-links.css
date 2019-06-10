@@ -5,9 +5,12 @@
 	align-template-uri:  url(common-links.xml#align);
 }
 
-align {
+align,
+[k9-elem=align] {
 	kite9-type: link;
 	kite9-template: url(common-links-template.xml#align);
+	fill: none;
+	stroke-width: 5px;
 }
 
 align from,

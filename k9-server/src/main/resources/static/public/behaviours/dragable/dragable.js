@@ -2,8 +2,7 @@ import { getSVGCoords, getMainSvg } from '/public/bundles/screen.js';
 import { handleTransformAsStyle, getKite9Target, isConnected, isDiagram, getParentElement } from '/public/bundles/api.js';
 import { getBeforeId } from '/public/bundles/ordering.js';
 
-
-export function initDragable(dragger, selector, css) {
+export function initDragable(dragger, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
@@ -11,10 +10,6 @@ export function initDragable(dragger, selector, css) {
 		}
 	}
 
-	if (css == undefined) {
-		css = '/public/behaviours/dragable/dragable.css';
-	}
-	
 	window.addEventListener('load', function(event) {
 
 		var svg = getMainSvg();
@@ -86,7 +81,8 @@ export function initDragableDropLocator() {
 			return false;
 		}
 		
-		if ((!isConnected(dropTarget)) && ((!isDiagram(dropTarget)))) {
+		var drg = dragTarget.getAttribute("k9-ui");
+		if (!drg .includes("drag")) {
 			return false;
 		}
 		

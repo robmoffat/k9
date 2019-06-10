@@ -9,7 +9,7 @@ diagram,
 
 diagram[layout],
 [k9-elem=diagram][layout]  {
-	kite9-template: url(common-containers-template.xmldiagram-directed);
+	kite9-template: url(common-containers-template.xml#diagram-directed);
 	
 }
 

@@ -61,7 +61,7 @@ import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 // grid
-import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
+//import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
 
 
 var initialized = false;
@@ -125,20 +125,20 @@ function initEditor() {
 			() => contextMenu.destroy(),
 			initTerminatorMoveCallback(),
 			initAutoConnectDragableMoveCallback(),
-			initCellMoveCallback(initLayoutMoveCallback())
+			initLayoutMoveCallback()
 		],
 		[
-			initCellDropCallback(transition, initDragableDropCallback(transition)),
+			initDragableDropCallback(transition),
 			initLinkDropCallback(transition),
 			initTerminatorDropCallback(transition),
 			initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
 			initCompleteDragable(transition)
 		],
 		[
-			initCellDragLocator(initDragableDragLocator()),
+			initDragableDragLocator(),
 		],
 		[
-			initCellDropLocator(initDragableDropLocator()),
+			initDragableDropLocator(),
 			initLinkDropLocator()
 		]);
 	

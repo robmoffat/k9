@@ -3,12 +3,12 @@
  */
  
  
-div.main *[k9-info~="contradicting:"] > [k9-indicator=path],
+div.main *[k9-info~="contradicting:"] > [k9-indicator=stroke],
 div.main *[k9-info~="contradicting:"] > [k9-elem=link-body] {
 	stroke: #ff5956;
 }
 
-div.main *[k9-info~="contradicting:"] > [k9-indicator=rect] {
+div.main *[k9-info~="contradicting:"] > [k9-indicator=fill] {
 	fill: #ff5956;
 }
  
