@@ -76,7 +76,7 @@ g[k9-elem=from],
 g[k9-elem=to] {
 	kite9-type: link-end;
 	kite9-template: url(common-links-template.xml#round-terminator);
-	kite9-padding: 6px 6px 6px 6px;
+	kite9-padding: 8px 8px 8px 8px;
 }
 
 [drawDirection=DOWN] from,

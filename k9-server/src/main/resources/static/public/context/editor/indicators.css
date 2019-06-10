@@ -21,7 +21,7 @@
 }
 
 .mouseover > [k9-indicator~=pulse],
-.mouseover > [k9-indicator~=rect] {
+.mouseover > [k9-indicator~=fill] {
 	fill: #CCEEFF !important;
 	transition: fill 0.2s;
 }
