@@ -42,7 +42,7 @@ function updateLink(tx, ty, frompos, link_d) {
 	link.setAttribute("d", "M"+fx+" "+fy+" L "+tx+" "+ty);
 }
 
-export function initAutoConnectDragableDropCallback(transition, templateUri) {
+export function initAutoConnectDropCallback(transition, templateUri) {
 	
 	function undoAlignment(transition, e) {
 		const alignOnly = e.classList.contains("align");
@@ -129,7 +129,7 @@ export function initAutoConnectDragableDropCallback(transition, templateUri) {
 	}
 }
 
-export function initAutoConnectDragableMoveCallback(selector, canAutoConnect) {
+export function initAutoConnectMoveCallback(selector, canAutoConnect) {
 	
 	var maxDistance = 100;
 	var width, height;

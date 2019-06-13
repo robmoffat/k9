@@ -47,7 +47,7 @@ import { initLayoutMoveCallback, initLayoutContextMenuCallback, initCellCreator 
 
 // Links
 import { initLinkable, updateLink } from '/public/behaviours/links/linkable.js';
-import { initAutoConnectDragableDropCallback, initAutoConnectDragableMoveCallback } from '/public/behaviours/links/autoconnect/autoconnect.js';
+import { initAutoConnectDropCallback, initAutoConnectMoveCallback } from '/public/behaviours/links/autoconnect/autoconnect.js';
 import { initLinkPaletteCallback, initLinkLinkerCallback, initLinkContextMenuCallback, initLinkInstrumentationCallback, selectedLink, linkTemplateUri } from '/public/behaviours/links/link/link.js';
 import { initDirectionContextMenuCallback } from '/public/behaviours/links/direction/direction.js';
 import { initAlignContextMenuCallback } from '/public/behaviours/links/align/align.js';
@@ -61,7 +61,7 @@ import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 // grid
-//import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
+import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
 
 
 var initialized = false;
@@ -124,22 +124,25 @@ function initEditor() {
 		[
 			() => contextMenu.destroy(),
 			initTerminatorMoveCallback(),
-			initAutoConnectDragableMoveCallback(),
-			initLayoutMoveCallback()
+			initAutoConnectMoveCallback(),
+			initLayoutMoveCallback(),
+			initCellMoveCallback(),
 		],
 		[
 			initDragableDropCallback(transition),
 			initLinkDropCallback(transition),
 			initTerminatorDropCallback(transition),
-			initAutoConnectDragableDropCallback(transition, document.params['align-template-uri']),
+			initAutoConnectDropCallback(transition, document.params['align-template-uri']),
 			initCompleteDragable(transition)
 		],
 		[
 			initDragableDragLocator(),
+			initCellDragLocator()
 		],
 		[
 			initDragableDropLocator(),
-			initLinkDropLocator()
+			initCellDropLocator(),
+			initLinkDropLocator(),
 		]);
 	
 	initDragable(dragger); 

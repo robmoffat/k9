@@ -96,8 +96,7 @@ export function drawBar(fx, fy, tx, ty) {
 	if (bar == null) {
 		var svg = getMainSvg();
 		bar = document.createElementNS("http://www.w3.org/2000/svg", "path");
-		bar.style.stroke = '#b7c0fe';
-		bar.style.strokeWidth = '6px';
+		bar.setAttributeNS(null, 'k9-indicator', 'bar')
 		bar.setAttributeNS(null, 'pointer-events', 'none');
 		svg.appendChild(bar);
 	}

@@ -2,14 +2,14 @@
 
   <!-- tables -->
 
-  <template id='table'>
+  <template id='table' k9-ui="grid drag delete layout copy">
     <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
     </back>
     <contents />
   </template>
   
-  <template id="cell" k9-ui="drag delete cascade orphan drop insert layout copy invisible replace-cell" k9-palette="replace-cell">
+  <template id="cell" k9-ui="cell delete cascade orphan insert layout copy replace-cell" k9-palette="replace-cell">
     <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
     </back>

@@ -57,3 +57,9 @@
 	stroke: #FFFFFF01;
 	stroke-width: 10px !important;
 }
+
+[k9-indicator=bar] {
+	stroke: #b7c0fe;
+	stroke-width: 6px;
+	transition: 0.1s;
+}

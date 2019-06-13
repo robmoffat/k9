@@ -6,7 +6,7 @@ export function initDragable(dragger, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return getMainSvg().querySelectorAll("[id][k9-elem]");
+			return getMainSvg().querySelectorAll("[k9-info]");
 		}
 	}
 
