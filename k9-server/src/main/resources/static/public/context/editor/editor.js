@@ -133,6 +133,7 @@ function initEditor() {
 			initLinkDropCallback(transition),
 			initTerminatorDropCallback(transition),
 			initAutoConnectDropCallback(transition, document.params['align-template-uri']),
+			initCellDropCallback(transition),
 			initCompleteDragable(transition)
 		],
 		[

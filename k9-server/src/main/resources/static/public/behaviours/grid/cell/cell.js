@@ -23,11 +23,6 @@ function isCell(e) {
 	return false;
 }
 
-export function initCellDropCallback() {
-	
-	
-}
-
 /**
  * This will only allow you to drag cells.
  */
@@ -174,31 +169,152 @@ export function initCellMoveCallback() {
 				return drawBar(box.x + box.width, box.y, box.x + box.width, box.y+box.height);
 			}
 			
-		} else if (gridDropTargets.length == 1) {
-			// draw a bar for where we are nearest.
-			const grid = gridDropTargets[0];
-			const box = getElementPageBBox(grid);
-			side = closestSide(pos, box);
-			
-			switch (side) {
-			case UP:
-			case DOWN:
-				var info = parseInfo(grid);
-				var relativeP = pos.x - box.x;
-				var columns = info['cell-xs'];
-				var i = closestGap(relativeP, columns);
-				return drawBar(columns[i] + box.x, box.y, columns[i] + box.x, box.y+box.height);
-			case LEFT:
-			case RIGHT:
-				var info = parseInfo(grid);
-				var relativeP = pos.y - box.y;
-				var columns = info['cell-ys'];
-				var i = closestGap(relativeP, columns);
-				return drawBar(box.x, columns[i] + box.y, box.x + box.width, columns[i] + box.y);
-			}
-		}
+		} 
+//		else if (gridDropTargets.length == 1) {
+//			// draw a bar for where we are nearest.
+//			const grid = gridDropTargets[0];
+//			const box = getElementPageBBox(grid);
+//			side = closestSide(pos, box);
+//			
+//			switch (side) {
+//			case UP:
+//			case DOWN:
+//				var info = parseInfo(grid);
+//				var relativeP = pos.x - box.x;
+//				var columns = info['cell-xs'];
+//				var i = closestGap(relativeP, columns);
+//				return drawBar(columns[i] + box.x, box.y, columns[i] + box.x, box.y+box.height);
+//			case LEFT:
+//			case RIGHT:
+//				var info = parseInfo(grid);
+//				var relativeP = pos.y - box.y;
+//				var columns = info['cell-ys'];
+//				var i = closestGap(relativeP, columns);
+//				return drawBar(box.x, columns[i] + box.y, box.x + box.width, columns[i] + box.y);
+//			}
+//		}
 
 		clearBar();
 	}
 	
 }
+
+
+export function initCellDropCallback(transition) {
+	
+	function calculateArea(dragTargets, moverX, moverY) {
+		
+		function up1(area, change) {
+			area[0] = Math.min(area[0], change[0]);
+			area[1] = Math.max(area[1], change[1]);
+		}
+		
+		var out = {
+			x: [10000, -10000],
+			y: [10000, -10000],
+			overlap: true,
+			items: {}
+		}
+		
+		dragTargets.forEach(dt => {
+			const dragInfo = parseInfo(dt);
+			const dragX = dragInfo['grid-x'];
+			const dragY = dragInfo['grid-y'];
+			
+			up1(out.x, dragX);
+			up1(out.y, dragY);
+			
+			out.items[dt.getAttribute("id")] = {
+				dx: moverX[0] - dragX[0],
+				dy: moverY[0] - dragY[0]
+			}
+		});
+		
+		return out;
+		
+	}
+	
+	function getPush(area, moverX, moverY) {
+		switch (side) {
+		case UP:
+			return { from: moverY[0], horiz: false, push: area.y[1]-area.y[0]};
+		case DOWN:
+			return { from: moverY[1]+1, horiz: false, push: area.y[1]-area.y[0]};
+		case LEFT:
+			return { from: moverX[0], horiz: true, push: area.x[1]-area.x[0]};
+		case RIGHT:
+			return { from: moverY[1]+1, horiz: true, push: area.x[1]-area.x[0]};
+		}
+	}
+	
+	function calculateTo(dropX, dropY) {
+		switch (side) {
+		case UP:
+			return { x: dropX[0], y: dropY[0]};
+		case DOWN:
+			return { x: dropX[0], y: dropY[1]};
+		case LEFT:
+			return { x: dropX[0], y: dropY[0]};
+		case RIGHT:
+			return { x: dropX[1], y: dropY[0]};
+		}
+	}
+	
+	return function(dragTargets, evt, dropTargets) {
+		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
+		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
+		const mover = dragTargets.filter(dt => dt.classList.contains("lastSelected"))[0];
+		const moverInfo = parseInfo(mover);
+		const moverX = moverInfo['grid-x'];
+		const moverY = moverInfo['grid-y'];
+
+		if ((cellDropTargets.length == 1) && (dragTargets.length == 1)) {
+			
+			const containerId = cellDropTargets[0].parentElement.getAttribute("id");
+			const dropInfo = parseInfo(cellDropTargets[0]);
+			const dropX = dropInfo['grid-x'];
+			const dropY = dropInfo['grid-y'];
+			
+			const to = calculateTo(dropX, dropY);
+			const area = calculateArea(dragTargets, moverX, moverY);
+			
+			// make space in the container for new cells
+			if (area.overlap) {
+				var { from, horiz, push } = getPush(area, dropX, dropY);
+				
+				transition.push({
+					type: 'ADLMoveCells',
+					fragmentId: containerId,
+					moveId: mover.getAttribute("id"),
+					from: from,
+					horiz: horiz,
+					push: push
+				})
+			}
+			
+			dragTargets.forEach(dt => {
+				const id = dt.getAttribute("id");
+				
+				// move into container
+				transition.push({
+					type: 'Move',
+					fragmentId: containerId,
+					moveId: id,
+				});
+				
+				var item = area.items[id];
+				
+				// set the position of the cell
+				transition.push({
+					type: 'SetStyle',
+					fragmentId:  id,
+					name: 'kite9-occupies',
+					value: (to.x+item.dx)+" "+(to.y+item.dy)
+				})
+			});
+			
+			
+		}
+	}
+}
+

@@ -14,15 +14,20 @@ function getLayout(e) {
 
 export function initCellCreator(templateUri, transition) {
 
-	return function (parentId, x, y) {
-
-		var newId = createUniqueId();
+	return function (parentId, x, y, newId) {
 
 		transition.push({
 			type: 'Copy',
 			fragmentId: parentId,
 			uriStr: templateUri,
 			newId: newId
+		}); 
+		
+		transition.push({
+			type: 'SetStyle',
+			fragmentId: newId,
+			name: "kite9-occupies",
+			value: x+" "+y
 		}); 
 
 		return newId;
@@ -67,24 +72,19 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 			}
 
 			var firstCellId;
+			var newId = createUniqueId();
+			var num = 0;
 
 			if (layout == 'grid') {
 				for (var x = 0; x < cols; x++) {
 					for (var y = 0; y < rows; y++) {
-						var cellId = cellCreator(id, x, y);
+						var cellId = cellCreator(id, x, y, newId+"-"+(num++));
 						if (firstCellId == null) {
 							firstCellId = cellId;
 						}
 					}
 				}
 
-				// add the grid size
-				transition.push({
-					fragmentId: id,
-					type: 'SetStyle',
-					name: 'kite9-grid-size',
-					value: rows + " " + cols
-				});
 
 				// move all the existing contents into the first cell
 				cellSelector(e).forEach(f => {

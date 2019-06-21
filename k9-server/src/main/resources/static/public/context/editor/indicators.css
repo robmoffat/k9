@@ -21,8 +21,10 @@
 }
 
 .mouseover > [k9-indicator~=pulse],
-.mouseover > [k9-indicator~=fill] {
+.mouseover > [k9-indicator~=fill],
+.mouseover.grid-temporary {
 	fill: #CCEEFF !important;
+	fill-opacity: 1;
 	transition: fill 0.2s;
 }
 
@@ -35,7 +37,8 @@
 }
 
 .selected > [k9-indicator~=pulse],
-.selected > [k9-indicator~=fill] {
+.selected > [k9-indicator~=fill],
+.selected.grid-temporary {
 	fill: rgb(255, 204, 0) !important;
 	transition: stroke 0.2s;
 	fill-opacity: .8;
@@ -62,4 +65,9 @@
 	stroke: #b7c0fe;
 	stroke-width: 6px;
 	transition: 0.1s;
+}
+
+.grid-temporary {
+	fill-opacity: .3;
+	stroke: none;
 }

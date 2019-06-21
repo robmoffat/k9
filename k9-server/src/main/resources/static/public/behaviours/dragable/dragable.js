@@ -82,7 +82,7 @@ export function initDragableDropLocator() {
 		}
 		
 		var drg = dragTarget.getAttribute("k9-ui");
-		if (!drg .includes("drag")) {
+		if (!drg.includes("drag")) {
 			return false;
 		}
 		
@@ -133,12 +133,15 @@ export function initDragableDropCallback(transition) {
 			var beforeId = getBeforeId(dropTarget, evt, dragTargets);
 			Array.from(dragTargets).forEach(dt => {
 				if (isConnected(dt)) {
-					transition.push( {
-						type: 'Move',
-						fragmentId: dropTarget.getAttribute('id'),
-						moveId: dt.getAttribute('id'),
-						beforeFragmentId: beforeId
-					});
+					var drg = dt.getAttribute("k9-ui");
+					if (drg.includes("drag")) {
+						transition.push( {
+							type: 'Move',
+							fragmentId: dropTarget.getAttribute('id'),
+							moveId: dt.getAttribute('id'),
+							beforeFragmentId: beforeId
+						});
+					}
 				}	
 			});
 			return true;

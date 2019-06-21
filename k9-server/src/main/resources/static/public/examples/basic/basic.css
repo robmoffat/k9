@@ -60,11 +60,17 @@ g.text {
 [k9-elem=label],
 g.label,
 label {
-	fill: black;
+	fill: gray;
 	font-family: "metropolis";
 	text-align: start;
 	font-size: 16px;
 	kite9-padding: 10px;
+}
+
+[k9-elem=label] text,
+g.label text,
+label text {
+	fill: black;
 }
 
 cell {

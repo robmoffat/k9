@@ -2,60 +2,61 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css">
+      @import url("/public/behaviours/containers/common-containers.css");
       @import url("/public/behaviours/links/common-links.css");
     </svg:style>
   </svg:defs>
-  <common-diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
 
     <group style="kite9-layout: right; kite9-min-with: 300px; ">
-      <common-holder id="from1"></common-holder>
-      <common-holder id="to1"></common-holder>
+      <group id="from1"></group>
+      <group id="to1"></group>
     </group>
 
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from2"></common-holder>
-      <common-holder id="to2"></common-holder>
+      <group id="from2"></group>
+      <group id="to2"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from3"></common-holder>
-      <common-holder id="to3"></common-holder>
+      <group id="from3"></group>
+      <group id="to3"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from4"></common-holder>
-      <common-holder id="to4"></common-holder>
+      <group id="from4"></group>
+      <group id="to4"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from5"></common-holder>
-      <common-holder id="to5"></common-holder>
+      <group id="from5"></group>
+      <group id="to5"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from6"></common-holder>
-      <common-holder id="to6"></common-holder>
+      <group id="from6"></group>
+      <group id="to6"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from7"></common-holder>
-      <common-holder id="to7"></common-holder>
+      <group id="from7"></group>
+      <group id="to7"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from8"></common-holder>
-      <common-holder id="to8"></common-holder>
+      <group id="from8"></group>
+      <group id="to8"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from9"></common-holder>
-      <common-holder id="to9"></common-holder>
+      <group id="from9"></group>
+      <group id="to9"></group>
     </group>
 
     <group style="kite9-layout: right; ">
-      <common-holder id="from10"></common-holder>
-      <common-holder id="to10"></common-holder>
+      <group id="from10"></group>
+      <group id="to10"></group>
     </group>
 
 
@@ -119,5 +120,5 @@
       <to id="align-t" reference="to10" />
     </align>
 
-  </common-diagram>
+  </diagram>
 </svg:svg>
