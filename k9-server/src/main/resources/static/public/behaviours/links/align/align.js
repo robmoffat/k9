@@ -14,7 +14,7 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 		
 		// tidy up any existing connections between these elements.
 		conns.forEach(c => {
-			const alignOnly = c.classList.contains("align");
+			const alignOnly = c.classList.contains("kite9-align");
 			
 			if (alignOnly) {
 				// remove the old alignment

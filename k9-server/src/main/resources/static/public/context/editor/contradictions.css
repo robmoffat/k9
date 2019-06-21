@@ -3,8 +3,8 @@
  */
  
  
-div.main *[k9-info~="contradicting:"] > [k9-indicator=stroke],
-div.main *[k9-info~="contradicting:"] > [k9-elem=link-body] {
+div.main *[k9-info~="contradicting:"] > [k9-indicator~=stroke],
+div.main *[k9-info~="contradicting:"] > [k9-indicator~=outline] {
 	stroke: #ff5956;
 }
 

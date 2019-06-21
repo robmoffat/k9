@@ -45,7 +45,7 @@ function updateLink(tx, ty, frompos, link_d) {
 export function initAutoConnectDropCallback(transition, templateUri) {
 	
 	function undoAlignment(transition, e) {
-		const alignOnly = e.classList.contains("align");
+		const alignOnly = e.classList.contains("kite9-align");
 		if (alignOnly) {
 			transition.push({
 				type: 'ADLDelete',

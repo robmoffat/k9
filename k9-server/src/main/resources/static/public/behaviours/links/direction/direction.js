@@ -8,7 +8,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 		const diagramId = getContainingDiagram(e).getAttribute("id");
 		const id = e.getAttribute("id")
 
-		const alignOnly = e.classList.contains("align");
+		const alignOnly = e.classList.contains("kite9-align");
 		
 		if (alignOnly && (direction == 'null')) {
 			transition.postCommands([{

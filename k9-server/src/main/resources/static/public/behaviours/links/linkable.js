@@ -51,7 +51,7 @@ export function updateLink(e, from, to) {
 
 export function getAlignElementsAndDirections(id1, id2) {
 	return getExistingConnections(id1, id2)
-	 	.filter(e => e.classList.contains("align"))
+	 	.filter(e => e.classList.contains("kite9-align"))
 	 	.map(e => {
 	 		const parsed = parseInfo(e);
 	 		const d = parsed['direction'];
