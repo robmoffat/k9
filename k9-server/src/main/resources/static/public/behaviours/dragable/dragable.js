@@ -29,11 +29,6 @@ export function initDragable(dragger, selector) {
 	})
 }
 
-function basicIsDragable(v) {
-	var out = v.getAttribute("k9-ui");
-	return out == null ? false : out.includes("drag");
-}
-
 /**
  * Returns the objects that are selected being dragged
  */
@@ -82,12 +77,12 @@ export function initDragableDropLocator() {
 		}
 		
 		var drg = dragTarget.getAttribute("k9-ui");
-		if (!drg.includes("drag")) {
+		if ((drg == null) || (!drg.includes("drag"))) {
 			return false;
 		}
 		
 		var out = dropTarget.getAttribute("k9-ui");
-		if (!out.includes("drop")) {
+		if ((out == null) || (!out.includes("drop"))) {
 			return false;
 		}
 

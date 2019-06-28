@@ -209,6 +209,11 @@ export function initCellDropCallback(transition) {
 			area[1] = Math.max(area[1], change[1]);
 		}
 		
+		if (moverX == undefined) {
+			moverX = [ 0, 0 ];
+			moverY = [0 , 0];
+		}
+		
 		var out = {
 			x: [10000, -10000],
 			y: [10000, -10000],
@@ -262,11 +267,17 @@ export function initCellDropCallback(transition) {
 	
 	return function(dragTargets, evt, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
+		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
 		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
 		const mover = dragTargets.filter(dt => dt.classList.contains("lastSelected"))[0];
 		const moverInfo = parseInfo(mover);
 		const moverX = moverInfo['grid-x'];
 		const moverY = moverInfo['grid-y'];
+		
+		if (cellDragTargets.length != dragTargets.length) {
+			// can't drop here
+			return;
+		}
 
 		if ((cellDropTargets.length == 1) && (dragTargets.length == 1)) {
 			

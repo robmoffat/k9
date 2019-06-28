@@ -19,7 +19,7 @@ function initDefaultReplaceChoiceSelector(type) {
 }
 
 
-export function initReplacePaletteCallback(transition, type, rules, replaceChoiceSelector, replaceSelector) {
+export function initReplacePaletteCallback(transition, type, rules, replaceChoiceSelector, replaceSelector, createReplaceStep) {
 	
 	if (replaceChoiceSelector == undefined) {
 		replaceChoiceSelector = initDefaultReplaceChoiceSelector(type);
@@ -29,30 +29,31 @@ export function initReplacePaletteCallback(transition, type, rules, replaceChoic
 		replaceSelector = initDefaultReplaceSelector(type);
 	}
 	
-	return function(palette, palettePanel) {
+	if (createReplaceStep == undefined) {
 		
-		function getElementUri(e) {
-			var paletteId = palettePanel.getAttribute("id");
-			var id = e.getAttribute("id");
-			return palettePanel.getAttribute("k9-palette-uri")+".xml#"+id.substring(0, id.length - paletteId.length);	
-		}
-
-		function createReplaceStep(e, drop) {			
-			return {
+		
+		createReplaceStep = function(transition, e, drop, palettePanel) {			
+			const paletteId = palettePanel.getAttribute("id");
+			const id = drop.getAttribute("id");
+			const uri = palettePanel.getAttribute("k9-palette-uri")+".xml#"+id.substring(0, id.length - paletteId.length);	
+			
+			transition.push({
 				"type": 'ADLReplace',
 				"fragmentId": e.getAttribute('id'),
-				"uriStr": getElementUri(drop),
+				"uriStr": uri,
 				...rules
-			}
+			});
 		}
+	}
 	
+	return function(palette, palettePanel) {
 		function click(event) {
 			if (palette.getCurrentSelector() == type) {
 				const selectedElements = replaceSelector();
 				const droppingElement = palette.get().querySelector("[id].mouseover")
-				const data = Array.from(selectedElements).map(e => createReplaceStep(e, droppingElement));
+				Array.from(selectedElements).forEach(e => createReplaceStep(transition, e, droppingElement, palettePanel));
 				palette.destroy();		
-				transition.postCommands(data);
+				transition.postCommandList();
 				event.stopPropagation();
 			}
 		}

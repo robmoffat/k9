@@ -62,7 +62,7 @@ import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.j
 
 // grid
 import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
-
+import { replaceCellSelector, initGridReplacePaletteCallback } from '/public/behaviours/grid/replace/replace.js';
 
 var initialized = false;
 
@@ -84,7 +84,7 @@ function initEditor() {
 		initLinkPaletteCallback(),
 		initReplacePaletteCallback(transition, 'end', {keptAttributes: ['id', 'reference'], approach: 'ATTRIBUTES'}),
 		initReplacePaletteCallback(transition, 'link', {approach: 'SHALLOW'}),
-		initReplacePaletteCallback(transition, 'replace-cell', {approach: 'SHALLOW', keptAttributes: ['id']}),
+		initGridReplacePaletteCallback(transition, 'replace-cell'),
 		initReplacePaletteCallback(transition, 'replace-connected', {approach: 'SHALLOW', keptAttributes: ['id']}),
 	], document.params['palettes']);
 	
@@ -109,7 +109,7 @@ function initEditor() {
 		initReplaceContextMenuCallback(palette, 'end'),
 		initReplaceContextMenuCallback(palette, 'link'),
 		initReplaceContextMenuCallback(palette, 'replace-connected'),
-		initReplaceContextMenuCallback(palette, 'replace-cell'),
+		initReplaceContextMenuCallback(palette, 'replace-cell', replaceCellSelector),
 		initEditContextMenuCallback(transition),
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),

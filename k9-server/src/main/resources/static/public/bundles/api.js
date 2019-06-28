@@ -182,6 +182,8 @@ export function handleTransformAsStyle(e) {
 var lastId = 1;
 
 export function createUniqueId() {
+	lastId++;
+	
 	while (document.getElementById(""+lastId)) {
 		lastId++;
 	}
