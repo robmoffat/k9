@@ -153,8 +153,9 @@ export function initCellMoveCallback() {
 	return function (dragTargets, event, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
 		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
+		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
 		const pos = getSVGCoords(event);
-		if (cellDropTargets.length == 1) {
+		if ((cellDropTargets.length == 1) && (cellDragTargets.length == dragTargets.length)) {
 			// draw a bar on the closest side 
 			const box = getElementPageBBox(cellDropTargets[0]);
 			side = closestSide(pos, box);
