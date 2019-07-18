@@ -152,7 +152,6 @@ export function initCellMoveCallback() {
 	
 	return function (dragTargets, event, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
-		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
 		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
 		const pos = getSVGCoords(event);
 		if ((cellDropTargets.length == 1) && (cellDragTargets.length == dragTargets.length)) {
@@ -171,29 +170,6 @@ export function initCellMoveCallback() {
 			}
 			
 		} 
-//		else if (gridDropTargets.length == 1) {
-//			// draw a bar for where we are nearest.
-//			const grid = gridDropTargets[0];
-//			const box = getElementPageBBox(grid);
-//			side = closestSide(pos, box);
-//			
-//			switch (side) {
-//			case UP:
-//			case DOWN:
-//				var info = parseInfo(grid);
-//				var relativeP = pos.x - box.x;
-//				var columns = info['cell-xs'];
-//				var i = closestGap(relativeP, columns);
-//				return drawBar(columns[i] + box.x, box.y, columns[i] + box.x, box.y+box.height);
-//			case LEFT:
-//			case RIGHT:
-//				var info = parseInfo(grid);
-//				var relativeP = pos.y - box.y;
-//				var columns = info['cell-ys'];
-//				var i = closestGap(relativeP, columns);
-//				return drawBar(box.x, columns[i] + box.y, box.x + box.width, columns[i] + box.y);
-//			}
-//		}
 
 		clearBar();
 	}
@@ -203,6 +179,57 @@ export function initCellMoveCallback() {
 
 export function initCellDropCallback(transition) {
 	
+	function getOrdinals(container) {
+		var xOrdinals = {
+			max: Number.MIN_SAFE_INTEGER,
+			min: Number.MAX_SAFE_INTEGER
+		}
+		var yOrdinals = {
+			max: Number.MIN_SAFE_INTEGER,
+			min: Number.MAX_SAFE_INTEGER
+		};
+		
+		Array.from(container.children).forEach(e => {
+			const details = parseInfo(e);
+			if ((details != null) && (details['position']) && details['grid-x']) {
+				const position = details['position'];
+				const gridX = details['grid-x'];
+				const gridY = details['grid-y'];
+				
+				xOrdinals[gridX[0]] = position[0];
+				yOrdinals[gridY[0]] = position[2];
+				xOrdinals.max = Math.max(xOrdinals.max, gridX[0]);
+				xOrdinals.min = Math.min(xOrdinals.min, gridX[0]);
+				yOrdinals.max = Math.max(yOrdinals.max, gridY[0]);
+				yOrdinals.min = Math.min(yOrdinals.min, gridY[0]);
+			}
+		});
+		
+		return {
+			xOrdinals: xOrdinals,
+			yOrdinals: yOrdinals
+		}
+	}
+	
+	function isOccupied(container, x, y) {
+		return Array.from(container.children)
+			.map(e => {
+				const details = parseInfo(e);
+				if ((details != null) && (details['position']) && (!e.classList.contains('grid-temporary'))) {
+					const minX = details['position'][0];
+					const maxX = details['position'][1];
+					const minY = details['position'][2];
+					const maxY = details['position'][3];
+					
+					const out = ((minX<=x) && (maxX>=x) && (minY<=y) && (maxY>=y));
+					return out;
+				}
+				
+				return false;
+			})
+			.reduce((a,b) => a||b)
+	}
+	
 	function calculateArea(dragTargets, moverX, moverY) {
 		
 		function up1(area, change) {
@@ -211,14 +238,13 @@ export function initCellDropCallback(transition) {
 		}
 		
 		if (moverX == undefined) {
-			moverX = [ 0, 0 ];
-			moverY = [0 , 0];
+			moverX = [0, 0];
+			moverY = [0, 0];
 		}
 		
 		var out = {
 			x: [10000, -10000],
 			y: [10000, -10000],
-			overlap: true,
 			items: {}
 		}
 		
@@ -231,25 +257,30 @@ export function initCellDropCallback(transition) {
 			up1(out.y, dragY);
 			
 			out.items[dt.getAttribute("id")] = {
-				dx: moverX[0] - dragX[0],
-				dy: moverY[0] - dragY[0]
+				dx: dragX[0] - moverX[0],
+				dy: dragY[0] - moverY[0] 
 			}
 		});
 		
+		
+		console.log("Area: "+JSON.stringify(out));
 		return out;
 		
 	}
 	
-	function getPush(area, moverX, moverY) {
-		switch (side) {
-		case UP:
-			return { from: moverY[0], horiz: false, push: area.y[1]-area.y[0]};
-		case DOWN:
-			return { from: moverY[1]+1, horiz: false, push: area.y[1]-area.y[0]};
-		case LEFT:
-			return { from: moverX[0], horiz: true, push: area.x[1]-area.x[0]};
-		case RIGHT:
-			return { from: moverY[1]+1, horiz: true, push: area.x[1]-area.x[0]};
+	function getPush(area, to, xOrdinals, yOrdinals) {
+		if ((side == UP) || (side==DOWN)) {
+			const d = area.y[1]- area.y[0];
+			const place = to.y;
+			const from = getOrdinal(place, yOrdinals);
+			const dist = getOrdinal(place + d, yOrdinals) - from;
+			return { from: from, horiz: false, push: dist};
+		} else {
+			const d = area.x[1]- area.x[0];
+			const place = to.x;
+			const from = getOrdinal(place, xOrdinals);
+			const dist = getOrdinal(place + d, xOrdinals) - from;
+			return { from: from, horiz: true, push: dist};
 		}
 	}
 	
@@ -266,66 +297,92 @@ export function initCellDropCallback(transition) {
 		}
 	}
 	
+	function getOrdinal(index, ordinals) {
+		
+		if (index < ordinals.min) {
+			return ordinals[ordinals.min] - (index + ordinals.min);
+		} else if (index >= ordinals.max) {
+			return ordinals[ordinals.max] + (index - ordinals.max);
+		} else {
+			return ordinals[index];
+		}
+	}
+	
+	
 	return function(dragTargets, evt, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
 		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
 		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
 		const mover = dragTargets.filter(dt => dt.classList.contains("lastSelected"))[0];
 		const moverInfo = parseInfo(mover);
-		const moverX = moverInfo['grid-x'];
-		const moverY = moverInfo['grid-y'];
+		const moverX = [ moverInfo['position'][0], moverInfo['position'][1] ];
+		const moverY = [ moverInfo['position'][2], moverInfo['position'][3] ];
 		
 		if (cellDragTargets.length != dragTargets.length) {
 			// can't drop here
 			return;
 		}
 
-		if ((cellDropTargets.length == 1) && (dragTargets.length == 1)) {
-			
-			const containerId = cellDropTargets[0].parentElement.getAttribute("id");
+		if (cellDropTargets.length == 1) {
+			// we're going to drop here.
+			const container = cellDropTargets[0].parentElement;
+			const containerId = container.getAttribute("id");
+
 			const dropInfo = parseInfo(cellDropTargets[0]);
 			const dropX = dropInfo['grid-x'];
 			const dropY = dropInfo['grid-y'];
+			console.log("drop: "+dropX+ " "+ dropY);
 			
 			const to = calculateTo(dropX, dropY);
-			const area = calculateArea(dragTargets, moverX, moverY);
+			const area = calculateArea(dragTargets, moverInfo['grid-x'], moverInfo['grid-y']);
+			const {xOrdinals, yOrdinals} = getOrdinals(container);
 			
-			// make space in the container for new cells
-			if (area.overlap) {
-				var { from, horiz, push } = getPush(area, dropX, dropY);
-				
-				transition.push({
-					type: 'ADLMoveCells',
-					fragmentId: containerId,
-					moveId: mover.getAttribute("id"),
-					from: from,
-					horiz: horiz,
-					push: push
-				})
-			}
-			
+			var needsPush = false;
+			const moveOperations = [];
 			dragTargets.forEach(dt => {
 				const id = dt.getAttribute("id");
 				
 				// move into container
-				transition.push({
+				moveOperations.push({
 					type: 'Move',
 					fragmentId: containerId,
 					moveId: id,
 				});
 				
-				var item = area.items[id];
+				const item = area.items[id];
+				const xOccupies = getOrdinal(to.x+item.dx,xOrdinals);
+				const yOccupies = getOrdinal(to.y+item.dy,yOrdinals);
+				
+				if (isOccupied(container, xOccupies, yOccupies)) {
+					needsPush = true;
+				}
 				
 				// set the position of the cell
-				transition.push({
+				moveOperations.push({
 					type: 'SetStyle',
 					fragmentId:  id,
 					name: 'kite9-occupies',
-					value: (to.x+item.dx)+" "+(to.y+item.dy)
+					value: xOccupies+" "+yOccupies
 				})
 			});
 			
+			if (needsPush) {
+				var { from, horiz, push } = getPush(area, to, xOrdinals, yOrdinals);
+				if (push != 0) {
+					console.log("Push: "+from+" "+horiz+" "+push);
+					
+					transition.push({
+						type: 'ADLMoveCells',
+						fragmentId: containerId,
+						moveId: mover.getAttribute("id"),
+						from: from,
+						horiz: horiz,
+						push: push
+					})
+				}
+			}
 			
+			moveOperations.forEach(mo => transition.push(mo));
 		}
 	}
 }

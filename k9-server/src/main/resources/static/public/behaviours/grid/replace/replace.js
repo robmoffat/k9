@@ -34,8 +34,9 @@ export function initGridReplacePaletteCallback(transition, type, replaceChoiceSe
 			const newId = createUniqueId();
 			const parent = getKite9Target(e.parentElement);
 			const rectInfo = parseInfo(e);
-			const newOccupies = rectInfo["grid-x"][0]+ " " + rectInfo["grid-x"][1] + " " +
-				rectInfo["grid-y"][0]+ " " + rectInfo["grid-y"][1] + " ";
+			const position = rectInfo['position'];
+			const newOccupies = position[0]+ " " + position[1] + " " +
+				position[2]+ " " + position[3] + " ";
 			
 			transition.push({
 				"type": 'Copy',
