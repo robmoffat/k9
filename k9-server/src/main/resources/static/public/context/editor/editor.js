@@ -61,8 +61,9 @@ import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback
 import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 // grid
-import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/cell.js';
+import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/cell/drag.js';
 import { replaceCellSelector, initGridReplacePaletteCallback } from '/public/behaviours/grid/replace/replace.js';
+import { initSelectContextMenuCallback } from '/public/behaviours/grid/select/select.js';
 
 var initialized = false;
 
@@ -114,6 +115,7 @@ function initEditor() {
 		initAlignContextMenuCallback(transition, document.params['align-template-uri']),
 		initDirectionContextMenuCallback(transition),
 		initLayoutContextMenuCallback(transition, initCellCreator(document.params['cell-template-uri'], transition)),
+		initSelectContextMenuCallback(),
 		initXCPContextMenuCallback(transition, metadata),
 		]); 
 	
