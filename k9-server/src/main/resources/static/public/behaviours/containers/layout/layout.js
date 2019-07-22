@@ -129,7 +129,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 	var rows = 2;
 	var cols = 2;
 
-	function addField(htmlElement, name, value, change) {
+	function addField(htmlElement, name, value, change, disabled) {
 		var container = document.createElement("div");
 		var label = document.createElement("label");
 		var input = document.createElement("input");
@@ -144,6 +144,9 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 		input.addEventListener("change", change);
 		label.setAttribute("for", name);
 		label.textContent = name + ":";
+		if (disabled) {
+			input.disabled = true;
+		}
 	}
 
 	if (selector == undefined) {
@@ -172,17 +175,22 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 				["none", "right", "down", "horizontal", "vertical", "left", "up"].forEach(s => {
 					var img2 = drawLayout(htmlElement, s, layout);
-					img2.addEventListener("click", () => setLayout(e, s, contextMenu, layout));
+					if (layout != s) {
+						img2.addEventListener("click", () => setLayout(e, s, contextMenu, layout));
+					} 
+					
 				});
 
 				var hr = document.createElement("hr");
 				htmlElement.appendChild(hr);
 
 				var img2 = drawLayout(htmlElement, 'grid', layout);
-				img2.addEventListener("click", () => setLayout(Array.from(selector()), 'grid', contextMenu, layout));
-
-				addField(htmlElement, "rows", rows, (evt) => rows = number(evt.target.value));
-				addField(htmlElement, "cols", cols, (evt) => cols = number(evt.target.value));
+				if (layout != 'grid') {
+					img2.addEventListener("click", () => setLayout(Array.from(selector()), 'grid', contextMenu, layout));
+				}
+	
+				addField(htmlElement, "rows", rows, (evt) => rows = number(evt.target.value), layout=='grid');
+				addField(htmlElement, "cols", cols, (evt) => cols = number(evt.target.value), layout=='grid');
 
 			}
 
