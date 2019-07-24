@@ -3,10 +3,10 @@ import { drawBar, getBefore, clearBar } from '/public/bundles/ordering.js';
 import { getElementPageBBox, getSVGCoords } from '/public/bundles/screen.js';
 import { getMainSvg } from '/public/bundles/screen.js';
 
-function isGrid(e) {
+function isEmptyGrid(e) {
 	var out = e.getAttribute("k9-info");
 	if (out.includes("layout: GRID;")) {
-		return true;
+		return calculateOccupation(e).length==0;
 	} 
 	
 	return false;
@@ -65,7 +65,7 @@ export function initCellDropLocator() {
 			return false;
 		}
 		
-		if ((!isGrid(dropTarget)) && (!isCell(dropTarget))) {
+		if ((!isEmptyGrid(dropTarget)) && (!isCell(dropTarget))) {
 			return false;
 		}
 
@@ -120,34 +120,34 @@ var moveCache = {
 	side: null
 }
 
+function calculateOccupation(container) {
+	
+	if (moveCache.container == container) {
+		return moveCache.occupation;
+	}
+	
+	var occupation = [];
+	
+	Array.from(container.children).forEach(e => {
+		const details = parseInfo(e);
+		if ((details != null) && details['grid-x']) {
+			const gridX = details['grid-x'];
+			const gridY = details['grid-y'];
+			
+			if (!e.classList.contains('grid-temporary')) {
+				occupation.push({x: gridX, y: gridY})
+			}
+		}
+	});
+	
+	moveCache.container = container;
+	moveCache.occupation = occupation;
+	
+	return occupation;
+}
+
 export function initCellMoveCallback() {
 	
-	function calculateOccupation(container) {
-		
-		if (moveCache.container == container) {
-			return moveCache.occupation;
-		}
-		
-		var occupation = [];
-		
-		Array.from(container.children).forEach(e => {
-			const details = parseInfo(e);
-			if ((details != null) && details['grid-x']) {
-				const gridX = details['grid-x'];
-				const gridY = details['grid-y'];
-				
-				if (!e.classList.contains('grid-temporary')) {
-					occupation.push({x: gridX, y: gridY})
-				}
-			}
-		});
-		
-		moveCache.container = container;
-		moveCache.occupation = occupation;
-		
-		return occupation;
-	}
-
 	function calculateArea(dragTargets) {
 		
 		function up1(area, change) {
@@ -256,26 +256,34 @@ export function initCellMoveCallback() {
 	return function (dragTargets, event, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
 		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
+		const gridDropTargets = dropTargets.filter(dt => isEmptyGrid(dt));
 		const pos = getSVGCoords(event);
-		if ((cellDropTargets.length == 1) && (cellDragTargets.length == dragTargets.length)) {
-			if (overlaps(cellDragTargets, cellDropTargets)) {
-				// draw a bar on the closest side 
-				const box = getElementPageBBox(cellDropTargets[0]);
-				moveCache.side = closestSide(pos, box);
-				switch (moveCache.side) {
-				case UP:
-					return drawBar(box.x, box.y, box.x + box.width, box.y);
-				case DOWN:
-					return drawBar(box.x, box.y+box.height, box.x + box.width, box.y+box.height);
-				case LEFT:
-					return drawBar(box.x, box.y, box.x, box.y+box.height);
-				case RIGHT:
-					return drawBar(box.x + box.width, box.y, box.x + box.width, box.y+box.height);
-				}			
-			} else {
-				moveCache.side = null;
+		if (cellDragTargets.length == dragTargets.length) {
+			if (cellDropTargets.length == 1) {
+				if (overlaps(cellDragTargets, cellDropTargets)) {
+					// draw a bar on the closest side 
+					const box = getElementPageBBox(cellDropTargets[0]);
+					moveCache.side = closestSide(pos, box);
+					switch (moveCache.side) {
+					case UP:
+						return drawBar(box.x, box.y, box.x + box.width, box.y);
+					case DOWN:
+						return drawBar(box.x, box.y+box.height, box.x + box.width, box.y+box.height);
+					case LEFT:
+						return drawBar(box.x, box.y, box.x, box.y+box.height);
+					case RIGHT:
+						return drawBar(box.x + box.width, box.y, box.x + box.width, box.y+box.height);
+					}			
+				} else {
+					moveCache.side = null;
+				}
+			} else if (gridDropTargets.length == 1) {
+				moveCache.container = gridDropTargets[0];
+				moveCache.occupation = [];
+				calculateArea(cellDragTargets);
 			}
-		} 
+		}
+		
 
 		clearBar();
 	}
@@ -357,22 +365,23 @@ export function initCellDropCallback(transition) {
 	return function(dragTargets, evt, dropTargets) {
 		const cellDropTargets = dropTargets.filter(dt => isCell(dt));
 		const cellDragTargets = dragTargets.filter(dt => isCell(dt));
-		const gridDropTargets = dropTargets.filter(dt => isGrid(dt));
+		const gridDropTargets = dropTargets.filter(dt => isEmptyGrid(dt));
 	
 		if (cellDragTargets.length != dragTargets.length) {
 			// can't drop here
 			return;
 		}
 		
-		if (cellDropTargets.length == 1) {
+		if ((cellDropTargets.length == 1) || (gridDropTargets.length == 1)) {
 			// we're going to drop here.
+			const cellDrop = cellDropTargets.length == 1;
 			const container = moveCache.container
 			const containerId = container.getAttribute("id");
 			const {xOrdinals, yOrdinals} = getOrdinals(container);
 			
-			const dropInfo = parseInfo(dropTargets[0]);
-			const dropX = dropInfo['grid-x'];
-			const dropY = dropInfo['grid-y'];
+			const dropInfo = cellDrop ? parseInfo(dropTargets[0]) : {};
+			const dropX = cellDrop ? dropInfo['grid-x'] : [ 0, 0 ];
+			const dropY = cellDrop ? dropInfo['grid-y'] : [ 0, 0 ];
 			var to = {x: dropX[0],y: dropY[0] };
 			
 			if (moveCache.side) {
@@ -398,22 +407,25 @@ export function initCellDropCallback(transition) {
 					moveId: id,
 				});
 				
-				const item = moveCache.area.items[id];
-				if (item) {
-					const position = getOrdinal(to.x+item.dx[0],xOrdinals) + " " + 
-					getOrdinal(to.x+item.dx[1]-1,xOrdinals) + " " + 
-					getOrdinal(to.y+item.dy[0],yOrdinals) + " " + 
-					getOrdinal(to.y+item.dy[1]-1,yOrdinals);
-				
-				
-					// set the position of the cell
-					transition.push({
-						type: 'SetStyle',
-						fragmentId:  id,
-						name: 'kite9-occupies',
-						value: position
-					})
+				if (cellDrop) {
+					const item = moveCache.area.items[id];
+					if (item) {
+						const position = getOrdinal(to.x+item.dx[0],xOrdinals) + " " + 
+						getOrdinal(to.x+item.dx[1]-1,xOrdinals) + " " + 
+						getOrdinal(to.y+item.dy[0],yOrdinals) + " " + 
+						getOrdinal(to.y+item.dy[1]-1,yOrdinals);
+					
+					
+						// set the position of the cell
+						transition.push({
+							type: 'SetStyle',
+							fragmentId:  id,
+							name: 'kite9-occupies',
+							value: position
+						})
+					}					
 				}
+
 				
 			});
 			
