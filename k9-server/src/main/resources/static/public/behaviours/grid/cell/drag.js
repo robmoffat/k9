@@ -24,13 +24,18 @@ function isCell(e) {
 }
 
 /**
- * This will only allow you to drag cells.
+ * This will only allow you to drag cells from the container which is the mover.
  */
 export function initCellDragLocator(selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return Array.from(document.querySelectorAll("[id][k9-ui~='cell'].selected, [id][k9-ui~='cell'].mouseover"))
+			moveCache = {};
+			const allCells = Array.from(document.querySelectorAll("[id][k9-ui~='cell'].selected, [id][k9-ui~='cell'].mouseover"))
+			const mover = allCells.filter(dt => dt.classList.contains("lastSelected"))[0];
+			const container = mover.parentElement;
+			const cellsInContainer = allCells.filter(c => c.parentElement == container);
+			return cellsInContainer;
 		}
 	}
 	
@@ -142,6 +147,7 @@ function calculateOccupation(container) {
 	
 	moveCache.container = container;
 	moveCache.occupation = occupation;
+	moveCache.side = undefined;
 	
 	return occupation;
 }
@@ -384,7 +390,7 @@ export function initCellDropCallback(transition) {
 			const dropY = cellDrop ? dropInfo['grid-y'] : [ 0, 0 ];
 			var to = {x: dropX[0],y: dropY[0] };
 			
-			if (moveCache.side) {
+			if ((moveCache.side) && (container == moveCache.container)) {
 				var { from, horiz, push } = getPush(moveCache.area, to, xOrdinals, yOrdinals);
 				console.log("Push: "+from+" "+horiz+" "+push);
 				
@@ -429,7 +435,6 @@ export function initCellDropCallback(transition) {
 				
 			});
 			
-			moveCache = {};
 		}
 	}
 }
