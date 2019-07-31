@@ -20,7 +20,8 @@ export function initCellCreator(templateUri, transition) {
 			type: 'Copy',
 			fragmentId: parentId,
 			uriStr: templateUri,
-			newId: newId
+			newId: newId,
+			deep : true
 		}); 
 		
 		transition.push({

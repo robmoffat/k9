@@ -11,15 +11,18 @@ public class Copy extends AbstractLocatedCommand {
 
 	protected String uriStr;		// to insert.	
 	protected String newId;
+	protected boolean deep;
+	
 	
 	public Copy() {
 		super();
 	}
 	
-	public Copy(String fragmentId, String fragmentHash, String beforefragmentId, String uriStr, String newId) {
+	public Copy(String fragmentId, String fragmentHash, String beforefragmentId, String uriStr, String newId, boolean deep) {
 		super(fragmentId, fragmentHash, beforefragmentId);
 		this.uriStr = uriStr;
 		this.newId = newId;
+		this.deep = deep;
 	}
 
 	@Override
@@ -38,7 +41,7 @@ public class Copy extends AbstractLocatedCommand {
 	}
 
 	protected Element performCopy(URI baseUri, ADLDocument doc, String newId, ADL adl) {
-		Element insert = getForeignElementCopy(doc, baseUri, uriStr, true, adl);
+		Element insert = getForeignElementCopy(doc, baseUri, uriStr, deep, adl);
 		doc.adoptNode(insert);
 		
 		insert(doc, insert);

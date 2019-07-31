@@ -2,26 +2,8 @@ import { parseInfo, getParentElement, isConnected, isDiagram, getContainerChildr
 import { drawBar, getBefore, clearBar } from '/public/bundles/ordering.js';
 import { getElementPageBBox, getSVGCoords } from '/public/bundles/screen.js';
 import { getMainSvg } from '/public/bundles/screen.js';
+import { isCell, isEmptyGrid, getOrdinal, getOrdinals  } from '/public/behaviours/grid/common-grid.js'; 
 
-function isEmptyGrid(e) {
-	var out = e.getAttribute("k9-info");
-	if (out.includes("layout: GRID;")) {
-		return calculateOccupation(e).length==0;
-	} 
-	
-	return false;
-}
-
-function isCell(e) {
-	if (e.hasAttribute("k9-info")) {
-		var out = e.getAttribute("k9-info");
-		if (out.includes("grid-x")) {
-			return true;
-		} 
-	}
-	
-	return false;
-}
 
 /**
  * This will only allow you to drag cells from the container which is the mover.
@@ -32,10 +14,14 @@ export function initCellDragLocator(selector) {
 		selector = function() {
 			moveCache = {};
 			const allCells = Array.from(document.querySelectorAll("[id][k9-ui~='cell'].selected, [id][k9-ui~='cell'].mouseover"))
-			const mover = allCells.filter(dt => dt.classList.contains("lastSelected"))[0];
-			const container = mover.parentElement;
-			const cellsInContainer = allCells.filter(c => c.parentElement == container);
-			return cellsInContainer;
+			if (allCells.length > 0) {
+				const mover = allCells.filter(dt => dt.classList.contains("lastSelected"))[0];
+				const container = mover.parentElement;
+				const cellsInContainer = allCells.filter(c => c.parentElement == container);
+				return cellsInContainer;
+			} else {
+				return [];
+			}
 		}
 	}
 	
@@ -298,57 +284,6 @@ export function initCellMoveCallback() {
 
 
 export function initCellDropCallback(transition) {
-	
-	function getOrdinal(index, ordinals) {
-		
-		if (index < ordinals.min) {
-			return ordinals[ordinals.min] - (index + ordinals.min);
-		} else if (index >= ordinals.max) {
-			return ordinals[ordinals.max] + (index - ordinals.max);
-		} else {
-			var carry = 0;
-			while (ordinals[index] == undefined) {
-				index--;
-				carry++;
-			}
-			return ordinals[index]+carry;
-		}
-	}
-	
-	function getOrdinals(container) {
-		var xOrdinals = {
-			max: Number.MIN_SAFE_INTEGER,
-			min: Number.MAX_SAFE_INTEGER
-		}
-		var yOrdinals = {
-			max: Number.MIN_SAFE_INTEGER,
-			min: Number.MAX_SAFE_INTEGER
-		};
-		
-		Array.from(container.children).forEach(e => {
-			const details = parseInfo(e);
-			if ((details != null) && (details['position']) && details['grid-x']) {
-				const position = details['position'];
-				const gridX = details['grid-x'];
-				const gridY = details['grid-y'];
-				
-				xOrdinals[gridX[0]] = position[0];
-				xOrdinals[gridX[1]-1] = position[1];
-				yOrdinals[gridY[0]] = position[2];
-				yOrdinals[gridY[1]-1] = position[3];
-				
-				xOrdinals.max = Math.max(xOrdinals.max, gridX[1]-1);
-				xOrdinals.min = Math.min(xOrdinals.min, gridX[0]);
-				yOrdinals.max = Math.max(yOrdinals.max, gridY[1]-1);
-				yOrdinals.min = Math.min(yOrdinals.min, gridY[0]);
-			}
-		});
-	
-		return {
-			xOrdinals: xOrdinals,
-			yOrdinals: yOrdinals,
-		}
-	}
 	
 	function getPush(area, to, xOrdinals, yOrdinals) {
 		if ((moveCache.side == UP) || (moveCache.side==DOWN)) {

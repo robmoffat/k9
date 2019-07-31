@@ -42,7 +42,8 @@ export function initGridReplacePaletteCallback(transition, type, replaceChoiceSe
 				"type": 'Copy',
 				"fragmentId": parent.getAttribute('id'),
 				"uriStr": uri,
-				"newId": newId
+				"newId": newId,
+				"deep" : true
 			});
 			
 			transition.push({

@@ -40,7 +40,8 @@ export function initInsertPaletteCallback(transition, insertableSelector, insert
 				"type": 'Copy',
 				"fragmentId": e.getAttribute('id'),
 				"uriStr": getElementUri(drop),
-				"beforeFragmentId" : beforeId
+				"beforeFragmentId" : beforeId,
+				"deep" : true
 			}
 		}
 	

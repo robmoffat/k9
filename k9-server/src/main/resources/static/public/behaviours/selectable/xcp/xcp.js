@@ -62,7 +62,8 @@ export function initXCPContextMenuCallback(transition, metadata, cutSelector, co
 					"type": 'Copy',
 					"fragmentId": d.getAttribute('id'),
 					"uriStr": uri,
-					"beforeFragmentId" : beforeId
+					"beforeFragmentId" : beforeId,
+					"deep" : true
 				});
 			});
 		})

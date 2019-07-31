@@ -18,7 +18,7 @@ public class CopyLink extends Copy {
 	}
 
 	public CopyLink(String fragmentId, String templateUri, String fromId, String toId, String linkId) {
-		super(fragmentId, null, null, templateUri, linkId);
+		super(fragmentId, null, null, templateUri, linkId, true);
 		this.fromId = fromId;
 		this.toId = toId;
 	}

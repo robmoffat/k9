@@ -38,7 +38,8 @@ export function initContainPaletteCallback(transition, containableSelector, cont
 				"type": 'Copy',
 				"uriStr": getElementUri(drop),
 				"beforeFragmentId" : e.getAttribute("id"),
-				"newId": newId
+				"newId": newId,
+				"deep" : true
 			}
 		}
 		

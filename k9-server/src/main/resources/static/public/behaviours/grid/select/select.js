@@ -28,7 +28,7 @@ export function initSelectContextMenuCallback(selector) {
 					const intersect = horiz ? intersects(details['grid-y'], range) :
 						intersects(details['grid-x'], range);
 				
-					if (intersect && (!f.classList.contains('grid-temporary'))) {
+					if (intersect) { //&& (!f.classList.contains('grid-temporary'))) {
 						f.classList.add("selected");
 					}
 				}

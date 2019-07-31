@@ -5,7 +5,8 @@ export function createInsertContainerLabelStep(e, templateUri, transition) {
 	transition.push({
 		"type": 'Copy',
 		"fragmentId": e.getAttribute('id'),
-		"uriStr": templateUri
+		"uriStr": templateUri,
+		"deep" : true
 	});
 }
 
@@ -45,7 +46,8 @@ export function createInsertLinkLabelStep(e, templateUri, transition) {
 		"type": 'Copy',
 		"fragmentId": linkId,
 		"uriStr": templateUri,
-		"newId" : newId
+		"newId" : newId,
+		"deep" : true
 	});
 	
 	transition.push({
