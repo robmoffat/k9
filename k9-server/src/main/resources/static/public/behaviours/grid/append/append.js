@@ -53,8 +53,8 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 			ordinalItems[pos] = ordinalItems[pos] ? [ ...ordinalItems[pos], e ] : [ e ];
 		})
 		
-		// 2. Perform move operations to make space withi
-		const order = Object.keys(ordinalChangeMap).sort((a,b) => b-a);
+		// 2. Perform move operations to make space with
+		const order = Object.keys(ordinalChangeMap).sort((a,b) => a-b);
 		const ordinals = horiz ? xOrdinals : yOrdinals;
 		
 		order.forEach(o => {
@@ -62,21 +62,24 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 			const containerId = container.getAttribute("id");
 
 			// first, move the other ordinals down.
+			const position = ordinalChangeMap[o];
+			const change = nextOrdinal(ordinalChangeMap[o], ordinals) - ordinalChangeMap[o];
 			order.forEach(o2 =>  { 
 				if (o2 >= o) { 
-					ordinalChangeMap[o2] = nextOrdinal(ordinalChangeMap[o2], ordinals);
+					ordinalChangeMap[o2] = ordinalChangeMap[o2] + change;
 				}
 			});
-			const distance = ordinalChangeMap[o] - o;
+			
+			// apply the move command on the server
 			transition.push({
 				type: 'ADLMoveCells',
 				fragmentId: containerId,
 				from: from,
 				horiz: horiz,
-				push: distance
+				push: change
 			})
 			
-			// now, introduce a line of cells
+			// now, introduce a line of cells in position
 			ordinalItems[o].forEach(item => {
 				
 				const newId = createUniqueId();
@@ -91,10 +94,10 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 				
 				const itemPos = itemPositions[item.getAttribute("id")];
 				const newPos = [
-					horiz ? o : itemPos[0],
-					horiz ? o : itemPos[1],
-					!horiz ? o : itemPos[2],
-					!horiz ? o : itemPos[3]
+					horiz ? position : itemPos[0],
+					horiz ? position : itemPos[1],
+					!horiz ? position : itemPos[2],
+					!horiz ? position : itemPos[3]
 				];
 				
 				// set the position of the cell

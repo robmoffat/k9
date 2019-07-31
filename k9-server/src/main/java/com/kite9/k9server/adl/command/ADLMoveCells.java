@@ -44,6 +44,7 @@ public class ADLMoveCells extends AbstractCommand {
 		adl.getTranscoder().ensureCSSEngine(doc);
 		validateFragmentHash(adl);
 		Element container = doc.getElementById(fragmentId);	
+		int moved = 0;
 		
 		NodeList contents = container.getChildNodes();
 		for (int i = 0; i < contents.getLength(); i++) {
@@ -57,23 +58,30 @@ public class ADLMoveCells extends AbstractCommand {
 					if (horiz) {
 						if (xr.getFrom() >= from) {
 							xr = new IntegerRangeValue(xr.getFrom() + push, xr.getTo() + push);
+							moved++;
 						} else if (xr.getTo() >= from) {
 							xr = new IntegerRangeValue(xr.getFrom(), xr.getTo() + push);
+							moved++;
 						}
 						
 						sd.setProperty(CSSConstants.GRID_OCCUPIES_X_PROPERTY, xr.getCssText(), "");
+						el.setComputedStyleMap("", null);  // clears cache
 					} else {
 						if (yr.getFrom() >= from) {
 							yr = new IntegerRangeValue(yr.getFrom() + push, yr.getTo() + push);
+							moved++;
 						} else if (yr.getTo() >= from) {
 							yr = new IntegerRangeValue(yr.getFrom(), yr.getTo() + push);
+							moved++;
 						}
 						
 						sd.setProperty(CSSConstants.GRID_OCCUPIES_Y_PROPERTY, yr.getCssText(), "");
+						el.setComputedStyleMap("", null);  // clears cache
 					}
 				}
 			}
 		}
+		LOG.info("Processed move from "+from+" push "+push+" horiz="+horiz+",moved="+moved);
 		
 		return adl;
 	}

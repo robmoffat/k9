@@ -36,7 +36,7 @@ public class Copy extends AbstractLocatedCommand {
 			throw new CommandException("Couldn't copy", e, this);
 		}
 		
-		LOG.info("Processed insert into "+fragmentId);
+		LOG.info("Processed copy into "+fragmentId);
 		return adl;
 	}
 
