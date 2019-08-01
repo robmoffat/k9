@@ -45,7 +45,7 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 				horiz = true;
 				break;
 			case 'right':
-				pos = nextOrdinal(position[1], yOrdinals);
+				pos = nextOrdinal(position[1], xOrdinals);
 				horiz = true;
 				break;			
 			}

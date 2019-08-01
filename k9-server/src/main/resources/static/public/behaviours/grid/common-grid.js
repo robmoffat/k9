@@ -1,15 +1,5 @@
 import { parseInfo } from '/public/bundles/api.js';
 
-
-export function isEmptyGrid(e) {
-	var out = e.getAttribute("k9-info");
-	if (out.includes("layout: GRID;")) {
-		return calculateOccupation(e).length==0;
-	} 
-	
-	return false;
-}
-
 export function isCell(e) {
 	if (e.hasAttribute("k9-info")) {
 		var out = e.getAttribute("k9-info");

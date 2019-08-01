@@ -2,8 +2,16 @@ import { parseInfo, getParentElement, isConnected, isDiagram, getContainerChildr
 import { drawBar, getBefore, clearBar } from '/public/bundles/ordering.js';
 import { getElementPageBBox, getSVGCoords } from '/public/bundles/screen.js';
 import { getMainSvg } from '/public/bundles/screen.js';
-import { isCell, isEmptyGrid, getOrdinal, getOrdinals  } from '/public/behaviours/grid/common-grid.js'; 
+import { isCell, getOrdinal, getOrdinals  } from '/public/behaviours/grid/common-grid.js'; 
 
+function isEmptyGrid(e) {
+	var out = e.getAttribute("k9-info");
+	if (out.includes("layout: GRID;")) {
+		return calculateOccupation(e).length==0;
+	} 
+	
+	return false;
+}
 
 /**
  * This will only allow you to drag cells from the container which is the mover.
