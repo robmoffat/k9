@@ -3,7 +3,6 @@
   <svg:defs>
     <svg:style type="text/css"> 
     @import url("/public/examples/risk-first/risk-first.css");
-    @import url("/public/context/editor/editor.css");
     </svg:style>
   </svg:defs>
 

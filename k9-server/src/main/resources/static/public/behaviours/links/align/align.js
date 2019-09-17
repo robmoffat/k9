@@ -55,7 +55,8 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 				newId: linkId,
 				fromId: from.getAttribute("id"),
 				toId: to.getAttribute("id"),
-				uriStr: templateUri
+				uriStr: templateUri,
+				deep: true
 			});
 		} else {
 			linkId = toUseId;

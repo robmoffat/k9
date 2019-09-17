@@ -1,5 +1,5 @@
 import { getMainSvg, getElementPageBBox } from '/public/bundles/screen.js';
-import { parseInfo, createUniqueId, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target } from '/public/bundles/api.js';
+import { parseInfo, createUniqueId, getContainingDiagram, reverseDirection, getExistingConnections, getKite9Target, getCommonContainer } from '/public/bundles/api.js';
 
 var link = null;
 var link_to = undefined;
@@ -98,7 +98,8 @@ export function initAutoConnectDropCallback(transition, templateUri) {
 					newId: linkId,
 					fromId: id_from,
 					toId: id_to,
-					uriStr: templateUri
+					uriStr: templateUri,
+					deep: true
 				});
 				
 				transition.push({
@@ -141,17 +142,39 @@ export function initAutoConnectMoveCallback(selector, canAutoConnect) {
 	}
 	
 	if (canAutoConnect == undefined) {
-		canAutoConnect = function(e, dropTarget) {
-			var info = parseInfo(getKite9Target(dropTarget));
-			var layout = info.layout;
+		canAutoConnect = function(moving, inside, linkTo) {
 			
-			if ((layout == null) || (layout == 'null')) {
-				var ui = e.getAttribute("k9-ui");
-				return (ui == undefined ? "" : ui).includes("autoconnect");
-			} else {
-				// we don't do auto-connect inside directed containers. Too confusing.
-				return false;
+			if (moving) {
+				var ui = moving.getAttribute("k9-ui");
+				ui == undefined ? "" : ui;
+				
+				if (!ui.includes("autoconnect")) {
+					return false;
+				}
 			}
+			
+			if (inside) {
+				// check that we are allowed to auto-connect inside
+				const target = getKite9Target(inside);
+				const info = parseInfo(target);
+				const layout = info.layout;
+				if ((layout != null) && (layout != 'null')) {
+					return false;
+				}
+				
+				
+				if (linkTo) {
+					const target = getKite9Target(linkTo);
+					const commonContainer = getCommonContainer(inside, linkTo);
+					const commonInfo = parseInfo(commonContainer);
+					const commonLayout = commonInfo.layout;
+					if ((commonLayout != null) && (commonLayout != 'null')) {
+						return false;
+					}
+				}
+			}
+		
+			return true;
 		}
 	}
 	
@@ -287,6 +310,9 @@ export function initAutoConnectMoveCallback(selector, canAutoConnect) {
 		}
 				
 		if (best === undefined) {
+			clearLink();
+			link_to = undefined;
+		} else if (!canAutoConnect(draggingElement, event.target, best)) {
 			clearLink();
 			link_to = undefined;
 		} else if (best === link_to) {

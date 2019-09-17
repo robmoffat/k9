@@ -230,3 +230,33 @@ export function getContainerChildren(container, ignore = []) {
 	.filter(e => e.hasAttribute("k9-info"));
 	return allChildren;
 }
+
+export function xmlDepth(a) {
+	if (a == undefined) {
+		return 0;
+	} else {
+		return 1 + xmlDepth(a.parentNode);
+	}
+}
+
+export function getCommonContainer(a, b) {
+	var aDepth = xmlDepth(a);
+	var bDepth = xmlDepth(b);
+	
+	while (aDepth > bDepth) {
+		aDepth --;
+		a = a.parentNode;
+	}
+	
+	while (bDepth > aDepth) {
+		bDepth --;
+		b = b.parentNode;
+	}
+	
+	while (a != b) {
+		a = a.parentNode;
+		b = b.parentNode;
+	}
+	
+	return a;
+}
