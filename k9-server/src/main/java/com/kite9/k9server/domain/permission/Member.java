@@ -61,4 +61,20 @@ public class Member extends AbstractLongIdEntity implements Secured {
 		return project.checkAccess(a);
 		
 	}
+	
+	@Override
+	public String getLocalImagePath() {
+		return "/public/admin/icons/member.svg";
+	}
+
+	@Override
+	public String getTitle() {
+		return user.getUsername();
+	}
+
+	@Override
+	public String getDescription() {
+		return projectRole.toString().toLowerCase();
+	}
+	
 }

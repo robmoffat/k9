@@ -21,6 +21,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.kite9.diagram.batik.bridge.Kite9DocumentLoader;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
+import org.kite9.diagram.dom.Kite9DocumentFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;
@@ -68,9 +69,6 @@ public class ADLImpl implements ADL {
 	private Map<String, String> metadata = new HashMap<>();
 	
 	private HttpHeaders requestHeaders;
-	
-	public ADLImpl() {
-	}
 
 	public ADLImpl(URI uri, HttpHeaders requestHeaders) {
 		this.uri = uri;

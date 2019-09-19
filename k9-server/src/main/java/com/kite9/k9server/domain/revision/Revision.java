@@ -96,4 +96,26 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 		
 		return document.checkAccess(a);
 	}
+
+	@Override
+	public String getTitle() {
+		return author.getUsername();
+	}
+
+	@Override
+	public String getDescription() {
+		return "on "+document.getTitle();
+	}
+
+	@Override
+	public String getLocalImagePath() {
+		return "/public/admin/icons/revision.svg";
+	}
+
+	@Override
+	public Date getLastUpdated() {
+		return getDateCreated();
+	}
+	
+	
 }

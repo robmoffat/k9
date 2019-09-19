@@ -122,4 +122,9 @@ public class Project extends AbstractLongIdEntity implements Secured {
 		return false;
 	}
 	
+	@Override
+	public String getLocalImagePath() {
+		return "/public/admin/icons/project.svg";
+	}
+	
 }

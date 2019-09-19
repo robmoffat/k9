@@ -5,9 +5,5 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="button hoverable navigable animatable" href="signup.svg"><g class="bigtext">Sign Up</g></g>
-
-     <g id="b2" class="button hoverable navigable animatable" href="login.svg"><g class="bigtext">Log In</g></g>
-
   </diagram>
 </svg:svg>

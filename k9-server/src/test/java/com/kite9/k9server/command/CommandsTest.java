@@ -161,6 +161,7 @@ public class CommandsTest {
 		copy.fragmentId="The Diagram";
 		copy.beforeFragmentId="two";
 		copy.fragmentHash = "344d34b5c8803e8191dbaef1f0ebd698bde223b3";
+		copy.deep = true;
 		
 		ADL out = commandController.applyCommand(Collections.singletonList(copy), in);
 		performSaveAndCheck(out, "copy");

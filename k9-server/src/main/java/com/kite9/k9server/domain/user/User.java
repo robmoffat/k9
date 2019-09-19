@@ -260,4 +260,19 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	public List<Member> getMemberships() {
 		return memberships;
 	}
+
+	@Override
+	public String getTitle() {
+		return getUsername();
+	}
+
+	@Override
+	public String getDescription() {
+		return emailable ? "emailable" : "not emailable";
+	}
+
+	@Override
+	public String getLocalImagePath() {
+		return "/public/admin/icons/user.svg";
+	}
 }

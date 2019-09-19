@@ -2,9 +2,15 @@ package com.kite9.k9server.rest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
 
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -16,7 +22,6 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.adl.format.AbstractFormatBasedConverter;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 
 /**
  * Handles conversion of the Hateoas {@link ResourceSupport} objects to ADL, and therefore HTML, SVG etc..
@@ -27,7 +32,27 @@ import com.kite9.k9server.adl.holder.ADLImpl;
  *
  */
 @Component
-public class ResourceSupportHttpMessageConverter extends AbstractFormatBasedConverter<ResourceSupport> implements Ordered, GenericHttpMessageConverter<ResourceSupport> {
+public class ResourceSupportHttpMessageConverter 
+	extends AbstractFormatBasedConverter<ResourceSupport> 
+	implements Ordered, GenericHttpMessageConverter<ResourceSupport> {
+
+	@Value("${kite9.rest.template:classpath:/templates/api/document.xml}")
+	private String templateResource;
+	
+	private String template;
+	
+	@Autowired
+	ResourceLoader resourceLoader;
+	
+	@Autowired
+	ResourceSupportDOMBuilder domBuilder;
+	
+	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		super.afterPropertiesSet();
+		template = IOUtils.toString(resourceLoader.getResource(templateResource).getInputStream(), "UTF-8");
+	}
 
 	@Override
 	protected boolean supports(Class<?> clazz) {
@@ -81,7 +106,7 @@ public class ResourceSupportHttpMessageConverter extends AbstractFormatBasedConv
 
 	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) {
 		try {
-			ADL adl = convertToADL(t);
+			ADL adl = convertToADL(t, outputMessage.getHeaders().getLocation(), outputMessage.getHeaders());
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			
 		} catch (Exception e) {
@@ -89,9 +114,8 @@ public class ResourceSupportHttpMessageConverter extends AbstractFormatBasedConv
 		}
 	}
 	
-	protected ADL convertToADL(ResourceSupport t) {
-		// do something clever here.
-		return new ADLImpl();
+	protected ADL convertToADL(ResourceSupport t, URI u, HttpHeaders headers) {
+		return domBuilder.createDocument(t, template, u, headers);
 	}
 
 }
