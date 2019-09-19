@@ -23,7 +23,7 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	}
 	
 	@Autowired
-	ResourceSupportHttpMessageConverter kite9EntityHttpMessageConverter;
+	HateoasADLHttpMessageConverter kite9EntityHttpMessageConverter;
 
 	@Override
 	public void configureHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {

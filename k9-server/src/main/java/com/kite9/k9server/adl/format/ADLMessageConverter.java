@@ -7,10 +7,14 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.coyote.http11.AbstractHttp11JsseProtocol;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.core.Authentication;
@@ -26,7 +30,18 @@ import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.security.Hash; 
 
 @Component
-public class ADLMessageConverter extends AbstractFormatBasedConverter<ADL> {
+public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> implements InitializingBean {
+	
+
+	public static final Charset DEFAULT = Charset.forName("UTF-8");
+
+	@Autowired
+	protected FormatSupplier formatSupplier;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setSupportedMediaTypes(formatSupplier.getMediaTypes());
+	}
 	
 	@Override
 	protected boolean supports(Class<?> clazz) {

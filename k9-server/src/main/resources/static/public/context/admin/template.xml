@@ -1,0 +1,18 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl'>
+
+  <template id='box' k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-palette="insert replace-connected">
+    <back class="back" k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg;  '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
+    </back>
+    <contents />
+  </template>
+  
+  <template id="icon">
+    <svg:image x="0" y="0" width="50px" height="50px" xlink:href="http://localhost:8080/public/behaviours/containers/layout/down.svg" />
+  </template>
+  
+  <template id="text" k9-ui="orphan edit">
+    <contents />
+  </template>
+
+</svg:svg>
