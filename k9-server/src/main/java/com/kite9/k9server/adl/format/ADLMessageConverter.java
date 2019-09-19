@@ -27,7 +27,8 @@ import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.user.User;
-import com.kite9.k9server.security.Hash; 
+import com.kite9.k9server.security.Hash;
+import com.kite9.k9server.security.Kite9HeaderMeta; 
 
 @Component
 public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> implements InitializingBean {
@@ -90,21 +91,10 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> imple
 	@Override
 	protected void addDefaultHeaders(HttpHeaders headers, ADL t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
-		handleMetaData(t, headers);
+		Kite9HeaderMeta.addUserMeta(t);
+		Kite9HeaderMeta.transcribeMetaToHeaders(t, headers);
 	}
 
-	private void handleMetaData(ADL t, HttpHeaders headers) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		t.setMeta("user", authentication.getName());
-		
-		if (authentication.getDetails() instanceof User) {
-			t.setMeta("email", Hash.generateMD5Hash(((User)authentication.getDetails()).getEmail().toLowerCase()));
-		}
 
-		for (Map.Entry<String, String> item : t.getMetaData().entrySet()) {
-			headers.set("kite9-"+item.getKey(), item.getValue());
-		}
-	
-	}
 	
 }

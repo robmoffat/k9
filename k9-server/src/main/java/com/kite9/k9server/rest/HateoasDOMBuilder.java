@@ -22,6 +22,8 @@ import com.kite9.k9server.domain.Entity;
 
 @Service
 public class HateoasDOMBuilder implements InitializingBean {
+	
+	public static final HttpHeaders EMPTY_HEADERS = new HttpHeaders();
 
 	@Value("${kite9.rest.template:classpath:/static/public/context/admin/resource.xml}")
 	private String templateResource;
@@ -37,9 +39,9 @@ public class HateoasDOMBuilder implements InitializingBean {
 	}
 	
 	
-	public ADL createDocument(ResourceSupport rs, HttpHeaders headers) throws Exception {
+	public ADL createDocument(ResourceSupport rs) throws Exception {
 		URI u = new URI(rs.getId().getHref());
-		ADL container = new ADLImpl(template, u, headers);
+		ADL container = new ADLImpl(template, u, EMPTY_HEADERS);
 		
 		NodeList nl = container.getAsDocument().getRootElement().getElementsByTagName("diagram");
 		

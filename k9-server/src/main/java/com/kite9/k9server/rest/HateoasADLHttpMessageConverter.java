@@ -8,6 +8,7 @@ import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
  * Handles conversion of the Hateoas {@link ResourceSupport} objects to ADL, and therefore HTML, SVG etc..
@@ -57,11 +59,6 @@ public class HateoasADLHttpMessageConverter
 		return false;	// this is for display formats only.
 	}
 
-//	@Override
-//	public int getOrder() {
-//		return Ordered.LOWEST_PRECEDENCE-5;
-//	}
-
 	@Override
 	public boolean canRead(Type type, Class<?> contextClass, MediaType mediaType) {
 		return false;
@@ -90,11 +87,14 @@ public class HateoasADLHttpMessageConverter
 		Format f = formatSupplier.getFormatFor(contentType);
 		writeADL(t, outputMessage, f);
 	}
+	
+	
 
 	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) {
 		ADL adl = null;
 		try {
-			adl = domBuilder.createDocument(t, outputMessage.getHeaders());
+			adl = domBuilder.createDocument(t);
+			Kite9HeaderMeta.addUserMeta(adl);
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			 
 		} catch (Exception e) {
@@ -103,6 +103,13 @@ public class HateoasADLHttpMessageConverter
 			}
 			throw new HttpMessageNotWritableException("Caused by: "+e.getMessage(), e);
 		}
+	}
+
+
+	@Override
+	protected void addDefaultHeaders(HttpHeaders headers, ResourceSupport t, MediaType contentType) throws IOException {
+		super.addDefaultHeaders(headers, t, contentType);
+		Kite9HeaderMeta.addUserMeta(headers);
 	}
 
 
