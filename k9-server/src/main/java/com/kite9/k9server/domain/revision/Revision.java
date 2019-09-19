@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
@@ -97,21 +98,25 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 		return document.checkAccess(a);
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTitle() {
 		return author.getUsername();
 	}
-
+	
+	@JsonIgnore
 	@Override
 	public String getDescription() {
 		return "on "+document.getTitle();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
 		return "/public/admin/icons/revision.svg";
 	}
 
+	@JsonIgnore
 	@Override
 	public Date getLastUpdated() {
 		return getDateCreated();

@@ -3,6 +3,7 @@ package com.kite9.k9server.domain.user;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -261,18 +262,27 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 		return memberships;
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTitle() {
 		return getUsername();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getDescription() {
 		return emailable ? "emailable" : "not emailable";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
 		return "/public/admin/icons/user.svg";
+	}
+	
+	@JsonIgnore
+	@Override
+	public Date getLastUpdated() {
+		return null;
 	}
 }

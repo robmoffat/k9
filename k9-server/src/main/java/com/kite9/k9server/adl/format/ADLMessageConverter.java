@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.coyote.http11.AbstractHttp11JsseProtocol;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.adl.StreamHelp;
@@ -26,8 +22,6 @@ import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.format.media.MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.domain.user.User;
-import com.kite9.k9server.security.Hash;
 import com.kite9.k9server.security.Kite9HeaderMeta; 
 
 @Component

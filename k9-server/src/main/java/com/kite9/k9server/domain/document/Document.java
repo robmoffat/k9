@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
@@ -103,6 +104,7 @@ public class Document extends AbstractLongIdEntity implements Secured {
 		return project.checkAccess(a);
 	}
 
+	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
 		return "/public/admin/icons/document.svg";

@@ -21,7 +21,6 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.kite9.diagram.batik.bridge.Kite9DocumentLoader;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
-import org.kite9.diagram.dom.Kite9DocumentFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;

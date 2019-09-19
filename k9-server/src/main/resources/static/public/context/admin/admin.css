@@ -15,13 +15,15 @@ diagram,
 	cell-template-uri: url(/public/behaviours/grid/common-tables.xml#t1);
 }
 
-entity {
+entity,
+[k9-elem=entity] {
 	kite9-template: url(template.xml#box);
 	kite9-type: container;
 	kite9-padding: 10px;
 	kite9-sizing: minimize;
 	kite9-margin: 20px;
 	kite9-min-size: 100px 100px;
+	kite9-layout: down;
 	fill: #CCCCAA;
 	stroke: #AAAA88;
 	kite9-connection-align: 50%;
@@ -29,17 +31,45 @@ entity {
 }
 
 title,
-description {
+[k9-elem=title],
+description,
+[k9-elem=description],
+date,
+[k9-elem=date] {
 	kite9-type: text;
 	kite9-margin: 4px;
 	kite9-vertical-align: center;
 	kite9-connection-align: 50%;
 	kite9-horizontal-align: center;
+}
+
+title,
+[k9-elem=title] {
 	stroke: black;
 	fill: #333300;
 	font-family: "metropolis";
 	text-align: start;
 	font-size: 50px;
+	kite9-template: url(template.xml#text);
+}
+
+description,
+[k9-elem=description] {
+	stroke: #333333;
+	fill: #333300;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 30px;
+	kite9-template: url(template.xml#text);
+}
+	
+date,
+[k9-elem=date] {
+	stroke: #333333;
+	fill: #333300;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 30px;
 	kite9-template: url(template.xml#text);
 }
 

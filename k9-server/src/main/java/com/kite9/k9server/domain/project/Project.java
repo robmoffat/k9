@@ -3,6 +3,7 @@ package com.kite9.k9server.domain.project;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
@@ -122,9 +124,18 @@ public class Project extends AbstractLongIdEntity implements Secured {
 		return false;
 	}
 	
+	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
 		return "/public/admin/icons/project.svg";
 	}
+
+	@JsonIgnore
+	@Override
+	public Date getLastUpdated() {
+		return null;
+	}
+	
+	
 	
 }

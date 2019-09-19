@@ -13,8 +13,6 @@ public interface Entity {
 	
 	String getLocalImagePath();
 	
-	default Date getLastUpdated() {
-		return null;
-	}
+	Date getLastUpdated();
 
 }

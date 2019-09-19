@@ -1,11 +1,14 @@
 package com.kite9.k9server.domain.permission;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
@@ -62,19 +65,27 @@ public class Member extends AbstractLongIdEntity implements Secured {
 		
 	}
 	
+	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
 		return "/public/admin/icons/member.svg";
 	}
 
+	@JsonIgnore
 	@Override
 	public String getTitle() {
 		return user.getUsername();
 	}
 
+	@JsonIgnore
 	@Override
 	public String getDescription() {
 		return projectRole.toString().toLowerCase();
 	}
 	
+	@JsonIgnore
+	@Override
+	public Date getLastUpdated() {
+		return null;
+	}
 }
