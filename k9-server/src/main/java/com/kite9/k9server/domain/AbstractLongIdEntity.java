@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  *
  */
 @MappedSuperclass
-public abstract class AbstractLongIdEntity implements Entity {
+public abstract class AbstractLongIdEntity implements RestEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -51,5 +51,11 @@ public abstract class AbstractLongIdEntity implements Entity {
 		return true;
 	}
 	
-	
+	@Override
+	public String getType() {
+		String className = this.getClass().getCanonicalName();
+		className = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
+		return className;
+	}
+
 }

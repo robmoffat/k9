@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
@@ -88,4 +89,11 @@ public class Member extends AbstractLongIdEntity implements Secured {
 	public Date getLastUpdated() {
 		return null;
 	}
+	
+	@JsonIgnore
+	@Override
+	public RestEntity getParent() {
+		return project;
+	}
+	
 }

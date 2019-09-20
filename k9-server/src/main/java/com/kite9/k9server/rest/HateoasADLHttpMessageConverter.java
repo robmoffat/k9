@@ -30,7 +30,6 @@ import com.kite9.k9server.security.Kite9HeaderMeta;
  * @author robmoffat
  *
  */
-@Component
 public class HateoasADLHttpMessageConverter 
 	extends AbstractGenericHttpMessageConverter<ResourceSupport> 
 	implements InitializingBean {

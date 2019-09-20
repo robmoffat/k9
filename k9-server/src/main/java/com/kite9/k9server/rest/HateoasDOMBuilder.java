@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.domain.Entity;
+import com.kite9.k9server.domain.RestEntity;
 
 @Service
 public class HateoasDOMBuilder implements InitializingBean {
@@ -56,8 +56,8 @@ public class HateoasDOMBuilder implements InitializingBean {
 	}
 
 	private Element createElementFrom(Object rs, boolean topLevel, Document d) {
-		if (rs instanceof Entity) {
-			return createEntityElement((Entity) rs, d);
+		if (rs instanceof RestEntity) {
+			return createEntityElement((RestEntity) rs, d);
 		} else if (rs instanceof Resource) {
 			return createElementFrom(((Resource<?>) rs).getContent(), topLevel, d); 
 		} else if (rs instanceof Resources) {
@@ -68,7 +68,7 @@ public class HateoasDOMBuilder implements InitializingBean {
 	}
 
 
-	protected Element createEntityElement(Entity e, Document d) {
+	protected Element createEntityElement(RestEntity e, Document d) {
 		Element entity = d.createElement("entity");
 		String className = e.getClass().getCanonicalName();
 		className = className.substring(className.lastIndexOf(".")+1).toLowerCase();

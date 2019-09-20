@@ -35,7 +35,7 @@ public class Kite9RepositoryRestMvcConfiguration extends RepositoryRestMvcConfig
 		this.context = context;
 	}
 
-	@Override
+/*	@Override
 	public DelegatingHandlerMapping restHandlerMapping() {
 		DelegatingHandlerMapping out = super.restHandlerMapping();
 		RepositoryRestConfiguration repositoryRestConfiguration = repositoryRestConfiguration();
@@ -74,7 +74,7 @@ public class Kite9RepositoryRestMvcConfiguration extends RepositoryRestMvcConfig
 		// replace the original
 		out.getDelegates().set(0, repositoryMapping);
 		return out;
-	}
+	} */
 
 	
 	

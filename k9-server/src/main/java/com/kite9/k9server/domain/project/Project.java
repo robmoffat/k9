@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.permission.Member;
@@ -136,6 +137,11 @@ public class Project extends AbstractLongIdEntity implements Secured {
 		return null;
 	}
 	
+	@JsonIgnore
+	@Override
+	public RestEntity getParent() {
+		return null;
+	}
 	
 	
 }

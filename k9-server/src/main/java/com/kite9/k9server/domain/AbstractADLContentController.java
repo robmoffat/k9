@@ -1,7 +1,6 @@
 package com.kite9.k9server.domain;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;

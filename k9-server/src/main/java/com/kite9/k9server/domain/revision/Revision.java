@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.user.User;
@@ -122,5 +123,10 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 		return getDateCreated();
 	}
 	
+	@JsonIgnore
+	@Override
+	public RestEntity getParent() {
+		return document;
+	}
 	
 }

@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
@@ -285,4 +286,12 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	public Date getLastUpdated() {
 		return null;
 	}
+
+	@JsonIgnore
+	@Override
+	public RestEntity getParent() {
+		return null;
+	}
+	
+	
 }

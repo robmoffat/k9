@@ -3,9 +3,12 @@ package com.kite9.k9server.domain;
 import java.util.Date;
 
 /**
- * This is used to display information about the object within the admin screens.
+ * For collections returned by REST, these fields will always be displayed.
+ * 
+ * @author robmoffat
+ *
  */
-public interface Entity {
+public interface BasicExcerptProjection {
 
 	String getTitle();
 	
@@ -14,5 +17,6 @@ public interface Entity {
 	String getLocalImagePath();
 	
 	Date getLastUpdated();
-
+	
+	String getType();
 }

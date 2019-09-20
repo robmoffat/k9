@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
@@ -109,5 +110,12 @@ public class Document extends AbstractLongIdEntity implements Secured {
 	public String getLocalImagePath() {
 		return "/public/admin/icons/document.svg";
 	}
+	
+	@JsonIgnore
+	@Override
+	public RestEntity getParent() {
+		return project;
+	}
+	
 
 }
