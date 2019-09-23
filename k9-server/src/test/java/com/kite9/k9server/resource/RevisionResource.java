@@ -2,9 +2,7 @@ package com.kite9.k9server.resource;
 
 import java.util.Date;
 
-import org.springframework.hateoas.ResourceSupport;
-
-public class RevisionResource extends ResourceSupport {
+public class RevisionResource extends GenericResource {
 
 	public String document;
 	public String xml;

@@ -5,10 +5,8 @@ import java.util.Date;
 import org.springframework.hateoas.ResourceSupport;
 
 
-public class DocumentResource extends ResourceSupport {
+public class DocumentResource extends GenericResource {
 
-    public String title;
-    public String description;
     public String project;
 	public String currentRevision = null;
     

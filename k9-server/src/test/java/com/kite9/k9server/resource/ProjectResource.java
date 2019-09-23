@@ -1,11 +1,7 @@
 package com.kite9.k9server.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+public class ProjectResource extends GenericResource {
 
-public class ProjectResource extends ResourceSupport {
-
-	public String title;
-	public String description;
 	public String stub;
 	public String secret;
 	

@@ -2,8 +2,15 @@ package com.kite9.k9server.rest;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.nio.charset.Charset;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.dom.DOMResult;
+
+import org.codehaus.stax2.XMLStreamWriter2;
 import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
@@ -13,11 +20,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
+import com.ctc.wstx.stax.WstxOutputFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlFactory;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
@@ -31,16 +45,41 @@ import com.kite9.k9server.security.Kite9HeaderMeta;
 public class HateoasADLHttpMessageConverter 
 	extends AbstractGenericHttpMessageConverter<ResourceSupport> {
 
+	public static final HttpHeaders EMPTY_HEADERS = new HttpHeaders();
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
 	
 	private final ObjectMapper objectMapper;
 	final private FormatSupplier formatSupplier;
-
-	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier) {
+	private String template;
+	private XmlFactory xmlFactory;
+	private WstxOutputFactory wstxOutputFactory;
+		
+	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String template) {
 		super();
 		this.objectMapper = objectMapper;
 		this.formatSupplier = formatSupplier;
+		this.template = template;
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
+		xmlFactory  = new XmlFactory();
+		this.wstxOutputFactory = new WstxOutputFactory();
+	}
+	
+	public ADL createEmptyTemplateDocument(ResourceSupport rs) throws Exception {
+		URI u = new URI(rs.getId().getHref());
+		ADL container = new ADLImpl(template, u, EMPTY_HEADERS);
+		return container;
+	}
+	
+	
+	public Element getDiagramElement(ADL container) throws Exception {
+		NodeList nl = container.getAsDocument().getRootElement().getElementsByTagName("diagram");
+		
+		if (nl.getLength() != 1) {
+			throw new IllegalArgumentException("Couldn't find single diagram element in template");
+		}
+		
+		Element top = (Element) nl.item(0);
+		return top;
 	}
 
 	@Override
@@ -87,12 +126,15 @@ public class HateoasADLHttpMessageConverter
 	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) {
 		ADL adl = null;
 		try {
-			//adl = domBuilder.createDocument(t);
+			adl = createEmptyTemplateDocument(t);
+			Element diagramElement = getDiagramElement(adl);
+			DOMResult domResult = new DOMResult(diagramElement);
+			ToXmlGenerator generator = createXMLGenerator(domResult);
+
+			objectMapper.writeValue(generator, t);
 			
-			
-			String out = objectMapper.writeValueAsString(t);
-			System.out.println(out);
-			
+			System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
+
 			Kite9HeaderMeta.addUserMeta(adl);
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			 
@@ -102,6 +144,30 @@ public class HateoasADLHttpMessageConverter
 			}
 			throw new HttpMessageNotWritableException("Caused by: "+e.getMessage(), e);
 		}
+	}
+
+	/** 
+	 * Way to convert JSON output to XML
+	 */
+	protected ToXmlGenerator createXMLGenerator(DOMResult domResult) throws XMLStreamException, IOException {
+		XMLStreamWriter streamWriter = wstxOutputFactory.createXMLStreamWriter(domResult);
+		streamWriter.setPrefix("adl", XMLHelper.KITE9_NAMESPACE);
+		ToXmlGenerator generator = xmlFactory.createGenerator(streamWriter);
+		
+		// disable pretty-printing with DOM Write
+		DefaultXmlPrettyPrinter pp = new DefaultXmlPrettyPrinter() {
+			@Override
+			public void writePrologLinefeed(XMLStreamWriter2 sw) throws XMLStreamException {
+			}
+		};
+		pp.spacesInObjectEntries(false);
+		pp.indentArraysWith(null);
+		pp.indentObjectsWith(null);
+		generator.setPrettyPrinter(pp);
+		
+		// set top-level element name
+		generator.setNextName(new QName(XMLHelper.KITE9_NAMESPACE, "entity", "adl"));
+		return generator;
 	}
 
 

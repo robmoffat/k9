@@ -1,8 +1,6 @@
 package com.kite9.k9server.resource;
 
-import org.springframework.hateoas.ResourceSupport;
-
-public class UserResource extends ResourceSupport {
+public class UserResource extends GenericResource {
 
 	public String username;
 	public String password;
