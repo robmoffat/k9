@@ -5,8 +5,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import org.kite9.diagram.dom.XMLHelper;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -15,8 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
-import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
@@ -31,23 +29,20 @@ import com.kite9.k9server.security.Kite9HeaderMeta;
  *
  */
 public class HateoasADLHttpMessageConverter 
-	extends AbstractGenericHttpMessageConverter<ResourceSupport> 
-	implements InitializingBean {
-
-	@Autowired
-	HateoasDOMBuilder domBuilder;
+	extends AbstractGenericHttpMessageConverter<ResourceSupport> {
 
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
+	
+	private final ObjectMapper objectMapper;
+	final private FormatSupplier formatSupplier;
 
-	@Autowired
-	protected FormatSupplier formatSupplier;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier) {
+		super();
+		this.objectMapper = objectMapper;
+		this.formatSupplier = formatSupplier;
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
 	}
-	
-	
+
 	@Override
 	protected boolean supports(Class<?> clazz) {
 		return ResourceSupport.class.isAssignableFrom(clazz);
@@ -92,7 +87,12 @@ public class HateoasADLHttpMessageConverter
 	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) {
 		ADL adl = null;
 		try {
-			adl = domBuilder.createDocument(t);
+			//adl = domBuilder.createDocument(t);
+			
+			
+			String out = objectMapper.writeValueAsString(t);
+			System.out.println(out);
+			
 			Kite9HeaderMeta.addUserMeta(adl);
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			 
