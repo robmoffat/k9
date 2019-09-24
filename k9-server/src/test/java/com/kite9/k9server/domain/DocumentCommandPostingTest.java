@@ -36,10 +36,20 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		persistInAFile(back2, "revisions", "state2.xml");
 				
 		// retrieve the current revision
-		URI cr = new URI(dr.getLink("currentRevision").getHref());
+		String s = dr.getLink("currentRevision").getHref();
+		s = s.substring(0, s.indexOf("{?projection}"));
+		URI cr = new URI(s);
 		RequestEntity<Object> in = new RequestEntity<>(createHeaders(), HttpMethod.GET, cr);
 		ResponseEntity<RevisionResource> outR = restTemplate.exchange(in, RevisionResource.class);
 		RevisionResource rr2 = outR.getBody();
+		
+		// now get the non-projection version.
+		cr = new URI(rr2.getLink("self").getHref());
+		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, cr);
+		outR = restTemplate.exchange(in, RevisionResource.class);
+		rr2 = outR.getBody();
+		
+		// make sure expected Xml is set.
 		Assert.assertTrue(!rr2.getId().equals(rr.getId()));
 		persistInAFile(rr2.xml.getBytes(), "revisions", "state2.1.xml");
 		XMLCompare.compareXML(new String(back2), rr2.xml);

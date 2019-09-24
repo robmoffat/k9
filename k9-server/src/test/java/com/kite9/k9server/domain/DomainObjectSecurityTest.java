@@ -70,7 +70,9 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	}
 
 	public void attemptView(ProjectResource pr, DocumentResource dr, RevisionResource rr, boolean allowed) throws URISyntaxException {
-		URI location = new URI(dr.getLink(Link.REL_SELF).getHref());
+		String href = dr.getLink(Link.REL_SELF).getHref();
+		
+		URI location = new URI(href);
 	
 		try {
 			DocumentResource ndr = getADocumentResource(location);
@@ -81,7 +83,11 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 					Assert.fail("Returned null for get");
 				}
 				
-				Resources<RevisionResource> revs = getAllRevisionResources(new URI(dr.getLink("revisions").getHref()));
+				String href2 = dr.getLink("revisions").getHref();
+				if (href2.contains("{?projection}")) {
+					href2 = href2.substring(0, href2.indexOf("{?projection}"));
+				}
+				Resources<RevisionResource> revs = getAllRevisionResources(new URI(href2));
 				Assert.assertEquals(1, revs.getContent().size());
 			}
 		} catch (Exception e) {
