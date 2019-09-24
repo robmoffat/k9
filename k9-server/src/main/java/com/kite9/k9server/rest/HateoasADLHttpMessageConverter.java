@@ -5,12 +5,15 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.dom.DOMResult;
 
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
@@ -62,6 +65,7 @@ public class HateoasADLHttpMessageConverter
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
 		xmlFactory  = new XmlFactory();
 		this.wstxOutputFactory = new WstxOutputFactory();
+		this.wstxOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
 	}
 	
 	public ADL createEmptyTemplateDocument(ResourceSupport rs) throws Exception {
@@ -136,6 +140,7 @@ public class HateoasADLHttpMessageConverter
 			System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
 
 			Kite9HeaderMeta.addUserMeta(adl);
+			removeExcessNamespaces(adl.getAsDocument().getDocumentElement(), false);
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			 
 		} catch (Exception e) {
@@ -146,12 +151,33 @@ public class HateoasADLHttpMessageConverter
 		}
 	}
 
+	/**
+	 * Fixing a bug in woodstox that means nearly every element gets a namespace declaration.
+	 */
+	private void removeExcessNamespaces(Element e, boolean remove) {
+		boolean found = e.hasAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE) 
+				&& e.getAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE).equals(XMLHelper.KITE9_NAMESPACE);
+		
+		if (found && remove) {
+			e.removeAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, XMLConstants.XMLNS_ATTRIBUTE);
+		}
+		
+		NodeList ch = e.getChildNodes();
+		for (int i = 0; i < ch.getLength(); i++) {
+			if (ch.item(i) instanceof Element) {
+				removeExcessNamespaces((Element) ch.item(i), found || remove);
+			}
+		}
+	}
+
 	/** 
 	 * Way to convert JSON output to XML
 	 */
 	protected ToXmlGenerator createXMLGenerator(DOMResult domResult) throws XMLStreamException, IOException {
 		XMLStreamWriter streamWriter = wstxOutputFactory.createXMLStreamWriter(domResult);
-		streamWriter.setPrefix("adl", XMLHelper.KITE9_NAMESPACE);
+		streamWriter.setDefaultNamespace(XMLHelper.KITE9_NAMESPACE);
+		streamWriter.setPrefix("", XMLHelper.KITE9_NAMESPACE);
+		
 		ToXmlGenerator generator = xmlFactory.createGenerator(streamWriter);
 		
 		// disable pretty-printing with DOM Write
@@ -166,7 +192,7 @@ public class HateoasADLHttpMessageConverter
 		generator.setPrettyPrinter(pp);
 		
 		// set top-level element name
-		generator.setNextName(new QName(XMLHelper.KITE9_NAMESPACE, "entity", "adl"));
+		generator.setNextName(new QName(XMLHelper.KITE9_NAMESPACE, "entity", ""));
 		return generator;
 	}
 

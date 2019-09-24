@@ -22,6 +22,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.data.rest.webmvc.support.DelegatingHandlerMapping;
 import org.springframework.data.rest.webmvc.support.JpaHelper;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.config.EnableEntityLinks;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
@@ -31,9 +32,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.Module.SetupContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.kite9.k9server.adl.format.FormatSupplier;
@@ -70,17 +71,21 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	@Override
 	public void configureJacksonObjectMapper(ObjectMapper objectMapper) {
 		RepositoryRestConfigurer.super.configureJacksonObjectMapper(objectMapper);
-		objectMapper.registerModule(new JacksonXmlModule() {
+		JacksonXmlModule module = new JacksonXmlModule() {
 
 			/**
 			 * Forces the use of the Kite9 ADL namespace for elements without annotations.
 			 */
 			@Override
 			protected AnnotationIntrospector _constructIntrospector() {
-				return new JacksonXmlAnnotationIntrospector(true) {
+				return new JacksonXmlAnnotationIntrospector(false) {
 
 					@Override
 					public String findNamespace(Annotated ann) {
+						if (isOutputAsAttribute(ann) == Boolean.TRUE) {
+							return "";
+						} 
+						
 						String out = super.findNamespace(ann);
 						if (StringUtils.isEmpty(out)) {
 							return XMLHelper.KITE9_NAMESPACE;
@@ -88,21 +93,22 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 							return out;
 						}
 					}
-					
+
+					@Override
+					public Boolean isOutputAsAttribute(Annotated ann) {
+						// link members are always attributes
+						if (ann instanceof AnnotatedMember) {
+							if (((AnnotatedMember) ann).getDeclaringClass() == Link.class) {
+								return true;
+							}
+						}
+
+						return super.isOutputAsAttribute(ann);
+					}
 				};
 			}
-
-			@Override
-			public void setupModule(SetupContext context) {
-				super.setupModule(context);
-				
-				// add special HATEOAS deserializers
-				
-			}
-			
-			
-			
-		});
+		};
+		objectMapper.registerModule(module);
 	}
 
 	@Override
