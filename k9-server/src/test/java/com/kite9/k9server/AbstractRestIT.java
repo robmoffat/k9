@@ -76,7 +76,7 @@ public abstract class AbstractRestIT {
 	protected MailSender mailSender;
 	
 	@LocalServerPort
-	private int port;
+	protected int port;
 	
 	protected String getUrlBase()  {
 		return "http://localhost:"+port;

@@ -29,8 +29,10 @@ import com.kite9.k9server.domain.user.UserRepository;
  *
  */
 @Component
-@Profile("populate")
+@Profile(PopulateDomainModel.PROFILE)
 public class PopulateDomainModel implements CommandLineRunner {
+	
+	public static final String PROFILE = "populate";
 	
 	public static final User TEST_USER = new User("test1", "blah", "robmoffat@mac.com");
 	

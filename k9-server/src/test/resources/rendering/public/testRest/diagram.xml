@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><svg:svg xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" contentScriptType="text/ecmascript" zoomAndPan="magnify" contentStyleType="text/css" preserveAspectRatio="xMidYMid" version="1.0">
+  <svg:defs>
+    <svg:style type="text/css" xml:space="preserve"> @import url("/public/context/admin/admin.css");</svg:style>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl">
+
+  <entity><title>My Document</title><description>Some name for a document</description><dateCreated>xxxx</dateCreated><content><rel>project</rel><value type="project" localImagePath="/public/admin/icons/project.svg"><description>Lorem Ipsum 1</description><title>Test Project 2</title>
