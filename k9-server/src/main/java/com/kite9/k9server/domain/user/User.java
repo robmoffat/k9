@@ -278,7 +278,7 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
-		return "/public/admin/icons/user.svg";
+		return "/public/context/admin/icons/user.svg";
 	}
 	
 	@JsonIgnore

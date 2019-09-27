@@ -134,13 +134,10 @@ public class HateoasADLHttpMessageConverter
 			Element diagramElement = getDiagramElement(adl);
 			DOMResult domResult = new DOMResult(diagramElement);
 			ToXmlGenerator generator = createXMLGenerator(domResult);
-
 			objectMapper.writeValue(generator, t);
-			
-			System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
-
 			Kite9HeaderMeta.addUserMeta(adl);
 			removeExcessNamespaces(adl.getAsDocument().getDocumentElement(), false);
+			System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
 			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
 			 
 		} catch (Exception e) {

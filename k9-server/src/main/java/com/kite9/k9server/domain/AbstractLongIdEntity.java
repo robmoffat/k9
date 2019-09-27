@@ -5,7 +5,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
  * Since all K9 entities are keyed by a long id, this is abstracted to here.
@@ -18,6 +18,7 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@JacksonXmlProperty(isAttribute = true)
 	protected Long id;
 
 	public void setId(Long id) {
@@ -54,11 +55,12 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 	}
 	
 	@Override
-	@JsonIgnore
+	//@JsonIgnore
 	public String getType() {
 		String className = this.getClass().getCanonicalName();
 		className = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
 		return className;
 	}
 
+	
 }

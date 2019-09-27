@@ -114,7 +114,7 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
-		return "/public/admin/icons/revision.svg";
+		return "/public/context/admin/icons/revision.svg";
 	}
 
 	@JsonIgnore

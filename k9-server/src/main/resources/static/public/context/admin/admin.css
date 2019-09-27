@@ -1,101 +1,72 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
-@import url('/public/behaviours/labels/common-labels.css');
-@import url('/public/behaviours/grid/common-grid.css');
 @import url('/public/fonts/metropolis/metropolis.css');
+
+* {
+	
+}
 
 diagram,
 [k9-elem=diagram] {
-	font-size: 50px;
 	font-family: metropolis;
 }
 
-@params {
-          
-	cell-template-uri: url(/public/behaviours/grid/common-tables.xml#t1);
+entity[type=document] {
+	kite9-type: container;
+	kite9-template: url(template.xml#entity-document);
 }
 
-entity,
-[k9-elem=entity] {
-	kite9-template: url(template.xml#box);
+value {
 	kite9-type: container;
-	kite9-padding: 10px;
-	kite9-sizing: minimize;
-	kite9-margin: 20px;
-	kite9-min-size: 100px 100px;
+	kite9-template: url(template.xml#value);
 	kite9-layout: down;
-	fill: #CCCCAA;
-	stroke: #AAAA88;
-	kite9-connection-align: 50%;
-	stroke-dasharray: none;
+	kite9-min-size: 300px 300px;
+}
+
+[k9-elem=value] .back {
+	fill: #ABABAB;
+}
+
+collection {
+	kite9-type: container;
+	kite9-layout: down;
+}
+
+collection > name {
+	kite9-type: text;
+}
+
+collection > grid {
+	kite9-type: container;
+	kite9-layout: grid;
+	kite9-grid-columns: 3;
 }
 
 title,
+description, 
+lastUpdated,
 [k9-elem=title],
-description,
 [k9-elem=description],
-date,
-[k9-elem=date] {
+[k9-elem=lastUpdated] {
 	kite9-type: text;
-	kite9-margin: 4px;
-	kite9-vertical-align: center;
+	kite9-layout: down;
+	kite9-text-bounds: 380px 500px;
+	fill: #1b1b16;
+	stroke: #AAAA88;
 	kite9-connection-align: 50%;
-	kite9-horizontal-align: center;
+	font-size: 35px;
 }
 
 title,
 [k9-elem=title] {
-	stroke: black;
-	fill: #333300;
-	font-family: "metropolis";
-	text-align: start;
 	font-size: 50px;
-	kite9-template: url(template.xml#text);
 }
-
-description,
-[k9-elem=description] {
-	stroke: #333333;
-	fill: #333300;
-	font-family: "metropolis";
-	text-align: start;
-	font-size: 30px;
-	kite9-template: url(template.xml#text);
-}
-	
-date,
-[k9-elem=date] {
-	stroke: #333333;
-	fill: #333300;
-	font-family: "metropolis";
-	text-align: start;
-	font-size: 30px;
-	kite9-template: url(template.xml#text);
-}
-
-/* Labels */
 
 icon {
-	kite9-template: url(template.xml#icon);
 	kite9-type: svg;
-}
-
-[k9-elem=label],
-g.label,
-label {
-	fill: gray;
-	font-family: "metropolis";
-	text-align: start;
-	font-size: 16px;
-	kite9-padding: 10px;
-}
-
-[k9-elem=label] text,
-g.label text,
-label text {
-	fill: black;
-}
-
-cell {
-	kite9-min-size: 40px 40px;
+	kite9-template: url(template.xml#icon);
+	kite9-horizontal-align: center;
+	kite9-vertical-align: top;
+	kite9-min-size: 50pt 50pt;
+	kite9-margin: 10pt;	
 }

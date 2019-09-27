@@ -1,18 +1,39 @@
-<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl'>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl' xmlns:adl='http://www.kite9.org/schema/adl'>
 
-  <template id='box' k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-palette="insert replace-connected">
-    <back class="back" k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg;  '>
+  <template id='entity-document'>
+    
+    <contents xpath="adl:content[adl:rel = 'project']/adl:value" />
+  
+    <value>
+      <id><contents xpath="adl:links[@rel = 'self']" /></id>
+      <contents xpath="adl:title" />
+      <icon><contents xpath="@localImagePath" type="string" /></icon>
+      <contents xpath="adl:description" />
+    </value>
+    
+    <collection id="revisions">
+      <named>Revisions</named>
+      <grid>
+        <contents xpath="adl:content[adl:rel = 'revisions']/adl:value" />
+      </grid>
+    </collection>
+  
+  </template>
+
+  <!--  this handles embedded entities -->
+  <template id="value">
+    <back class="back" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
-    <contents />
+  
+    <contents xpath="adl:title" />
+    <contents xpath="adl:description" />
+    <icon><contents xpath="@localImagePath" type="string" /></icon>
+    <lastUpdated><contents xpath="@lastUpdated" type="string" /></lastUpdated>
   </template>
   
   <template id="icon">
-    <svg:image x="0" y="0" width="50px" height="50px" xlink:href="http://localhost:8080/public/behaviours/containers/layout/down.svg" />
-  </template>
-  
-  <template id="text" k9-ui="orphan edit">
-    <contents />
+    <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/context/admin/icons/document.svg" />
   </template>
 
 </svg:svg>

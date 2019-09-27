@@ -23,6 +23,7 @@ import org.kite9.diagram.batik.bridge.Kite9DocumentLoader;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.kite9.framework.common.Kite9XMLProcessingException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -132,7 +133,7 @@ public class ADLImpl implements ADL {
 		    transformer.transform(new DOMSource(n), new StreamResult(output));
 			return output.toString();
 		} catch (Exception e) {
-			throw new Kite9ProcessingException("Couldn't serialize XML:", e);
+			throw new Kite9XMLProcessingException("Couldn't serialize XML:", e, null, null);
 		}
 	}
 	
@@ -148,7 +149,7 @@ public class ADLImpl implements ADL {
 				return out.getBody();
 			}
 		} catch (Exception e) {
-			throw new Kite9ProcessingException("Couldn't request XML from: "+uri2, e);
+			throw new Kite9XMLProcessingException("Couldn't request XML from: "+uri2, e, null, null);
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class ADLImpl implements ADL {
 			InputStream is = new ByteArrayInputStream(content.getBytes());
 			return (ADLDocument) l.loadDocument(uri2.toString(), is);
 		} catch (Exception e) {
-			throw new Kite9ProcessingException("Couldn't load XML into DOM: ", e);
+			throw new Kite9XMLProcessingException("Couldn't load XML into DOM: ", e, null, null);
 		}
 	}
 
@@ -200,7 +201,7 @@ public class ADLImpl implements ADL {
 			Node e = doc.getElementById(n);
 			
 			if (e == null) {
-				throw new Kite9ProcessingException("Could not locate: "+n);
+				throw new Kite9XMLProcessingException("Could not locate: "+n, null, doc);
 			}
 			
 			return Hash.generateHash(e);
@@ -229,16 +230,17 @@ public class ADLImpl implements ADL {
 	private Document svgRepresentation = null;
 	
 	public Document getSVGRepresentation() throws Kite9ProcessingException {
+		Document d = getAsDocument();
 		if (svgRepresentation == null) {
 			try {
 				Transcoder transcoder = getTranscoder();
-				TranscoderInput in = new TranscoderInput(getAsDocument());
+				TranscoderInput in = new TranscoderInput(d);
 				in.setURI(getUri().toString());
 				TranscoderOutput out = new TranscoderOutput();
 				transcoder.transcode(in, out);
 				svgRepresentation = out.getDocument();
 			} catch (TranscoderException e) {
-				throw new Kite9ProcessingException(e);
+				throw new Kite9XMLProcessingException("Couldn't get SVG Representation", e, d);
 			}
 		}
 		return svgRepresentation;

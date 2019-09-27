@@ -105,10 +105,9 @@ public class Document extends AbstractLongIdEntity implements Secured {
 		return project.checkAccess(a);
 	}
 
-	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
-		return "/public/admin/icons/document.svg";
+		return "/public/context/admin/icons/document.svg";
 	}
 	
 	@JsonIgnore

@@ -69,7 +69,7 @@ public class Member extends AbstractLongIdEntity implements Secured {
 	@JsonIgnore
 	@Override
 	public String getLocalImagePath() {
-		return "/public/admin/icons/member.svg";
+		return "/public/context/admin/icons/member.svg";
 	}
 
 	@JsonIgnore
