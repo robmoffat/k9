@@ -1,10 +1,14 @@
 package com.kite9.k9server.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.kite9.diagram.dom.XMLHelper;
@@ -30,6 +34,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
+import org.w3c.dom.Document;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,6 +67,9 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	
 	@Value("${kite9.rest.template:classpath:/static/public/context/admin/resource.xml}")
 	private String templateResource;
+	
+	@Value("${kite9.rest.transform:classpath:/static/public/context/admin/transform.xslt}")
+	private String transformResource;
 	
 	@Autowired
 	ResourceLoader resourceLoader;
@@ -113,15 +121,10 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 
 	@Override
 	public void configureHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
-		try {
-			RepositoryRestConfigurer.super.configureHttpMessageConverters(messageConverters);
-			String template = IOUtils.toString(resourceLoader.getResource(templateResource).getInputStream(), "UTF-8");
-			messageConverters.add(0, new HateoasADLHttpMessageConverter(repositoryRestMvcConfiguration.objectMapper(), formatSupplier, template));	
-		} catch (IOException e) {
-			throw new RuntimeException("Couldn't find template: ", e);
-		}
+		RepositoryRestConfigurer.super.configureHttpMessageConverters(messageConverters);
+		messageConverters.add(0, new HateoasADLHttpMessageConverter(repositoryRestMvcConfiguration.objectMapper(), formatSupplier, transformResource, resourceLoader));	
 	}
-	
+
 	/**
 	 * Creates a handler that allows all the {@link FormatSupplier} media types to be supported by 
 	 * REST.

@@ -64,7 +64,7 @@ public class ADLImpl implements ADL {
 	private String xmlHash;
 	
 	@JsonIgnore
-	private Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
+	private final Kite9SVGTranscoder transcoder;
 	
 	private Map<String, String> metadata = new HashMap<>();
 	
@@ -73,6 +73,7 @@ public class ADLImpl implements ADL {
 	public ADLImpl(URI uri, HttpHeaders requestHeaders) {
 		this.uri = uri;
 		this.requestHeaders = requestHeaders;
+		this.transcoder = new Kite9SVGTranscoder();
 	}
 
 	public ADLImpl(String content, URI uri, HttpHeaders requestHeaders) {
@@ -80,6 +81,14 @@ public class ADLImpl implements ADL {
 		this.uri = uri;
 		this.xmlHash = Hash.generateSHA1Hash(content);
 		this.requestHeaders = requestHeaders;
+		this.transcoder = new Kite9SVGTranscoder();
+	}
+	
+	public ADLImpl(Kite9SVGTranscoder transcoder, ADLDocument d, URI u, HttpHeaders requestHeaders) {
+		this.doc = d;
+		this.uri = u;
+		this.requestHeaders = requestHeaders;
+		this.transcoder = transcoder;
 	}
 
 	@Override
@@ -170,7 +179,7 @@ public class ADLImpl implements ADL {
 			InputStream is = new ByteArrayInputStream(content.getBytes());
 			return (ADLDocument) l.loadDocument(uri2.toString(), is);
 		} catch (Exception e) {
-			throw new Kite9XMLProcessingException("Couldn't load XML into DOM: ", e, null, null);
+			throw new Kite9XMLProcessingException("Couldn't load XML into DOM, URI: "+uri2, e, content, null);
 		}
 	}
 

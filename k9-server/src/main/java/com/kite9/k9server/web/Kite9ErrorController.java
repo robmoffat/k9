@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
+import org.xml.sax.SAXParseException;
 
 @Controller
 public class Kite9ErrorController implements ErrorController {
@@ -75,6 +76,16 @@ public class Kite9ErrorController implements ErrorController {
 			doCard(sb, sw.toString(), "Stack Trace", "plaintext");
 		}
 		
+		if (e instanceof SAXParseException) {
+			SAXParseException pe = (SAXParseException) e;
+			String publicId = pe.getPublicId();
+			String systemId = pe.getSystemId();
+			int lineNumber = pe.getLineNumber();
+			int columnNumber = pe.getColumnNumber();
+			String saxInfo = String.format("publicId: %s\nsystemId: %s\nlineNumber: %s\ncolumnNumber: %s", publicId, systemId, lineNumber, columnNumber);
+			doCard(sb, saxInfo, "details", "plaintext");
+		}
+		
 		if (e != null) {
 			sb.append("</div></div></div>");
 			processException(sb, e.getCause(), level+1);
@@ -82,9 +93,9 @@ public class Kite9ErrorController implements ErrorController {
 	}
 
 	protected void doCard(StringBuilder sb, String ctx, String title, String format) {
-		sb.append("<div class=\"card\"><div class=\"card-body\">");
+		sb.append("<div class=\"card\" style=\"margin-bottom: 30px;\"><div class=\"card-body\">");
 		sb.append("<h5 class=\"card-title\">"+title+"</h5>");
-		sb.append("<div class=\"card-text\"><pre><code class=\""+format+"\">.");
+		sb.append("<div class=\"card-text\"><pre><code class=\""+format+"\">");
 		sb.append(HtmlUtils.htmlEscape(ctx));
 		sb.append("</code></pre></div></div></div>");
 	}

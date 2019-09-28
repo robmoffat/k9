@@ -1,6 +1,7 @@
 package com.kite9.k9server.rest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
@@ -10,11 +11,19 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.codehaus.stax2.XMLStreamWriter2;
+import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
+import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -23,10 +32,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import com.ctc.wstx.stax.WstxOutputFactory;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -53,39 +66,26 @@ public class HateoasADLHttpMessageConverter
 	
 	private final ObjectMapper objectMapper;
 	final private FormatSupplier formatSupplier;
-	private String template;
 	private XmlFactory xmlFactory;
 	private WstxOutputFactory wstxOutputFactory;
-		
-	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String template) {
+	private ResourceLoader resourceLoader;
+	private String resource;
+	private TransformerFactory transFact;
+
+	 
+	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String resource, ResourceLoader resourceLoader) {
 		super();
 		this.objectMapper = objectMapper;
 		this.formatSupplier = formatSupplier;
-		this.template = template;
-		setSupportedMediaTypes(formatSupplier.getMediaTypes());
-		xmlFactory  = new XmlFactory();
+		this.xmlFactory  = new XmlFactory();
 		this.wstxOutputFactory = new WstxOutputFactory();
 		this.wstxOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+		this.resourceLoader = resourceLoader;
+		this.resource = resource;
+		this.transFact = TransformerFactory.newInstance();
+		setSupportedMediaTypes(formatSupplier.getMediaTypes());
 	}
 	
-	public ADL createEmptyTemplateDocument(ResourceSupport rs) throws Exception {
-		URI u = new URI(rs.getId().getHref());
-		ADL container = new ADLImpl(template, u, EMPTY_HEADERS);
-		return container;
-	}
-	
-	
-	public Element getDiagramElement(ADL container) throws Exception {
-		NodeList nl = container.getAsDocument().getRootElement().getElementsByTagName("diagram");
-		
-		if (nl.getLength() != 1) {
-			throw new IllegalArgumentException("Couldn't find single diagram element in template");
-		}
-		
-		Element top = (Element) nl.item(0);
-		return top;
-	}
-
 	@Override
 	protected boolean supports(Class<?> clazz) {
 		return ResourceSupport.class.isAssignableFrom(clazz);
@@ -120,33 +120,51 @@ public class HateoasADLHttpMessageConverter
 
 	@Override
 	protected void writeInternal(ResourceSupport t, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-		MediaType contentType = outputMessage.getHeaders().getContentType();	
-		Format f = formatSupplier.getFormatFor(contentType);
-		writeADL(t, outputMessage, f);
+		try {
+			MediaType contentType = outputMessage.getHeaders().getContentType();	
+			Format f = formatSupplier.getFormatFor(contentType);
+			writeADL(t, outputMessage, f);
+		} catch (Exception e) {
+			throw new HttpMessageNotWritableException("Couldn't create REST Response", e);
+		}
 	}
 	
 	
 
-	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) {
-		ADL adl = null;
-		try {
-			adl = createEmptyTemplateDocument(t);
-			Element diagramElement = getDiagramElement(adl);
-			DOMResult domResult = new DOMResult(diagramElement);
-			ToXmlGenerator generator = createXMLGenerator(domResult);
-			objectMapper.writeValue(generator, t);
-			Kite9HeaderMeta.addUserMeta(adl);
-			removeExcessNamespaces(adl.getAsDocument().getDocumentElement(), false);
-			System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
-			f.handleWrite(adl, outputMessage.getBody(), true, null, null);
-			 
-		} catch (Exception e) {
-			if (adl != null) {
-				System.out.println(new XMLHelper().toXML(adl.getAsDocument()));
-			}
-			throw new HttpMessageNotWritableException("Caused by: "+e.getMessage(), e);
-		}
+	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) throws Exception {
+		URI u = new URI(t.getId().getHref());
+		Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
+		Document input = generateRestXML(t, transcoder.getDomImplementation());
+		ADLDocument output = transformXML(input, transcoder.getDomImplementation());
+		System.out.println("IN: " + new XMLHelper().toXML(input));
+		System.out.println("OUT: "+ new XMLHelper().toXML(output));
+		ADL out = new ADLImpl(transcoder, output, u, EMPTY_HEADERS);
+		Kite9HeaderMeta.addUserMeta(out);
+		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
+
+	protected Document generateRestXML(ResourceSupport t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
+		Document out = dom.createDocument(XMLHelper.KITE9_NAMESPACE, null, null);
+		DOMResult domResult = new DOMResult(out);
+		ToXmlGenerator generator = createXMLGenerator(domResult);
+		objectMapper.writeValue(generator, t);
+		removeExcessNamespaces(out.getDocumentElement(), false);
+		return out;
+	}
+	
+	public ADLDocument transformXML(Document in, ADLExtensibleDOMImplementation dom) throws Exception {
+		// load the transform document
+		InputStream is = resourceLoader.getResource(resource).getInputStream();
+		Source xsltSource = new StreamSource(is);
+		Source inSource = new DOMSource(in);
+		ADLDocument out = (ADLDocument) dom.createDocument(XMLHelper.KITE9_NAMESPACE, null, null);
+        DOMResult result = new DOMResult(out);
+
+        // the factory pattern supports different XSLT processors
+        Transformer trans = transFact.newTransformer(xsltSource);
+        trans.transform(inSource, result);
+        return out;
+    }
 
 	/**
 	 * Fixing a bug in woodstox that means nearly every element gets a namespace declaration.
