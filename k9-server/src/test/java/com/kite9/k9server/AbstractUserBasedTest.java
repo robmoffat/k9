@@ -34,7 +34,14 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 		delete(restTemplate, userUrl, jwtToken);
 		try {
 			Resources<UserResource> resources = retrieveUserViaJwt(restTemplate, jwtToken);
-			Assert.assertEquals(0, resources.getContent().size());
+			if (resources.getContent().size() == 0) {
+				return;
+			} else if (resources.getContent().size() == 1) {
+				UserResource ur = resources.getContent().iterator().next();
+				Assert.assertTrue(ur.accountExpired);
+			} else {
+				Assert.fail("Should never get back multiple users");
+			}
 		} catch (ResourceAccessException e) {
 			// it's been deleted.
 		}
