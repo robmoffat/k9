@@ -16,7 +16,7 @@ import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
 @Entity
-public class Member extends AbstractLongIdEntity implements Secured {
+public class Member extends AbstractLongIdEntity implements Secured, MemberExcerptProjection {
 
 	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY)
 	private Project project;
@@ -68,8 +68,8 @@ public class Member extends AbstractLongIdEntity implements Secured {
 	
 	@JsonIgnore
 	@Override
-	public String getLocalImagePath() {
-		return "/public/context/admin/icons/member.svg";
+	public String getIcon() {
+		return user.getIcon();
 	}
 
 	@JsonIgnore
@@ -81,7 +81,7 @@ public class Member extends AbstractLongIdEntity implements Secured {
 	@JsonIgnore
 	@Override
 	public String getDescription() {
-		return projectRole.toString().toLowerCase();
+		return "a b c d e gf g h i j k l m n o p q r s t u v w x y z"; //projectRole.toString().toLowerCase()+" in "+project.getTitle();
 	}
 	
 	@JsonIgnore

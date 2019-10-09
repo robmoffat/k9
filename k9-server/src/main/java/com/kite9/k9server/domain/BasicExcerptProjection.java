@@ -16,10 +16,8 @@ public interface BasicExcerptProjection {
 	
 	String getDescription();
 	
-	@JacksonXmlProperty(isAttribute = true)
-	String getLocalImagePath();
+	String getIcon();
 	
-	@JacksonXmlProperty(isAttribute = true)
 	Date getLastUpdated();
 	
 	@JacksonXmlProperty(isAttribute = true)

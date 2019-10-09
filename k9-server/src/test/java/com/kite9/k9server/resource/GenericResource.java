@@ -11,7 +11,7 @@ public class GenericResource extends ResourceSupport {
     public String title;
     public String description;
     public Map<String, Object> _embedded;
-    public String localImagePath;
     public Date lastUpdated;
+    public String icon;
 
 }

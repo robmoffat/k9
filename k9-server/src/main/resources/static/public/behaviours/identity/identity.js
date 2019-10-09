@@ -1,17 +1,12 @@
 
 var currentUsername;
-var currentEmailHash;
 var gravatar;
 
 export function identityMetadataCallback(metadata) {
 	if (currentUsername != metadata.user) {
 		currentUsername = metadata.user;
-		currentEmailHash = metadata.email;
-		if (currentEmailHash) {
-			gravatar = 'https://gravatar.com/avatar/'+currentEmailHash;
-		} else {
-			gravatar = '/public/behaviours/identity/user.svg';
-		}
+		gravatar = metadata['user-icon'];
+		gravatar = gravatar == undefined ?  '/public/behaviours/identity/user.svg' : gravatar;
 	}
 }
 

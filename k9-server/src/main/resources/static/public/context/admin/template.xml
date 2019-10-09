@@ -1,39 +1,48 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.kite9.org/schema/adl' xmlns:adl='http://www.kite9.org/schema/adl'>
 
-  <template id='entity-document'>
-    
-    <contents xpath="adl:content[adl:rel = 'project']/adl:value" />
+  <svg:defs>
+    <svg:pattern id="entity-pattern" patternUnits="userSpaceOnUse" width="100" height="100">
+      <svg:image xlink:href="/public/context/admin/icons/vecteezy-2.jpg" x="0" y="0" width="100" height="100" />
+    </svg:pattern>
   
-    <value>
-      <id><contents xpath="adl:links[@rel = 'self']" /></id>
-      <contents xpath="adl:title" />
-      <icon><contents xpath="@localImagePath" type="string" /></icon>
-      <contents xpath="adl:description" />
-    </value>
+    <svg:clipPath id="clipCircle">
+      <svg:circle r="50" cx="50" cy="50"/>
+    </svg:clipPath>
     
-    <collection id="revisions">
-      <named>Revisions</named>
-      <grid>
-        <contents xpath="adl:content[adl:rel = 'revisions']/adl:value" />
-      </grid>
-    </collection>
-  
-  </template>
+    <svg:linearGradient id='risk-background' x1='0%' x2='0%' y1='0%' y2='100%'>
+      <svg:stop offset='0%' stop-color='#FFF' />
+      <svg:stop offset='100%' stop-color='#DDD' />
+    </svg:linearGradient>
+    
+    <svg:filter id="dropshadow" height="130%">
+      <svg:feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <svg:feOffset dx="6" dy="6" />
+      <svg:feColorMatrix type="matrix" values="
+            0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 0 0
+                0 0 0 .4 0" />
+      <svg:feMerge>
+        <svg:feMergeNode />
+        <svg:feMergeNode in="SourceGraphic" />
+      </svg:feMerge>
+    </svg:filter>
+  </svg:defs>
 
   <!--  this handles embedded entities -->
-  <template id="value">
-    <back class="back" style='kite9-usage: decal; kite9-type: svg;  '>
+  <template id="entity" k9-ui="select">
+    <back class="back" k9-indicator="fill" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
   
-    <contents xpath="adl:title" />
-    <contents xpath="adl:description" />
-    <icon><contents xpath="@localImagePath" type="string" /></icon>
-    <lastUpdated><contents xpath="@lastUpdated" type="string" /></lastUpdated>
+    <contents />
   </template>
   
   <template id="icon">
-    <svg:image x="0" y="0" width="80px" height="80px" xlink:href="/public/context/admin/icons/document.svg" />
+    <contents />
+    <svg:g >
+      <svg:image x="0" y="0" width="100px" height="100px" xlink:href="#{../../text()}" clip-path="url(#clipCircle)" />
+    </svg:g>
   </template>
 
 </svg:svg>

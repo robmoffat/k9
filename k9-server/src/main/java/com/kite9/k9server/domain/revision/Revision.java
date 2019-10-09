@@ -19,7 +19,7 @@ import com.kite9.k9server.domain.user.User;
  * Contains a single diagram revision.  
  */
 @Entity
-public class Revision extends AbstractLongIdEntity implements Secured {
+public class Revision extends AbstractLongIdEntity implements Secured, RevisionExcerptProjection {
 
 	@ManyToOne(targetEntity=Document.class, optional=false, fetch=FetchType.EAGER)
     Document document;
@@ -113,8 +113,8 @@ public class Revision extends AbstractLongIdEntity implements Secured {
 
 	@JsonIgnore
 	@Override
-	public String getLocalImagePath() {
-		return "/public/context/admin/icons/revision.svg";
+	public String getIcon() {
+		return author.getIcon();
 	}
 
 	@JsonIgnore

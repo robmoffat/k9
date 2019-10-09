@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.domain.SecuredCrudRepository;
 
 @Component
-@RepositoryRestResource(excerptProjection=DefaultExcerptProjection.class)
-public interface DocumentRepository extends SecuredCrudRepository<Document, Long>, DocumentRepositoryCustom {
+@RepositoryRestResource(excerptProjection=DocumentExcerptProjection.class)
+public interface DocumentRepository extends SecuredCrudRepository<Document>, DocumentRepositoryCustom {
 
 	@Query("select d from Document d join d.project.members m where m.user.username = ?#{ principal }")
 	public Iterable<Document> findAll();

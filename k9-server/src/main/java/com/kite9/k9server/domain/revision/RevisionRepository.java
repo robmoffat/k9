@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.domain.SecuredCrudRepository;
 
 @Component
-@RepositoryRestResource(excerptProjection=DefaultExcerptProjection.class)
-public interface RevisionRepository extends SecuredCrudRepository<Revision, Long>, RevisionRepositoryCustom {
+@RepositoryRestResource(excerptProjection=RevisionExcerptProjection.class)
+public interface RevisionRepository extends SecuredCrudRepository<Revision>, RevisionRepositoryCustom {
 
 	@Query( "select r from Revision r join r.document.project.members m where r.id = :id and m.user.username = ?#{ principal }" )
 	public Optional<Revision> findById(@Param("id") Long id);

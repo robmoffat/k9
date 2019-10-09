@@ -18,7 +18,7 @@ import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
 
 @Entity
-public class Document extends AbstractLongIdEntity implements Secured {
+public class Document extends AbstractLongIdEntity implements Secured, DocumentExcerptProjection {
 
 	@Column(length=50,nullable=false)
     private String title = "New Diagram";
@@ -106,7 +106,7 @@ public class Document extends AbstractLongIdEntity implements Secured {
 	}
 
 	@Override
-	public String getLocalImagePath() {
+	public String getIcon() {
 		return "/public/context/admin/icons/document.svg";
 	}
 	

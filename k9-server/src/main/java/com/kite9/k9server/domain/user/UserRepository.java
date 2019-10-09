@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import com.kite9.k9server.security.UserAuthenticationProvider;
  * @author robmoffat
  *
  */
+@RepositoryRestResource(excerptProjection=UserExcerptProjection.class)
 public interface UserRepository extends Repository<User, Long>, UserRepositoryCustom {
 	
 	/**
@@ -71,7 +73,7 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	/**
 	 * Required for delete to work externally.  
 	 */
-	@RestResource(exported=false)
+	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
 	Optional<User> findById(@Param("id") Long id);
 	
 	/**

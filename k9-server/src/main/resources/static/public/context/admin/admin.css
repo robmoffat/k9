@@ -1,6 +1,11 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
+@import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/fonts/metropolis/metropolis.css');
+@import url('/public/behaviours/indication/indicators.css');
+
+@script url(admin.js);
+
 
 * {
 	
@@ -9,37 +14,33 @@
 diagram,
 [k9-elem=diagram] {
 	font-family: metropolis;
+	font-weight: 600;
+	margin: 40px;
+	font-size: 15px;
 }
 
-entity[type=document] {
+document,
+project,
+revision,
+member,
+user {
 	kite9-type: container;
-	kite9-template: url(template.xml#entity-document);
-}
-
-value {
-	kite9-type: container;
-	kite9-template: url(template.xml#value);
+	kite9-template: url(template.xml#entity);
 	kite9-layout: down;
-	kite9-min-size: 300px 300px;
+	kite9-min-size: 150px 250px;
+	kite9-sizing: minimize;
+	kite9-margin: 10px;
+	kite9-padding: 15px;
+	kite9-connection-align: 50%;	
 }
 
-[k9-elem=value] .back {
-	fill: #ABABAB;
-}
-
-collection {
-	kite9-type: container;
-	kite9-layout: down;
-}
-
-collection > name {
-	kite9-type: text;
-}
-
-collection > grid {
-	kite9-type: container;
-	kite9-layout: grid;
-	kite9-grid-columns: 3;
+[k9-elem=document] .back,
+[k9-elem=project] .back,
+[k9-elem=member] .back,
+[k9-elem=revision] .back,
+[k9-elem=user] .back {
+	fill: url(#risk-background);
+	stroke: #A0A0A0;
 }
 
 title,
@@ -49,17 +50,56 @@ lastUpdated,
 [k9-elem=description],
 [k9-elem=lastUpdated] {
 	kite9-type: text;
-	kite9-layout: down;
-	kite9-text-bounds: 380px 500px;
-	fill: #1b1b16;
+	fill: #686868;
 	stroke: #AAAA88;
-	kite9-connection-align: 50%;
-	font-size: 35px;
+	font-size: 18px;
+	kite9-margin: 15px;
+	kite9-text-bounds: 250px 240px;
+	text-align: middle;
+}
+
+lastUpdated {
+	kite9-text-bounds: 230px 250px;
 }
 
 title,
 [k9-elem=title] {
-	font-size: 50px;
+	font-size: 22px;
+	kite9-vertical-align: top;
+}
+
+lastUpdated,
+[k9-elem=lastUpdated] {
+	kite9-vertical-align: bottom;
+	fill: #303030;
+	font-size: 15px;
+	font-weight: 400;	
+	font-style: italic;
+}
+
+description,
+[k9-elem=description] {
+	fill:  #303030;
+	font-size: 15px;
+	font-weight: 400;
+	
+}
+
+[k9-elem=label] > [k9-elem=back] {
+	fill: none;
+	stroke: none;
+}
+
+label {
+}
+
+label > front,
+[k9-elem=label] > [k9-elem=front] {
+	fill: #A0A0A0;
+	font-style: italic;
+	font-size: 15px;
+	font-weight: 400;
+	kite9-margin: 20px;
 }
 
 icon {
@@ -67,6 +107,24 @@ icon {
 	kite9-template: url(template.xml#icon);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-	kite9-min-size: 50pt 50pt;
-	kite9-margin: 10pt;	
+}
+
+link {
+	kite9-link-minimum-length: 40px;
+	kite9-link-corner-radius: 40px;
+}
+
+[k9-elem=link-body] {
+	stroke-width: 30px;
+	stroke:  #A0A0A0;
+}
+
+container {
+	kite9-connection-align: 50%;	
+	kite9-sizing: maximize;
+	stroke: #A0A0A0;
+}
+
+[k9-elem=container] > [k9-elem=back] {
+	stroke: #A0A0A0;
 }

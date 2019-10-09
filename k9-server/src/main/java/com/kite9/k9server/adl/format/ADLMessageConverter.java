@@ -2,17 +2,16 @@ package com.kite9.k9server.adl.format;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
@@ -25,19 +24,19 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.security.Kite9HeaderMeta; 
 
 @Component
-public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> implements InitializingBean {
+public class ADLMessageConverter extends AbstractGenericHttpMessageConverter<ADL> {
 	
 
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
 
-	@Autowired
 	protected FormatSupplier formatSupplier;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
+		
+	public ADLMessageConverter(FormatSupplier formatSupplier) {
+		super();
+		this.formatSupplier = formatSupplier;
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
 	}
-	
+
 	@Override
 	protected boolean supports(Class<?> clazz) {
 		return ADL.class.isAssignableFrom(clazz);
@@ -71,7 +70,7 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> imple
 	}
 
 	@Override
-	protected void writeInternal(ADL t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+	protected void writeInternal(ADL t, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 		MediaType contentType = outputMessage.getHeaders().getContentType();	
 		try {
 			Format f = formatSupplier.getFormatFor(contentType);
@@ -87,6 +86,11 @@ public class ADLMessageConverter extends AbstractHttpMessageConverter<ADL> imple
 		super.addDefaultHeaders(headers, t, contentType);
 		Kite9HeaderMeta.addUserMeta(t);
 		Kite9HeaderMeta.transcribeMetaToHeaders(t, headers);
+	}
+
+	@Override
+	public ADL read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+		return readInternal((Class<? extends ADL>) contextClass, inputMessage);
 	}
 
 

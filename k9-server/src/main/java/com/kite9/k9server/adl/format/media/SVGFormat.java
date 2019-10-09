@@ -23,4 +23,7 @@ public class SVGFormat implements Format {
 		data.getTranscoder().writeSVGToOutput(data.getSVGRepresentation(), new TranscoderOutput(baos));
 	}
 
+	public String getExtension() {
+		return "svg";
+	}
 }

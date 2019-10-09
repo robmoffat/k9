@@ -32,6 +32,9 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.accept.HeaderContentNegotiationStrategy;
+import org.springframework.web.accept.ParameterContentNegotiationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
 import org.w3c.dom.Document;
@@ -42,6 +45,7 @@ import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
+import com.kite9.k9server.adl.format.ADLMessageConverter;
 import com.kite9.k9server.adl.format.FormatSupplier;
 
 @Configuration
@@ -123,6 +127,7 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	public void configureHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
 		RepositoryRestConfigurer.super.configureHttpMessageConverters(messageConverters);
 		messageConverters.add(0, new HateoasADLHttpMessageConverter(repositoryRestMvcConfiguration.objectMapper(), formatSupplier, transformResource, resourceLoader));	
+		messageConverters.add(1, new ADLMessageConverter(formatSupplier));
 	}
 
 	/**
@@ -134,6 +139,12 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 			DelegatingHandlerMapping dhm, RepositoryResourceMappings rrm, 
 			Repositories repositories, JpaHelper jpaHelper) {
 		Map<String, CorsConfiguration> corsConfigurations = config.getCorsRegistry().getCorsConfigurations();
+		
+		// allows us to use format=png or something in the request url
+		ContentNegotiationManager cnm = new ContentNegotiationManager(
+				new ParameterContentNegotiationStrategy(formatSupplier.getMediaTypeMap()),
+				new HeaderContentNegotiationStrategy());
+
 		
 		// create a mapping which supports multiple media types.
 		RepositoryRestHandlerMapping repositoryMapping = new RepositoryRestHandlerMapping(rrm, config, repositories) {
@@ -153,7 +164,7 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 				mediaTypes.add(MediaType.APPLICATION_JSON_VALUE);
 				mediaTypes.add(config.getDefaultMediaType().toString());
 
-				return new ProducesRequestCondition(mediaTypes.toArray(new String[mediaTypes.size()]));
+				return new ProducesRequestCondition(mediaTypes.toArray(new String[mediaTypes.size()]), null, cnm);
 			}
 
 		};
@@ -161,6 +172,7 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 		repositoryMapping.setJpaHelper(jpaHelper);
 		repositoryMapping.setApplicationContext(context);
 		repositoryMapping.setCorsConfigurations(corsConfigurations);
+		repositoryMapping.setContentNegotiationManager(cnm);
 		repositoryMapping.afterPropertiesSet();
 		
 		

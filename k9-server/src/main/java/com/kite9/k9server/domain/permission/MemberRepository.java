@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.domain.SecuredCrudRepository;
 
 @Component
-@RepositoryRestResource(excerptProjection=DefaultExcerptProjection.class)
-public interface MemberRepository extends SecuredCrudRepository<Member, Long>, MemberRepositoryCustom {
+@RepositoryRestResource(excerptProjection=MemberExcerptProjection.class)
+public interface MemberRepository extends SecuredCrudRepository<Member>, MemberRepositoryCustom {
 
 }

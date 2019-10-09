@@ -11,8 +11,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.adl.format.media.MediaTypes;
-import com.kite9.k9server.domain.document.DocumentController;
-import com.kite9.k9server.domain.revision.RevisionController;
+import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
@@ -33,12 +32,12 @@ public class DomainObjectResourceLifecycleTest extends AbstractLifecycleTest {
 
 		
 		// get the latest resource via the revision
-		URI uri = new URI(rOut.getLink(RevisionController.CONTENT_REL).getHref());
+		URI uri = new URI(rOut.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		byte[] input = getADL(uri);
 		Assert.assertTrue(new String(input).contains("some new xml"));
 		
 		// get the latest resource via the document
-		URI uri2 = new URI(dOut.getLink(DocumentController.CONTENT_REL).getHref());
+		URI uri2 = new URI(dOut.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		input = getADL(uri2);
 		Assert.assertTrue(new String(input).contains("some new xml"));
 		

@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * repositories to define, as are the findAll and findAllById.
  */
 @NoRepositoryBean
-public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
+public interface SecuredCrudRepository<T> extends Repository<T, Long> {
 	
 	static final String THIS_CLASS_NAME = SecuredCrudRepository.class.getCanonicalName();
 
@@ -27,8 +27,8 @@ public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
 	@RestResource(exported=false)
 	public long count();
 
-	@RestResource(exported=false)
-	public void deleteById(ID id);
+	//@RestResource(exported=false)
+	public void deleteById(Long id);
 
 	@PreAuthorize("#entity == null ? true : #entity.checkDelete()")
 	public void delete(@Param("entity") T entity);
@@ -40,5 +40,5 @@ public interface SecuredCrudRepository<T, ID> extends Repository<T, ID> {
 	public void deleteAll();
 	
 	@PostAuthorize("returnObject.isPresent() ? returnObject.get().checkRead() : true")
-	public <S extends T> Optional<S> findById(@Param("id") ID id);
+	public <S extends T> Optional<S> findById(@Param("id") Long id);
 }

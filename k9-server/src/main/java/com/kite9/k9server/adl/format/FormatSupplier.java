@@ -1,6 +1,7 @@
 package com.kite9.k9server.adl.format;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.MediaType;
 
@@ -10,5 +11,7 @@ public interface FormatSupplier {
 
 	Format getFormatFor(MediaType mt);
 	
-	public List<MediaType> getMediaTypes();
+	List<MediaType> getMediaTypes();
+
+	Map<String, MediaType> getMediaTypeMap();
 }

@@ -2,6 +2,7 @@ package com.kite9.k9server.adl.format;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
@@ -53,4 +54,11 @@ public class BasicFormatSupplier implements FormatSupplier {
 		return Arrays.asList(MEDIA_TYPES);
 	}
 
+	@Override
+	public Map<String, MediaType> getMediaTypeMap() {
+		return Arrays.stream(FORMATS)
+			.collect(Collectors.toMap(f -> f.getExtension(), f -> f.getMediaTypes()[0]));
+	}
+
+	
 }

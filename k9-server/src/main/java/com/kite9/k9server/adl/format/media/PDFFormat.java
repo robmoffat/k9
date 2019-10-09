@@ -26,6 +26,6 @@ public final class PDFFormat implements Format {
 	}
 
 	public String getExtension() {
-		return ".pdf";
+		return "pdf";
 	}
 }

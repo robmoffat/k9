@@ -263,25 +263,22 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 		return memberships;
 	}
 
-	@JsonIgnore
 	@Override
 	public String getTitle() {
 		return getUsername();
 	}
 
-	@JsonIgnore
 	@Override
 	public String getDescription() {
 		return emailable ? "emailable" : "not emailable";
 	}
 
-	@JsonIgnore
 	@Override
-	public String getLocalImagePath() {
-		return "/public/context/admin/icons/user.svg";
+	public String getIcon() {
+		String currentEmailHash = Hash.generateMD5Hash(getEmail().toLowerCase());
+		return "https://gravatar.com/avatar/"+currentEmailHash;
 	}
 	
-	@JsonIgnore
 	@Override
 	public Date getLastUpdated() {
 		return null;

@@ -40,12 +40,9 @@ import com.kite9.k9server.web.HttpException;
  * 
  * @author robmoffat
  */
-@Controller
+//@Controller
 @RequestMapping(path="/api/documents")
 public class DocumentController extends AbstractADLContentController<Document> {
-
-	public static final String CHANGE_REL = "change";
-	public static final String CHANGE_URL = "/change";
 	
 	@Autowired
 	CommandController command;

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,10 +16,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.kite9.k9server.adl.format.ADLMessageConverter;
+import com.kite9.k9server.adl.format.FormatSupplier;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled=true)
@@ -55,9 +58,12 @@ public class WebConfig implements WebMvcConfigurer {
 		converters.add(adlMessageConverter());
 	}
 
+	@Autowired
+	FormatSupplier fs;
+	
 	@Bean
 	public HttpMessageConverter<?> adlMessageConverter() {
-		return new ADLMessageConverter();
+		return new ADLMessageConverter(fs);
 	}
 	
 	public class LoggingFilter extends CommonsRequestLoggingFilter {
@@ -86,6 +92,5 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
 	}
-	
 	
 }

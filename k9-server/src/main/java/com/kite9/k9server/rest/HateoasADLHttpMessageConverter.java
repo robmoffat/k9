@@ -18,11 +18,13 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.codehaus.stax2.XMLStreamWriter2;
 import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
@@ -83,6 +85,7 @@ public class HateoasADLHttpMessageConverter
 		this.resourceLoader = resourceLoader;
 		this.resource = resource;
 		this.transFact = TransformerFactory.newInstance();
+		this.transFact.setErrorListener(new DefaultErrorHandler(true));
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
 	}
 	

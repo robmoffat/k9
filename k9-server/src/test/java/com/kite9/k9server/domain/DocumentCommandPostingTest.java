@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.MediaTypes;
-import com.kite9.k9server.domain.document.DocumentController;
-import com.kite9.k9server.domain.revision.RevisionController;
+import com.kite9.k9server.domain.rels.ChangeResourceProcessor;
+import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
@@ -26,8 +26,8 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		DocumentResource dr  = createADocumentResource(pr);
 		RevisionResource rr = createARevisionResource(dr);
 		
-		URI uri = new URI(dr.getLink(DocumentController.CHANGE_REL).getHref());
-		URI revUri = new URI(rr.getLink(RevisionController.CONTENT_REL).getHref());
+		URI uri = new URI(dr.getLink(ChangeResourceProcessor.CHANGE_REL).getHref());
+		URI revUri = new URI(rr.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		
 		byte[] back1 = postCommand("[{\"type\": \"SetText\", \"fragmentId\": 0, \"fragmentHash\": \"ce8e7037744567a648dccec273d88c604954f114\", \"newText\": \"This is some text\"}]", uri);
 		persistInAFile(back1, "revisions", "state1.xml");

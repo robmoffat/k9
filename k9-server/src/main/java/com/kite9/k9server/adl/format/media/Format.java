@@ -17,4 +17,5 @@ public interface Format {
 
 	public void handleWrite(ADL input, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception;
 	
+	public String getExtension();
 }

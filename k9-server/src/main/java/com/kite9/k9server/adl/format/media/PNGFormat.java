@@ -4,7 +4,8 @@ import java.io.OutputStream;
 
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-import org.apache.batik.transcoder.image.PNGTranscoder;
+import org.kite9.diagram.batik.format.Kite9PNGTranscoder;
+import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.http.MediaType;
 import org.w3c.dom.Document;
 
@@ -20,9 +21,10 @@ public class PNGFormat implements Format {
 	 * This is probably horribly inefficient, as I think lots of resources get loaded twice.
 	 */
 	public void handleWrite(ADL adl, OutputStream baos,  boolean watermark, Integer width, Integer height) throws Exception {
-		String uri = adl.getUri().toString();
-		PNGTranscoder png = new PNGTranscoder();
 		Document doc = adl.getSVGRepresentation();
+		String uri = adl.getUri().toString();
+		System.out.println(new XMLHelper().toXML(doc));
+		Kite9PNGTranscoder png = new Kite9PNGTranscoder();
 		doc.setDocumentURI(uri);
 		TranscoderInput in = new TranscoderInput(doc);
 		TranscoderOutput out = new TranscoderOutput(baos);
@@ -33,7 +35,7 @@ public class PNGFormat implements Format {
 
 
 	public String getExtension() {
-		return ".png";
+		return "png";
 	}
 	
 }

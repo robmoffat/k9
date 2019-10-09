@@ -73,7 +73,7 @@ public class HTMLFormat implements Format {
 	}
 
 	public String getExtension() {
-		return ".html";
+		return "html";
 	}
 
 }

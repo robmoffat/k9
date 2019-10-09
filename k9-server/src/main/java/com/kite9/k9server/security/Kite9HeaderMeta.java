@@ -22,7 +22,7 @@ public class Kite9HeaderMeta {
 		t.setMeta("user", authentication.getName());
 		
 		if (authentication.getDetails() instanceof User) {
-			t.setMeta("email", Hash.generateMD5Hash(((User)authentication.getDetails()).getEmail().toLowerCase()));
+			t.setMeta("user-icon", ((User)authentication.getDetails()).getIcon());
 		}
 	}
 	
@@ -31,7 +31,7 @@ public class Kite9HeaderMeta {
 		headers.add("kite9-user", authentication.getName());
 		
 		if (authentication.getDetails() instanceof User) {
-			headers.add("kite9-email", Hash.generateMD5Hash(((User)authentication.getDetails()).getEmail().toLowerCase()));
+			headers.add("kite9-user-icon", ((User)authentication.getDetails()).getIcon());
 		}
 	}
 	

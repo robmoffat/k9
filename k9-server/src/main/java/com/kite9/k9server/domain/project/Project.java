@@ -23,7 +23,7 @@ import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
 
 @Entity
-public class Project extends AbstractLongIdEntity implements Secured {
+public class Project extends AbstractLongIdEntity implements Secured, ProjectExcerptProjection {
 	
 	@Column(length=50,nullable=false)
 	private String title;
@@ -126,7 +126,7 @@ public class Project extends AbstractLongIdEntity implements Secured {
 	}
 	
 	@Override
-	public String getLocalImagePath() {
+	public String getIcon() {
 		return "/public/context/admin/icons/project.svg";
 	}
 
