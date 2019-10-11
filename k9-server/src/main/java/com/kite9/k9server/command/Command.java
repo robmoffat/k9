@@ -56,6 +56,6 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	setterVisibility =Visibility.NONE)
 public interface Command {
 					
-	public ADL applyCommand() throws CommandException;
+	public Object applyCommand() throws CommandException;
 	
 }

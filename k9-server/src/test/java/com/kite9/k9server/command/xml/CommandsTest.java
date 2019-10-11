@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kite9.framework.common.TestingHelp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,10 +24,9 @@ import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.command.controllers.StaticCommandController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
@@ -44,7 +42,7 @@ public class CommandsTest {
 	MailSender mailSender;
 	
 	@Autowired
-	CommandController commandController;
+	StaticCommandController commandController;
 	
 	@LocalServerPort
 	protected int port;

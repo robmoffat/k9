@@ -41,6 +41,7 @@ import org.w3c.dom.Document;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.Annotated;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlAnnotationIntrospector;
@@ -121,6 +122,8 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 			}
 		};
 		objectMapper.registerModule(module);
+		// this prevents exceptions when we are trying to serialize lazy hibernate collections
+		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 	}
 
 	@Override

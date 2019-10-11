@@ -1,21 +1,18 @@
-package com.kite9.k9server.command;
+package com.kite9.k9server.command.controllers;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kite9.framework.logging.Kite9Log;
 import org.kite9.framework.logging.Logable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.rest.core.Path;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMetadata;
-import org.springframework.data.rest.webmvc.BasePathAwareController;
-import org.springframework.hateoas.EntityLinks;
+import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,24 +22,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.domain.DomainCommand;
 import com.kite9.k9server.command.xml.XMLCommand;
 import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.RestEntityRepository;
 import com.kite9.k9server.domain.Secured;
-import com.kite9.k9server.domain.SecuredCrudRepository;
 import com.kite9.k9server.domain.document.Document;
-import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.rels.ChangeResourceProcessor;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.domain.revision.Revision;
-import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
@@ -53,43 +48,16 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-@BasePathAwareController
-public class CommandController implements Logable, InitializingBean {
-	
-	private Kite9Log log = new Kite9Log(this);
-	
-	@Autowired
-	Repositories repositories;
+@RepositoryRestController 
+public class ResourceCommandController extends AbstractCommandController implements Logable, InitializingBean {
 	
 	@Autowired
 	UserRepository userRepository;
-	
-	@Autowired
-	RevisionRepository revisionRepository;
-	
-	@Autowired
-	DocumentRepository documentRepository;
-	
-	@Autowired
-	EntityLinks entityLinks;
 		
 	@Autowired
 	ResourceMappings mappings;
 	
 	private Map<Path, RestEntityRepository<?>> repoMap;
-	
-	@RequestMapping(method={RequestMethod.POST}, path="/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
-	public @ResponseBody ADL applyCommandOnStatic (
-			RequestEntity<List<Command>> req,
-			@RequestParam(required=true, name="on") String sourceUri) throws Exception {
-		
-		URI uri = new URI(sourceUri);
-		URI base = req.getUrl();
-		uri = base.resolve(uri);
-		ADL input = new ADLImpl(uri, req.getHeaders());
-		
-		return performXMLCommands(req.getBody(), input, null, req.getHeaders(), uri);
-	}
 	
 	/**
 	 * This is used for applying commands to domain objects.
@@ -122,32 +90,22 @@ public class CommandController implements Logable, InitializingBean {
 		
 	}
 	
-	protected RestEntity performDomainCommands(List<Command> steps, RestEntity context, HttpHeaders headers, URI url) {
+	protected Object performDomainCommands(List<Command> steps, RestEntity context, HttpHeaders headers, URI url) {
 		checkDomainAccess(context, url);
-		performSteps(steps, null, context, headers, url);
-		return context;
+		return performSteps(steps, null, context, headers, url);
 	}
 
 	protected ADL performXMLCommands(List<Command> steps, ADL input, RestEntity context, HttpHeaders headers, URI url) {
 		Document d = null;
 		
-		if (log.go()) {
-			log.send("Before: " + input.getAsXMLString());
-		}
-		
 		d = checkDocumentAccess(context, url, d);
-		input = performSteps(steps, input, context, headers, url);
-		checkRenderable(input);
+		input = super.performXMLCommands(steps, input, context, headers, url);
 		
 		if (d != null) {
 			// create the new revision
 			Revision rNew = createNewRevisionOnDocument(input, d);
 			addDocumentMeta(input, rNew);
 		}	
-		
-		if (log.go()) {
-			log.send("After: " + input.getAsXMLString());
-		}
 		
 		return input;
 	}
@@ -164,9 +122,6 @@ public class CommandController implements Logable, InitializingBean {
 		return rNew;
 	}
 
-	protected void checkRenderable(ADL input) {
-		input.getSVGRepresentation();
-	}
 
 	/**
 	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
@@ -202,21 +157,6 @@ public class CommandController implements Logable, InitializingBean {
 		}
 	}
 
-	protected ADL performSteps(List<Command> steps, ADL input, RestEntity context, HttpHeaders headers, URI url) {
-		for (Command command : steps) {
-			if (command instanceof XMLCommand) {
-				((XMLCommand) command).setOn(input);
-			}
-			
-			if (command instanceof DomainCommand) {
-				Object repo = repositories.getRepositoryFor(context.getClass()).orElseThrow(() -> new CommandException("No repository for "+context.getClass(), command));
-				((DomainCommand)command).setCommandContext((SecuredCrudRepository) repo, context, url, headers);
-			}
-		
-			input = command.applyCommand();
-		}
-		return input;
-	}
 
 	private Class<? extends Command> identifyCommandTypes(List<Command> steps) {
 		Class<? extends Command> out = null;
@@ -243,12 +183,7 @@ public class CommandController implements Logable, InitializingBean {
 
 	@Override
 	public String getPrefix() {
-		return "CC  ";
-	}
-
-	@Override
-	public boolean isLoggingEnabled() {
-		return true;
+		return "RCC ";
 	}
 
 	@Override

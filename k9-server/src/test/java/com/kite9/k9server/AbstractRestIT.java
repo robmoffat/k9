@@ -179,6 +179,16 @@ public abstract class AbstractRestIT {
 		return headers;
 	}
 	
+	protected HttpHeaders createNoAuthHeaders(MediaType in, MediaType... accept) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(accept));
+		if (in != null) {
+			headers.setContentType(in);
+		}
+		return headers;
+	}
+	
+	
 	protected final class SilentErrorHandler implements ResponseErrorHandler {
 		
 		@Override

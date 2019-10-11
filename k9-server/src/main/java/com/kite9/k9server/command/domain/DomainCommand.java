@@ -5,6 +5,7 @@ import java.net.URI;
 import org.springframework.http.HttpHeaders;
 
 import com.kite9.k9server.command.Command;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.SecuredCrudRepository;
 
 /**
@@ -15,8 +16,8 @@ import com.kite9.k9server.domain.SecuredCrudRepository;
  *
  * @param <X>
  */
-public interface DomainCommand<X> extends Command {
+public interface DomainCommand<X extends RestEntity> extends Command {
 
-	public <Y extends SecuredCrudRepository<X>> void setCommandContext(Y repo, X current, URI url, HttpHeaders requestHeaders);
+	public void setCommandContext(SecuredCrudRepository<X> repo, X current, URI url, HttpHeaders requestHeaders);
 
 }
