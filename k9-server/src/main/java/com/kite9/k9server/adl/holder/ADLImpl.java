@@ -148,15 +148,10 @@ public class ADLImpl implements ADL {
 	
 	public String loadText(URI uri2) {
 		try {
-			if (uri2.getScheme().equals("file")) {
-				// this is used a lot for testing.
-				return StreamUtils.copyToString(uri2.toURL().openStream(), StandardCharsets.UTF_8);
-			} else {
-				RequestEntity<?> request = new RequestEntity<>(requestADLHeaders(requestHeaders), HttpMethod.GET, uri2);
-				RestTemplate template = new RestTemplate();
-				ResponseEntity<String> out = template.exchange(request, String.class);
-				return out.getBody();
-			}
+			RequestEntity<?> request = new RequestEntity<>(requestADLHeaders(requestHeaders), HttpMethod.GET, uri2);
+			RestTemplate template = new RestTemplate();
+			ResponseEntity<String> out = template.exchange(request, String.class);
+			return out.getBody();
 		} catch (Exception e) {
 			throw new Kite9XMLProcessingException("Couldn't request XML from: "+uri2, e, null, null);
 		}

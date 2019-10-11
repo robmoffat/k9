@@ -1,17 +1,24 @@
 package com.kite9.k9server.command.xml;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kite9.framework.common.TestingHelp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.StreamUtils;
@@ -19,6 +26,7 @@ import org.springframework.util.StreamUtils;
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandController;
 import com.kite9.k9server.command.CommandException;
 
@@ -38,80 +46,75 @@ public class CommandsTest {
 	@Autowired
 	CommandController commandController;
 	
-	public ADL getInitialADL() throws Exception {
-		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/test_command1.xml"), Charset.forName("UTF-8"));
-		ADL adl = new ADLImpl(xml, new URI("/public/commands/test_command1.xml"), null);
-		return adl;
+	@LocalServerPort
+	protected int port;
+	
+	String sourceURI;
+	
+	@Before
+	public void setupUrl() {
+		sourceURI = "http://localhost:"+port+"/public/commands/test_command1.xml";
 	}
 	
 
 	@Test
 	public void testReplaceCommand1() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
 		Replace replace = new Replace();
 		replace.fragmentId = "link";
 		replace.uriStr= "#one";
 		replace.approach = Replace.Approach.SHALLOW;
 		replace.keptAttributes = Arrays.asList("rank", "id");
+	
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(replace), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(replace), sourceURI);
 		performSaveAndCheck(out, "replace");
 
 	}
 	
 	@Test
 	public void testReplaceCommand2() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
 		Replace replace = new Replace();
 		replace.fragmentId = "link";
 		replace.uriStr= "#one";
 		replace.approach = Replace.Approach.DEEP;
 		replace.keptAttributes = Arrays.asList("rank", "id");
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(replace), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(replace), sourceURI);
 		performSaveAndCheck(out, "replace-all");
 
 	}
 	
 	@Test
 	public void testReplaceCommand3() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
 		Replace replace = new Replace();
 		replace.fragmentId = "one";
 		replace.uriStr= "#link-to";
 		replace.approach = Replace.Approach.ATTRIBUTES;
 		replace.keptAttributes = Arrays.asList("rank", "id");
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(replace), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(replace), sourceURI);
 		performSaveAndCheck(out, "replace-attr");
 
 	}
 	
 	@Test
 	public void testMoveCommand() throws CommandException, Exception {
-		ADL in = getInitialADL();
-
 		Move move = new Move();
 		move.moveId = "one-label";
 		move.fragmentId = "two";
 		move.beforeFragmentId = "two-label";
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(move), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(move), sourceURI);
 		performSaveAndCheck(out, "move");
 	}
 	
 	@Test
 	public void testDeleteCommand() throws CommandException, Exception {
-		ADL in = getInitialADL();
-
 		Delete delete = new Delete();
 		delete.fragmentId = "two";
 		delete.cascade = true;
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(delete), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(delete), sourceURI);
 		performSaveAndCheck(out, "delete");
 	}
 
@@ -125,34 +128,34 @@ public class CommandsTest {
 	
 	@Test
 	public void testSetTextCommand() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
 		SetText setText = new SetText();
 		setText.newText =  "Winner";
 		setText.fragmentId="two";
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(setText), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(setText), sourceURI);
 		performSaveAndCheck(out, "settext");
 	}
 	
 	@Test
 	public void testSetAttrCommand() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
 		SetAttr setAttr = new SetAttr();
 		setAttr.name =  "name";
 		setAttr.value = "value";
 		setAttr.fragmentId="two";
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(setAttr), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(setAttr), sourceURI);
 		performSaveAndCheck(out, "setattr");
 	}
 	
+	private RequestEntity<List<Command>> buildRequestEntity(Command c) throws URISyntaxException {
+		RequestEntity<List<Command>> out = new RequestEntity<>(Collections.singletonList(c), HttpMethod.POST, new URI(""));
+		return out;
+	}
+
+
 	@Test
 	public void testCopyCommand() throws CommandException, Exception {
-		ADL in = getInitialADL();
-		
-		String uri = this.getClass().getResource("/commands/test_command1.xml").toString()+"#one";
+		String uri = sourceURI+"#one";
 		
 		Copy copy = new Copy();
 		copy.uriStr =  uri;
@@ -160,7 +163,7 @@ public class CommandsTest {
 		copy.beforeFragmentId="two";
 		copy.deep = true;
 		
-		ADL out = commandController.applyCommand(Collections.singletonList(copy), in, null, null, null);
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(copy), sourceURI);
 		performSaveAndCheck(out, "copy");
 	}
 }
