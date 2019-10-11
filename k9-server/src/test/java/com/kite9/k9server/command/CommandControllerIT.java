@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.mail.MailSender;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,10 +36,13 @@ public class CommandControllerIT {
 	@MockBean
 	MailSender ms;
 	
+	@LocalServerPort
+	int port;
+	
 	@Test
 	public void testNullCommand() throws Exception {
 			
-		String docUrl = this.getClass().getResource("/commands/test_command1.xml").toExternalForm();
+		String docUrl = "http://localhost:"+port+"/public/commands/test_command1.xml";
 				
 		mockMvc.perform(
 	        post("/api/command/v1?on="+docUrl)
@@ -54,7 +58,7 @@ public class CommandControllerIT {
 	@Test
 	public void testDeleteCommand() throws Exception {
 			
-		String docUrl = this.getClass().getResource("/commands/test_command1.xml").toExternalForm();				
+		String docUrl = "http://localhost:"+port+"/public/commands/test_command1.xml";
 				
 		String step = "{\"type\": \"Delete\", \"fragmentId\": \"two-label\", \"fragmentHash\": \"0d168968280ce460f11629f27fbd21156c7bc6cf\"}";
 		
