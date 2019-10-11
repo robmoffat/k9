@@ -1,4 +1,4 @@
-package com.kite9.k9server.command.adl;
+package com.kite9.k9server.command.xml.adl;
 
 import java.util.List;
 

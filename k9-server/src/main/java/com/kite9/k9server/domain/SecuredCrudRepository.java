@@ -3,7 +3,6 @@ package com.kite9.k9server.domain;
 import java.util.Optional;
 
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -14,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * repositories to define, as are the findAll and findAllById.
  */
 @NoRepositoryBean
-public interface SecuredCrudRepository<T> extends Repository<T, Long> {
+public interface SecuredCrudRepository<T extends RestEntity> extends RestEntityRepository<T> {
 	
 	static final String THIS_CLASS_NAME = SecuredCrudRepository.class.getCanonicalName();
 
@@ -40,5 +39,6 @@ public interface SecuredCrudRepository<T> extends Repository<T, Long> {
 	public void deleteAll();
 	
 	@PostAuthorize("returnObject.isPresent() ? returnObject.get().checkRead() : true")
+	@Override
 	public <S extends T> Optional<S> findById(@Param("id") Long id);
 }

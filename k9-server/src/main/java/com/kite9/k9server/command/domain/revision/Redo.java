@@ -1,13 +1,14 @@
-package com.kite9.k9server.command.domain;
+package com.kite9.k9server.command.domain.revision;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.command.domain.AbstractDomainCommand;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepositoryCustom;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Redo extends AbstractDomainCommand<Document> {
+public class Redo extends AbstractDomainCommand<Document> implements RevisionCommand {
 	
 	public Redo() {
 		super();

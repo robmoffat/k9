@@ -141,6 +141,7 @@ public abstract class AbstractRestIT {
 		
 	}
 	
+	
 	/**
 	 * Provides a REST Template that supports HAL and logging.
 	 */

@@ -72,19 +72,6 @@ public class DocumentController extends AbstractADLContentController<Document> {
 		return addDocumentMeta(buildADL(request, r), r);
 	}
 	
-	/**
-	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
-	 */
-	private ADL addDocumentMeta(ADL adl, Revision r) {
-		adl.setMeta("redo", ""+(r.getNextRevision() != null));
-		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
-		adl.setMeta("revision", RevisionController.revisionUrl(r.getId())+CONTENT_URL);
-		String documentUrl = DocumentController.documentUrl(r.getDocument().getId());
-		adl.setMeta(CHANGE_REL, documentUrl+CHANGE_URL);
-		adl.setMeta(CONTENT_REL, documentUrl+CONTENT_URL);
-		adl.setMeta("author", r.getAuthor().getUsername());
-		return adl;
-	}
 
 	/**
 	 * Applies a command to the current revision, using the {@link CommandController}.

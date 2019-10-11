@@ -1,4 +1,4 @@
-package com.kite9.k9server.command.adl;
+package com.kite9.k9server.command.xml.adl;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.diagram.dom.elements.StyledKite9XMLElement;

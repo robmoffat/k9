@@ -8,12 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.command.adl.ADLDelete;
-import com.kite9.k9server.command.adl.ADLMoveCells;
-import com.kite9.k9server.command.adl.ADLReplace;
-import com.kite9.k9server.command.adl.CopyLink;
-import com.kite9.k9server.command.domain.Redo;
-import com.kite9.k9server.command.domain.Undo;
+import com.kite9.k9server.command.domain.revision.Redo;
+import com.kite9.k9server.command.domain.revision.Undo;
 import com.kite9.k9server.command.xml.AppendXML;
 import com.kite9.k9server.command.xml.Copy;
 import com.kite9.k9server.command.xml.Delete;
@@ -22,6 +18,10 @@ import com.kite9.k9server.command.xml.Replace;
 import com.kite9.k9server.command.xml.SetAttr;
 import com.kite9.k9server.command.xml.SetStyle;
 import com.kite9.k9server.command.xml.SetText;
+import com.kite9.k9server.command.xml.adl.ADLDelete;
+import com.kite9.k9server.command.xml.adl.ADLMoveCells;
+import com.kite9.k9server.command.xml.adl.ADLReplace;
+import com.kite9.k9server.command.xml.adl.CopyLink;
 
 /**
  * Performs some change on the ADL.

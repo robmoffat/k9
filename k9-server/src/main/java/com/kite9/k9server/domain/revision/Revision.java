@@ -95,8 +95,12 @@ public class Revision extends AbstractLongIdEntity implements Secured, RevisionE
 		if (document == null) {
 			return false;
 		}
-		
-		return document.checkAccess(a);
+		if (a == Action.READ) {
+			return document.checkAccess(a);
+		} else {
+			// you can't modify revisions
+			return false;
+		}
 	}
 
 	@JsonIgnore

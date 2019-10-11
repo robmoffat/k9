@@ -110,7 +110,7 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		
 		try {
 			delete(location);
-			Assert.fail("Shouldn't be allowed delete");
+			Assert.fail("Shouldn't be allowed delete of "+location);
 		} catch (Forbidden e) {
 		}
 		

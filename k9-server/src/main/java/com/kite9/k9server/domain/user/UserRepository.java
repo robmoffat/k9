@@ -67,13 +67,13 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	/**
 	 * Returns your (logged in) user only. 
 	 */
-	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
-	public User findOne(@Param("id") Long id);
+//	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
+//	public User findOne(@Param("id") Long id);
 
 	/**
 	 * Required for delete to work externally.  
 	 */
-	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
+//	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
 	Optional<User> findById(@Param("id") Long id);
 	
 	/**

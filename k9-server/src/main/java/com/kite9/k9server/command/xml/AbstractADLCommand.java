@@ -24,7 +24,7 @@ import com.kite9.k9server.command.CommandException;
  * @author robmoffat
  *
  */
-public abstract class AbstractADLCommand implements ADLCommand {
+public abstract class AbstractADLCommand implements XMLCommand {
 	
 	protected String fragmentId;
 	protected ADL adl;
