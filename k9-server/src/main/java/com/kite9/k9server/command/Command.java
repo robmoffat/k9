@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.kite9.k9server.command.domain.rest.DeleteEntity;
 import com.kite9.k9server.command.domain.rest.RegisterUser;
 import com.kite9.k9server.command.domain.revision.Redo;
 import com.kite9.k9server.command.domain.revision.Undo;
@@ -53,7 +54,8 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(Redo.class),
 	
 	// domain-specific
-	@Type(RegisterUser.class)
+	@Type(RegisterUser.class),
+	@Type(DeleteEntity.class)
 	
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 

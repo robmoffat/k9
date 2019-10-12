@@ -27,7 +27,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.domain.rest.DeleteEntity;
 import com.kite9.k9server.command.domain.rest.RegisterUser;
+import com.kite9.k9server.command.xml.Delete;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.resource.UserResource;
 
@@ -115,16 +117,24 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 
 	protected void delete(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
 		HttpHeaders h = createJWTTokenHeaders(token, null);
-		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		h.setContentType(MediaType.APPLICATION_JSON);
+		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+		DeleteEntity de = new DeleteEntity();
+	
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
 
 	protected void delete(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
 		HttpHeaders h = createBasicAuthHeaders(password, username);
-		RequestEntity<Void> re = new RequestEntity<Void>(h, HttpMethod.DELETE, new URI(url));
+		h.setContentType(MediaType.APPLICATION_JSON);
+		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+		DeleteEntity de = new DeleteEntity();
+	
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, out.getStatusCode());
+		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
 
 	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String jwtToken, Class<X> c) throws URISyntaxException {

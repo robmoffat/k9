@@ -51,34 +51,18 @@ public interface UserRepository extends SecuredCrudRepository<User> {
 	 */
 	@Query("select u from User u where u.username = ?#{ principal }")
 	public Iterable<User> findAll();
-	
-	/**
-	 * Returns your (logged in) user only. 
-	 */
-//	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
-//	public User findOne(@Param("id") Long id);
 
 	/**
 	 * Required for delete to work externally.  
 	 */
-//	@Query("select u from User u where u.id = :id and u.username = ?#{principal}")
-	Optional<User> findById(@Param("id") Long id);
-	
-	/**
-	 * Removes the user permanently.  Won't work if the user is an author of a 
-	 * revision.
-	 */
-	@Transactional
 	@RestResource(exported=false)
-	@Modifying(clearAutomatically=true)
-	@Query("delete from User where id = :id  and username = ?#{principal}")
-	void remove(@Param("id") Long id);
+	Optional<User> findById(@Param("id") Long id);
 	
 	/**
 	 * Expires the user account.
 	 */
 	@Transactional
-	@RestResource(exported=true)
+	@RestResource(exported=false)
 	@Modifying(clearAutomatically=true)
 	@Query("update User u set u.accountExpired = true where id = :id and username = ?#{principal}")
 	void expire(@Param("id") Long id);

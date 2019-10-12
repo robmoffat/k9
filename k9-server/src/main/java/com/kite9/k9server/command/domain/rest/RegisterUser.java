@@ -30,12 +30,16 @@ public class RegisterUser extends AbstractRepoCommand<User> {
 
 	@Override
 	public Object applyCommand() throws CommandException {
-		User out = new User();
-		out.setEmail(email);
-		out.setUsername(username);
-		out.setPassword(Hash.generatePasswordHash(password));
-		out.setSalt(User.createNewSalt());
-		ur.save(out);
-		return out;
+		try {
+			User out = new User();
+			out.setEmail(email);
+			out.setUsername(username);
+			out.setPassword(Hash.generatePasswordHash(password));
+			out.setSalt(User.createNewSalt());
+			ur.save(out);
+			return out;
+		} catch (Exception e) {
+			throw new CommandException("Couldn't register user.  User may already be registered", e, this);
+		}
 	}
 }

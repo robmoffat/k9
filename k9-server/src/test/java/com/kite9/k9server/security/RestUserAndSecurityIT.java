@@ -22,6 +22,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -51,8 +52,8 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// try to create over the top
 		try {
 			createUser(restTemplate, username, password, email);
-		} catch (HttpClientErrorException e) { 
-			Assert.assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
+			Assert.fail();  // shouldn't get here
+		} catch (HttpServerErrorException e) { 
 		}
 		
 		// retrieve the user, testing basic authentication

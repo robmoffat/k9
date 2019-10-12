@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,13 +23,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.RestEntity;
+import com.kite9.k9server.domain.Secured;
+import com.kite9.k9server.domain.Secured.Action;
 import com.kite9.k9server.domain.permission.Member;
+import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
 @Entity
 @JsonIgnoreProperties()
-public class User extends AbstractLongIdEntity implements UserDetails {
+public class User extends AbstractLongIdEntity implements UserDetails, Secured {
 
 	/**
 	 * Users can call themselves anything.  This is used to log in.
@@ -290,5 +294,15 @@ public class User extends AbstractLongIdEntity implements UserDetails {
 		return null;
 	}
 	
+	public boolean checkAccess(Action a) {
+		// if the user is new, pass the check
+		if (getId() == null) {
+			return true;
+		}		
+		
+		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+		
+		return username.equals(principal);
+	}
 	
 }
