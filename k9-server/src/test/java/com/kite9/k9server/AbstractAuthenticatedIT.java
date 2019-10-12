@@ -2,8 +2,6 @@ package com.kite9.k9server;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +27,6 @@ import org.springframework.web.client.RestTemplate;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.domain.rest.DeleteEntity;
 import com.kite9.k9server.command.domain.rest.RegisterUser;
-import com.kite9.k9server.command.xml.Delete;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.resource.UserResource;
 
@@ -115,7 +112,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		return jwtToken;
 	}
 
-	protected void delete(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
+	protected void deleteViaJwt(RestTemplate restTemplate, String url, String token) throws URISyntaxException {
 		HttpHeaders h = createJWTTokenHeaders(token, null);
 		h.setContentType(MediaType.APPLICATION_JSON);
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
@@ -125,8 +122,20 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
+	
+	protected void deleteViaCookie(RestTemplate restTemplate, String url, String cookie) throws URISyntaxException {
+		HttpHeaders h = new HttpHeaders();
+		h.add(HttpHeaders.COOKIE, cookie);
+		h.setContentType(MediaType.APPLICATION_JSON);
+		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+		DeleteEntity de = new DeleteEntity();
+	
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
+		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
+		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
+	}
 
-	protected void delete(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
+	protected void deleteViaBasicAuth(RestTemplate restTemplate, String url, String username, String password) throws URISyntaxException {
 		HttpHeaders h = createBasicAuthHeaders(password, username);
 		h.setContentType(MediaType.APPLICATION_JSON);
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
@@ -138,7 +147,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String jwtToken, Class<X> c) throws URISyntaxException {
-		delete(restTemplate, url, jwtToken);
+		deleteViaJwt(restTemplate, url, jwtToken);
 		try {
 			retrieveResource(restTemplate, jwtToken, url, c);
 			Assert.fail();
@@ -153,7 +162,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected <X> void deleteAndCheckDeleted(RestTemplate restTemplate, String url, String username, String password, Class<X> c) throws URISyntaxException {
-		delete(restTemplate, url, username, password);
+		deleteViaBasicAuth(restTemplate, url, username, password);
 		try {
 			retrieveResource(restTemplate, username, password, url, c);
 			Assert.fail();

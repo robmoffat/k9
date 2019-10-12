@@ -2,12 +2,10 @@ package com.kite9.k9server.domain.user;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.kite9.k9server.domain.SecuredCrudRepository;
 import com.kite9.k9server.security.OAuth2AuthorizationServerConfig;
@@ -57,14 +55,4 @@ public interface UserRepository extends SecuredCrudRepository<User> {
 	 */
 	@RestResource(exported=false)
 	Optional<User> findById(@Param("id") Long id);
-	
-	/**
-	 * Expires the user account.
-	 */
-	@Transactional
-	@RestResource(exported=false)
-	@Modifying(clearAutomatically=true)
-	@Query("update User u set u.accountExpired = true where id = :id and username = ?#{principal}")
-	void expire(@Param("id") Long id);
-
 }

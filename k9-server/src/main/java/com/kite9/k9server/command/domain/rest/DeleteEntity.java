@@ -8,7 +8,6 @@ import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.SecuredCrudRepository;
 import com.kite9.k9server.domain.user.User;
-import com.kite9.k9server.domain.user.UserRepository;
 
 public class DeleteEntity extends AbstractRepoCommand<RestEntity>{
 
@@ -24,7 +23,11 @@ public class DeleteEntity extends AbstractRepoCommand<RestEntity>{
 		SecuredCrudRepository r = getRepositoryFor(current.getClass());
 		
 		if (current instanceof User) {
-			((UserRepository) r).expire(((User) current).getId());
+			((User) current).setEmail(null);
+			String expiredName = ((User) current).getUsername()+"_exp_"+System.currentTimeMillis();
+			((User) current).setUsername(expiredName.substring(0, Math.min(100, expiredName.length())));
+			((User) current).setAccountExpired(true);
+			r.save(current); 
 			return ResponseEntity.noContent();
 		} else {
 			RestEntity parent = current.getParent();

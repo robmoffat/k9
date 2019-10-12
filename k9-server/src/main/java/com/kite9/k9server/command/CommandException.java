@@ -21,6 +21,11 @@ public class CommandException extends RuntimeException {
 		super(message, cause);
 		this.c = Collections.singletonList(c);
 	}
+	
+	public CommandException(String message, Throwable cause, List<Command> c) {
+		super(message, cause);
+		this.c = c;
+	}
 
 	public CommandException(String message) {
 		super(message);

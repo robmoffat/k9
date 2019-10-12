@@ -32,6 +32,7 @@ public interface SecuredCrudRepository<T extends RestEntity> extends RestEntityR
 	@RestResource(exported=false)
 	public void deleteById(Long id);
 
+	@RestResource(exported=false)
 	@PreAuthorize("#entity == null ? true : #entity.checkDelete()")
 	public void delete(@Param("entity") T entity);
 

@@ -235,7 +235,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertEquals(getUrlBase()+"/login", s.getHeaders().getLocation().toString());
 		
 		// delete the user
-		delete(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);
+		deleteViaBasicAuth(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);
 
 	}
 	
@@ -274,8 +274,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));		
 		
 		// tidy up: delete project
-		pOut = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), null, HttpMethod.DELETE, String.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());
+		deleteViaCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0));
 
 		// check it's gone
 		try {
@@ -285,8 +284,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		}
 		
 		// remove user
-		pOut = exchangeUsingCookie(restTemplate, uOut.getId().getHref(), cookie.get(0), null, HttpMethod.DELETE, String.class);
-		Assert.assertEquals(HttpStatus.NO_CONTENT, pOut.getStatusCode());
+		deleteViaCookie(restTemplate, uOut.getId().getHref(), cookie.get(0));
 	}
 	
 	

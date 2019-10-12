@@ -86,7 +86,7 @@ public class ResourceCommandController extends AbstractCommandController impleme
 		} catch (CommandException e) {
 			throw e;
 		} catch (Throwable e) {
-			throw new CommandException("Couldn't process commands", req.getBody());
+			throw new CommandException("Couldn't process commands", e, req.getBody());
 		} 
 	}
 

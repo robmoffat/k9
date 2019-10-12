@@ -24,9 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.kite9.k9server.domain.AbstractLongIdEntity;
 import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.Secured;
-import com.kite9.k9server.domain.Secured.Action;
 import com.kite9.k9server.domain.permission.Member;
-import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
@@ -37,7 +35,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured {
 	/**
 	 * Users can call themselves anything.  This is used to log in.
 	 */
-	@Column(unique=true, length=25, nullable=false)
+	@Column(unique=true, length=100, nullable=false)
 	private String username;
 
 	/**
@@ -51,9 +49,9 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured {
 	
 	/**
 	 * Users have to provide a unique email address.  But, we will validate that it belongs to them 
-	 * as well.
+	 * as well. Null is reserved for expired accounts.
 	 */
-	@Column(unique=true, length=70, nullable=false)
+	@Column(unique=true, length=100, nullable=true)
 	private String email;
 
 	/**
