@@ -12,11 +12,10 @@ import org.springframework.http.HttpHeaders;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.domain.DomainCommand;
+import com.kite9.k9server.command.domain.RepoCommand;
 import com.kite9.k9server.command.xml.XMLCommand;
 import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.SecuredCrudRepository;
 import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 
@@ -61,6 +60,7 @@ public abstract class AbstractCommandController implements Logable {
 		input.getSVGRepresentation();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) {
 		for (Command command : steps) {
 			if (command instanceof XMLCommand) {
@@ -68,8 +68,11 @@ public abstract class AbstractCommandController implements Logable {
 			}
 			
 			if (command instanceof DomainCommand) {
-				Object repo = repositories.getRepositoryFor(context.getClass()).orElseThrow(() -> new CommandException("No repository for "+context.getClass(), command));
-				((DomainCommand)command).setCommandContext((SecuredCrudRepository) repo, context, url, headers);
+				((DomainCommand)command).setCommandContext(context, url, headers);
+			}
+			
+			if (command instanceof RepoCommand) {
+				((RepoCommand)command).setRepositories(repositories);
 			}
 		
 			input = command.applyCommand();

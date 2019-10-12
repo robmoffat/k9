@@ -52,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.headers().frameOptions().disable();
 		http.authorizeRequests()
 				.antMatchers("/api/command/**").permitAll() 
+				.antMatchers("/api/change").permitAll() 
 				.antMatchers("/dist/**").permitAll() // allows rendering tests
 				.antMatchers("/api/renderer/**").permitAll() 
 				.antMatchers("/api/users/**").permitAll()

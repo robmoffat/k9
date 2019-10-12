@@ -12,7 +12,9 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.rest.core.Path;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMetadata;
+import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -63,31 +65,50 @@ public class ResourceCommandController extends AbstractCommandController impleme
 	 * This is used for applying commands to domain objects.
 	 */
 	@Transactional
-	@RequestMapping(method={RequestMethod.POST}, path="/{repository}/{id}/change", consumes= {MediaType.APPLICATION_JSON_VALUE}) 
-	public @ResponseBody Object applyCommandOnResource (
+	@RequestMapping(method={RequestMethod.POST}, 
+		path= {"/{repository}/{id}/change",
+				"/{repository}/change"}, 
+		consumes= {MediaType.APPLICATION_JSON_VALUE}) 
+	@ResponseBody
+	public Resource<?> applyCommandOnResource (
 				RequestEntity<List<Command>> req,
-				@PathVariable(required=true, name="repository") String repository,
-				@PathVariable(required=true, name="id") Long id) throws Exception {
+				@PathVariable(required=false, name="repository") String repository,
+				@PathVariable(required=false, name="id") Long id,
+				PersistentEntityResourceAssembler assembler) throws Exception {
+		
+		RestEntity ri = getEntity(repository, id);
+		Class<? extends Command> type = identifyCommandTypes(req.getBody());
+				
+		if ((type == XMLCommand.class) && (ri instanceof Document)) {
+			ADL input = new ADLImpl(((Document) ri).getCurrentRevision().getXml(), req.getUrl(), req.getHeaders());
+			return null;
+			//return performXMLCommands(req.getBody(), input, ri, req.getHeaders(), req.getUrl());
+		} else if (type == DomainCommand.class) {
+			Object out = performDomainCommands(req.getBody(), ri, req.getHeaders(), req.getUrl());
+			if (out instanceof RestEntity) {
+				return assembler.toFullResource(out);
+			} else {
+				return null; // out;
+			}
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Couldn't process command steps");
+		}
+	}
+
+	protected RestEntity getEntity(String repository, Long id) {
+		if ((repository == null) || (id == null)) {
+			return null;
+		}
 		
 		for (Path p : repoMap.keySet()) {
 			if (p.matches(repository)) {
-				RestEntityRepository<?> repo = repoMap.get(p);
-				RestEntity ri = repo.findById(id).orElse(null);
-				Class<? extends Command> type = identifyCommandTypes(req.getBody());
-				
-				if ((type == XMLCommand.class) && (ri instanceof Document)) {
-					ADL input = new ADLImpl(((Document) ri).getCurrentRevision().getXml(), req.getUrl(), req.getHeaders());
-					return performXMLCommands(req.getBody(), input, ri, req.getHeaders(), req.getUrl());
-				} else if (type == DomainCommand.class) {
-					return performDomainCommands(req.getBody(), ri, req.getHeaders(), req.getUrl());
-				} else {
-					throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Couldn't process command steps");
-				}
+				RestEntityRepository<?> repo = p != null ? repoMap.get(p) : null;
+				RestEntity ri = ((id != null) && (repo != null)) ? repo.findById(id).orElse(null) : null;
+				return ri;
 			}
 		}
 		
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find domain object");
-		
 	}
 	
 	protected Object performDomainCommands(List<Command> steps, RestEntity context, HttpHeaders headers, URI url) {
@@ -164,8 +185,6 @@ public class ResourceCommandController extends AbstractCommandController impleme
 			if (out == null) {
 				if (command instanceof XMLCommand) {
 					out = XMLCommand.class;
-//				} else if (command instanceof RevisionCommand) {
-//					out = RevisionCommand.class;
 				} else if (command instanceof DomainCommand) {
 					out = DomainCommand.class;
 				} else {

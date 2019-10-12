@@ -2,10 +2,14 @@ package com.kite9.k9server;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.TypeReferences;
 import org.springframework.http.HttpEntity;
@@ -22,6 +26,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.domain.rest.RegisterUser;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.resource.UserResource;
 
@@ -41,9 +47,17 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected UserResource createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
-		String url = getUrlBase() + "/api/users";
+		String url = getUrlBase() + "/api/users/change";
 		UserResource u = new UserResource(username, password, email, Project.createRandomString());
-		RequestEntity<UserResource> re = new RequestEntity<>(u, HttpMethod.POST, new URI(url));
+		RegisterUser ru = new RegisterUser();
+		ru.email = email;
+		ru.username = username;
+		ru.password = password;
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+	
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(ru), headers, HttpMethod.POST, new URI(url));
 		ResponseEntity<UserResource> uOut = restTemplate.exchange(re, UserResource.class);
 		return uOut.getBody();
 	}

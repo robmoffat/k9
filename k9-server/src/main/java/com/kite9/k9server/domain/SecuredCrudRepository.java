@@ -19,6 +19,9 @@ public interface SecuredCrudRepository<T extends RestEntity> extends RestEntityR
 
 	@RestResource(exported=false)
 	public <S extends T> Iterable<S> saveAll(Iterable<S> entities);
+	
+	@RestResource(exported=false)
+	public T save(T r);
 
 	@RestResource(exported=false)
 	public boolean existsById(Long id);
@@ -26,7 +29,7 @@ public interface SecuredCrudRepository<T extends RestEntity> extends RestEntityR
 	@RestResource(exported=false)
 	public long count();
 
-	//@RestResource(exported=false)
+	@RestResource(exported=false)
 	public void deleteById(Long id);
 
 	@PreAuthorize("#entity == null ? true : #entity.checkDelete()")

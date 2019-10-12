@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kite9.k9server.domain.SecuredCrudRepository;
 import com.kite9.k9server.security.OAuth2AuthorizationServerConfig;
 import com.kite9.k9server.security.UserAuthenticationProvider;
 
@@ -23,7 +23,7 @@ import com.kite9.k9server.security.UserAuthenticationProvider;
  *
  */
 @RepositoryRestResource(excerptProjection=UserExcerptProjection.class)
-public interface UserRepository extends Repository<User, Long>, UserRepositoryCustom {
+public interface UserRepository extends SecuredCrudRepository<User> {
 	
 	/**
 	 * Used by the {@link UserAuthenticationProvider}.
@@ -46,18 +46,6 @@ public interface UserRepository extends Repository<User, Long>, UserRepositoryCu
 	@RestResource(exported=false)
 	public User findByUsername(String username);
 	
-	/**
-	 * Re-declaration of the method from {@link UserRepositoryCustom}, to hook it up.
-	 */
-	@SuppressWarnings("unchecked")
-	public User save(User entity);
-	
-	/**
-	 * Used internally only.
-	 */
-	@RestResource(exported=false)
-	Iterable<User> saveAll(Iterable<User> entities);
-		
 	/**
 	 * This returns just your (logged in) user
 	 */

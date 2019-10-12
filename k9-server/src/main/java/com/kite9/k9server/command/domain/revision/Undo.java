@@ -8,7 +8,7 @@ import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepositoryCustom;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Undo extends AbstractDomainCommand<Document> implements RevisionCommand {
+public class Undo extends AbstractDomainCommand<Document, Document> implements RevisionCommand {
 
 	public Undo() {
 		super();

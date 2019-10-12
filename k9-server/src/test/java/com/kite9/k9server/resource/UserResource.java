@@ -1,5 +1,8 @@
 package com.kite9.k9server.resource;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class UserResource extends GenericResource {
 
 	public String username;

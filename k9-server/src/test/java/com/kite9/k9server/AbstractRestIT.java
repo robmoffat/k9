@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.commons.logging.impl.SimpleLog;
 import org.junit.Before;
@@ -48,6 +50,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.kite9.k9server.command.Command;
 import com.kite9.k9server.resource.UserResource;
 import com.kite9.k9server.web.WebConfig.LoggingFilter;
 
@@ -206,6 +209,19 @@ public abstract class AbstractRestIT {
 		FileOutputStream fos = new FileOutputStream(f);
 		ByteArrayInputStream zis = new ByteArrayInputStream(back);
 		StreamUtils.copy(zis, fos);
+	}
+	
+	
+	public static class CommandList extends ArrayList<Command> {
+
+		public CommandList(Collection<? extends Command> c) {
+			super(c);
+		}
+		
+		public CommandList(Command c) {
+			super();
+			add(c);
+		}
 	}
 
 }

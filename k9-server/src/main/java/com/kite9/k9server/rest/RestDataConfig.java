@@ -1,16 +1,10 @@
 package com.kite9.k9server.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.commons.io.IOUtils;
 import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +31,6 @@ import org.springframework.web.accept.HeaderContentNegotiationStrategy;
 import org.springframework.web.accept.ParameterContentNegotiationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.mvc.condition.ProducesRequestCondition;
-import org.w3c.dom.Document;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -137,7 +130,7 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	 * Creates a handler that allows all the {@link FormatSupplier} media types to be supported by 
 	 * REST.
 	 */
-	@Bean
+	//@Bean
 	public RepositoryRestHandlerMapping createHandlerMapping(RepositoryRestConfiguration config, 
 			DelegatingHandlerMapping dhm, RepositoryResourceMappings rrm, 
 			Repositories repositories, JpaHelper jpaHelper) {

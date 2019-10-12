@@ -108,7 +108,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 		User u = getUserAndValidateWithCode(code, email, EMAIL_VALIDATION_RESPONSE_URL);
 		u.setEmailVerified(true);
 		u.setSalt(User.createNewSalt());
-		userRepository.saveInternal(u);
+		userRepository.save(u);
 		return new NotificationResource("Email validated");
 	}
 
@@ -165,7 +165,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 			String passwordHash = Hash.generatePasswordHash(newPassword);
 			u.setPassword(passwordHash);
 			u.setSalt(User.createNewSalt());
-			userRepository.saveInternal(u);
+			userRepository.save(u);
 			return new NotificationResource("Password updated");
 		} catch (Exception e) {
 			throw new HttpException("Failed to update password: "+e.getMessage(), HttpStatus.BAD_REQUEST);

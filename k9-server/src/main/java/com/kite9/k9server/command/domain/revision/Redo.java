@@ -4,11 +4,12 @@ import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.domain.AbstractDomainCommand;
+import com.kite9.k9server.command.domain.AbstractRepoCommand;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepositoryCustom;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Redo extends AbstractDomainCommand<Document> implements RevisionCommand {
+public class Redo extends AbstractRepoCommand<Document> implements RevisionCommand {
 	
 	public Redo() {
 		super();
@@ -24,7 +25,7 @@ public class Redo extends AbstractDomainCommand<Document> implements RevisionCom
 		
 		Document d = current;
 		d.setCurrentRevision(rNext);
-		((DocumentRepositoryCustom) repo).save(d);
+		getRepositoryFor(Document.class).save(d);
 		
 		return new ADLImpl(rNext.getXml(), uri, requestHeaders);
 	}
