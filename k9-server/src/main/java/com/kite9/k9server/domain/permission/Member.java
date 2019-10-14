@@ -9,9 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.Secured;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
@@ -21,7 +21,7 @@ public class Member extends AbstractLongIdEntity implements Secured, MemberExcer
 	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY)
 	private Project project;
 
-	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = User.class, optional = false, fetch = FetchType.EAGER)
 	private User user;
 
 	@Enumerated(EnumType.STRING)
@@ -95,5 +95,14 @@ public class Member extends AbstractLongIdEntity implements Secured, MemberExcer
 	public RestEntity getParent() {
 		return project;
 	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 	
 }

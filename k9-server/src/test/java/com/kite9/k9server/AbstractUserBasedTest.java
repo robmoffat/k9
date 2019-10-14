@@ -31,7 +31,8 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 	
 	@After
 	public void removeUser() throws URISyntaxException {
-		delete(restTemplate, userUrl, jwtToken);
+		System.out.println("CLEANING UP");
+		deleteViaJwt(restTemplate, userUrl, jwtToken);
 		try {
 			Resources<UserResource> resources = retrieveUserViaJwt(restTemplate, jwtToken);
 			if (resources.getContent().size() == 0) {

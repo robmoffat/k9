@@ -6,8 +6,8 @@ import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.Secured;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.Secured;
 
 /**
  * Allows you to pull back the content of the latest revision from the /content url.

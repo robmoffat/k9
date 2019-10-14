@@ -4,7 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.HttpHeaders;
 
-import com.kite9.k9server.domain.RestEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
 
 public abstract class AbstractDomainCommand<C extends RestEntity> implements DomainCommand<C> {
 

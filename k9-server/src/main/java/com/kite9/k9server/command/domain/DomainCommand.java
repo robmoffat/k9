@@ -5,7 +5,7 @@ import java.net.URI;
 import org.springframework.http.HttpHeaders;
 
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.domain.RestEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
 
 /**
  * This is a command that applies to a specific domain object.  Could be undo/redo

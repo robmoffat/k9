@@ -4,8 +4,8 @@ import org.springframework.data.repository.support.Repositories;
 
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.domain.AbstractRepoCommand;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.SecuredCrudRepository;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.SecuredCrudRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.security.Hash;

@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.entity;
 
 import java.util.Date;
 

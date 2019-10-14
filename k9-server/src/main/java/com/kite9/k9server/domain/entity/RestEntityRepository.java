@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.entity;
 
 import java.util.Optional;
 
@@ -17,5 +17,7 @@ public interface RestEntityRepository<X extends RestEntity> extends Repository<X
 
 	public <S extends X> Optional<S> findById(Long id);
 	
+	public Iterable<X> findAll();
 	
+	public Iterable<X> findAllById(Iterable<Long> ids);
 }

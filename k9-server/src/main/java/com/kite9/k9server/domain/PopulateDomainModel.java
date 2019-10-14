@@ -69,9 +69,9 @@ public class PopulateDomainModel implements CommandLineRunner {
 		Document document2 = new Document("Document 2", "Document Description", project1);
 		Document document3 = new Document("Document 3", "Document Description", project2);
 
-		documentRepository.saveInternal(document1);
-		documentRepository.saveInternal(document2);
-		documentRepository.saveInternal(document3);
+		documentRepository.save(document1);
+		documentRepository.save(document2);
+		documentRepository.save(document3);
 				
 		// add the test user
 		userRepository.save(TEST_USER);
@@ -80,8 +80,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 		Member m1 = new Member(project1, ProjectRole.ADMIN, TEST_USER);
 		Member m2 = new Member(project2, ProjectRole.ADMIN, TEST_USER);
 		
-		memberRepository.saveInternal(m1);
-		memberRepository.saveInternal(m2);
+		memberRepository.save(m1);
+		memberRepository.save(m2);
 		
 		// add a revision
 		Revision r = new Revision();
@@ -89,9 +89,9 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r.setAuthor(TEST_USER);
 		r.setDateCreated(new Date());
 		r.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/basic/example.xml"), Charset.forName("UTF-8")));
-		revisionRepository.saveInternal(r);
+		revisionRepository.save(r);
 		document1.setCurrentRevision(r);
-		documentRepository.saveInternal(document1);
+		documentRepository.save(document1);
 		
 		// add a risk-first example
 		Revision r2 = new Revision();
@@ -99,9 +99,9 @@ public class PopulateDomainModel implements CommandLineRunner {
 		r2.setAuthor(TEST_USER);
 		r2.setDateCreated(new Date());
 		r2.setXml(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/risk-first/example.xml"), Charset.forName("UTF-8")));
-		revisionRepository.saveInternal(r2);
+		revisionRepository.save(r2);
 		document2.setCurrentRevision(r2);
-		documentRepository.saveInternal(document2);
+		documentRepository.save(document2);
 	}
 
 }

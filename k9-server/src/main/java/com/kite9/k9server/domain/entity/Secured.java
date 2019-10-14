@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain;
+package com.kite9.k9server.domain.entity;
 
 /**
  * Provides a method on the entity which allows it to say whether the logged-in

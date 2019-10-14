@@ -32,13 +32,15 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.domain.DomainCommand;
 import com.kite9.k9server.command.xml.XMLCommand;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.RestEntityRepository;
-import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.document.DocumentRepository;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.RestEntityRepository;
+import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.rels.ChangeResourceProcessor;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.domain.revision.Revision;
+import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
@@ -54,6 +56,12 @@ public class ResourceCommandController extends AbstractCommandController impleme
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	RevisionRepository revisionRepository;
+	
+	@Autowired
+	DocumentRepository documentRepository;
 		
 	@Autowired
 	ResourceMappings mappings;
@@ -80,6 +88,10 @@ public class ResourceCommandController extends AbstractCommandController impleme
 			Object out = withinTransaction(req.getBody(), ri, req.getHeaders(), req.getUrl());
 			if (out instanceof RestEntity) {
 				return assembler.toFullResource(out);
+			} else if (out instanceof ADL) {
+				Document d = (ri instanceof Document) ? (Document) ri : ((Revision) ri).getDocument();
+				addDocumentMeta((ADL) out, d);
+				return out;
 			} else {
 				return out;
 			}
@@ -133,8 +145,7 @@ public class ResourceCommandController extends AbstractCommandController impleme
 		
 		if (d != null) {
 			// create the new revision
-			Revision rNew = createNewRevisionOnDocument(input, d);
-			addDocumentMeta(input, rNew);
+			createNewRevisionOnDocument(input, d);
 		}	
 		
 		return input;
@@ -143,12 +154,24 @@ public class ResourceCommandController extends AbstractCommandController impleme
 	protected Revision createNewRevisionOnDocument(ADL input, Document d) {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		User u = userRepository.findByUsername(username);
-		
+		Revision rOld = d.getCurrentRevision();
+
+		// save the new revision
 		Revision rNew = new Revision();
 		rNew.setAuthor(u);
 		rNew.setDocument(d);
 		rNew.setXml(input.getAsXMLString());
+		rNew.setPreviousRevision(rOld);
 		revisionRepository.save(rNew);
+		
+		// update the old revision
+		rOld.setNextRevision(rNew);
+		revisionRepository.save(rOld);
+		
+		// update the document
+		d.setCurrentRevision(rNew);
+		documentRepository.save(d);
+		
 		return rNew;
 	}
 
@@ -156,7 +179,8 @@ public class ResourceCommandController extends AbstractCommandController impleme
 	/**
 	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
 	 */
-	private ADL addDocumentMeta(ADL adl, Revision r) {
+	private ADL addDocumentMeta(ADL adl, Document d) {
+		Revision r = d.getCurrentRevision();
 		adl.setMeta("redo", ""+(r.getNextRevision() != null));
 		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
 		adl.setMeta("revision", entityLinks.linkFor(Revision.class).slash(r.getId()).toString());

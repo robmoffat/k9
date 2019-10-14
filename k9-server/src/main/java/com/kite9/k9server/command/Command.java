@@ -7,8 +7,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.kite9.k9server.command.domain.rest.AddMember;
 import com.kite9.k9server.command.domain.rest.DeleteEntity;
+import com.kite9.k9server.command.domain.rest.NewDocument;
+import com.kite9.k9server.command.domain.rest.NewProject;
 import com.kite9.k9server.command.domain.rest.RegisterUser;
+import com.kite9.k9server.command.domain.rest.Update;
 import com.kite9.k9server.command.domain.revision.Redo;
 import com.kite9.k9server.command.domain.revision.Undo;
 import com.kite9.k9server.command.xml.AppendXML;
@@ -48,15 +52,17 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(ADLReplace.class),
 	@Type(ADLMoveCells.class),
 
-	
 	// document-specific
 	@Type(Undo.class),
 	@Type(Redo.class),
 	
 	// domain-specific
 	@Type(RegisterUser.class),
-	@Type(DeleteEntity.class)
-	
+	@Type(DeleteEntity.class),
+	@Type(NewProject.class),
+	@Type(Update.class),
+	@Type(NewDocument.class),
+	@Type(AddMember.class)	
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE,

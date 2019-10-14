@@ -11,14 +11,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.Secured;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.entity.Updateable;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
 
 @Entity
-public class Document extends AbstractLongIdEntity implements Secured, DocumentExcerptProjection {
+public class Document extends AbstractLongIdEntity implements Secured, DocumentExcerptProjection, Updateable {
 
 	@Column(length=50,nullable=false)
     private String title = "New Diagram";

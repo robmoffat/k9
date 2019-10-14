@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.net.URI;
 
 import org.hamcrest.core.StringContains;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +54,7 @@ public class CommandControllerIT extends AbstractLifecycleTest {
 		
 		byte[] out = postCommand("[]", new URI(commandUrl));
 		String res = new String(out);
-				
-//		mockMvc.perform(
-//	        post("/api/command/v1?on="+docUrl)
-//	        	.content("[]")
-//	        	.contentType(MediaType.APPLICATION_JSON_VALUE)
-//	            .accept(MediaTypes.ADL_SVG_VALUE))
-//	    		.andDo(print())
-//	    		.andExpect(status().isOk())
-//	    		.andExpect(MockMvcResultMatchers.content().string(StringContains.containsString("<label id=\"two-label\">Two</label>")))
-//	    		.andReturn();
+		Assert.assertTrue(res.contains("<label id=\"two-label\">Two</label>"));		
 	}
 	
 	@Test
@@ -76,18 +68,9 @@ public class CommandControllerIT extends AbstractLifecycleTest {
 		
 		byte[] out = postCommand("["+step+"]", new URI(commandUrl));
 		String res = new String(out);
-		
-//		mockMvc.perform(
-//				 post("/api/command/v1?on="+docUrl)
-//				.content("["+step+"]")
-//	        	.contentType(MediaType.APPLICATION_JSON_VALUE)
-//	            .accept(MediaTypes.ADL_SVG_VALUE))
-//	    		.andDo(print())
-//	    		.andExpect(status().isOk())
-//	    		.andExpect(MockMvcResultMatchers.content().string(StringContains.containsString("    <glyph id=\"two\">\n" + 
-//	    				"      \n" + 
-//	    				"    </glyph>")))
-//	    		.andReturn();
+		Assert.assertTrue(res.contains("    <glyph id=\"two\">\n" + 
+	    				"      \n" + 
+	    				"    </glyph>"));
 	}
 	
 

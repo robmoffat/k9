@@ -2,11 +2,14 @@ package com.kite9.k9server.domain;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,6 +19,10 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.AbstractUserBasedTest;
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.domain.rest.NewDocument;
+import com.kite9.k9server.command.domain.rest.NewProject;
+import com.kite9.k9server.command.domain.rest.Update;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.MemberResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -28,22 +35,6 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
 	public AbstractLifecycleTest() {
 		super();
-	}
-
-	public RevisionResource createARevisionResource(DocumentResource forDocument) throws URISyntaxException {
-		String doc = forDocument.getLink(Link.REL_SELF).getHref();
-		RevisionResource r = new RevisionResource(doc, new Date(), userUrl, EMPTY_DOCUMENT, null, null);  
-		RequestEntity<RevisionResource> in = new RequestEntity<>(r, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/revisions"));
-		ResponseEntity<RevisionResource> rOut = restTemplate.exchange(in, RevisionResource.class);
-		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
-		
-		// retrieve it
-		URI location = rOut.getHeaders().getLocation();
-		RevisionResource resource = getARevisionResource(location);
-		Assert.assertEquals(EMPTY_DOCUMENT, resource.xml);
-		Assert.assertNotNull(resource.getLink("document").getHref());
-		return resource;
-		
 	}
 
 	public RevisionResource getARevisionResource(URI location) {
@@ -65,30 +56,25 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	}
 
 	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
-		DocumentResource d = new DocumentResource("My Document", "Some name for a document", forProject.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(d, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/documents"));
+		NewDocument nd = new NewDocument();
+		nd.description = "Some name for a document";
+		nd.title = "My Document";
+		nd.templateUri="http://localhost:"+port+"/public/templates/basic.xml";
+		
+		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(nd), createHeaders(), HttpMethod.POST, new URI(forProject.getLink(Link.REL_SELF).getHref()+"/change"));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
-		Assert.assertEquals(HttpStatus.CREATED, dOut.getStatusCode());
-		return getADocumentResource(dOut.getHeaders().getLocation());
+		Assert.assertEquals(HttpStatus.OK, dOut.getStatusCode());
+		return getADocumentResource(new URI(dOut.getBody().getLink(Link.REL_SELF).getHref()));
 	}
 
-	public DocumentResource updateADocumentResource(DocumentResource d, ProjectResource p, RevisionResource rOut) throws URISyntaxException {
-		DocumentResource changed = new DocumentResource();
-		changed.project = p.getLink(Link.REL_SELF).getHref();
-		changed.currentRevision = rOut.getLink(Link.REL_SELF).getHref();
-		changed.title = "Updated title";
-		changed.dateCreated = d.dateCreated;
-		changed.description = d.description;
-		changed.lastUpdated = new Date();
-	
-		URI self = new URI(d.getLink(Link.REL_SELF).getHref());
-		RequestEntity<DocumentResource> in = new RequestEntity<>(changed, createHeaders(), HttpMethod.PUT, self);
-		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
+	public DocumentResource updateADocumentResource(DocumentResource d) throws URISyntaxException {
+		Update u = new Update();
+		u.newDescription = "desc 2";
+		
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(d.getLink(Link.REL_SELF).getHref()+"/change"));
+		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(re, DocumentResource.class);
 		Assert.assertTrue(dOut.getStatusCode().is2xxSuccessful());
-
-		changed = getADocumentResource(dOut.getHeaders().getLocation());
-		Assert.assertEquals("Updated title", changed.title);
-		return changed;
+		return getADocumentResource(new URI(dOut.getBody().getLink(Link.REL_SELF).getHref()));
 	}
 	
 	public MemberResource updateAMemberResource(MemberResource mr) throws URISyntaxException {
@@ -109,12 +95,15 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	
 	public ProjectResource createAProjectResource() throws URISyntaxException {
 		stubNumber++;
-		ProjectResource pIn = new ProjectResource("Test Project 2", "Lorem Ipsum 1", "tp"+stubNumber, "");
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/projects"));
+		NewProject np = new NewProject();
+		np.title = "Test Project 2";
+		np.description = "Lorem Ipsum 1";
+		np.stub = "tp"+stubNumber;
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(np), createHeaders(), HttpMethod.POST, new URI(userUrl+"/change"));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
-		Assert.assertEquals(HttpStatus.CREATED, pOut.getStatusCode());
-		return getAProjectResource(pOut.getHeaders().getLocation());
+		Assert.assertEquals(HttpStatus.OK, pOut.getStatusCode());
+		return getAProjectResource(new URI(pOut.getBody().getLink(Link.REL_SELF).getHref()));
 	}
 
 	public ProjectResource getAProjectResource(URI location) {
@@ -140,20 +129,24 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	}
 
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
-		pIn.description = "desc 2";
-		RequestEntity<ProjectResource> re = new RequestEntity<>(pIn, createHeaders(), HttpMethod.PUT, new URI(pIn.getLink(Link.REL_SELF).getHref()));
+		Update u = new Update();
+		u.newDescription = "desc 2";
+		
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(pIn.getLink(Link.REL_SELF).getHref()+"/change"));
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertTrue(pOut.getStatusCode().is2xxSuccessful());
-		return getAProjectResource(pOut.getHeaders().getLocation());
+		return getAProjectResource(new URI(pOut.getBody().getLink(Link.REL_SELF).getHref()));
 	}
 
 
 	protected HttpHeaders createHeaders() {
 		HttpHeaders out = createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON);
+		out.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+		out.setContentType(MediaType.APPLICATION_JSON);
 		return out;	
 	}
 	
 	public void delete(URI url) throws URISyntaxException {
-		delete(restTemplate, url.toString(), jwtToken);
+		deleteViaJwt(restTemplate, url.toString(), jwtToken);
 	}
 }

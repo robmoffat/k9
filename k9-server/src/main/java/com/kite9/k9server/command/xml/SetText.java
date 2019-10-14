@@ -8,7 +8,7 @@ import com.kite9.k9server.command.CommandException;
 
 public class SetText extends AbstractADLCommand {
 	
-	protected String newText;
+	public String newText;
 	
 	public SetText() {
 		super();

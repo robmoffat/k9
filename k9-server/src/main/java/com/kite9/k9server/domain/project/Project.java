@@ -15,15 +15,16 @@ import javax.persistence.OneToMany;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.entity.Updateable;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
 
 @Entity
-public class Project extends AbstractLongIdEntity implements Secured, ProjectExcerptProjection {
+public class Project extends AbstractLongIdEntity implements Secured, ProjectExcerptProjection, Updateable {
 	
 	@Column(length=50,nullable=false)
 	private String title;
@@ -40,7 +41,7 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 	@OneToMany(mappedBy="project", targetEntity=Document.class, fetch=FetchType.LAZY, cascade = CascadeType.REMOVE )
 	private List<Document> documents;
 	
-	@OneToMany(mappedBy = "project", targetEntity=Member.class, fetch=FetchType.LAZY, cascade= { CascadeType.PERSIST, CascadeType.REMOVE })
+	@OneToMany(mappedBy = "project", targetEntity=Member.class, fetch=FetchType.EAGER, cascade= { CascadeType.PERSIST, CascadeType.REMOVE })
     private List<Member> members = new ArrayList<>();
 
 	public Project() {

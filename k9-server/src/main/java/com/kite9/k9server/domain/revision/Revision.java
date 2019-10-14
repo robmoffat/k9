@@ -8,10 +8,10 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.Secured;
 import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.user.User;
 
 
@@ -25,6 +25,7 @@ public class Revision extends AbstractLongIdEntity implements Secured, RevisionE
     Document document;
     
 	@Column(columnDefinition="TEXT")
+	@JsonIgnore
 	String xml;
     
     Date dateCreated = new Date();

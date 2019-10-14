@@ -15,9 +15,7 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.domain.DomainCommand;
 import com.kite9.k9server.command.domain.RepoCommand;
 import com.kite9.k9server.command.xml.XMLCommand;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.document.DocumentRepository;
-import com.kite9.k9server.domain.revision.RevisionRepository;
+import com.kite9.k9server.domain.entity.RestEntity;
 
 public abstract class AbstractCommandController implements Logable {
 
@@ -25,12 +23,6 @@ public abstract class AbstractCommandController implements Logable {
 
 	@Autowired
 	Repositories repositories;
-	
-	@Autowired
-	RevisionRepository revisionRepository;
-	
-	@Autowired
-	DocumentRepository documentRepository;
 	
 	@Autowired
 	EntityLinks entityLinks;

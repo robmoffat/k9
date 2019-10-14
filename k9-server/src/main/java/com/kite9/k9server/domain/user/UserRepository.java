@@ -1,13 +1,9 @@
 package com.kite9.k9server.domain.user;
 
-import java.util.Optional;
-
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
-import com.kite9.k9server.domain.SecuredCrudRepository;
+import com.kite9.k9server.domain.entity.SecuredCrudRepository;
 import com.kite9.k9server.security.OAuth2AuthorizationServerConfig;
 import com.kite9.k9server.security.UserAuthenticationProvider;
 
@@ -43,16 +39,5 @@ public interface UserRepository extends SecuredCrudRepository<User> {
 	 */
 	@RestResource(exported=false)
 	public User findByUsername(String username);
-	
-	/**
-	 * This returns just your (logged in) user
-	 */
-	@Query("select u from User u where u.username = ?#{ principal }")
-	public Iterable<User> findAll();
 
-	/**
-	 * Required for delete to work externally.  
-	 */
-	@RestResource(exported=false)
-	Optional<User> findById(@Param("id") Long id);
 }

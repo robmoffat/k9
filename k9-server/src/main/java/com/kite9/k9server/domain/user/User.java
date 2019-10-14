@@ -21,16 +21,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.kite9.k9server.domain.AbstractLongIdEntity;
-import com.kite9.k9server.domain.RestEntity;
-import com.kite9.k9server.domain.Secured;
+import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.entity.Updateable;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.Hash;
 
 @Entity
 @JsonIgnoreProperties()
-public class User extends AbstractLongIdEntity implements UserDetails, Secured {
+public class User extends AbstractLongIdEntity implements UserDetails, Secured, Updateable {
 
 	/**
 	 * Users can call themselves anything.  This is used to log in.
@@ -277,6 +278,10 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured {
 
 	@Override
 	public String getIcon() {
+		if (getEmail() == null) {
+			return null;
+		}
+		
 		String currentEmailHash = Hash.generateMD5Hash(getEmail().toLowerCase());
 		return "https://gravatar.com/avatar/"+currentEmailHash;
 	}
@@ -301,6 +306,16 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured {
 		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
 		
 		return username.equals(principal);
+	}
+
+	@Override
+	public void setTitle(String title) {
+		this.username = title;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		// tbd
 	}
 	
 }
