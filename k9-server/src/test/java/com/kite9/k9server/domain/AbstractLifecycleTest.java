@@ -55,13 +55,13 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		return resource;
 	}
 
-	public DocumentResource createADocumentResource(ProjectResource forProject) throws URISyntaxException {
+	public DocumentResource createADocumentResource(ProjectResource forProject, String uri) throws URISyntaxException {
 		NewDocument nd = new NewDocument();
 		nd.description = "Some name for a document";
 		nd.title = "My Document";
-		nd.templateUri="http://localhost:"+port+"/public/templates/basic.xml";
+		nd.templateUri=uri;
 		
-		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(nd), createHeaders(), HttpMethod.POST, new URI(forProject.getLink(Link.REL_SELF).getHref()+"/change"));
+		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(nd), createHeaders(), HttpMethod.POST, new URI(forProject.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(in, DocumentResource.class);
 		Assert.assertEquals(HttpStatus.OK, dOut.getStatusCode());
 		return getADocumentResource(new URI(dOut.getBody().getLink(Link.REL_SELF).getHref()));
@@ -71,7 +71,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		Update u = new Update();
 		u.newDescription = "desc 2";
 		
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(d.getLink(Link.REL_SELF).getHref()+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(d.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(re, DocumentResource.class);
 		Assert.assertTrue(dOut.getStatusCode().is2xxSuccessful());
 		return getADocumentResource(new URI(dOut.getBody().getLink(Link.REL_SELF).getHref()));
@@ -99,7 +99,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		np.title = "Test Project 2";
 		np.description = "Lorem Ipsum 1";
 		np.stub = "tp"+stubNumber;
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(np), createHeaders(), HttpMethod.POST, new URI(userUrl+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(np), createHeaders(), HttpMethod.POST, new URI(userUrl));
 		
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.OK, pOut.getStatusCode());
@@ -132,7 +132,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		Update u = new Update();
 		u.newDescription = "desc 2";
 		
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(pIn.getLink(Link.REL_SELF).getHref()+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(pIn.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
 		Assert.assertTrue(pOut.getStatusCode().is2xxSuccessful());
 		return getAProjectResource(new URI(pOut.getBody().getLink(Link.REL_SELF).getHref()));

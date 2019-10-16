@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.security.Hash;
 
 /**
@@ -157,7 +157,7 @@ public class ADLImpl implements ADL {
 	
 	private HttpHeaders requestADLHeaders(HttpHeaders rh) {
 		HttpHeaders headers2 = HttpHeaders.writableHttpHeaders(rh);
-		headers2.setAccept(Arrays.asList(MediaTypes.ADL_SVG));
+		headers2.setAccept(Arrays.asList(Kite9MediaTypes.ADL_SVG));
 		return headers2;
 	}
 

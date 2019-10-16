@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
@@ -26,7 +26,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 @Controller
 public class PostController {
 	
-	@RequestMapping(path="/api/renderer", consumes= {MediaTypes.ADL_SVG_VALUE, MediaTypes.SVG_VALUE})
+	@RequestMapping(path="/api/renderer", consumes= {Kite9MediaTypes.ADL_SVG_VALUE, Kite9MediaTypes.SVG_VALUE})
 	public @ResponseBody ADL echo(@RequestBody ADL input, HttpServletRequest request) throws Exception {
 		input.setUri(new URI(request.getRequestURL().toString()));
 		return input;

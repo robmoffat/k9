@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.adl.StreamHelp;
 import com.kite9.k9server.adl.format.media.Format;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.security.Kite9HeaderMeta; 
@@ -49,7 +49,7 @@ public class ADLMessageConverter extends AbstractGenericHttpMessageConverter<ADL
 
 	@Override
 	protected boolean canRead(MediaType mediaType) {
-		return MediaTypes.SVG.includes(mediaType) || MediaTypes.ADL_SVG.includes(mediaType);
+		return Kite9MediaTypes.SVG.includes(mediaType) || Kite9MediaTypes.ADL_SVG.includes(mediaType);
 	}
 
 	@Override

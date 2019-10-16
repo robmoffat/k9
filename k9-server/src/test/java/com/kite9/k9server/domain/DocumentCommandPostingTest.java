@@ -10,29 +10,28 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.XMLCompare;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.domain.rels.ChangeResourceProcessor;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;
-import com.kite9.k9server.security.Hash;
 
 public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 
 	@Test
 	public void testCommandPosting() throws Exception {
 		ProjectResource pr = createAProjectResource();
-		DocumentResource dr  = createADocumentResource(pr);
-		RevisionResource rr = createARevisionResource(dr);
+		DocumentResource dr  = createADocumentResource(pr, "http://localhost:"+port+"/public/templates/basic.xml");
+		RevisionResource rr = getARevisionResource(new URI(dr.getLink("currentRevision").expand("").getHref()));
 		
 		URI uri = new URI(dr.getLink(ChangeResourceProcessor.CHANGE_REL).getHref());
 		URI revUri = new URI(rr.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		
-		byte[] back1 = postCommand("[{\"type\": \"SetText\", \"fragmentId\": 0, \"newText\": \"This is some text\"}]", uri);
+		byte[] back1 = postCommand("[{\"type\": \"SetText\", \"fragmentId\": \"dia\", \"newText\": \"This is some text\"}]", uri);
 		persistInAFile(back1, "revisions", "state1.xml");
 		
-		byte[] back2 = postCommand("[{\"type\": \"SetAttr\", \"fragmentId\": 0, \"name\": \"style\", \"value\": \"background-color: red; \"}]", uri);
+		byte[] back2 = postCommand("[{\"type\": \"SetAttr\", \"fragmentId\": \"dia\", \"name\": \"style\", \"value\": \"background-color: red; \"}]", uri);
 		persistInAFile(back2, "revisions", "state2.xml");
 				
 		// retrieve the current revision
@@ -71,7 +70,7 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 	}
 
 	private byte[] postCommand(String commands, URI uri) {
-		RequestEntity<byte[]> in = new RequestEntity<>(commands.getBytes(), createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON, MediaTypes.ADL_SVG), HttpMethod.POST, uri);
+		RequestEntity<byte[]> in = new RequestEntity<>(commands.getBytes(), createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON, Kite9MediaTypes.ADL_SVG), HttpMethod.POST, uri);
 		ResponseEntity<byte[]> dOut = restTemplate.exchange(in, byte[].class);
 		return dOut.getBody();
 	}	

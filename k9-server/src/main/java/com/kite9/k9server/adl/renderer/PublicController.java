@@ -12,7 +12,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
@@ -43,7 +43,7 @@ public class PublicController {
 		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
 	}
 	
-	@GetMapping(path="/public/**/*.svg", produces=MediaTypes.SVG_VALUE)
+	@GetMapping(path="/public/**/*.svg", produces=Kite9MediaTypes.SVG_VALUE)
 	public @ResponseBody ADL loadStaticSvg(RequestEntity<?> request) throws Exception {
 		String url = request.getUrl().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".svg"));

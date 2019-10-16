@@ -16,7 +16,7 @@ import com.kite9.k9server.adl.holder.ADL;
 public class SVGFormat implements Format {
 	
 	public MediaType[] getMediaTypes() {
-		return new MediaType[] { MediaTypes.SVG };
+		return new MediaType[] { Kite9MediaTypes.SVG };
 	}
 
 	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {

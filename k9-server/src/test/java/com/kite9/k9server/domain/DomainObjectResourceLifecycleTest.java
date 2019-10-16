@@ -11,8 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
-import com.kite9.k9server.adl.format.media.MediaTypes;
-import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.xml.SetText;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
@@ -27,7 +26,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractLifecycleTest {
 		ProjectResource pOut = createAProjectResource();
 		pOut = updateAProjectResource(pOut);
 		
-		DocumentResource dOut = createADocumentResource(pOut);
+		DocumentResource dOut = createADocumentResource(pOut, "http://localhost:"+port+"/public/templates/basic.xml");
 
 		RevisionResource rOut = changeTheDocument(dOut);
 
@@ -49,7 +48,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractLifecycleTest {
 	public RevisionResource changeTheDocument(DocumentResource dr) throws URISyntaxException {
 		SetText st = new SetText("dia", null, "This is the internal text");
 		String docUrl = dr.getLink(Link.REL_SELF).getHref();
-		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(st), createHeaders(), HttpMethod.POST, new URI(docUrl+"/change"));
+		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(st), createHeaders(), HttpMethod.POST, new URI(docUrl));
 		ResponseEntity<?> rOut = restTemplate.exchange(in, byte[].class);
 		Assert.assertTrue(rOut.getStatusCode().is2xxSuccessful());
 		
@@ -62,7 +61,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractLifecycleTest {
 	}
 	
 	public byte[] getADL(URI uri) {
-		RequestEntity<String> in = new RequestEntity<>(createJWTTokenHeaders(jwtToken, null, MediaTypes.ADL_SVG), HttpMethod.GET, uri);
+		RequestEntity<String> in = new RequestEntity<>(createJWTTokenHeaders(jwtToken, null, Kite9MediaTypes.ADL_SVG), HttpMethod.GET, uri);
 		ResponseEntity<byte[]> dOut = restTemplate.exchange(in, byte[].class);
 		return dOut.getBody();
 	}

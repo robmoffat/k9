@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.domain.AbstractLifecycleTest;
 
 
@@ -75,7 +75,7 @@ public class CommandControllerIT extends AbstractLifecycleTest {
 	
 
 	private byte[] postCommand(String commands, URI uri) {
-		RequestEntity<byte[]> in = new RequestEntity<>(commands.getBytes(), createNoAuthHeaders(MediaType.APPLICATION_JSON, MediaTypes.ADL_SVG), HttpMethod.POST, uri);
+		RequestEntity<byte[]> in = new RequestEntity<>(commands.getBytes(), createNoAuthHeaders(MediaType.APPLICATION_JSON, Kite9MediaTypes.ADL_SVG), HttpMethod.POST, uri);
 		ResponseEntity<byte[]> dOut = restTemplate.exchange(in, byte[].class);
 		return dOut.getBody();
 	}	

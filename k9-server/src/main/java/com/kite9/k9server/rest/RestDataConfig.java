@@ -72,8 +72,6 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 	@Autowired
 	ResourceLoader resourceLoader;
 	
-	
-	
 	@Override
 	public void configureJacksonObjectMapper(ObjectMapper objectMapper) {
 		RepositoryRestConfigurer.super.configureJacksonObjectMapper(objectMapper);
@@ -135,12 +133,6 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 			DelegatingHandlerMapping dhm, RepositoryResourceMappings rrm, 
 			Repositories repositories, JpaHelper jpaHelper) {
 		Map<String, CorsConfiguration> corsConfigurations = config.getCorsRegistry().getCorsConfigurations();
-		
-		// allows us to use format=png or something in the request url
-		ContentNegotiationManager cnm = new ContentNegotiationManager(
-				new ParameterContentNegotiationStrategy(formatSupplier.getMediaTypeMap()),
-				new HeaderContentNegotiationStrategy());
-
 		
 		// create a mapping which supports multiple media types.
 		RepositoryRestHandlerMapping repositoryMapping = new RepositoryRestHandlerMapping(rrm, config, repositories) {

@@ -2,7 +2,7 @@ package com.kite9.k9server.adl.format.media;
 
 import org.springframework.http.MediaType;
 
-public class MediaTypes {
+public class Kite9MediaTypes {
 
 	public static final String ADL_SVG_VALUE = "text/adl-svg+xml";	// input ADL
 	public static final String SVG_VALUE = "image/svg+xml";			// output SVG

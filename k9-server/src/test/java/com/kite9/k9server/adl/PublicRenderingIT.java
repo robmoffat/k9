@@ -15,7 +15,7 @@ import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.XMLCompare;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 
 public class PublicRenderingIT extends AbstractRestIT {
 
@@ -37,7 +37,7 @@ public class PublicRenderingIT extends AbstractRestIT {
 	
 	protected byte[] loadStaticSVG(String page) throws Exception {
 		HttpHeaders headers = new HttpHeaders();
-		headers.setAccept(Arrays.asList(MediaTypes.SVG));
+		headers.setAccept(Arrays.asList(Kite9MediaTypes.SVG));
 		HttpEntity<Void> ent = new HttpEntity<>(headers);
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+page), HttpMethod.GET, ent, byte[].class);
 		return back.getBody();

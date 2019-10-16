@@ -14,6 +14,7 @@ import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMetadata;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
@@ -72,9 +74,14 @@ public class ResourceCommandController extends AbstractCommandController impleme
 	 * This is used for applying commands to domain objects.
 	 */
 	@RequestMapping(method={RequestMethod.POST}, 
-		path= {"/{repository}/{id}/change",
-				"/{repository}/change"}, 
-		consumes= {MediaType.APPLICATION_JSON_VALUE}) 
+		path= {"/{repository}/{id}",
+				"/{repository}"}, 
+		consumes= {MediaType.APPLICATION_JSON_VALUE},
+		produces= {
+			MediaTypes.HAL_JSON_VALUE, 
+			Kite9MediaTypes.ADL_SVG_VALUE, 
+			Kite9MediaTypes.SVG_VALUE
+		}) 
 	@ResponseBody
 	public Object applyCommandOnResource (
 				RequestEntity<List<Command>> req,

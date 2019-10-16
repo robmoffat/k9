@@ -39,9 +39,8 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	public void ensureSecondUserCantModifyFirstUsersProject() throws Exception {
 		String adminJwt = jwtToken;
 		ProjectResource pr = createAProjectResource();
-		DocumentResource dr  = createADocumentResource(pr);
-		RevisionResource rr = createARevisionResource(dr);
-		updateADocumentResource(dr, pr, rr);
+		DocumentResource dr  = createADocumentResource(pr, "http://localhost:"+port+"/public/templates/basic.xml");
+		updateADocumentResource(dr);
 
 		// switch to the viewer - should be able to retrieve one document
 		MemberResource mr = createAMemberResource(pr, altUser.getLink(Link.REL_SELF).getHref());

@@ -46,7 +46,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected UserResource createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
-		String url = getUrlBase() + "/api/users/change";
+		String url = getUrlBase() + "/api/users";
 		UserResource u = new UserResource(username, password, email, Project.createRandomString());
 		RegisterUser ru = new RegisterUser();
 		ru.email = email;
@@ -118,7 +118,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
@@ -130,7 +130,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
@@ -141,7 +141,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url+"/change"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}

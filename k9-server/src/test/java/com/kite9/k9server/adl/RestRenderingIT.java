@@ -17,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.XMLCompare;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.domain.AbstractLifecycleTest;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -66,7 +66,7 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 	
 	@Test
 	public void testRestADLPlusSVG() throws Exception {
-		testMarkupFormat(MediaTypes.ADL_SVG, "testRest", "diagram.xml");
+		testMarkupFormat(Kite9MediaTypes.ADL_SVG, "testRest", "diagram.xml");
 	}
 	
 //	@Test

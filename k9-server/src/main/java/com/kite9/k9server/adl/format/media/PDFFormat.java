@@ -9,7 +9,7 @@ import com.kite9.k9server.adl.holder.ADL;
 public final class PDFFormat implements Format {
 
 	public MediaType[] getMediaTypes() {
-		return new MediaType[] { MediaTypes.PDF };
+		return new MediaType[] { Kite9MediaTypes.PDF };
 	}
 
 	public void handleWrite(ADL adl, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {

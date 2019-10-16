@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 
 import com.kite9.k9server.AbstractRestIT;
 import com.kite9.k9server.XMLCompare;
-import com.kite9.k9server.adl.format.media.MediaTypes;
+import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 
 
 /**
@@ -45,7 +45,7 @@ public class PostRenderingIT extends AbstractRestIT {
 		String xml = createDiagramXML();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(output));
-		headers.setContentType( MediaTypes.ADL_SVG);
+		headers.setContentType( Kite9MediaTypes.ADL_SVG);
 		HttpEntity<byte[]> postBody = new HttpEntity<byte[]>(xml.getBytes(), headers);
 		
 		ResponseEntity<byte[]> back = getRestTemplate().exchange(new URI(getUrlBase()+"/api/renderer"), HttpMethod.POST, postBody, byte[].class);
@@ -62,7 +62,7 @@ public class PostRenderingIT extends AbstractRestIT {
 	
 	@Test
 	public void testADLAndSVGRender() throws Exception {
-		byte[] back = withBytesInFormat(MediaTypes.ADL_SVG);
+		byte[] back = withBytesInFormat(Kite9MediaTypes.ADL_SVG);
 		// ensure diagram hasn't been rendered
 		String out = new String(back);
 		Assert.assertTrue(out.contains("id=\"auto:0-one\" rank=\"0\""));
@@ -71,7 +71,7 @@ public class PostRenderingIT extends AbstractRestIT {
 	
 	@Test
 	public void testSVGRender() throws Exception {
-		byte[] back = withBytesInFormat(MediaTypes.SVG);
+		byte[] back = withBytesInFormat(Kite9MediaTypes.SVG);
 		persistInAFile(back, "testSVGRender", "diagram.svg");
 
 		// parse it to make sure it's good svg
