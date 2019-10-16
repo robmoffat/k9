@@ -20,8 +20,7 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.domain.user.UserRepository;
 
 /**
- * Accepts commands to the system in order to modify XML.  Contents are returned back in whatever format is
- * requested.
+ * Applies commands to given xml url, but no persistence done.
  * 
  * @author robmoffat
  *

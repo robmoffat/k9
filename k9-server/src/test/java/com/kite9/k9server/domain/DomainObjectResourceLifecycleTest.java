@@ -47,7 +47,7 @@ public class DomainObjectResourceLifecycleTest extends AbstractLifecycleTest {
 	
 	public RevisionResource changeTheDocument(DocumentResource dr) throws URISyntaxException {
 		SetText st = new SetText("dia", null, "This is the internal text");
-		String docUrl = dr.getLink(Link.REL_SELF).getHref();
+		String docUrl = dr.getLink(ContentResourceProcessor.CONTENT_REL).getHref();
 		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(st), createHeaders(), HttpMethod.POST, new URI(docUrl));
 		ResponseEntity<?> rOut = restTemplate.exchange(in, byte[].class);
 		Assert.assertTrue(rOut.getStatusCode().is2xxSuccessful());

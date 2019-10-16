@@ -18,8 +18,8 @@ import com.kite9.k9server.domain.entity.Secured;
 //@Component
 public class ChangeResourceProcessor implements ResourceProcessor<PersistentEntityResource> {
 
-	public static final String CHANGE_REL = "change";
-	public static final String CHANGE_URL = "/change";
+//	public static final String CHANGE_REL = "change";
+//	public static final String CHANGE_URL = "/change";
 
 	@Override
 	public PersistentEntityResource process(PersistentEntityResource resource) {

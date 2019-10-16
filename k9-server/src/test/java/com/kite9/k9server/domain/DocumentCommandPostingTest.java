@@ -25,7 +25,7 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		DocumentResource dr  = createADocumentResource(pr, "http://localhost:"+port+"/public/templates/basic.xml");
 		RevisionResource rr = getARevisionResource(new URI(dr.getLink("currentRevision").expand("").getHref()));
 		
-		URI uri = new URI(dr.getLink(ChangeResourceProcessor.CHANGE_REL).getHref());
+		URI uri = new URI(dr.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		URI revUri = new URI(rr.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
 		
 		byte[] back1 = postCommand("[{\"type\": \"SetText\", \"fragmentId\": \"dia\", \"newText\": \"This is some text\"}]", uri);
