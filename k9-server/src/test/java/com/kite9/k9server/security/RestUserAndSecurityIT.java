@@ -27,7 +27,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
-import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.command.domain.rest.NewProject;
 import com.kite9.k9server.domain.user.NotificationResource;
 import com.kite9.k9server.domain.user.UserController;
 import com.kite9.k9server.resource.ProjectResource;
@@ -260,8 +260,11 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertNotNull(cookie);
 		
 		// try to create a project with this cookie
-		Project pIn = new Project("Test Project", "Lorem Ipsum", "tp2");
-		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, getUrlBase()+"/api/projects", cookie.get(0), pIn, HttpMethod.POST, ProjectResource.class);
+		NewProject np = new NewProject();
+		np.title ="Test Project";
+		np.description = "Lorem Ipsum";
+		np.stub = "tp2";
+		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, getUrlBase()+"/api/projects", cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
 		
 		// retrieve it again
