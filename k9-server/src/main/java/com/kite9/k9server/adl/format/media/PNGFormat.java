@@ -21,7 +21,7 @@ public class PNGFormat implements Format {
 	 * This is probably horribly inefficient, as I think lots of resources get loaded twice.
 	 */
 	public void handleWrite(ADL adl, OutputStream baos,  boolean watermark, Integer width, Integer height) throws Exception {
-		Document doc = adl.getSVGRepresentation();
+		Document doc = adl.getAsSVGRepresentation();
 		String uri = adl.getUri().toString();
 		System.out.println(new XMLHelper().toXML(doc));
 		Kite9PNGTranscoder png = new Kite9PNGTranscoder();

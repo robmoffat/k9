@@ -22,7 +22,7 @@ public class ADLAndSVGFormat implements Format {
 	}
 
 	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		StreamHelp.streamCopy(new StringReader(data.getAsXMLString()), new OutputStreamWriter(baos), false);
+		StreamHelp.streamCopy(new StringReader(data.getAsADLString()), new OutputStreamWriter(baos), false);
 	}
 
 	@Override

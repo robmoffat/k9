@@ -24,7 +24,7 @@ public class SetAttr extends AbstractADLCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "setAttr", "name", name);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		Element e = findFragmentElement(doc);
 
 		if (value == null) {

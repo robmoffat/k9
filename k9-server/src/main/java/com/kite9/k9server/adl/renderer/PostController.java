@@ -35,6 +35,6 @@ public class PostController {
 	@RequestMapping(path="/api/renderer/test")
 	public @ResponseBody ADL testCard(RequestEntity<ADL> request) throws Exception {
 		String xml = StreamUtils.copyToString(this.getClass().getResourceAsStream("/test-card.xml"), Charset.defaultCharset());
-		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
+		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
 	}
 }

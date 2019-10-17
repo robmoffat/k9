@@ -69,7 +69,7 @@ public abstract class AbstractADLCommand implements XMLCommand {
 		if (location.length() > 0) {
 			// referencing a different doc.
 			URI uri = baseUri.resolve(location);
-			currentDoc = context.loadDocument(uri);
+			currentDoc = context.loadRelatedDocument(uri);
 		} 
 		
 		Element template = currentDoc.getElementById(id);

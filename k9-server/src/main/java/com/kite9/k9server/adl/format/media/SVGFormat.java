@@ -20,7 +20,7 @@ public class SVGFormat implements Format {
 	}
 
 	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		data.getTranscoder().writeSVGToOutput(data.getSVGRepresentation(), new TranscoderOutput(baos));
+		data.getTranscoder().writeSVGToOutput(data.getAsSVGRepresentation(), new TranscoderOutput(baos));
 	}
 
 	public String getExtension() {

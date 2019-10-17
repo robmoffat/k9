@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
-import com.kite9.k9server.security.Hash;
 
 /**
  * Holds XML (either rendered (SVG) or unrendered (ADL) which will be output
@@ -50,82 +49,90 @@ import com.kite9.k9server.security.Hash;
 public class ADLImpl implements ADL {
 	
 	enum Mode {
-		STRING, DOM, URI
+		URI, STRING, DOM, PROCESSING
 	};
 
-	private String xml;
+	private Mode mode;
 	private URI uri;
+	private String xml;
+	private Map<String, String> metadata = new HashMap<>();
+	private HttpHeaders requestHeaders;
 	
 	@JsonIgnore
-	private ADLDocument doc;
+	private ADLDocument adl;
 	
-	private String xmlHash;
-	
+	@JsonIgnore
+	private Document svg = null;
+
 	@JsonIgnore
 	private final Kite9SVGTranscoder transcoder;
 	
-	private Map<String, String> metadata = new HashMap<>();
+
 	
-	private HttpHeaders requestHeaders;
-
-	public ADLImpl(URI uri, HttpHeaders requestHeaders) {
+	private ADLImpl(Mode mode, URI uri, String xml, ADLDocument doc, Kite9SVGTranscoder transcoder, HttpHeaders requestHeaders) {
+		super();
+		this.mode = mode;
 		this.uri = uri;
+		this.xml = xml;
+		this.adl = doc;
+		this.transcoder = transcoder == null ? new Kite9SVGTranscoder() : transcoder; 
 		this.requestHeaders = requestHeaders;
-		this.transcoder = new Kite9SVGTranscoder();
 	}
 
-	public ADLImpl(String content, URI uri, HttpHeaders requestHeaders) {
-		this.xml = content;
-		this.uri = uri;
-		this.xmlHash = Hash.generateSHA1Hash(content);
-		this.requestHeaders = requestHeaders;
-		this.transcoder = new Kite9SVGTranscoder();
+	public static ADL uriMode(URI uri, HttpHeaders requestHeaders) {
+		ADLImpl out = new ADLImpl(Mode.URI, uri, null, null, null, requestHeaders);
+		return out;
 	}
 	
-	public ADLImpl(Kite9SVGTranscoder transcoder, ADLDocument d, URI u, HttpHeaders requestHeaders) {
-		this.doc = d;
-		this.uri = u;
-		this.requestHeaders = requestHeaders;
-		this.transcoder = transcoder;
+	public static ADL xmlMode(URI uri, String xml, HttpHeaders requestHeaders) {
+		ADLImpl out = new ADLImpl(Mode.STRING, uri, xml, null, null, requestHeaders);
+		return out;
 	}
-
+	
+	public static ADL domMode(URI uri, Kite9SVGTranscoder transcoder, ADLDocument doc, HttpHeaders requestHeaders) {
+		ADLImpl out = new ADLImpl(Mode.DOM, uri, null, doc, transcoder, requestHeaders);
+		return out;		
+	}
+	
 	@Override
-	public String getAsXMLString() {
-		if (getMode() == Mode.URI) {
-			doc = loadDocument(uri);
+	public String getAsADLString() {
+		switch (getMode()) {
+		case URI:
+			xml = loadText(uri);
+			mode = Mode.STRING;
+			return xml;
+		case STRING:
+			return xml;
+		case DOM:
+			xml = toXMLString(adl, false);
+			mode = Mode.STRING;
+			return xml;
+		case PROCESSING:
+		default:
+			return xml;
 		}
-		
-		if (getMode() == Mode.DOM) {
-			xml = toXMLString(doc, false);
-			xmlHash = Hash.generateSHA1Hash(xml);
-			doc = null;
-		}
-
-		return xml;
 	}
 
 	private Mode getMode() {
-		if (doc != null) {
-			return Mode.DOM;
-		} else if (xml != null) {
-			return Mode.STRING;
-		} else {
-			return Mode.URI;
-		}
+		return mode;
 	}
 
 	@Override
-	public ADLDocument getAsDocument() {
-		if (getMode() == Mode.URI) {
-			doc = loadDocument(uri);
-			xml = null;
-			xmlHash = null;
-		} else if (getMode() == Mode.STRING) {
-			doc = parseDocument(xml, uri);
-			xml = null;
+	public ADLDocument getAsADLDocument() {
+		switch (getMode()) {
+		case URI:
+			xml = loadText(uri);
+			//$FALL-THROUGH$
+		case STRING:
+			adl = parseDocument(xml, uri);
+			mode = Mode.DOM;
+			//$FALL-THROUGH$
+		case DOM:
+			return adl;
+		case PROCESSING:
+		default:
+			throw new IllegalStateException("Can't return original DOM, it's being processed to svg");
 		}
-		
-		return doc;
 	}
 
 
@@ -161,7 +168,7 @@ public class ADLImpl implements ADL {
 		return headers2;
 	}
 
-	public ADLDocument loadDocument(URI uri2) {
+	public ADLDocument loadRelatedDocument(URI uri2) {
 		String content = loadText(uri2);
 		return parseDocument(content, uri2);
 	}
@@ -192,34 +199,6 @@ public class ADLImpl implements ADL {
 	}
 
 	@Override
-	public String getAsXMLString(Node n) {
-		return toXMLString(n, true);
-	}
-
-	@Override
-	public String hash(String n) {
-		if (n != null) {
-			ADLDocument doc = getAsDocument();
-			Node e = doc.getElementById(n);
-			
-			if (e == null) {
-				throw new Kite9XMLProcessingException("Could not locate: "+n, null, doc);
-			}
-			
-			return Hash.generateHash(e);
-		} else {
-			if (xmlHash != null) {
-				return xmlHash;
-			} else if (xml != null) {
-				xmlHash = Hash.generateSHA1Hash(xml);
-				return xmlHash;
-			}
-		}
-		
-		throw new RuntimeException("XML Hash not set!");
-	}
-
-	@Override
 	public void setMeta(String name, String value) {
 		metadata.put(name, value);
 	}
@@ -229,27 +208,43 @@ public class ADLImpl implements ADL {
 		return metadata;
 	}
 	
-	private Document svgRepresentation = null;
 	
-	public Document getSVGRepresentation() throws Kite9ProcessingException {
-		Document d = getAsDocument();
-		if (svgRepresentation == null) {
-			try {
-				Transcoder transcoder = getTranscoder();
-				TranscoderInput in = new TranscoderInput(d);
-				in.setURI(getUri().toString());
-				TranscoderOutput out = new TranscoderOutput();
-				transcoder.transcode(in, out);
-				svgRepresentation = out.getDocument();
-			} catch (TranscoderException e) {
-				throw new Kite9XMLProcessingException("Couldn't get SVG Representation", e, d);
-			}
+	public Document getAsSVGRepresentation() throws Kite9ProcessingException {
+		switch (getMode()) {
+		case URI:
+			xml = loadText(uri);
+			//$FALL-THROUGH$
+		case STRING:
+			adl = parseDocument(xml, uri);
+			svg = transformADL(adl);
+			mode = Mode.PROCESSING;
+			return svg;
+		case DOM:
+			xml = toXMLString(adl, false);
+			svg = transformADL(adl);
+			mode = Mode.PROCESSING;
+			return svg;
+		case PROCESSING:
+		default:
+			return svg;
 		}
-		return svgRepresentation;
+	}
+
+	protected Document transformADL(Document d) {
+		try {
+			Transcoder transcoder = getTranscoder();
+			TranscoderInput in = new TranscoderInput(d);
+			in.setURI(getUri().toString());
+			TranscoderOutput out = new TranscoderOutput();
+			transcoder.transcode(in, out);
+			return out.getDocument();
+		} catch (TranscoderException e) {
+			throw new Kite9XMLProcessingException("Couldn't get SVG Representation", e, d);
+		}
 	}
 
 	@Override
-	public HttpHeaders getHeaders() {
+	public HttpHeaders getRequestHeaders() {
 		return requestHeaders;
 	}
 }

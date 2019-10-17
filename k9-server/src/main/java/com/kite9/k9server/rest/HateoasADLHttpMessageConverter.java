@@ -24,7 +24,6 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.diagram.dom.elements.ADLDocument;
-import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
@@ -140,8 +139,8 @@ public class HateoasADLHttpMessageConverter
 		Document input = generateRestXML(t, transcoder.getDomImplementation());
 		ADLDocument output = transformXML(input, transcoder.getDomImplementation());
 		System.out.println("IN: " + new XMLHelper().toXML(input));
-		System.out.println("OUT: "+ new XMLHelper().toXML(output));
-		ADL out = new ADLImpl(transcoder, output, u, EMPTY_HEADERS);
+		ADL out = ADLImpl.domMode(u, transcoder, output, EMPTY_HEADERS);
+		System.out.println("OUT: "+ out.getAsADLString());
 		Kite9HeaderMeta.addUserMeta(out);
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}

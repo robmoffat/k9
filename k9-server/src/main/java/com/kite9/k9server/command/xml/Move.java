@@ -24,7 +24,7 @@ public class Move extends AbstractLocatedCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "move", "moveId", moveId);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		Element e = doc.getElementById(moveId);		
 		if (e == null) {
 			throw new CommandException(HttpStatus.NOT_FOUND, "No element for moveId: "+fragmentId, this);

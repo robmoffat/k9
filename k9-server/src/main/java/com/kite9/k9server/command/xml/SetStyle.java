@@ -26,7 +26,7 @@ public class SetStyle extends AbstractADLCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "setStyle", "name", name);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		adl.getTranscoder().ensureCSSEngine(doc);
 		Element e = findFragmentElement(doc);
 		if (e instanceof StyledKite9XMLElement) {

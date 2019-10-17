@@ -118,7 +118,7 @@ public class CommandsTest {
 
 
 	public void performSaveAndCheck(ADL out, String name) throws Exception {
-		String result = out.getAsXMLString();
+		String result = out.getAsADLString();
 		TestingHelp.writeOutput(this.getClass(), null, name+".xml", result);
 		String expected4 = StreamUtils.copyToString(this.getClass().getResourceAsStream("/commands/after_"+name+".xml"), Charset.forName("UTF-8"));
 		XMLCompare.compareXML(expected4, result);

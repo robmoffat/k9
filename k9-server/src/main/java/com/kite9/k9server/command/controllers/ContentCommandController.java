@@ -73,10 +73,10 @@ public class ContentCommandController extends AbstractCommandController implemen
 				
 		try {
 
-			ADL input = new ADLImpl(ri.getCurrentRevision().getXml(), req.getUrl(), req.getHeaders());
+			ADL input = ADLImpl.xmlMode(req.getUrl(), ri.getCurrentRevision().getXml(), req.getHeaders());
 
 			if (log.go()) {
-				log.send("Before: " + input.getAsXMLString());
+				log.send("Before: " + input.getAsADLString());
 			}
 			
 			input = (ADL) performSteps(req.getBody(), input, ri, req.getHeaders(), req.getUrl());
@@ -85,7 +85,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 			checkRenderable(input);
 			
 			if (log.go()) {
-				log.send("After: " + input.getAsXMLString());
+				log.send("After: " + input.getAsADLString());
 			}
 			
 			addDocumentMeta(input, ri);
@@ -106,7 +106,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 		Revision rNew = new Revision();
 		rNew.setAuthor(u);
 		rNew.setDocument(d);
-		rNew.setXml(input.getAsXMLString());
+		rNew.setXml(input.getAsADLString());
 		rNew.setPreviousRevision(rOld);
 		revisionRepository.save(rNew);
 		
@@ -143,6 +143,6 @@ public class ContentCommandController extends AbstractCommandController implemen
 	}
 
 	protected void checkRenderable(ADL input) {
-		input.getSVGRepresentation();
+		input.getAsSVGRepresentation();
 	}
 }

@@ -35,7 +35,7 @@ public class Replace extends AbstractADLCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "Replace", "fromuri", uriStr);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		Element e = findFragmentElement(doc);
 		Element n = getForeignElementCopy(doc, adl.getUri(), uriStr, approach == Approach.DEEP, adl);
 		

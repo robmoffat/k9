@@ -32,7 +32,7 @@ public class Copy extends AbstractLocatedCommand {
 		ensureNotNull(this, "copy", "uri", uriStr);
 		
 		try {
-			ADLDocument doc = adl.getAsDocument();
+			ADLDocument doc = adl.getAsADLDocument();
 			performCopy(adl.getUri(), doc, newId, adl);
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't copy", e, this);

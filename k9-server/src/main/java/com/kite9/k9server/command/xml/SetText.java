@@ -23,7 +23,7 @@ public class SetText extends AbstractADLCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "edit", "fragment", fragmentId);
 		ensureNotNull(this, "edit", "newText", newText);
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		Element e = doc.getElementById(fragmentId);
 		e.setTextContent(newText);
 		LOG.info("Processed edit of "+fragmentId);

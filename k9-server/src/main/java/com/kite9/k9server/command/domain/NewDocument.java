@@ -38,8 +38,8 @@ public class NewDocument extends AbstractRepoCommand<Project> {
 			getRepositoryFor(Document.class).save(out);
 			
 			// we need to return ADL which copies the templateUri;
-			ADL adl = new ADLImpl(new URI(templateUri), requestHeaders);
-			String content = adl.getAsXMLString();
+			ADL adl = ADLImpl.uriMode(new URI(templateUri), requestHeaders);
+			String content = adl.getAsADLString();
 			
 			// create first revision
 			Revision r = new Revision();

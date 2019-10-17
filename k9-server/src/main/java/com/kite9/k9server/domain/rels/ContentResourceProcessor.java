@@ -47,7 +47,7 @@ public class ContentResourceProcessor implements ResourceProcessor<PersistentEnt
 
 	public ADL buildADL(RequestEntity<?> request, Revision r) {
 		URI url =request.getUrl();
-		return new ADLImpl(r.getXml(), url, request.getHeaders());
+		return ADLImpl.xmlMode(url, r.getXml(), request.getHeaders());
 	}
 
 	protected boolean appliesTo(Object content) {

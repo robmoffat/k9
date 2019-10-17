@@ -66,7 +66,7 @@ public class HTMLFormat implements Format {
 	 * Returns just the content element, not the DOCTYPE, PI etc.
 	 */
 	public byte[] getSVGRepresentation(ADL data) throws Exception {
-		Document svg = data.getSVGRepresentation();
+		Document svg = data.getAsSVGRepresentation();
 		Element e = svg.getDocumentElement();
 		String xmlString = ADLImpl.toXMLString(e, true);
 		return xmlString.getBytes();

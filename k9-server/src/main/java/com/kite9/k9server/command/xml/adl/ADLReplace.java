@@ -27,7 +27,7 @@ public class ADLReplace extends Replace {
 	@Override
 	public ADL applyCommand() throws CommandException {
 		ADL out = super.applyCommand();
-		ADLDocument d = out.getAsDocument();
+		ADLDocument d = out.getAsADLDocument();
 		adl.getTranscoder().ensureCSSEngine(d);
 		ADLReferenceHandler.checkConsistency(d.getDocumentElement());
 		return out;

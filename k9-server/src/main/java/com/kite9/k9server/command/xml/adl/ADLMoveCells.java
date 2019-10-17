@@ -40,7 +40,7 @@ public class ADLMoveCells extends AbstractADLCommand {
 		ensureNotNull(this, "ADLMoveCells", "from", from);
 		ensureNotNull(this, "ADLMoveCells", "horiz", horiz);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		adl.getTranscoder().ensureCSSEngine(doc);
 		Element container = doc.getElementById(fragmentId);	
 		int moved = 0;

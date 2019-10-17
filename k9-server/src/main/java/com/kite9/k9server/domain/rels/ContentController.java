@@ -50,14 +50,14 @@ public class ContentController {
 					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No document "+id));
 			String xml = d.getCurrentRevision().getXml();
 					
-			ADL out = new ADLImpl(xml, new URI(uri), headers);
+			ADL out = ADLImpl.xmlMode(new URI(uri), xml, headers);
 			return out;
 		} else if (repository.equals("revisions")) {
 			Revision r = revisions.findById(id)
 					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No revision "+id));
 			String xml = r.getXml();
 			
-			ADL out = new ADLImpl(xml, new URI(uri), headers);
+			ADL out = ADLImpl.xmlMode(new URI(uri), xml, headers);
 			return out;
 		} else {
 			throw new Kite9ProcessingException("/content not available at "+uri);

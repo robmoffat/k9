@@ -39,7 +39,7 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 	public void testVariousMarkups() throws URISyntaxException {
 		ProjectResource pr = createAProjectResource();
 		this.projectUrl = pr.getLink("self").getHref();
-		DocumentResource dr  = createADocumentResource(pr);
+		DocumentResource dr  = createADocumentResource(pr, "http://localhost:"+port+"/public/templates/basic.xml");
 		this.docUrl = dr.getLink("self").getHref();
 	}
 

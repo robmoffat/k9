@@ -42,7 +42,7 @@ public class StaticCommandController extends AbstractCommandController implement
 		URI uri = new URI(sourceUri);
 		URI base = req.getUrl();
 		uri = base.resolve(uri);
-		ADL input = new ADLImpl(uri, req.getHeaders());
+		ADL input = ADLImpl.uriMode(uri, req.getHeaders());
 		
 		return (ADL) performSteps(req.getBody(), input, null, req.getHeaders(), uri);
 	}

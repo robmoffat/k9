@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -54,7 +53,6 @@ public class ADLRestDataConfig implements InitializingBean {
 //		delegatingHandlerMapping.getDelegates().add(0, adlRepositoryRestHandlerMapping());
 	}		
 		
-	//@Bean	
 	public ADLRepositoryRestHandlerMapping adlRepositoryRestHandlerMapping() {	
 		// allows us to request back adl-svg+xml as the response type
 		Map<String, CorsConfiguration> corsConfigurations = config.getCorsRegistry().getCorsConfigurations();

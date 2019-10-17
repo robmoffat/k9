@@ -31,7 +31,7 @@ public class PublicController {
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".html"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
+		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
 	}
 	
 	@GetMapping(path="/public/**/*.png", produces=MediaType.IMAGE_PNG_VALUE)
@@ -40,7 +40,7 @@ public class PublicController {
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".png"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
+		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
 	}
 	
 	@GetMapping(path="/public/**/*.svg", produces=Kite9MediaTypes.SVG_VALUE)
@@ -49,7 +49,7 @@ public class PublicController {
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".svg"));
 		String resourceName = "/static/public/"+stub;
 		String xml = loadXML(resourceName);
-		return new ADLImpl(xml, request.getUrl(), request.getHeaders());
+		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
 	}
 	
 	private String loadXML(String resourceName) throws IOException {

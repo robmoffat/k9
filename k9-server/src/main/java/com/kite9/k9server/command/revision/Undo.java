@@ -28,7 +28,7 @@ public class Undo extends AbstractRepoCommand<Document> implements XMLCommand {
 		d.setCurrentRevision(rPrevious);
 		getRepositoryFor(Document.class).save(d); 
 				
-		return new ADLImpl(rPrevious.getXml(), uri, requestHeaders);
+		return ADLImpl.xmlMode(uri, rPrevious.getXml(), requestHeaders);
 	}
 	
 	public Revision getCurrentRevision() {

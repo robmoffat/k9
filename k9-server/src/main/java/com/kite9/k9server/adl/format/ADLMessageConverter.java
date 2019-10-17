@@ -65,7 +65,7 @@ public class ADLMessageConverter extends AbstractGenericHttpMessageConverter<ADL
 		StreamHelp.streamCopy(inputMessage.getBody(), baos, true);
 		String s = baos.toString(charset.name());
 		URI uri = inputMessage.getHeaders().getLocation();
-		ADL adl = new ADLImpl(s, uri, inputMessage.getHeaders());
+		ADL adl = ADLImpl.xmlMode(uri, s, inputMessage.getHeaders());
 		return adl;
 	}
 

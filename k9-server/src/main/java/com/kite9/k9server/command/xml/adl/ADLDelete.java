@@ -24,7 +24,7 @@ public class ADLDelete extends Delete {
 
 	@Override
 	public ADL applyCommand() throws CommandException {
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		adl.getTranscoder().ensureCSSEngine(doc);
 		
 		if (isDiagramElement(doc)) {

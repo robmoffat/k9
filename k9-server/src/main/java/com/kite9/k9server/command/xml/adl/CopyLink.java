@@ -31,7 +31,7 @@ public class CopyLink extends Copy {
 		ensureNotNull(this, "create-link", "toId", toId);
 		
 		try {
-			ADLDocument doc = adl.getAsDocument();
+			ADLDocument doc = adl.getAsADLDocument();
 			Element insert = performCopy(adl.getUri(), doc, newId, adl);
 		
 			// this means we can use css to find out the purpose of each element.

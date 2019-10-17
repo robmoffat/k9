@@ -8,7 +8,6 @@ import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 /**
  * ADL is our description of an XML format containing SVG data with mixed-in 
@@ -23,18 +22,11 @@ public interface ADL {
 	
 	void setUri(URI u);
 	
-	String getAsXMLString();
+	String getAsADLString();
 	
-	ADLDocument getAsDocument();
+	ADLDocument getAsADLDocument();
 
 	Kite9SVGTranscoder getTranscoder();
-	
-	String getAsXMLString(Node n);
-	
-	/**
-	 * Returns the hash of a given node, or for the whole xml document if none given.
-	 */
-	String hash(String id);
 	
 	/**
 	 * Returns properties that might be useful for display on the screen of the editor.
@@ -50,18 +42,18 @@ public interface ADL {
 	 * Performs the transformation to create the SVG representation.
 	 * This will be cached once created.
 	 */
-	Document getSVGRepresentation() throws Kite9ProcessingException;
+	Document getAsSVGRepresentation() throws Kite9ProcessingException;
 
 	/**
 	 * Returns the HTTPHeaders that were responsible for loading this 
 	 * ADL.  Useful for passing around credentials.
 	 */
-	HttpHeaders getHeaders();
+	HttpHeaders getRequestHeaders();
 	
 	/**
 	 * For loading up a referenced document.
 	 */
-	ADLDocument loadDocument(URI uri);
+	ADLDocument loadRelatedDocument(URI uri);
 	
 	/**
 	 * For parsing a referenced document.

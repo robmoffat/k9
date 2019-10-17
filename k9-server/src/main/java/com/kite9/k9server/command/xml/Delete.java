@@ -25,7 +25,7 @@ public class Delete extends AbstractADLCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "delete", "fragmentId", fragmentId);
 
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 		
 		Element e = doc.getElementById(fragmentId);
 		if (e==null) {

@@ -28,7 +28,7 @@ public class AppendXML extends AbstractLocatedCommand {
 	public ADL applyCommand() throws CommandException {
 		ensureNotNull(this, "appendXML", "newState", newState);
 		
-		ADLDocument doc = adl.getAsDocument();
+		ADLDocument doc = adl.getAsADLDocument();
 
 		// create the new child element
 		ADLDocument nDoc = adl.parseDocument(newState, adl.getUri());

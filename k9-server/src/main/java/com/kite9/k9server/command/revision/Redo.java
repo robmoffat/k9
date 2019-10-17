@@ -28,7 +28,7 @@ public class Redo extends AbstractRepoCommand<Document> implements XMLCommand {
 		d.setCurrentRevision(rNext);
 		getRepositoryFor(Document.class).save(d);
 		
-		return new ADLImpl(rNext.getXml(), uri, requestHeaders);
+		return ADLImpl.xmlMode(uri, rNext.getXml(), requestHeaders);
 	}
 
 	public Revision getCurrentRevision() {
