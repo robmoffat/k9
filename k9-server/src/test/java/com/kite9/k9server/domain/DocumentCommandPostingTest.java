@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
-import com.kite9.k9server.domain.rels.ChangeResourceProcessor;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -65,7 +64,7 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		XMLCompare.compareXML(new String(back2), new String(back4));
 		
 		// we should be able to perform an operation using a previous revision (although this does nothing)
-		byte[] back5 = postCommand("[{\"type\": \"ADLReplace\", \"fragmentId\": \"0\", \"approach\": \"ATTRIBUTES\", \"uriStr\": \""+revUri.toString()+"#0\"}]", uri);
+		byte[] back5 = postCommand("[{\"type\": \"ADLReplace\", \"fragmentId\": \"dia\", \"approach\": \"ATTRIBUTES\", \"uriStr\": \""+revUri.toString()+"#dia\"}]", uri);
 		persistInAFile(back5, "revisions", "state5.xml");
 		XMLCompare.compareXML(new String(back2), new String(back5));		
 	}

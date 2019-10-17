@@ -22,6 +22,7 @@ import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;
 import com.kite9.k9server.domain.rels.ContentResourceProcessor;
@@ -81,7 +82,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 			
 			input = (ADL) performSteps(req.getBody(), input, ri, req.getHeaders(), req.getUrl());
 			
-			createNewRevisionOnDocument(input, ri);
+			createNewRevisionOnDocument(input, ri, needsRevision(req.getBody()));
 			checkRenderable(input);
 			
 			if (log.go()) {
@@ -97,28 +98,40 @@ public class ContentCommandController extends AbstractCommandController implemen
 		} 
 	}
 
-	protected Revision createNewRevisionOnDocument(ADL input, Document d) {
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		User u = userRepository.findByUsername(username);
-		Revision rOld = d.getCurrentRevision();
+	private boolean needsRevision(List<Command> body) {
+		for (Command command : body) {
+			if (command instanceof XMLCommand) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
-		// save the new revision
-		Revision rNew = new Revision();
-		rNew.setAuthor(u);
-		rNew.setDocument(d);
-		rNew.setXml(input.getAsADLString());
-		rNew.setPreviousRevision(rOld);
-		revisionRepository.save(rNew);
+	protected void createNewRevisionOnDocument(ADL input, Document d, boolean needsRevision) {
+		if (needsRevision) {
+			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			User u = userRepository.findByUsername(username);
 		
-		// update the old revision
-		rOld.setNextRevision(rNew);
-		revisionRepository.save(rOld);
+			Revision rOld = d.getCurrentRevision();
+	
+			// save the new revision
+			Revision rNew = new Revision();
+			rNew.setAuthor(u);
+			rNew.setDocument(d);
+			rNew.setXml(input.getAsADLString());
+			rNew.setPreviousRevision(rOld);
+			revisionRepository.save(rNew);
+			
+			// update the old revision
+			rOld.setNextRevision(rNew);
+			revisionRepository.save(rOld);
+			
+			// update the document
+			d.setCurrentRevision(rNew);
 		
-		// update the document
-		d.setCurrentRevision(rNew);
-		documentRepository.save(d);
-		
-		return rNew;
+			documentRepository.save(d);
+		}
 	}
 
 
