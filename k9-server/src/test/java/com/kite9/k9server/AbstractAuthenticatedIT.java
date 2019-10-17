@@ -64,6 +64,8 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.COOKIE, cookie);
+		headers.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
+		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
 		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
 		return pOut;

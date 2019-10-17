@@ -264,16 +264,16 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		np.title ="Test Project";
 		np.description = "Lorem Ipsum";
 		np.stub = "tp2";
-		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, getUrlBase()+"/api/projects", cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
-		Assert.assertEquals(HttpStatus.CREATED, projOut.getStatusCode());
+		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
+		Assert.assertEquals(HttpStatus.OK, projOut.getStatusCode());
 		
 		// retrieve it again
-		ResponseEntity<ProjectResource> pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+		ResponseEntity<ProjectResource> pGet = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
 		Assert.assertEquals("Test Project", pGet.getBody().title);
 	
 		// try with "wrong" cookie
 		String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
-		pOut = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), wrongCookie, "", HttpMethod.GET, String.class);
+		pOut = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), wrongCookie, "", HttpMethod.GET, String.class);
 		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));		
 		
 		// tidy up: delete project
@@ -281,7 +281,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 
 		// check it's gone
 		try {
-			pGet = exchangeUsingCookie(restTemplate, projOut.getHeaders().getLocation().toString(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+			pGet = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
 			Assert.assertTrue(pGet.getStatusCode().is4xxClientError());
 		} catch (ResourceAccessException e) {
 		}
