@@ -27,7 +27,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractAuthenticatedIT;
-import com.kite9.k9server.command.domain.rest.NewProject;
+import com.kite9.k9server.command.domain.NewProject;
 import com.kite9.k9server.domain.user.NotificationResource;
 import com.kite9.k9server.domain.user.UserController;
 import com.kite9.k9server.resource.ProjectResource;

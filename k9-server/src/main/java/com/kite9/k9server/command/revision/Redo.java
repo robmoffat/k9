@@ -1,15 +1,16 @@
-package com.kite9.k9server.command.domain.revision;
+package com.kite9.k9server.command.revision;
+
+import org.springframework.http.HttpStatus;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractDomainCommand;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
+import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.document.Document;
-import com.kite9.k9server.domain.document.DocumentRepositoryCustom;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Redo extends AbstractRepoCommand<Document> implements RevisionCommand {
+public class Redo extends AbstractRepoCommand<Document> implements XMLCommand {
 	
 	public Redo() {
 		super();
@@ -20,7 +21,7 @@ public class Redo extends AbstractRepoCommand<Document> implements RevisionComma
 		Revision rNext = getCurrentRevision().getNextRevision();
 		
 		if (rNext == null) {
-			throw new CommandException("No further state to redo to", this);
+			throw new CommandException(HttpStatus.FORBIDDEN, "No further state to redo to", this);
 		}
 		
 		Document d = current;
@@ -32,5 +33,9 @@ public class Redo extends AbstractRepoCommand<Document> implements RevisionComma
 
 	public Revision getCurrentRevision() {
 		return current.getCurrentRevision();
+	}
+
+	@Override
+	public void setOn(ADL on) {
 	}
 }

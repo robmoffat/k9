@@ -1,9 +1,11 @@
-package com.kite9.k9server.command.domain.rest;
+package com.kite9.k9server.command.domain;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.MemberRepository;
 import com.kite9.k9server.domain.permission.ProjectRole;
@@ -13,9 +15,9 @@ import com.kite9.k9server.domain.user.UserRepository;
 
 public class AddMember extends AbstractRepoCommand<Project> {
 	
-	protected List<String> emailAddresses;
+	public List<String> emailAddresses;
 	
-	protected ProjectRole role;
+	public ProjectRole role;
 
 	@Override
 	public Project applyCommand() throws CommandException {
@@ -29,7 +31,7 @@ public class AddMember extends AbstractRepoCommand<Project> {
 				User u = users.findByEmail(e);
 				
 				if (u == null) {
-					throw new CommandException("Not implemented adding members where they aren't part of the project");
+					throw new CommandException(HttpStatus.FORBIDDEN, "Not implemented adding members where they aren't part of the project");
 				}
 				
 				m = new Member(current, role, u);

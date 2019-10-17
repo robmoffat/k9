@@ -1,6 +1,7 @@
 package com.kite9.k9server.command.xml;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpStatus;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -26,7 +27,7 @@ public class Move extends AbstractLocatedCommand {
 		ADLDocument doc = adl.getAsDocument();
 		Element e = doc.getElementById(moveId);		
 		if (e == null) {
-			throw new CommandException("No element for moveId: "+fragmentId, this);
+			throw new CommandException(HttpStatus.NOT_FOUND, "No element for moveId: "+fragmentId, this);
 		}
 
 		insert(doc, e);

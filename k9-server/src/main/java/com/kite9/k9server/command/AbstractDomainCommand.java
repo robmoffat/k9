@@ -1,4 +1,4 @@
-package com.kite9.k9server.command.domain;
+package com.kite9.k9server.command;
 
 import java.net.URI;
 

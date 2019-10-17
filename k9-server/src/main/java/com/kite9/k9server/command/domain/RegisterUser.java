@@ -1,9 +1,10 @@
-package com.kite9.k9server.command.domain.rest;
+package com.kite9.k9server.command.domain;
 
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.http.HttpStatus;
 
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.SecuredCrudRepository;
 import com.kite9.k9server.domain.user.User;
@@ -39,7 +40,7 @@ public class RegisterUser extends AbstractRepoCommand<User> {
 			ur.save(out);
 			return out;
 		} catch (Exception e) {
-			throw new CommandException("Couldn't register user.  User may already be registered", e, this);
+			throw new CommandException(HttpStatus.CONFLICT, "Couldn't register user.  User may already be registered", e, this);
 		}
 	}
 }

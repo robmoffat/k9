@@ -1,8 +1,6 @@
-package com.kite9.k9server.command.xml;
+package com.kite9.k9server.command;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.CommandException;
 
 /**
  * ADL Commands manipulate some XML, which is passed in using setOn

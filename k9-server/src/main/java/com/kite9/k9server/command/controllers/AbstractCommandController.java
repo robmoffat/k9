@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.domain.DomainCommand;
-import com.kite9.k9server.command.domain.RepoCommand;
-import com.kite9.k9server.command.xml.XMLCommand;
+import com.kite9.k9server.command.DomainCommand;
+import com.kite9.k9server.command.RepoCommand;
+import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.entity.Secured;
 
 public abstract class AbstractCommandController implements Logable {
 
@@ -32,28 +36,10 @@ public abstract class AbstractCommandController implements Logable {
 		super();
 	}
 
-	protected ADL performXMLCommands(List<Command> steps, ADL input, RestEntity context, HttpHeaders headers, URI url) {
-		
-		if (log.go()) {
-			log.send("Before: " + input.getAsXMLString());
-		}
-		
-		input = (ADL) performSteps(steps, input, context, headers, url);
-		checkRenderable(input);
-		
-		if (log.go()) {
-			log.send("After: " + input.getAsXMLString());
-		}
-		
-		return input;
-	}
-
-	protected void checkRenderable(ADL input) {
-		input.getSVGRepresentation();
-	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Transactional
 	protected Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) {
+		checkDomainAccess(context, url);
 		for (Command command : steps) {
 			if (command instanceof XMLCommand) {
 				((XMLCommand) command).setOn((ADL) input);
@@ -80,5 +66,13 @@ public abstract class AbstractCommandController implements Logable {
 	@Override
 	public boolean isLoggingEnabled() {
 		return true;
+	}
+
+	protected void checkDomainAccess(RestEntity d, URI url) {
+		if (d instanceof Secured) {
+			if (!((Secured) d).checkWrite()) {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No write access for "+url);
+			}
+		}
 	}
 }

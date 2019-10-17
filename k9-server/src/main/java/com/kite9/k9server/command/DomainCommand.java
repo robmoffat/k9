@@ -1,10 +1,9 @@
-package com.kite9.k9server.command.domain;
+package com.kite9.k9server.command;
 
 import java.net.URI;
 
 import org.springframework.http.HttpHeaders;
 
-import com.kite9.k9server.command.Command;
 import com.kite9.k9server.domain.entity.RestEntity;
 
 /**

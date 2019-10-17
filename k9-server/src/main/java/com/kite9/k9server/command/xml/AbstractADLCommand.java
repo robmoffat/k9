@@ -7,6 +7,7 @@ import org.apache.batik.dom.AbstractElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpStatus;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -16,6 +17,7 @@ import org.w3c.dom.NodeList;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.command.XMLCommand;
 
 /**
  * Contains a hash, which is used to make sure that the command is operating on a fresh version
@@ -48,14 +50,14 @@ public abstract class AbstractADLCommand implements XMLCommand {
 	
 	public static void ensureNotNull(Command c, String operation, String field, Object n) throws CommandException {
 		if (n == null) {
-			throw new CommandException(operation+" requires "+field+" to be set", c);
+			throw new CommandException(HttpStatus.CONFLICT, operation+" requires "+field+" to be set", c);
 		}
 	}
 	
 	protected Element findFragmentElement(ADLDocument doc) {
 		Element into = doc.getElementById(fragmentId);
 		if (into == null) {
-			throw new CommandException("Could not locate: "+fragmentId, this);
+			throw new CommandException(HttpStatus.NOT_FOUND, "Could not locate: "+fragmentId, this);
 		}
 		return into;
 	}

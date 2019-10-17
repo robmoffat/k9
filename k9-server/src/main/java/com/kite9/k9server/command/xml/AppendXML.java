@@ -2,6 +2,7 @@ package com.kite9.k9server.command.xml;
 
 import org.apache.batik.anim.dom.SVGOMSVGElement;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -68,13 +69,13 @@ public class AppendXML extends AbstractLocatedCommand {
 		if (svg instanceof SVGOMSVGElement) {
 			int childElementCount = ((SVGOMSVGElement) svg).getChildElementCount();
 			if (childElementCount != 1) {
-				throw new CommandException("Was expecting a single element within the svg document, but there are  "+childElementCount+" elements", c);
+				throw new CommandException(HttpStatus.CONFLICT, "Was expecting a single element within the svg document, but there are  "+childElementCount+" elements", c);
 			}
 			
 			return ((SVGOMSVGElement) svg).getFirstElementChild();
 			
 		} else {
-			throw new CommandException("Was expecting SVG document: "+svg.getClass(), c);
+			throw new CommandException(HttpStatus.CONFLICT, "Was expecting SVG document: "+svg.getClass(), c);
 		}
 	}
 

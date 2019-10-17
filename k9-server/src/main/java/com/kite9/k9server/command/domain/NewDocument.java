@@ -1,13 +1,14 @@
-package com.kite9.k9server.command.domain.rest;
+package com.kite9.k9server.command.domain;
 
 import java.net.URI;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
@@ -25,7 +26,7 @@ public class NewDocument extends AbstractRepoCommand<Project> {
 	@Override
 	public Document applyCommand() throws CommandException {
 		if (!current.checkWrite()) {
-			throw new CommandException("User can't write to "+current, this);
+			throw new CommandException(HttpStatus.UNAUTHORIZED, "User can't write to "+current, this);
 		}
 		
 		try {
@@ -55,7 +56,7 @@ public class NewDocument extends AbstractRepoCommand<Project> {
 
 			return out;
 		} catch (Exception e) {
-			throw new CommandException("Couldn't create document: ", e, this);
+			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}
 	}
 

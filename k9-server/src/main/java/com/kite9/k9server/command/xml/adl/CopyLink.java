@@ -3,6 +3,7 @@ package com.kite9.k9server.command.xml.adl;
 import org.kite9.diagram.dom.CSSConstants;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.diagram.dom.elements.ReferencingKite9XMLElement;
+import org.springframework.http.HttpStatus;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -42,7 +43,7 @@ public class CopyLink extends Copy {
 			}
 			
 		} catch (Exception e) {
-			throw new CommandException("Couldn't create Link", e, this);
+			throw new CommandException(HttpStatus.EXPECTATION_FAILED, "Couldn't create Link", e, this);
 		}
 		
 		LOG.info("Processed createLink into "+fragmentId);

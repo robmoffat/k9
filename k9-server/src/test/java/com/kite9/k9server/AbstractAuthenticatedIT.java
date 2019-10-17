@@ -25,8 +25,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.domain.rest.DeleteEntity;
-import com.kite9.k9server.command.domain.rest.RegisterUser;
+import com.kite9.k9server.command.domain.DeleteEntity;
+import com.kite9.k9server.command.domain.RegisterUser;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.resource.UserResource;
 

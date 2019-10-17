@@ -1,8 +1,8 @@
-package com.kite9.k9server.command.domain;
+package com.kite9.k9server.command;
 
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.http.HttpStatus;
 
-import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.SecuredCrudRepository;
 
@@ -22,7 +22,7 @@ public abstract class AbstractRepoCommand<C extends RestEntity> extends Abstract
 	@SuppressWarnings("unchecked")
 	@Override
 	public <X extends RestEntity> SecuredCrudRepository<X> getRepositoryFor(Class<X> c) {
-		Object out = repositories.getRepositoryFor(c).orElseThrow(() -> new CommandException("No repository for "+c, this));
+		Object out = repositories.getRepositoryFor(c).orElseThrow(() -> new CommandException(HttpStatus.NOT_FOUND, "No repository for "+c, this));
 		return (SecuredCrudRepository<X>) out;
 	}
 	

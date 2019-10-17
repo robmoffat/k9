@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -42,16 +43,16 @@ public class DocumentCommandPostingTest extends AbstractLifecycleTest {
 		ResponseEntity<RevisionResource> outR = restTemplate.exchange(in, RevisionResource.class);
 		RevisionResource rr2 = outR.getBody();
 		
-		// now get the non-projection version.
-		cr = new URI(rr2.getLink("self").getHref());
-		in = new RequestEntity<>(createHeaders(), HttpMethod.GET, cr);
-		outR = restTemplate.exchange(in, RevisionResource.class);
-		rr2 = outR.getBody();
+		// now get the xml.
+		HttpHeaders headers = createJWTTokenHeaders(jwtToken, MediaType.APPLICATION_JSON, Kite9MediaTypes.ADL_SVG);
+		cr = new URI(rr2.getLink(ContentResourceProcessor.CONTENT_REL).getHref());
+		in = new RequestEntity<>(headers, HttpMethod.GET, cr);
+		byte[] content = restTemplate.exchange(in, byte[].class).getBody();
 		
 		// make sure expected Xml is set.
 		Assert.assertTrue(!rr2.getId().equals(rr.getId()));
-		persistInAFile(rr2.xml.getBytes(), "revisions", "state2.1.xml");
-		XMLCompare.compareXML(new String(back2), rr2.xml);
+		persistInAFile(content, "revisions", "state2.1.xml");
+		XMLCompare.compareXML(new String(back2), new String(content));
 				
 		// if we perform undo, we should arrive back at the original document.
 		byte[] back3 = postCommand("[{\"type\": \"Undo\"}]", uri);

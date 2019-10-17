@@ -1,7 +1,7 @@
-package com.kite9.k9server.command.domain.rest;
+package com.kite9.k9server.command.domain;
 
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.SecuredCrudRepository;
 import com.kite9.k9server.domain.entity.Updateable;

@@ -2,6 +2,8 @@ package com.kite9.k9server.domain;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.domain.AddMember;
 import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.MemberResource;
@@ -35,6 +39,16 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		altToken = getJwtToken(restTemplate, username, password);
 	}
 	
+	
+	
+	@Override
+	public void removeUser() throws URISyntaxException {
+		deleteViaJwt(restTemplate, altUser.getLink(Link.REL_SELF).getHref(), altToken);
+		super.removeUser();
+	}
+
+
+
 	@Test
 	public void ensureSecondUserCantModifyFirstUsersProject() throws Exception {
 		String adminJwt = jwtToken;
@@ -43,24 +57,24 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		updateADocumentResource(dr);
 
 		// switch to the viewer - should be able to retrieve one document
-		MemberResource mr = createAMemberResource(pr, altUser.getLink(Link.REL_SELF).getHref());
+		pr = createAMemberResource(pr, altUser.email, ProjectRole.VIEWER);
 		jwtToken = altToken;
 		Resources<DocumentResource> docs = getAllDocumentResources();
 		Assert.assertTrue(docs.getContent().size() == 1);
-		attemptView(pr, dr, rr, true);
-		attemptMutations(pr, dr, rr);
+		attemptView(dr, true);
+		attemptMutations(dr);
 		
 		// switch to a bad user- should be able to retried
 		switchBadUser();
 		docs = getAllDocumentResources();
 		Assert.assertTrue(docs.getContent().size() == 0);
-		attemptView(pr, dr, rr, false);
-		attemptMutations(pr, dr, rr);
+		attemptView(dr, false);
+		attemptMutations(dr);
 		
 		// change the viewer to be a admin
-		mr.projectRole = ProjectRole.ADMIN;
+		deleteViaJwt(restTemplate, u.getLink(Link.REL_SELF).getHref(), jwtToken);
 		jwtToken = adminJwt;
-		updateAMemberResource(mr);
+		createAMemberResource(pr, altUser.email, ProjectRole.ADMIN);
 		jwtToken = altToken;
 		deleteAndCheckDeleted(restTemplate, pr.getLink(Link.REL_SELF).getHref(), jwtToken, ProjectResource.class);
 		
@@ -68,7 +82,7 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		jwtToken = adminJwt;
 	}
 
-	public void attemptView(ProjectResource pr, DocumentResource dr, RevisionResource rr, boolean allowed) throws URISyntaxException {
+	public void attemptView(DocumentResource dr, boolean allowed) throws URISyntaxException {
 		String href = dr.getLink(Link.REL_SELF).getHref();
 		
 		URI location = new URI(href);
@@ -98,25 +112,25 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		
 	}
 	
-	public void attemptMutations(ProjectResource pr, DocumentResource dr, RevisionResource rr) throws URISyntaxException {
+	public void attemptMutations(DocumentResource dr) throws URISyntaxException {
 		URI location = new URI(dr.getLink(Link.REL_SELF).getHref());
 		
 		try {
-			updateADocumentResource(dr, pr, rr);
+			updateADocumentResource(dr);
 			Assert.fail("Shouldn't be allowed update");
-		} catch (Forbidden e) {
+		} catch (Exception e) {
 		}
 		
 		try {
 			delete(location);
 			Assert.fail("Shouldn't be allowed delete of "+location);
-		} catch (Forbidden e) {
+		} catch (Exception e) {
 		}
 		
 		try {
 			delete(new URI(getUrlBase()+ "/api/documents"));
 			Assert.fail("Shouldn't be allowed delete");
-		} catch (NotFound e) {
+		} catch (Exception e) {
 		}
 	}
 	
@@ -127,15 +141,18 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		jwtToken = getJwtToken(restTemplate, username, password);
 	}
 	
-	public MemberResource createAMemberResource(ProjectResource forProject, String userUrl) throws URISyntaxException {
-		MemberResource mr = new MemberResource(userUrl, forProject.getLink(Link.REL_SELF).getHref(), ProjectRole.VIEWER);
-		RequestEntity<MemberResource> in = new RequestEntity<>(mr, createHeaders(), HttpMethod.POST, new URI(getUrlBase()+"/api/members"));
-		ResponseEntity<MemberResource> rOut = restTemplate.exchange(in, MemberResource.class);
-		Assert.assertEquals(HttpStatus.CREATED, rOut.getStatusCode());
+	public ProjectResource createAMemberResource(ProjectResource forProject, String email, ProjectRole pr) throws URISyntaxException {
+		AddMember am = new AddMember();
+		am.emailAddresses = Collections.singletonList(email);
+		am.role = pr;
+		
+		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(am), createHeaders(), HttpMethod.POST, new URI(forProject.getLink(Link.REL_SELF).getHref()));
+		ResponseEntity<ProjectResource> rOut = restTemplate.exchange(in, ProjectResource.class);
+		Assert.assertEquals(HttpStatus.OK, rOut.getStatusCode());
 		
 		// retrieve it
 		URI location = rOut.getHeaders().getLocation();
-		MemberResource resource = getAMemberResource(location);
+		ProjectResource resource = getAProjectResource(new URI(forProject.getLink(Link.REL_SELF).getHref()));
 		Assert.assertNotNull(resource.getLink("project").getHref());
 		return resource;
 		

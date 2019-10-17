@@ -3,6 +3,7 @@ package com.kite9.k9server.command.xml;
 import java.net.URI;
 
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.springframework.http.HttpStatus;
 import org.w3c.dom.Element;
 
 import com.kite9.k9server.adl.holder.ADL;
@@ -34,7 +35,7 @@ public class Copy extends AbstractLocatedCommand {
 			ADLDocument doc = adl.getAsDocument();
 			performCopy(adl.getUri(), doc, newId, adl);
 		} catch (Exception e) {
-			throw new CommandException("Couldn't copy", e, this);
+			throw new CommandException(HttpStatus.CONFLICT, "Couldn't copy", e, this);
 		}
 		
 		LOG.info("Processed copy into "+fragmentId);

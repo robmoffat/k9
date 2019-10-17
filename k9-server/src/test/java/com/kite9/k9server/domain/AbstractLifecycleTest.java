@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.domain.rest.NewDocument;
-import com.kite9.k9server.command.domain.rest.NewProject;
-import com.kite9.k9server.command.domain.rest.Update;
+import com.kite9.k9server.command.domain.NewDocument;
+import com.kite9.k9server.command.domain.NewProject;
+import com.kite9.k9server.command.domain.Update;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.MemberResource;
 import com.kite9.k9server.resource.ProjectResource;

@@ -44,7 +44,7 @@ public class StaticCommandController extends AbstractCommandController implement
 		uri = base.resolve(uri);
 		ADL input = new ADLImpl(uri, req.getHeaders());
 		
-		return performXMLCommands(req.getBody(), input, null, req.getHeaders(), uri);
+		return (ADL) performSteps(req.getBody(), input, null, req.getHeaders(), uri);
 	}
 
 }

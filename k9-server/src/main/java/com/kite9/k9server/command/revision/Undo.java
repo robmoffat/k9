@@ -1,13 +1,16 @@
-package com.kite9.k9server.command.domain.revision;
+package com.kite9.k9server.command.revision;
+
+import org.springframework.http.HttpStatus;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.domain.AbstractRepoCommand;
+import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Undo extends AbstractRepoCommand<Document> implements RevisionCommand {
+public class Undo extends AbstractRepoCommand<Document> implements XMLCommand {
 
 	public Undo() {
 		super();
@@ -18,7 +21,7 @@ public class Undo extends AbstractRepoCommand<Document> implements RevisionComma
 		Revision rPrevious = getCurrentRevision().getPreviousRevision();
 		
 		if (rPrevious == null) {
-			throw new CommandException("No previous state to undo to", this);
+			throw new CommandException(HttpStatus.FORBIDDEN, "No previous state to undo to", this);
 		}
 		
 		Document d = current;
@@ -32,4 +35,7 @@ public class Undo extends AbstractRepoCommand<Document> implements RevisionComma
 		return current.getCurrentRevision();
 	}
 
+	@Override
+	public void setOn(ADL on) {
+	}
 }
