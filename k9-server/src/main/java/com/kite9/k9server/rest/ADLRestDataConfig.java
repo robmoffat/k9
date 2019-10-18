@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -50,9 +51,12 @@ public class ADLRestDataConfig implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-//		delegatingHandlerMapping.getDelegates().add(0, adlRepositoryRestHandlerMapping());
+		// this adds our handler AFTER the base-path aware handler, but before the original 
+		// RepositoryRestHandlerMapping (which doesn't support ADL as a content-type).
+		delegatingHandlerMapping.getDelegates().add(1, adlRepositoryRestHandlerMapping());
 	}		
 		
+	@Bean
 	public ADLRepositoryRestHandlerMapping adlRepositoryRestHandlerMapping() {	
 		// allows us to request back adl-svg+xml as the response type
 		Map<String, CorsConfiguration> corsConfigurations = config.getCorsRegistry().getCorsConfigurations();
@@ -91,7 +95,7 @@ public class ADLRestDataConfig implements InitializingBean {
 		return repositoryMapping;
 	}
 
-	static class ADLRepositoryRestHandlerMapping extends RepositoryRestHandlerMapping {
+	public static class ADLRepositoryRestHandlerMapping extends RepositoryRestHandlerMapping {
 
 		public ADLRepositoryRestHandlerMapping(ResourceMappings mappings, RepositoryRestConfiguration config, Repositories repositories) {
 			super(mappings, config, repositories);
