@@ -21,6 +21,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.kite9.k9server.command.domain.DeleteEntity;
+import com.kite9.k9server.command.domain.NewProject;
+import com.kite9.k9server.command.domain.Update;
+import com.kite9.k9server.command.domain.WithCommands;
 import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
@@ -31,6 +35,7 @@ import com.kite9.k9server.security.Hash;
 
 @Entity
 @JsonIgnoreProperties()
+@WithCommands({DeleteEntity.class, Update.class, NewProject.class})
 public class User extends AbstractLongIdEntity implements UserDetails, Secured, Updateable {
 
 	/**

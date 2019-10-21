@@ -13,6 +13,7 @@
   <xsl:template name="entity">
     <xsl:element name="{@type}">
       <xsl:attribute name="entity">true</xsl:attribute>
+      <xsl:attribute name="k9-ui"><xsl:value-of select="./adl:links[@rel='self']/@href" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="./adl:links[@rel='self']/@href" /></xsl:attribute>
       <xsl:copy-of select="adl:title" />
       <xsl:copy-of select="adl:icon" />
@@ -62,7 +63,7 @@
       <from>
         <xsl:attribute name="reference"><xsl:value-of select="$from" /></xsl:attribute>
       </from>
-      <to>
+      <to class="arrow">
         <xsl:attribute name="reference"><xsl:value-of select="$to" /></xsl:attribute>
       </to>
       <label end="to"><xsl:value-of select="adl:rel" /></label>     
@@ -93,7 +94,7 @@
       <from>
         <xsl:attribute name="reference"><xsl:value-of select="$from" /></xsl:attribute>
       </from>
-      <to>
+      <to class="arrow">
         <xsl:attribute name="reference"><xsl:value-of select="$to" /></xsl:attribute>
       </to>
     </link>

@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kite9.k9server.command.domain.DeleteEntity;
+import com.kite9.k9server.command.domain.WithCommands;
 import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
@@ -16,6 +18,7 @@ import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
 @Entity
+@WithCommands({DeleteEntity.class})
 public class Member extends AbstractLongIdEntity implements Secured, MemberExcerptProjection {
 
 	@ManyToOne(targetEntity = Project.class, optional = false, fetch = FetchType.LAZY)

@@ -1,7 +1,7 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
 @import url('/public/behaviours/labels/common-labels.css');
-@import url('/public/fonts/metropolis/metropolis.css');
+@import url('/public/fonts/opensans/opensans.css');
 @import url('/public/behaviours/indication/indicators.css');
 
 @script url(admin.js);
@@ -115,14 +115,15 @@ link {
 }
 
 [k9-elem=link-body] {
-	stroke-width: 30px;
-	stroke:  #A0A0A0;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
 }
 
 container {
 	kite9-connection-align: 50%;	
 	kite9-sizing: maximize;
-	stroke: #A0A0A0;
+	stroke: black;
 }
 
 [k9-elem=container] > [k9-elem=back] {

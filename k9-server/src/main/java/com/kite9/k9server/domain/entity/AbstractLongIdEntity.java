@@ -1,11 +1,14 @@
 package com.kite9.k9server.domain.entity;
 
+import java.util.Arrays;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.kite9.k9server.command.domain.WithCommands;
 
 /**
  * Since all K9 entities are keyed by a long id, this is abstracted to here.
@@ -62,5 +65,18 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 		return className;
 	}
 
+	@Override
+	public String getCommands() {
+		WithCommands wc = this.getClass().getAnnotation(WithCommands.class);
+		if (wc == null) {
+			return null;
+		} else {
+			return Arrays.stream(wc.value())
+				.map(c -> c.getName().substring(c.getPackageName().length()+1))	
+				.reduce((a,b) -> a+" "+b).orElse("");
+		}
+	}
+
+	
 	
 }

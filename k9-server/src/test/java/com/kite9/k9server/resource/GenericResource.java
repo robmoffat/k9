@@ -13,5 +13,5 @@ public class GenericResource extends ResourceSupport {
     public Map<String, Object> _embedded;
     public Date lastUpdated;
     public String icon;
-
+    public String commands;
 }
