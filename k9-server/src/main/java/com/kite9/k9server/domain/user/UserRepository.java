@@ -5,7 +5,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
-import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.security.OAuth2AuthorizationServerConfig;
 import com.kite9.k9server.security.UserAuthenticationProvider;
 
