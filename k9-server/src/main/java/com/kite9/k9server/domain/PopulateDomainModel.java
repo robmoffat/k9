@@ -20,6 +20,7 @@ import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
+import com.kite9.k9server.security.Hash;
 
 /**
  * Populates the in-memory database with some test details.  
@@ -34,7 +35,7 @@ public class PopulateDomainModel implements CommandLineRunner {
 	
 	public static final String PROFILE = "populate";
 	
-	public static final User TEST_USER = new User("test1", "blah", "robmoffat@mac.com");
+	public static final User TEST_USER = new User("test1", Hash.generatePasswordHash("blah"), "robmoffat@mac.com");
 	
 	static {
 		TEST_USER.setApi("test-user-api-key");
