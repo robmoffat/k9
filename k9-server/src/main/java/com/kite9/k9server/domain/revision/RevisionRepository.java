@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.domain.entity.SecuredCrudRepository;
+import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 
 @Component
 @RepositoryRestResource(excerptProjection=RevisionExcerptProjection.class)
-public interface RevisionRepository extends SecuredCrudRepository<Revision> {
+public interface RevisionRepository extends RestEntityCrudRepository<Revision> {
 
 	@Override
 	@Query("select r from Revision r join r.document.project.members m where m.user.username = ?#{ principal }")

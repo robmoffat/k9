@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
-import com.kite9.k9server.domain.entity.SecuredCrudRepository;
+import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.security.Hash;
@@ -25,7 +25,7 @@ public class RegisterUser extends AbstractRepoCommand<User> {
 	}
 
 	@Override
-	public <X extends RestEntity> SecuredCrudRepository<X> getRepositoryFor(Class<X> c) {
+	public <X extends RestEntity> RestEntityCrudRepository<X> getRepositoryFor(Class<X> c) {
 		return null;
 	}
 

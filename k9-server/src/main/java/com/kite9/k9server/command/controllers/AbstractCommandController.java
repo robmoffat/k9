@@ -38,7 +38,7 @@ public abstract class AbstractCommandController implements Logable {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Transactional
-	protected Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) {
+	public Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) {
 		checkDomainAccess(context, url);
 		for (Command command : steps) {
 			if (command instanceof XMLCommand) {

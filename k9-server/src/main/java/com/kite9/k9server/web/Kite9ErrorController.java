@@ -130,7 +130,7 @@ public class Kite9ErrorController implements ErrorController {
 		sb.append("</code></pre></div></div></div>");
 	}
 
-	private void addHeader(StringBuilder sb, int statusCode, String uri) {
+	private void addHeader(StringBuilder sb, Integer statusCode, String uri) {
 		sb.append("<html><head><title>"+statusCode+"</title>");
 		sb.append(HIGHLIGHTER);
 		sb.append(BOOTSTRAP);

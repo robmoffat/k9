@@ -7,7 +7,7 @@ import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
-import com.kite9.k9server.domain.entity.SecuredCrudRepository;
+import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 import com.kite9.k9server.domain.user.User;
 
 public class DeleteEntity extends AbstractRepoCommand<RestEntity>{
@@ -21,7 +21,7 @@ public class DeleteEntity extends AbstractRepoCommand<RestEntity>{
 			}
 		}
 
-		SecuredCrudRepository r = getRepositoryFor(current.getClass());
+		RestEntityCrudRepository r = getRepositoryFor(current.getClass());
 		
 		if (current instanceof User) {
 			((User) current).setEmail(null);
