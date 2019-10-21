@@ -30,6 +30,7 @@ import { identityInstrumentationCallback, identityMetadataCallback } from "/publ
 
 
 // rest stuff
+import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
 
 
 var initialized = false;
@@ -52,7 +53,7 @@ function initEditor() {
 		]);
 	
 	var contextMenu = new ContextMenu([ 
-//		initDeleteContextMenuCallback(transition),
+		initDeleteEntityContextMenuCallback(transition),
 //		initLinkContextMenuCallback(transition, linker),
 //		initContainerLabelContextMenuCallback(transition, document.params['label-template-uri']),
 //		initLinkLabelContextMenuCallback(transition, document.params['label-template-uri']),

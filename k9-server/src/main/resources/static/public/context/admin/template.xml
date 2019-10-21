@@ -27,7 +27,7 @@
   </svg:defs>
 
   <!--  this handles embedded entities -->
-  <template id="entity" k9-ui="select">
+  <template id="entity">
     <back class="back" k9-indicator="fill" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
