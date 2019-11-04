@@ -2,19 +2,19 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/basic.css");
+       @import url("/public/examples/basic/basic.css");
     </svg:style>
    
     <svg:script type="module">
       import { Instrumentation } from "./instrumentation.js";
+      import { icon } from "../../bundles/form.js";
+      
       
       new Instrumentation([function(nav) {
-          var e = document.createElement("img");
-		      e.setAttribute("id", "example");
-		      e.setAttribute("src", "./icon.svg");
-              e.addEventListener("click", () => {alert("hi") });
+          var e = icon('example', "This is an example" , "./icon.svg", () => {alert("hi") });
           nav.appendChild(e);
       }]);
+      
     </svg:script>
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" drag="target">

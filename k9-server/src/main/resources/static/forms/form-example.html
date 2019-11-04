@@ -1,0 +1,56 @@
+<html>
+	<head>
+ 	</head>
+
+
+	<body>
+	
+		<div id="main" style="width: 500px; padding: 10px;">
+		
+		
+		
+		
+		</div>
+		
+		<script  type="module">
+		
+			import { form, fieldset, text, password, select, checkbox, ok, cancel, email, radios, inlineButtons, icon } from "/public/bundles/form.js";
+		
+			window.addEventListener("load", function() {
+			
+				const main = document.querySelector("#main");
+				
+				main.appendChild(
+					form([
+						fieldset('Some Bits', [
+							email('Email'),
+							password('Password')
+						]),
+						text('Address 1'),
+						text('Address 2'),
+						fieldset('More Bits', [
+							text('City'),
+							select('State', 'Oregon', {}, ['Kansas','Colorado', 'Oregon', 'Wyoming']),
+							text('Zip')
+						]),
+						fieldset('Checkboxes', [
+							checkbox('A'),
+							checkbox('B')
+						]),
+						fieldset('My radios', [
+							radios('Choose Food', 'Chicken', {}, ['Chips', 'Chicken', 'Pasta', 'Fish'])
+						]),
+						inlineButtons([
+							ok('Post'),
+							cancel('Cancel')
+						]),
+						icon('zib', 'Hover on me', '/public/behaviours/labels/label/label.svg', () => alert("hi"))
+					]));
+				
+			});
+		
+		</script>
+	
+	</body>
+
+</html>

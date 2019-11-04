@@ -3,7 +3,7 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/basic/basic.css");
-       @import url("/public/context/editor/indicators.css");
+       @import url("/public/behaviours/indication/indicators.css");
     </svg:style>
     
     <svg:script type="module">

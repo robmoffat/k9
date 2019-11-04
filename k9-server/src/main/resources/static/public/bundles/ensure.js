@@ -22,10 +22,10 @@ export function ensureJs(js) {
 	if (!document.getElementById(js)) {
 	    var head  = document.getElementsByTagName('head')[0];
 	    var script  = document.createElement('script');
-	    script.id   = css;
+	    script.id   = js;
 	    script.type = 'text/javascript';
 	    script.src = js;
-	    head.appendChild(link);
+	    head.appendChild(script);
 	}
 } 
 

@@ -2,7 +2,7 @@
  * This handles the process of loading new SVG and animating between the old one and the new one.
  */
 
-import { anime } from '/public/bundles/anime.js'
+import { anime } from '/public/external/anime-3.0.1.js'
 import { parseTransform, transformToCss, number, handleTransformAsStyle } from '/public/bundles/api.js';
 
 const numeric = ['width', 'height', 'x', 'y', 'rx', 'ry'];

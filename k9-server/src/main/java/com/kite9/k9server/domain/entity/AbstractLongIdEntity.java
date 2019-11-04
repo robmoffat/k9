@@ -72,7 +72,7 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 			return null;
 		} else {
 			return Arrays.stream(wc.value())
-				.map(c -> c.getName().substring(c.getPackageName().length()+1))	
+				.map(c -> c.getName().substring(c.getPackage().getName().length()+1))	
 				.reduce((a,b) -> a+" "+b).orElse("");
 		}
 	}

@@ -1,4 +1,5 @@
 import { getHtmlCoords } from '/public/bundles/screen.js';
+import { ensureCss } from '/public/bundles/css.js';
 
 /**
  * Provides functionality for populating the context menu.  Takes a number of callbacks
@@ -8,18 +9,8 @@ export class ContextMenu {
 
 	constructor(cb) {
 		this.callbacks = cb == undefined ? [] : cb;
-
-		var cssId = 'context-menu';  
-		if (!document.getElementById(cssId)) {
-		    var head  = document.getElementsByTagName('head')[0];
-		    var link  = document.createElement('link');
-		    link.id   = cssId;
-		    link.rel  = 'stylesheet';
-		    link.type = 'text/css';
-		    link.href = '/public/classes/context-menu/context-menu.css';
-		    link.media = 'all';
-		    head.appendChild(link);
-		}
+		
+		ensureCss('/public/classes/context-menu/context-menu.css')
 	}
 	
 	/**

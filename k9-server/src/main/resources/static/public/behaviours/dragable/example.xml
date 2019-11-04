@@ -2,39 +2,59 @@
 <svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
   <svg:defs>
     <svg:style type="text/css"> 
-       @import url("/public/examples/common/basic.css");
-   
+       @import url("/public/examples/basic/basic.css");
+       @import url("/public/behaviours/indication/indicators.css");
     </svg:style>
     
     <svg:script type="module">
-      import { initDragable } from "./dragable.js";
+      import { initDragable, initDragableDropCallback, initDragableDragLocator, initDragableDropLocator } from "./dragable.js";
       import { initSelectable } from "/public/behaviours/selectable/selectable.js";
+	  import { Dragger } from '/public/classes/dragger/dragger.js';
+      import { Transition } from '/public/classes/transition/transition.js';
+      
+      var transition = new Transition();
+      
+      var dragger = new Dragger(
+		[
+		],
+		[
+			initDragableDropCallback(transition),
+		],
+		[
+			initDragableDragLocator(),
+		],
+		[
+			initDragableDropLocator(),
+		]);
+	
+		initDragable(dragger); 
+	
       
       initSelectable();
-      initDragable();
+      initDragable(dragger);
     </svg:script>
     
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="d" drag="target">
 
-     <g id="b1" drag="yes rect" drop="*" class="box"><g id="fs1" class="text">A</g></g>
+     <g id="b1" class="box"><g id="fs1" class="text">A</g></g>
      
-     <g class="group" drag="yes target" id="bigbox" style="kite9-layout: horizontal; ">
-       <g id="b2" drag="yes rect" drop="link" class="box"><g id="fs2" class="text">B</g></g>
+     <group class="group"  id="bigbox" style="kite9-layout: horizontal; ">
+       <g id="b2" class="box"><g id="fs2" class="text">B</g></g>
        
-       <g id="b3" drag="no" drop="link rect" class="box"><g id="fs3" class="text">Can't Drag</g></g>
-     </g>
+       <g id="b3" class="box"><g id="fs3" class="text">Can't Drag</g></g>
+     </group>
      
-     <g class="link" id="link2" drop="rect">
-      <from drag="yes from" id="link2-from" reference="b1" class="arrow"></from>
-      <to drag="yes to" id="link2-to" class="arrow" reference="b3"></to>
-     </g>
+     <link id="link2" drop="rect">
+      <from id="link2-from" reference="b1" class="arrow"></from>
+      <to id="link2-to" class="arrow" reference="b3"></to>
+     </link>
      
      
-     <g class="link" id="link2" drop="rect">
+     <link id="link2" drop="rect">
       <from drag="yes from" id="link2-from" reference="b1" class="hoverable"></from>
       <to drag="yes to" id="link2-to" class="hoverable" reference="b2"></to>
-     </g>
+     </link>
 
   </diagram>
 </svg:svg>

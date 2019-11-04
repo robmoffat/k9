@@ -88,6 +88,7 @@ public class ADLMessageConverter extends AbstractGenericHttpMessageConverter<ADL
 		Kite9HeaderMeta.transcribeMetaToHeaders(t, headers);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ADL read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		return readInternal((Class<? extends ADL>) contextClass, inputMessage);
