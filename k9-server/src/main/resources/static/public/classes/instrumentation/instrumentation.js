@@ -18,11 +18,8 @@ export class Instrumentation {
 				document.querySelector("body").appendChild(this.nav);
 			}
 
-			this.callbacks.forEach(cb => cb(this.nav));
+			cb.forEach(c => c(this.nav));
 		}, 0)
-		
-		
-		
 	}
 }
 

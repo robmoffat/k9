@@ -4,7 +4,7 @@
     <svg:style type="text/css"> 
        @import url("/public/behaviours/containers/common-containers.css");
        @import url("/public/behaviours/links/common-links.css");
-       @import url("/public/context/editor/indicators.css");
+       @import url("/public/behaviours/indication/indicators.css");
     </svg:style>
     
     <svg:script type="module">

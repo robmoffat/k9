@@ -35,3 +35,6 @@ k9-server/merges.txt
 k9-server/plan.txt
 k9-server/ssp.info
 k9-server/kite9.log
+
+# Eclipse
+.settings
