@@ -2,6 +2,7 @@ package com.kite9.k9server.domain.rels;
 
 import java.net.URI;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.kite9.framework.common.Kite9ProcessingException;
@@ -43,21 +44,22 @@ public class ContentController {
 			HttpServletRequest request,
 			@RequestHeader HttpHeaders headers) throws Exception {
 		
-		String uri = request.getRequestURI();
+		//String uri = request.getRequestURI();
+		String url = request.getRequestURL().toString();
 		
 		if (repository.equals("documents")) {
 			Document d = documents.findById(id)
 					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No document "+id));
 			String xml = d.getCurrentRevision().getXml();
 					
-			ADL out = ADLImpl.xmlMode(new URI(uri), xml, headers);
+			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
 			return out;
 		} else if (repository.equals("revisions")) {
 			Revision r = revisions.findById(id)
 					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No revision "+id));
 			String xml = r.getXml();
 			
-			ADL out = ADLImpl.xmlMode(new URI(uri), xml, headers);
+			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
 			return out;
 		} else {
 			throw new Kite9ProcessingException("/content not available at "+uri);
