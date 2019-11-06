@@ -3,7 +3,7 @@
  * 
  * general shape of this:
  * 
- * formElement(placeholder, type, value, {attName: value, class: classes}, contents)
+ * formElement(placeholder, value, {attName: value, class: classes}, contents)
  * 
  * id and name will be the same, based on the placeholder.
  * 
@@ -18,8 +18,8 @@ ensureCss('/public/external/normform-2.0.css');
 ensureCss('/public/external/hint-2.6.0.css');
 
 export function icon(id, title, image, onClick) {
-	 var a = create('a', {'class': 'hint--top hint--bounce', 'id': id, 'aria-label': title}, [
-		 create('img', { 'src': image, 'class': })
+	 var a = create('a', {'class': 'hint--bottom hint--bounce', 'aria-label': title, 'id': id}, [
+		 create('img', { 'src': image })
 	 ]);
      a.addEventListener("click", onClick);
      return a;

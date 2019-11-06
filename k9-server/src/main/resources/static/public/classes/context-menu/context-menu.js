@@ -1,5 +1,6 @@
 import { getHtmlCoords } from '/public/bundles/screen.js';
 import { ensureCss } from '/public/bundles/css.js';
+import { icon } from '/public/bundles/form.js';
 
 /**
  * Provides functionality for populating the context menu.  Takes a number of callbacks
@@ -58,11 +59,7 @@ export class ContextMenu {
 
 	addControl(event, imageUrl, title, clickListener) {
 		var htmlElement = this.get(event);
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
-		img.setAttribute("title", title);
-		img.setAttribute("src", imageUrl);
-		img.addEventListener("click", clickListener);
+		htmlElement.appendChild(icon('--cm-'+title, title, imageUrl, clickListener));
 	}
 
 }

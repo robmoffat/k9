@@ -58,7 +58,6 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 	}
 	
 	@Override
-	//@JsonIgnore
 	public String getType() {
 		String className = this.getClass().getCanonicalName();
 		className = className.substring(className.lastIndexOf(".") + 1).toLowerCase();
@@ -77,6 +76,4 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 		}
 	}
 
-	
-	
 }

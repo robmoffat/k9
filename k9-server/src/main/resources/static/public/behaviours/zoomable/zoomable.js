@@ -1,4 +1,5 @@
 import { getMainSvg } from '/public/bundles/screen.js';
+import { icon } from '/public/bundles/form.js';
 
 var magnification = null;
 const main = document.querySelector("div.main");

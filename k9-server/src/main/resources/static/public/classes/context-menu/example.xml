@@ -8,24 +8,30 @@
     <svg:script type="module">
       import { ContextMenu } from "./context-menu.js";
       import { hasLastSelected } from "/public/bundles/api.js";
+      import { getMainSvg } from '/public/bundles/screen.js';
+      import { icon } from '/public/bundles/form.js';
+      import { initActionable } from '/public/behaviours/actionable/actionable.js';
+      import { initSelectable } from '/public/behaviours/selectable/selectable.js';
       
+      const contextMenu = new ContextMenu([function(event, cm) {
       
-      new ContextMenu([function(event, cm) {
+      	function selector() {
+      		return document.querySelectorAll("[id].selected");
+      	}
 		
 		const e = hasLastSelected(selector());
 		
-		if (e.length > 0){
-			var htmlElement = cm.get(event);
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Delete");
-			img.setAttribute("src", "/public/behaviours/selectable/delete/delete.svg");
-			img.addEventListener("click", () => performDelete(cm));
+		if (e.length > 0) {
+			cm.addControl(event, '/public/behaviours/selectable/delete/delete.svg', 'Delete', () => alert("Clicked delete"));
 		}
 	}]);
+	
+	initActionable(contextMenu);
+	initSelectable();
+	
     </svg:script>
   </svg:defs>
-  <diagram xmlns="http://www.kite9.org/schema/adl" drag="target">
+  <diagram xmlns="http://www.kite9.org/schema/adl">
 
      <g id="b1" class="box"><g id="fs1" class="text">Click One</g></g>
      

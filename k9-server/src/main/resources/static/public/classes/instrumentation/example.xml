@@ -11,7 +11,7 @@
       
       
       new Instrumentation([function(nav) {
-          var e = icon('example', "This is an example" , "./icon.svg", () => {alert("hi") });
+          var e = icon("This is an example" , "./icon.svg", () => {alert("hi") });
           nav.appendChild(e);
       }]);
       

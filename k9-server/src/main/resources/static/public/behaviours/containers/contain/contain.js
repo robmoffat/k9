@@ -92,18 +92,11 @@ export function initContainContextMenuCallback(palette, selector) {
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-		
-			var htmlElement = contextMenu.get(event);
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			
-			img.setAttribute("title", "Contain");
-			img.setAttribute("src", "/public/behaviours/containers/contain/contain.svg");
-			img.addEventListener("click", function(e2, selector) {
-				contextMenu.destroy();
-				palette.open(event, "contain");
-			});
+			contextMenu.addControl("/public/behaviours/containers/contain/contain.svg", "Contain", 
+				function(e2) {
+					contextMenu.destroy();
+					palette.open(event, "contain");
+				});
 		}
 	}
 }

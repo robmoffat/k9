@@ -14,7 +14,7 @@
     <xsl:element name="{@type}">
       <xsl:attribute name="entity">true</xsl:attribute>
       <xsl:attribute name="k9-ui"><xsl:value-of select="@commands" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="./adl:links[@rel='self']/@href" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="./adl:links[@rel='self']/@href" /><xsl:value-of select="../adl:rel" /></xsl:attribute>
       <xsl:copy-of select="adl:title" />
       <xsl:copy-of select="adl:icon" />
       <xsl:copy-of select="adl:description" />
@@ -44,7 +44,7 @@
   
   <xsl:template match="adl:content[adl:collectionValue = 'false']">
     <xsl:variable name="from"><xsl:value-of select="../adl:links[@rel='self']/@href" /></xsl:variable>
-    <xsl:variable name="to"><xsl:value-of select="adl:value/adl:links[@rel='self']/@href" /></xsl:variable>
+    <xsl:variable name="to"><xsl:value-of select="adl:rel" /></xsl:variable>
     
     <link>
       <xsl:attribute name="id"><xsl:value-of select="$from" />-<xsl:value-of select="$to" /></xsl:attribute>
