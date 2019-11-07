@@ -84,9 +84,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 				}
 				
 				function handleClick() {
-					Array.from(htmlElement.children).forEach(e => {
-						htmlElement.removeChild(e);
-					});
+					contextMenu.clear(event);
 					
 					["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
 						var img2 = drawDirection(event, contextMenu, s, d2);

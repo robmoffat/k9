@@ -1,7 +1,7 @@
 import { getKite9Target, number, createUniqueId, hasLastSelected, isConnected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 import { drawBar, clearBar } from  '/public/bundles/ordering.js';
-import { icon } from '/public/bundles/form.js';
+import { icon, numeric, change, form } from '/public/bundles/form.js';
 
 function getLayout(e) {
 	if (e==null) {
@@ -132,26 +132,6 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 	var rows = 2;
 	var cols = 2;
 
-	function addField(htmlElement, name, value, change, disabled) {
-		var container = document.createElement("div");
-		var label = document.createElement("label");
-		var input = document.createElement("input");
-		htmlElement.appendChild(container);
-		container.setAttribute("class", "field");
-		container.appendChild(label);
-		container.appendChild(input);
-		input.setAttribute("id", "id-" + name);
-		input.setAttribute("name", name);
-		input.setAttribute("value", value);
-		input.setAttribute("type", "numeric");
-		input.addEventListener("change", change);
-		label.setAttribute("for", name);
-		label.textContent = name + ":";
-		if (disabled) {
-			input.disabled = true;
-		}
-	}
-
 	if (selector == undefined) {
 		selector = function () {
 			return getMainSvg().querySelectorAll("[id][k9-ui~=layout].selected");
@@ -172,9 +152,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 			function handleClick() {
 				// remove the other stuff from the context menu
-				Array.from(htmlElement.children).forEach(e => {
-					htmlElement.removeChild(e);
-				});
+				contextMenu.clear();
 
 				["none", "right", "down", "horizontal", "vertical", "left", "up"].forEach(s => {
 					var img2 = drawLayout(event, contextMenu, s, layout);
@@ -186,15 +164,21 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 
 				var hr = document.createElement("hr");
 				htmlElement.appendChild(hr);
-
+				
+				htmlElement.appendChild(form([
+					change(
+						numeric('Rows', rows, { 'disabled' : layout=='grid'}), 
+						(evt) => rows = number(evt.target.value)),
+					change(
+						numeric('Cols', cols, { 'disabled' : layout=='grid'}), 
+						(evt) => cols = number(evt.target.value))
+					]));
+				
 				var img2 = drawLayout(event, contextMenu, 'grid', layout);
 				if (layout != 'grid') {
 					img2.addEventListener("click", () => setLayout(Array.from(selector()), 'grid', contextMenu, layout));
 				}
-	
-				addField(htmlElement, "rows", rows, (evt) => rows = number(evt.target.value), layout=='grid');
-				addField(htmlElement, "cols", cols, (evt) => cols = number(evt.target.value), layout=='grid');
-
+				
 			}
 
 			img.addEventListener("click", handleClick);

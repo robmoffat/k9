@@ -25,6 +25,11 @@ export function icon(id, title, image, onClick) {
      return a;
 }
 
+export function change(e, f) {
+	e.addEventListener("change", f);
+	return e;
+}
+
 
 export function form(contents) {
 	return create("form", {"class": "normform", "style": "background: #fff; "}, contents);
@@ -38,7 +43,7 @@ export function text(placeholder, value, atts) {
 	return input(placeholder, 'text', value, atts);
 }
 
-export function number(placeholder, value, atts) {
+export function numeric(placeholder, value, atts) {
 	return input(placeholder, 'number', value, atts);
 }
 
@@ -98,6 +103,14 @@ export function radios(placeholder, value, atts, options) {
 	}));
 }
 
+export function textarea(placeholder, value, atts) {
+	var id = idFrom(placeholder);
+	return create('div', {}, [
+		create('label', { 'for' : id}, [ txt(placeholder) ]),
+		create('textarea', {name: id, id: id, ...atts}, [ txt(value)])
+	]);
+}
+
 
 function input(placeholder, type, value, atts) {
 	var id = idFrom(placeholder);
@@ -124,7 +137,7 @@ function objectEach(m, action) {
 }
 	
 function txt(str) {
-	var e = document.createTextNode(str);
+	var e = document.createTextNode(str ? str : '');
 	return e;
 }
 

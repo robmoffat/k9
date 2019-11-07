@@ -63,5 +63,15 @@ export class ContextMenu {
 		htmlElement.appendChild(out);
 		return out;
 	}
+	
+	/**
+	 * Removes all the content from the context menu
+	 */
+	clear(event) {
+		var htmlElement = this.get(event);
+		Array.from(htmlElement.children).forEach(e => {
+			htmlElement.removeChild(e);
+		});
+	}
 
 }

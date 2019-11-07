@@ -14,7 +14,7 @@
 		
 		<script  type="module">
 		
-			import { form, fieldset, text, password, select, checkbox, ok, cancel, email, radios, inlineButtons, icon } from "/public/bundles/form.js";
+			import { form, fieldset, text, password, select, checkbox, ok, cancel, email, radios, inlineButtons, icon, textarea } from "/public/bundles/form.js";
 		
 			window.addEventListener("load", function() {
 			
@@ -39,6 +39,9 @@
 						]),
 						fieldset('My radios', [
 							radios('Choose Food', 'Chicken', {}, ['Chips', 'Chicken', 'Pasta', 'Fish'])
+						]),
+						fieldset('Edit Box', [
+							textarea('Your textarea box', undefined, { rows: 10})
 						]),
 						inlineButtons([
 							ok('Post'),
