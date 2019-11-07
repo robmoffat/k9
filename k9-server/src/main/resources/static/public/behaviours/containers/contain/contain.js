@@ -92,7 +92,7 @@ export function initContainContextMenuCallback(palette, selector) {
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-			contextMenu.addControl("/public/behaviours/containers/contain/contain.svg", "Contain", 
+			contextMenu.addControl(event, "/public/behaviours/containers/contain/contain.svg", "Contain", 
 				function(e2) {
 					contextMenu.destroy();
 					palette.open(event, "contain");

@@ -72,12 +72,7 @@ export function initDeleteContextMenuCallback(transition, selector, cascade, orp
 		const e = hasLastSelected(selector());
 		
 		if (e.length > 0){
-			var htmlElement = cm.get(event);
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Delete");
-			img.setAttribute("src", "/public/behaviours/selectable/delete/delete.svg");
-			img.addEventListener("click", () => performDelete(cm));
+			cm.addControl(event, "/public/behaviours/selectable/delete/delete.svg", 'Delete', () => performDelete(cm));
 		}
 	}
 }

@@ -88,14 +88,8 @@ export function initInsertContextMenuCallback(palette, selector) {
 		
 		if (selectedElements.length > 0) {
 		
-			var htmlElement = contextMenu.get(event);
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			
-			img.setAttribute("title", "Insert");
-			img.setAttribute("src", "/public/behaviours/containers/insert/insert.svg");
-			img.addEventListener("click", function(e2, selector) {
+			contextMenu.addControl(event, "/public/behaviours/containers/insert/insert.svg", "Insert",
+					function(e2, selector) {
 				contextMenu.destroy();
 				palette.open(event, "insert");
 			});

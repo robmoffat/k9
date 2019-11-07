@@ -1,6 +1,7 @@
 import { getKite9Target, number, createUniqueId, hasLastSelected, isConnected } from '/public/bundles/api.js';
 import { getSVGCoords, getElementPageBBox, getMainSvg } from '/public/bundles/screen.js';
 import { drawBar, clearBar } from  '/public/bundles/ordering.js';
+import { icon } from '/public/bundles/form.js';
 
 function getLayout(e) {
 	if (e==null) {

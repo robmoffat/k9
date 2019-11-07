@@ -44,19 +44,8 @@ export function initSelectContextMenuCallback(selector) {
 		const e = hasLastSelected(selector());
 		
 		if (e.length > 0) {
-			var htmlElement = cm.get(event);
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Select Column");
-			img.setAttribute("src", "/public/behaviours/grid/select/vertical.svg");
-			img.addEventListener("click", () => performSelect(cm, event, false, selector()));
-
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Select Row");
-			img.setAttribute("src", "/public/behaviours/grid/select/horizontal.svg");
-			img.addEventListener("click", () => performSelect(cm, event, true, selector()));
+			cm.addControl(event, "/public/behaviours/grid/select/vertical.svg",  "Select Column", () => performSelect(cm, event, false, selector()));
+			cm.addControl(event, "/public/behaviours/grid/select/horizontal.svg",  "Select Row", () => performSelect(cm, event, true, selector()));
 		}
 	}
 	

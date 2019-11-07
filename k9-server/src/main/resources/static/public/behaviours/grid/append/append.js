@@ -13,8 +13,8 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 	function drawAppendOperation(htmlElement, append) {
 		var img = document.createElement("img");
 		htmlElement.appendChild(img);
-		img.setAttribute("title", "Append (" + append + ")");
-		img.setAttribute("src", "/public/behaviours/grid/append/" + append.toLowerCase() + ".svg");
+		img.setAttribute("title", );
+		img.setAttribute("src", );
 		img.style.borderRadius = "0px";
 		return img;
 	}
@@ -140,16 +140,12 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 				});
 
 				["right", "down", "left", "up"].forEach(s => {
-					var img2 = drawAppendOperation(htmlElement, s);
-					img2.addEventListener("click", () => appendsCells(selector(), s, cm));
+					cm.addControl(event, "/public/behaviours/grid/append/" + append.toLowerCase() + ".svg", 
+							"Append (" + append + ")", () => appendsCells(selector(), s, cm));
 				});
 			}
 			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Delete");
-			img.setAttribute("src", "/public/behaviours/grid/append/append.svg");
-			img.addEventListener("click", () => handleClick());
+			cm.addControl(event, "/public/behaviours/grid/append/append.svg", 'Append', () => handleClick());
 		}
 	}
 	
