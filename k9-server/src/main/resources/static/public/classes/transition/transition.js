@@ -230,12 +230,11 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(getChangeUri, getReloadUri, loadCallbacks, animationCallbacks) {
+	constructor(uri, loadCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 		this.commandList = [];
-		this.getChangeUri = getChangeUri;
-		this.getReloadUri = getReloadUri;
+		this.uri = uri;
 	}
 	
 	transition(documentElement) {
@@ -302,9 +301,7 @@ export class Transition {
 	}
 
 	postCommands(commands) {
-		const postUri = this.getChangeUri();
-		const reloadUri = this.getReloadUri();
-		return this.mainHandler(fetch(postUri, {
+		return this.mainHandler(fetch(this.uri(), {
 			credentials: 'include',
 			method: 'POST',
 			body: JSON.stringify(commands),
@@ -313,7 +310,7 @@ export class Transition {
 				"Accept": "image/svg+xml, application/json"
 			}
 		})).catch(e => {
-			this.get(reloadUri);
+			this.get(this.uri());
 			alert(e);
 		});
 	}
