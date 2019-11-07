@@ -59,7 +59,9 @@ export class ContextMenu {
 
 	addControl(event, imageUrl, title, clickListener) {
 		var htmlElement = this.get(event);
-		htmlElement.appendChild(icon('--cm-'+title, title, imageUrl, clickListener));
+		var out = icon('--cm-'+title, title, imageUrl, clickListener)
+		htmlElement.appendChild(out);
+		return out;
 	}
 
 }

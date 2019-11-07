@@ -69,19 +69,13 @@ export function initLabelContextMenuCallback(transition, templateUri, selector, 
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-		
-			var htmlElement = contextMenu.get(event);
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			
-			img.setAttribute("title", "Add Label");
-			img.setAttribute("src", "/public/behaviours/labels/label/label.svg");
-			img.addEventListener("click", function(e2, selector) {
-				contextMenu.destroy();
-				selectedElements.forEach(e => action(e, templateUri, transition));
-				transition.postCommandList();
-			});
+			contextMenu.addControl(event, "/public/behaviours/labels/label/label.svg", "Add Label", 
+				function(e2, selector) {
+					contextMenu.destroy();
+					selectedElements.forEach(e => action(e, templateUri, transition));
+					transition.postCommandList();
+				}		
+			)
 		}
 	}
 }

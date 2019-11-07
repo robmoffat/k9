@@ -18,15 +18,11 @@ export function initLinkContextMenuCallback(transition, linker, selector) {
 		const elements = hasLastSelected(selector());
 		
 		if (elements.length > 0) {
-			var htmlElement = contextMenu.get(event);
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Draw Link");
-			img.setAttribute("src", "/public/behaviours/links/link/link.svg");
-			img.addEventListener("click", e => {
-				contextMenu.destroy();
-				linker.start(Array.from(elements), e);
-			});
+			contextMenu.addControl(event, "/public/behaviours/links/link/link.svg",
+					"Draw Link", e => {
+						contextMenu.destroy();
+						linker.start(Array.from(elements), e);
+					});
 		}
 	};
 }

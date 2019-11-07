@@ -1,3 +1,4 @@
+import { icon } from '/public/bundles/form.js';
 
 var canUndo = false;
 var canRedo = false;
@@ -23,15 +24,13 @@ export function undoableMetadataCallback(metadata) {
 }
 
 function ensureButton(nav, name, cb) {
-	var b = nav.querySelector("."+name);
+	var b = nav.querySelector("#--"+name);
+	
 	if (b == undefined) {
-		var b = document.createElement("img");
-		b.setAttribute("class", name);
-		b.setAttribute("title", name);
-		b.setAttribute("src", "/public/behaviours/undoable/"+name+".svg");
-		b.style.backgroundColor = '#EEEEEE';
-		b.addEventListener("click", cb);
-	    nav.appendChild(b);
+		var b = icon('--'+name, name, 
+				 "/public/behaviours/undoable/"+name+".svg",
+				 cb);
+		nav.appendChild(b);
 	}
 	
 	return b;

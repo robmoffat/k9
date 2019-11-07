@@ -128,18 +128,8 @@ export function initAlignContextMenuCallback(transition, templateUri, selector) 
 		const e = hasLastSelected(selector());
 		
 		if (e.length > 1) {
-			var htmlElement = cm.get(event);
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Horizontal Align");
-			img.setAttribute("src", "/public/behaviours/links/align/align-horiz.svg");
-			img.addEventListener("click", () => performAlign(cm, true));
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			img.setAttribute("title", "Vertical Align");
-			img.setAttribute("src", "/public/behaviours/links/align/align-vert.svg");
-			img.addEventListener("click", () => performAlign(cm, false));
+			cm.addControl(event, "/public/behaviours/links/align/align-horiz.svg", "Horizontal Align",() => performAlign(cm, true));
+			cm.addControl(event, "/public/behaviours/links/align/align-vert.svg", "Vertical Align",() => performAlign(cm, false));
 		}
 	}
 }

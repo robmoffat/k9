@@ -19,23 +19,15 @@ function setScale(mag) {
 export function zoomableInstrumentationCallback(nav) {
 	document.body.style.margin = "0";
 	
-	var zoomIn = nav.querySelector(".zoom-in");
-	var zoomOut = nav.querySelector(".zoom-out");
+	var zoomIn = nav.querySelector("#--zoom-in");
+	var zoomOut = nav.querySelector("#--zoom-out");
 	
 	if (zoomIn == undefined) {
-		var e = document.createElement("img");
-	      e.setAttribute("class", "zoom-in");
-	      e.setAttribute("src", "/public/behaviours/zoomable/zoom_in.svg");
-	      e.addEventListener("click", () => setScale(magnification + .3));
-	      nav.appendChild(e);
+		nav.appendChild(icon('--zoom-in', "Zoom In", "/public/behaviours/zoomable/zoom_in.svg", () => setScale(magnification + .3))); 
 	}
 	
 	if (zoomOut == undefined) {
-		var e = document.createElement("img");
-	      e.setAttribute("class", "zoom-out");
-	      e.setAttribute("src", "/public/behaviours/zoomable/zoom_out.svg");
-	      e.addEventListener("click", () => setScale(magnification - .3));
-	      nav.appendChild(e);
+		nav.appendChild(icon('--zoom-out', "Zoom Out", "/public/behaviours/zoomable/zoom_out.svg", () => setScale(magnification - .3))); 
 	}
 	
 	window.addEventListener('load', function(event) {

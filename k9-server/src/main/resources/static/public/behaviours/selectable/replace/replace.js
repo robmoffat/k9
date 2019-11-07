@@ -87,15 +87,9 @@ export function initReplaceContextMenuCallback(palette, type, selector) {
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-		
-			var htmlElement = contextMenu.get(event);
-			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			
-			img.setAttribute("title", "Replace");
-			img.setAttribute("src", "/public/behaviours/selectable/replace/replace.svg");
-			img.addEventListener("click", function(e2, selector) {
+			contextMenu.addControl(event, "/public/behaviours/selectable/replace/replace.svg",
+					"Replace", 
+					function(e2, selector) {
 				contextMenu.destroy();
 				palette.open(event, type);
 			});

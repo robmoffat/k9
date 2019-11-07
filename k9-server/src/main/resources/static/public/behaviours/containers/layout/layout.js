@@ -110,15 +110,16 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 		transition.postCommandList();
 	}
 
-	function drawLayout(htmlElement, layout, selected) {
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
-
+	function drawLayout(event, cm, layout, selected) {
 		if (layout == "null") {
 			layout = "none";
 		}
-		img.setAttribute("title", "Layout (" + layout + ")");
-		img.setAttribute("src", "/public/behaviours/containers/layout/" + layout.toLowerCase() + ".svg");
+		
+		var out = cm.addControl(event, "/public/behaviours/containers/layout/" + layout.toLowerCase() + ".svg",
+				 "Layout (" + layout + ")",
+				 undefined);
+		
+		var img = out.children[0];
 		img.style.borderRadius = "0px";
 
 		if (selected == layout) {
@@ -167,7 +168,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 		if (e.length> 0) {
 			var htmlElement = contextMenu.get(event);
 			const layout = getLayout(hasLastSelected(e, true));
-			var img = drawLayout(htmlElement, layout);
+			var img = drawLayout(event, contextMenu, layout);
 
 			function handleClick() {
 				// remove the other stuff from the context menu
@@ -176,7 +177,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 				});
 
 				["none", "right", "down", "horizontal", "vertical", "left", "up"].forEach(s => {
-					var img2 = drawLayout(htmlElement, s, layout);
+					var img2 = drawLayout(event, contextMenu, s, layout);
 					if (layout != s) {
 						img2.addEventListener("click", () => setLayout(e, s, contextMenu, layout));
 					} 
@@ -186,7 +187,7 @@ export function initLayoutContextMenuCallback(transition, cellCreator, cellSelec
 				var hr = document.createElement("hr");
 				htmlElement.appendChild(hr);
 
-				var img2 = drawLayout(htmlElement, 'grid', layout);
+				var img2 = drawLayout(event, contextMenu, 'grid', layout);
 				if (layout != 'grid') {
 					img2.addEventListener("click", () => setLayout(Array.from(selector()), 'grid', contextMenu, layout));
 				}

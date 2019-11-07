@@ -10,15 +10,6 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 		}
 	}
 	
-	function drawAppendOperation(htmlElement, append) {
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
-		img.setAttribute("title", );
-		img.setAttribute("src", );
-		img.style.borderRadius = "0px";
-		return img;
-	}
-	
 	function doAppend(container, selectedElements, side) {
 		const { xOrdinals, yOrdinals } = getOrdinals(container);
 		const lastSelected = hasLastSelected(selectedElements, true);

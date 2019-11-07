@@ -1,3 +1,5 @@
+import { icon } from '/public/bundles/form.js';
+
 
 var currentUsername;
 var gravatar;
@@ -14,14 +16,9 @@ export function identityMetadataCallback(metadata) {
 
 export function identityInstrumentationCallback(nav) {
 	
-	var avatar = nav.querySelector(".avatar");
+	var avatar = nav.querySelector("#--avatar");
 	
 	if (avatar == undefined) {
-		var avatar = document.createElement("img");
-		avatar.setAttribute("class", "avatar");
-		avatar.setAttribute("title", currentUsername);
-	    nav.appendChild(avatar);
+	    nav.appendChild(icon('--avatar', currentUsername, gravatar, undefined));
 	}
-	
-    avatar.setAttribute("src", gravatar);
 }

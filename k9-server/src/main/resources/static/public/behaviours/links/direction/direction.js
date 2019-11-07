@@ -35,17 +35,19 @@ export function initDirectionContextMenuCallback(transition, selector) {
 		}
 	}
 	
-	function drawDirection(htmlElement, direction, selected) {
-		var img = document.createElement("img");
-		htmlElement.appendChild(img);
+	function drawDirection(event, cm, direction, selected) {
+		var title, src;
 		
 		if (direction != "null") {
-			img.setAttribute("title", "Link Direction ("+direction+")");
-			img.setAttribute("src", "/public/behaviours/links/direction/"+direction.toLowerCase()+".svg");
+			title= "Link Direction ("+direction+")";
+			src = "/public/behaviours/links/direction/"+direction.toLowerCase()+".svg";
 		} else {
-			img.setAttribute("title", "Link Direction (undirected)");
-			img.setAttribute("src", "/public/behaviours/links/direction/undirected.svg");				
+			title =  "Link Direction (undirected)";
+			src =  "/public/behaviours/links/direction/undirected.svg";				
 		}
+
+		var a = cm.addControl(event, src, title);
+		var img = a.children[0];
 		
 		if (selected == direction) {
 			img.setAttribute("class", "selected");
@@ -76,7 +78,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 				
 				var htmlElement = contextMenu.get(event);
 				const d2 = reverse ? reverseDirection(direction) : direction;
-				var img = drawDirection(htmlElement, d2);
+				var img = drawDirection(event, contextMenu, d2);
 				if (contradicting) {
 					img.style.backgroundColor = "#ff5956";
 				}
@@ -87,7 +89,7 @@ export function initDirectionContextMenuCallback(transition, selector) {
 					});
 					
 					["null", "UP", "DOWN", "LEFT", "RIGHT"].forEach(s => {
-						var img2 = drawDirection(htmlElement, s, d2);
+						var img2 = drawDirection(event, contextMenu, s, d2);
 						var s2 = reverse ? reverseDirection(s) : s;
 						img2.addEventListener("click", () => setDirection(e, s2, contextMenu));
 					});
