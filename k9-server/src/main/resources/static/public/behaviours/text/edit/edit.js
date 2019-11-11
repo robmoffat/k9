@@ -1,7 +1,7 @@
 import { hasLastSelected } from '/public/bundles/api.js';
 import { textarea, form, ok, cancel, inlineButtons, formValues } from '/public/bundles/form.js';
 
-export function initEditContextMenuCallback(transition, selector, defaultSelector) {
+export function initEditContextMenuCallback(transition, selector, textCollector) {
 	
 	function createEditStep(e, text) {
 		return {
@@ -17,11 +17,12 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 		}
 	}
 	
-	if (defaultSelector == undefined) {
-		defaultSelector = function(e) {
-			const text = e.querySelector("[k9-ui~='text']");
-			
-			return (text != null) ? text : e;
+	if (textCollector == undefined) {
+		textCollector = function(e) {
+			var text = e.querySelector("[k9-ui~='text']");
+			text = (text != null) ? text : e;
+			var lines = text.querySelectorAll('text');
+			return Array.from(lines).map(l => l.textContent.trim()).reduce((a, b) => a +"\n" + b); 
 		}
 	}
 
@@ -35,7 +36,7 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 		if (selectedElements.length > 0) {
 			
 			cm.addControl(event, "/public/behaviours/text/edit/edit.svg", 'Edit Text', () => {
-				const defaultText = defaultSelector(hasLastSelected(selectedElements, true)).textContent.trim();
+				const defaultText = textCollector(hasLastSelected(selectedElements, true));
 				cm.clear();
 				var htmlElement = cm.get(event);
 				htmlElement.appendChild(form([
