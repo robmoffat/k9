@@ -126,13 +126,11 @@ export function initCellAppendContextMenuCallback(transition, selector) {
 			
 			function handleClick() {
 				// remove the other stuff from the context menu
-				Array.from(htmlElement.children).forEach(e => {
-					htmlElement.removeChild(e);
-				});
+				cm.clear(event);
 
 				["right", "down", "left", "up"].forEach(s => {
-					cm.addControl(event, "/public/behaviours/grid/append/" + append.toLowerCase() + ".svg", 
-							"Append (" + append + ")", () => appendsCells(selector(), s, cm));
+					cm.addControl(event, "/public/behaviours/grid/append/" + s.toLowerCase() + ".svg", 
+							"Append (" + s + ")", () => appendsCells(selector(), s, cm));
 				});
 			}
 			

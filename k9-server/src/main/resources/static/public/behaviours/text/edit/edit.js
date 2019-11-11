@@ -1,4 +1,5 @@
 import { hasLastSelected } from '/public/bundles/api.js';
+import { textarea, form, ok, cancel, inlineButtons, formValues } from '/public/bundles/form.js';
 
 export function initEditContextMenuCallback(transition, selector, defaultSelector) {
 	
@@ -19,6 +20,7 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 	if (defaultSelector == undefined) {
 		defaultSelector = function(e) {
 			const text = e.querySelector("[k9-ui~='text']");
+			
 			return (text != null) ? text : e;
 		}
 	}
@@ -31,25 +33,23 @@ export function initEditContextMenuCallback(transition, selector, defaultSelecto
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-		
-			var htmlElement = cm.get(event);
 			
-			var img = document.createElement("img");
-			htmlElement.appendChild(img);
-			
-			img.setAttribute("title", "Edit Text");
-			img.setAttribute("src", "/public/behaviours/text/edit/edit.svg");
-			
-			img.addEventListener("click", function(event) {
+			cm.addControl(event, "/public/behaviours/text/edit/edit.svg", 'Edit Text', () => {
 				const defaultText = defaultSelector(hasLastSelected(selectedElements, true)).textContent.trim();
-				const newText = prompt("Enter New Text", defaultText);
-				cm.destroy();
-				
-				if (newText) {
-					const steps = Array.from(selectedElements).map(e => createEditStep(e, newText));
-					transition.postCommands(steps);
-				}
-				
+				cm.clear();
+				var htmlElement = cm.get(event);
+				htmlElement.appendChild(form([
+					textarea('Enter Text', defaultText, { rows: 10 }),
+					inlineButtons([
+						ok('ok', {}, () => {
+							const values = formValues('editText');
+							const steps = Array.from(selectedElements).map(e => createEditStep(e, values['EnterText']));
+							transition.postCommands(steps);
+							cm.destroy();
+						}),
+						cancel('cancel', [], () => cm.destroy())
+					])
+				], 'editText'));
 				
 			});
 		}

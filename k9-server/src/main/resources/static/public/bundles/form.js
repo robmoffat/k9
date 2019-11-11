@@ -30,9 +30,32 @@ export function change(e, f) {
 	return e;
 }
 
+export function formValues(id) {
+	var e = document.forms[id];
+	
+	var out = {};
+	
+	function getValue(e) {
+		switch (e.tagName.toLowerCase()) {
+		case 'fieldset':
+		case 'form':
+		case 'div':
+			Array.from(e.children).forEach(c => getValue(c));
+			break;
+		case 'input':
+		case 'textarea':
+			out[e.name] = e.value;
+			break;
+		}
+	}
+	
+	getValue(e);
+	return out;
+}
 
-export function form(contents) {
-	return create("form", {"class": "normform", "style": "background: #fff; "}, contents);
+export function form(contents, id) {
+	id = id == undefined ? 'no-id' : id;
+	return create("form", {"class": "normform", "style": "background: #fff; ", "id": id}, contents);
 }
 
 export function fieldset(legend, contents){
@@ -74,12 +97,16 @@ export function inlineButtons(buttons) {
 
 export function ok(placeholder, atts, callback) {
 	var id = idFrom(placeholder);
-	return create("input", {...atts, 'type': 'submit', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
+	var out = create("input", {...atts, 'type': 'submit', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
+	out.addEventListener('click', callback);
+	return out;
 }
 
 export function cancel(placeholder, atts, callback) {
 	var id = idFrom(placeholder);
-	return create("input", {...atts, 'type': 'reset', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
+	var out = create("input", {...atts, 'type': 'reset', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
+	out.addEventListener('click', callback);
+	return out;
 }
 
 export function checkbox(placeholder, value, atts) {

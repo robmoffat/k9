@@ -33,7 +33,7 @@ export class ContextMenu {
 			ctxMenu.style.left = (coords.x + 15)+"px";
 			ctxMenu.style.top = (coords.y-20)+"px";
 			
-			console.log(event);
+			//console.log(event);
 			
 			document.querySelector("body").appendChild(ctxMenu);
 			return ctxMenu;
