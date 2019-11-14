@@ -3,7 +3,7 @@ package com.kite9.k9server.command.domain;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 
-import com.kite9.k9server.command.AbstractRepoCommand;
+import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
@@ -11,7 +11,7 @@ import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 import com.kite9.k9server.security.Hash;
 
-public class RegisterUser extends AbstractRepoCommand<User> {
+public class RegisterUser extends AbstractSubjectCommand<User> {
 
 	UserRepository ur;
 	

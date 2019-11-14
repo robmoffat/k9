@@ -27,6 +27,7 @@
 	-webkit-user-select: none;
 	opacity: .9;
 	max-width: 220px;
+	font-family: metropolis, sans-serif;
 }
 
 .contextMenu:after {
@@ -78,21 +79,4 @@
 .contextMenu img.decoration,
 .contextMenu img.decoration:hover {
 	background-color: white;
-}
-
-.contextMenu div.field {
-	width: 36px;
-	height: 36px;
-	margin: 0 2px 0 2px;
-	font-family: metropolis, sans-serif;
-	font-size: 12px;
-	font-weight: 200;
-	display: inline-block;
-	vertical-align: top;
-	padding: 2px;
-	border-radius: 5px;
-}
-
-.contextMenu div.field input {
-	width: 30px;	
 }

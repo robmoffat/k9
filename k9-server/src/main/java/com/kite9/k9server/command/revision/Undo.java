@@ -9,7 +9,7 @@ import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.revision.Revision;
 
-public class Undo extends AbstractRepoCommand<Document> {
+public class Undo extends AbstractRepoCommand {
 
 	public Undo() {
 		super();
@@ -23,7 +23,7 @@ public class Undo extends AbstractRepoCommand<Document> {
 			throw new CommandException(HttpStatus.FORBIDDEN, "No previous state to undo to", this);
 		}
 		
-		Document d = current;
+		Document d = (Document) context;
 		d.setCurrentRevision(rPrevious);
 		getRepositoryFor(Document.class).save(d); 
 				
@@ -31,6 +31,6 @@ public class Undo extends AbstractRepoCommand<Document> {
 	}
 	
 	public Revision getCurrentRevision() {
-		return current.getCurrentRevision();
+		return ((Document) context).getCurrentRevision();
 	}
 }

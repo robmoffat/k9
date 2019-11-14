@@ -3,14 +3,14 @@ package com.kite9.k9server.command.domain;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.kite9.k9server.command.AbstractRepoCommand;
+import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.user.User;
 
-public class DeleteEntity extends AbstractRepoCommand<RestEntity>{
+public class DeleteEntity extends AbstractSubjectCommand<RestEntity>{
 
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })

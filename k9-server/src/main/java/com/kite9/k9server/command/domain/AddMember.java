@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-import com.kite9.k9server.command.AbstractRepoCommand;
+import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.MemberRepository;
@@ -13,7 +13,7 @@ import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
-public class AddMember extends AbstractRepoCommand<Project> {
+public class AddMember extends AbstractSubjectCommand<Project> {
 	
 	public List<String> emailAddresses;
 	

@@ -31,7 +31,7 @@ export function change(e, f) {
 }
 
 export function formValues(id) {
-	var e = document.forms[id];
+	var e = id != undefined ? document.forms[id] : document.forms['no-form-id'];
 	
 	var out = {};
 	
@@ -54,7 +54,7 @@ export function formValues(id) {
 }
 
 export function form(contents, id) {
-	id = id == undefined ? 'no-id' : id;
+	id = id == undefined ? 'no-form-id' : id;
 	return create("form", {"class": "normform", "style": "background: #fff; ", "id": id}, contents);
 }
 
@@ -64,6 +64,10 @@ export function fieldset(legend, contents){
 
 export function text(placeholder, value, atts) {
 	return input(placeholder, 'text', value, atts);
+}
+
+export function hidden(placeholder, value, atts) {
+	return input(placeholder, 'hidden', value, atts);
 }
 
 export function numeric(placeholder, value, atts) {

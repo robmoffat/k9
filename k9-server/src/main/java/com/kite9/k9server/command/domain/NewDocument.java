@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.command.AbstractRepoCommand;
+import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.project.Project;
@@ -15,7 +15,7 @@ import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
-public class NewDocument extends AbstractRepoCommand<Project> {
+public class NewDocument extends AbstractSubjectCommand<Project> {
 	
 	public String title;
 	

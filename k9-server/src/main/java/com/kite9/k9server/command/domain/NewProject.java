@@ -1,6 +1,6 @@
 package com.kite9.k9server.command.domain;
 
-import com.kite9.k9server.command.AbstractRepoCommand;
+import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.permission.Member;
@@ -8,7 +8,7 @@ import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
-public class NewProject extends AbstractRepoCommand<User> {
+public class NewProject extends AbstractSubjectCommand<User> {
 
 	public String title;
 	

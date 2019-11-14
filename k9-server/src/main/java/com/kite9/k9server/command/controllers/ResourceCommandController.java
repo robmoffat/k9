@@ -37,16 +37,11 @@ import com.kite9.k9server.domain.user.UserRepository;
  *
  */
 @RepositoryRestController 
-public class ResourceCommandController extends AbstractCommandController implements Logable, InitializingBean {
+public class ResourceCommandController extends AbstractCommandController implements Logable {
 	
 	@Autowired
 	UserRepository userRepository;
-	
-	@Autowired
-	ResourceMappings mappings;
-	
-	private Map<Path, RestEntityRepository<?>> repoMap;
-	
+		
 	/**
 	 * This is used for applying commands to domain objects.
 	 */
@@ -103,17 +98,4 @@ public class ResourceCommandController extends AbstractCommandController impleme
 		return "RCC ";
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		repoMap = new HashMap<>();
-		
-		for (Class<?> domainType : repositories) {
-			ResourceMetadata mapping = mappings.getMetadataFor(domainType);
-			Path p = mapping.getPath();
-			Repository<?, ?> r = (Repository<?, ?>) repositories.getRepositoryFor(domainType).get();
-			if (r instanceof RestEntityRepository<?>) {
-				repoMap.put(p, (RestEntityRepository<?>) r);
-			}
-		}
-	}
 }
