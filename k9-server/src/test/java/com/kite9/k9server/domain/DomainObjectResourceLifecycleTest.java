@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.controllers.ContentResourceProcessor;
 import com.kite9.k9server.command.xml.SetText;
+import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.RevisionResource;

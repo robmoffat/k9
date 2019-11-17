@@ -1,5 +1,5 @@
 import { hasLastSelected } from "/public/bundles/api.js";
-import { form, ok, cancel, text, hidden } from '/public/bundles/form.js';
+import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form.js';
 
 export function initNewDocumentContextMenuCallback(transition, selector) {
 	
@@ -13,31 +13,28 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 	 */
 	return function(event, cm) {
 		
-		const e = hasLastSelected(selector());
+		const e = hasLastSelected(selector(), true);
 		
-		if (e.length > 0){
-			cm.addControl(event, "/public/behaviours/rest/new.svg", "New Document", 
+		if (e){
+			cm.addControl(event, "/public/behaviours/rest/NewDocument/add.svg", "New Document", 
 					function(e2, selector) {
-						contextMenu.clear(event);
-						contextMenu.get(event).appendChild(
+						cm.clear(event);
+						cm.get(event).appendChild(
 							form([
-								text('Title'),
+								text('Title', undefined, {'required': true}),
 								text('Description'),
 								text('TemplateUri'),
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {
 									const values = formValues();
-									const steps = Array.from(selectedElements).map(e => createEditStep(e, values['EnterText']));
-									transition.postCommands(steps);
+									values['subject'] = e.getAttribute('id');
 									cm.destroy();
+									transition.postCommands([values]);
+									transition.postCommandList();
 								}),
 								
-							])
+							]))
 							
-							
-								
-						selectedElements.forEach(e => action(e, templateUri, transition));
-						transition.postCommandList();
 					}		
 				)
 		}

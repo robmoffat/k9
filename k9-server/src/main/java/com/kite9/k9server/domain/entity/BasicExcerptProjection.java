@@ -25,4 +25,5 @@ public interface BasicExcerptProjection {
 	
 	@JacksonXmlProperty(isAttribute = true)
 	String getCommands();
+
 }

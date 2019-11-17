@@ -1,4 +1,4 @@
-package com.kite9.k9server.command.controllers;
+package com.kite9.k9server.domain.links;
 
 import java.net.URI;
 

@@ -66,8 +66,9 @@ export function text(placeholder, value, atts) {
 	return input(placeholder, 'text', value, atts);
 }
 
-export function hidden(placeholder, value, atts) {
-	return input(placeholder, 'hidden', value, atts);
+export function hidden(placeholder, value) {
+	var id = idFrom(placeholder);
+	return create('input', {'type': 'hidden', 'value': value, 'id': id, 'name': id })
 }
 
 export function numeric(placeholder, value, atts) {

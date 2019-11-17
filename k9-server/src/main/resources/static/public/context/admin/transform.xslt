@@ -9,12 +9,19 @@
           </diagram>
         </svg:svg>
     </xsl:template>
+    
+  <xsl:template name="rel-id">
+  	<xsl:variable name="rel"><xsl:value-of select="../adl:rel" /></xsl:variable>
+    <xsl:value-of select="substring-before(/adl:entity/adl:links[@rel=$rel]/@href, '{')" />
+  </xsl:template>
 
   <xsl:template name="entity">
+   	<xsl:param name="id"/>
     <xsl:element name="{@type}">
+      <xsl:variable name="rel"><xsl:value-of select="../adl:rel" /></xsl:variable>
       <xsl:attribute name="entity">true</xsl:attribute>
       <xsl:attribute name="k9-ui"><xsl:value-of select="@commands" /></xsl:attribute>
-      <xsl:attribute name="id"><xsl:value-of select="./adl:links[@rel='self']/@href" /><xsl:value-of select="../adl:rel" /></xsl:attribute>
+      <xsl:attribute name="id"><xsl:value-of select="$id" /></xsl:attribute>
       <xsl:copy-of select="adl:title" />
       <xsl:copy-of select="adl:icon" />
       <xsl:copy-of select="adl:description" />
@@ -25,7 +32,9 @@
   </xsl:template>
   
   <xsl:template match="adl:entity[@type]">
-    <xsl:call-template name="entity" />
+    <xsl:call-template name="entity">
+    	<xsl:with-param name="id"><xsl:value-of select="/adl:entity/adl:links[@rel='self']/@href" /></xsl:with-param>
+    </xsl:call-template>
     <xsl:apply-templates select="./adl:content" />
   </xsl:template>
   
@@ -34,30 +43,38 @@
   </xsl:template>
 
   <xsl:template match="adl:value">
-    <xsl:call-template name="entity" />
+    <xsl:call-template name="entity">
+    	<xsl:with-param name="id"><xsl:call-template name="rel-id" /></xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   
   <xsl:template match="adl:content[@type]">
-    <xsl:call-template name="entity" />
+    <xsl:call-template name="entity">
+    	<xsl:with-param name="id"><xsl:call-template name="rel-id" /></xsl:with-param>
+    </xsl:call-template>
   </xsl:template>
   
   
   <xsl:template match="adl:content[adl:collectionValue = 'false']">
     <xsl:variable name="from"><xsl:value-of select="../adl:links[@rel='self']/@href" /></xsl:variable>
-    <xsl:variable name="to"><xsl:value-of select="adl:rel" /></xsl:variable>
+    <xsl:variable name="to">
+    	<xsl:for-each select="adl:value">
+    		<xsl:call-template name="rel-id" />
+    	</xsl:for-each>
+   	</xsl:variable>
+   	<xsl:variable name="rel">
+   		<xsl:value-of select="adl:rel" />
+   	</xsl:variable>
     
     <link>
       <xsl:attribute name="id"><xsl:value-of select="$from" />-<xsl:value-of select="$to" /></xsl:attribute>
       <xsl:choose>
-        <xsl:when test="$to = 'project'">
+        <xsl:when test="$rel = 'project'">
           <xsl:attribute name="drawDirection">UP</xsl:attribute>
         </xsl:when>
-        <xsl:when test="$to = 'members'">
-          <xsl:attribute name="drawDirection">UP</xsl:attribute>
+        <xsl:when test="$rel = 'currentRevision'">
+          <xsl:attribute name="drawDirection">RIGHT</xsl:attribute>
         </xsl:when>
-        <xsl:when test="$to = 'documents'">
-          <xsl:attribute name="drawDirection">DOWN</xsl:attribute>
-        </xsl:when>        
       </xsl:choose>
       
       <from>
@@ -77,17 +94,20 @@
   <xsl:template match="adl:content[adl:collectionValue = 'true']">
     <xsl:variable name="from"><xsl:value-of select="../adl:links[@rel='self']/@href" /></xsl:variable>
     <xsl:variable name="to"><xsl:value-of select="adl:rel" /></xsl:variable>
+   	<xsl:variable name="rel">
+   		<xsl:value-of select="adl:rel" />
+   	</xsl:variable>
     
    <link>
       <xsl:attribute name="id"><xsl:value-of select="$from" />-<xsl:value-of select="$to" /></xsl:attribute>
       <xsl:choose>
-        <xsl:when test="$to = 'project'">
+        <xsl:when test="$rel = 'members'">
           <xsl:attribute name="drawDirection">UP</xsl:attribute>
         </xsl:when>
-        <xsl:when test="$to = 'members'">
-          <xsl:attribute name="drawDirection">UP</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="$to = 'documents'">
+        <xsl:when test="$rel = 'documents'">
+          <xsl:attribute name="drawDirection">DOWN</xsl:attribute>
+        </xsl:when>        
+        <xsl:when test="$rel = 'revisions'">
           <xsl:attribute name="drawDirection">DOWN</xsl:attribute>
         </xsl:when>        
       </xsl:choose>

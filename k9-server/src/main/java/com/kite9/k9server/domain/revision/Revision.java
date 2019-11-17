@@ -104,31 +104,26 @@ public class Revision extends AbstractLongIdEntity implements Secured, RevisionE
 		}
 	}
 
-	@JsonIgnore
 	@Override
 	public String getTitle() {
 		return author.getUsername();
 	}
 	
-	@JsonIgnore
 	@Override
 	public String getDescription() {
 		return "on "+document.getTitle();
 	}
 
-	@JsonIgnore
 	@Override
 	public String getIcon() {
 		return author.getIcon();
 	}
 
-	@JsonIgnore
 	@Override
 	public Date getLastUpdated() {
 		return getDateCreated();
 	}
 	
-	@JsonIgnore
 	@Override
 	public RestEntity getParent() {
 		return document;
