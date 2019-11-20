@@ -104,11 +104,9 @@ public class RestDataConfig implements RepositoryRestConfigurer {
 
 	@Override
 	public void configureHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+		String changeUri = REST_API_BASE+"/admin";
 		RepositoryRestConfigurer.super.configureHttpMessageConverters(messageConverters);
-		messageConverters.add(0, new HateoasADLHttpMessageConverter(repositoryRestMvcConfiguration.objectMapper(), formatSupplier, transformResource, resourceLoader));	
+		messageConverters.add(0, new HateoasADLHttpMessageConverter(repositoryRestMvcConfiguration.objectMapper(), formatSupplier, transformResource, resourceLoader, changeUri));	
 		messageConverters.add(1, new ADLMessageConverter(formatSupplier));
 	}
-
-	
-	
 }

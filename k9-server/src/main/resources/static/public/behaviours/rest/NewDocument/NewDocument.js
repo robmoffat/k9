@@ -27,10 +27,9 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {
 									const values = formValues();
-									values['subject'] = e.getAttribute('id');
+									values['subjectUri'] = e.getAttribute('id');
 									cm.destroy();
 									transition.postCommands([values]);
-									transition.postCommandList();
 								}),
 								
 							]))

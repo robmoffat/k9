@@ -49,6 +49,7 @@ import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
@@ -64,7 +65,7 @@ public class HateoasADLHttpMessageConverter
 
 	public static final HttpHeaders EMPTY_HEADERS = new HttpHeaders();
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
-	
+		
 	private final ObjectMapper objectMapper;
 	final private FormatSupplier formatSupplier;
 	private XmlFactory xmlFactory;
@@ -72,9 +73,9 @@ public class HateoasADLHttpMessageConverter
 	private ResourceLoader resourceLoader;
 	private String resource;
 	private TransformerFactory transFact;
-
+	private String changeUri;
 	 
-	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String resource, ResourceLoader resourceLoader) {
+	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String resource, ResourceLoader resourceLoader, String changeUri) {
 		super();
 		this.objectMapper = objectMapper;
 		this.formatSupplier = formatSupplier;
@@ -86,6 +87,7 @@ public class HateoasADLHttpMessageConverter
 		this.transFact = TransformerFactory.newInstance();
 		this.transFact.setErrorListener(new DefaultErrorHandler(true));
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
+		this.changeUri = changeUri;
 	}
 	
 	@Override
@@ -140,8 +142,10 @@ public class HateoasADLHttpMessageConverter
 		ADLDocument output = transformXML(input, transcoder.getDomImplementation());
 		System.out.println("IN: " + new XMLHelper().toXML(input));
 		ADL out = ADLImpl.domMode(u, transcoder, output, EMPTY_HEADERS);
+		
 		System.out.println("OUT: "+ out.getAsADLString());
 		Kite9HeaderMeta.addUserMeta(out);
+		out.setMeta(ContentResourceProcessor.CONTENT_REL, changeUri);
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 

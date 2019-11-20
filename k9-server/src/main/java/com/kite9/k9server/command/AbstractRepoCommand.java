@@ -9,7 +9,7 @@ import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 /**
  * These commands return back a {@link RestEntity} object at the end.
  */
-public abstract class AbstractRepoCommand extends AbstractDomainCommand implements RepoCommand {
+public abstract class AbstractRepoCommand extends AbstractContextCommand implements RepoCommand {
 
 	protected Repositories repositories;
 

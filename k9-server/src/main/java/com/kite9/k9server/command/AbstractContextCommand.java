@@ -6,7 +6,7 @@ import org.springframework.http.HttpHeaders;
 
 import com.kite9.k9server.domain.entity.RestEntity;
 
-public abstract class AbstractDomainCommand implements ContextCommand {
+public abstract class AbstractContextCommand implements ContextCommand {
 
 	protected RestEntity context;
 	protected URI uri;

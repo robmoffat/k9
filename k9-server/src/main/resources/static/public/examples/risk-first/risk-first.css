@@ -1,6 +1,9 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
+@import url("/public/behaviours/grid/common-grid.css");
+@import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/fonts/metropolis/metropolis.css');
+
 
 @params {
 	palettes: url(risk-palette) "insert" 

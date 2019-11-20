@@ -183,11 +183,14 @@ public class ContentCommandController extends AbstractCommandController implemen
 		Revision r = d.getCurrentRevision();
 		adl.setMeta("redo", ""+(r.getNextRevision() != null));
 		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
-		adl.setMeta("revision", entityLinks.linkFor(Revision.class).slash(r.getId()).toString());
+		adl.setMeta("author", r.getAuthor().getUsername());
+		
+		String revisionUrl = entityLinks.linkFor(Revision.class).slash(r.getId()).toString();
 		String documentUrl = entityLinks.linkFor(Document.class).slash(r.getDocument().getId()).toString();
+		
+		adl.setMeta("revision", revisionUrl+ContentResourceProcessor.CONTENT_URL);
 		adl.setMeta(Link.REL_SELF, documentUrl);
 		adl.setMeta(ContentResourceProcessor.CONTENT_REL, documentUrl+ContentResourceProcessor.CONTENT_URL);
-		adl.setMeta("author", r.getAuthor().getUsername());
 		return adl;
 	}
 

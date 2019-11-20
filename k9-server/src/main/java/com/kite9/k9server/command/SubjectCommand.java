@@ -9,7 +9,7 @@ import com.kite9.k9server.domain.entity.RestEntity;
  * @author robmoffat
  *
  */
-public interface SubjectCommand<X extends RestEntity> {
+public interface SubjectCommand<X extends RestEntity> extends Command {
 
 	public String getSubjectUrl();
 	

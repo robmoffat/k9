@@ -72,7 +72,8 @@ public class Member extends AbstractLongIdEntity implements Secured, MemberExcer
 	@JsonIgnore
 	@Override
 	public String getIcon() {
-		return user.getIcon();
+		return null;
+		//return user.getIcon();
 	}
 
 	@JsonIgnore

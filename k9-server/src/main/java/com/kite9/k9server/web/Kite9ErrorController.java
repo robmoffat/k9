@@ -22,12 +22,11 @@ public class Kite9ErrorController implements ErrorController {
 	
 	public static final String HIGHLIGHTER = 
 			"<link rel=\"stylesheet\"\n" + 
-			"      href=\"//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/default.min.css\">\n" + 
-			"<script src=\"//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js\"></script>";
+			"      href=\"/highlight-9.6.2.min.css\">\n" + 
+			"<script src=\"/highlight-9.6.2.min.js\"></script>";
 
-	public static final String BOOTSTRAP = "<link href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css\" "
+	public static final String BOOTSTRAP = "<link href=\"/public/external/bootstrap-4.3.1.css\" "
 			+ "rel=\"stylesheet\" "
-			+ "integrity=\"sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M\" "
 			+ "crossorigin=\"anonymous\">";
 	
 	@RequestMapping("/error")

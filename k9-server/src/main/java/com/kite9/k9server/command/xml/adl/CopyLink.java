@@ -16,12 +16,14 @@ public class CopyLink extends Copy {
 	
 	public CopyLink() {
 		super();
+		this.deep = true;
 	}
 
 	public CopyLink(String fragmentId, String templateUri, String fromId, String toId, String linkId) {
 		super(fragmentId, null, null, templateUri, linkId, true);
 		this.fromId = fromId;
 		this.toId = toId;
+		this.deep = true;
 	}
 
 	@Override
