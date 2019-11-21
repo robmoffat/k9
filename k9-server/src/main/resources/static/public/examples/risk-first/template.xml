@@ -51,9 +51,7 @@
       <code>
         <contents xpath="$template-1" type="string" />
       </code>
-      <image style="kite9-vertical-align: center; kite9-min-size: 50px 50px;">
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="#{$template-2}" />
-      </image>
+      <image width="50px" height="50px" href="#{$template-2}" />
       <title>
         <contents xpath="$template-3" type="string"/>
       </title>

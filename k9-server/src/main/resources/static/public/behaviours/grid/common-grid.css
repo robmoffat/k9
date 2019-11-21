@@ -4,18 +4,21 @@
 
 /* tables */
 
-table,
-[k9-elem=table] {
+table {
 	kite9-layout: grid;
 	kite9-type: container;
 	kite9-template: url(common-grid-template.xml#table) "0px";
-	stroke: black;
 	kite9-padding: 10px;
-	stroke-width: 2px;
 }
 
-cell,
-[k9-cell=cell] {
+[k9-elem=table] > [k9-elem=back] {
+	stroke: black;
+	stroke-width: 1px;
+	fill: white;
+}
+
+
+cell {
 	kite9-template: url(common-grid-template.xml#cell) "0px";
 	kite9-usage: regular;
 	kite9-type: container;
@@ -25,6 +28,16 @@ cell,
 	text-align: middle;
 	kite9-min-size: 10px 10px;
 	kite9-traversal: always;
+}
+
+[k9-elem=cell].bordered > [k9-elem=back] {
+	stroke: black;
+	stroke-width: 2px;
+}
+
+[k9-elem=cell].shaded > [k9-elem=back] {
+	fill: #CECECE;
+	path: #CECECE;
 }
 
 cell.left {
@@ -45,14 +58,4 @@ cell.top {
 	kite9-vertical-align: top;
 }
 
-[k9-elem=cell].bordered > [k9-elem=back],
-cell.bordered > back {
-	stroke: black;
-	stroke-width: 2px;
-}
 
-[k9-elem=cell].shaded > [k9-elem=back],
-cell.shaded > back {
-	fill: #CECECE;
-	path: #CECECE;
-}

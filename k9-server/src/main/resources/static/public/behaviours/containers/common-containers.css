@@ -1,22 +1,26 @@
-diagram,
-[k9-elem=diagram] {
+diagram {
 	kite9-type: diagram;
 	kite9-padding: 15px;
 	kite9-traversal: none;
 	kite9-template: url(common-containers-template.xml#diagram-undirected);
+}
+
+[k9-elem=back] {
+	fill: #FFFFF01;	/* allows hover events to work */
+}
+
+[k9-elem=diagram] > [k9-elem=back] {
 	fill: white;
 }
 
-diagram[layout],
-[k9-elem=diagram][layout]  {
+diagram[layout] {
 	kite9-template: url(common-containers-template.xml#diagram-directed);
 	
 }
 
 /* Groups: Invisible containers */
 
-group,
-[k9-elem=group] {
+group {
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-traversal: always;
@@ -24,49 +28,48 @@ group,
 	kite9-min-size: 40px 40px;
 }
 
-group[layout],
-[k9-elem=group][layout] {
+group[layout] {
 	kite9-template: url(common-containers-template.xml#group-directed) '15px';
 }
 
+[k9-elem=back] {
+	fill: white;
+}
+
+
 /* Containers: Have a border */
 
-container,
-[k9-elem=container] {
+container {
 	kite9-type: container;
 	kite9-padding: 15px;
 	kite9-margin: 15px;
 	kite9-template: url(common-containers-template.xml#container-undirected) '15px';
-	stroke: black;
-	fill: white;
 	kite9-sizing: minimize;
 }
 
-container[layout],
-[k9-elem=container] {
+[k9-elem=container] > [k9-elem=back] {
+	stroke: black;
+	fill: white;
+	stroke-width: 2px;
+}
+
+container[layout] {
 	kite9-template: url(common-containers-template.xml#container-directed) '15px';
 }
 
-container.solid,
-[k9-elem=container].solid {
+[k9-elem=container].solid > [k9-elem=back] {
 	stroke: black;
 	stroke-width: 1px;
 	stroke-dasharray: none;
 }
 
-container.dotted,
-[k9-elem=container].dotted {
+[k9-elem=container].dotted > [k9-elem=back] {
 	stroke: black;
 	stroke-width: 1px;
 	stroke-dasharray: 4 4;	
 }
 
-
-
-.container-back {
-	stroke: black;
-	stroke-width: 2px;
-}
+/* Handle layout css */
 
 *[layout=right] {
 	kite9-layout: right;

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,14 +39,29 @@ public class PublicController {
 	}
 	
 	@GetMapping(path="/public/**/*.png", produces=MediaType.IMAGE_PNG_VALUE)
-	public @ResponseBody ADL loadStaticPng(RequestEntity<?> request) throws Exception {
+	public ResponseEntity<?> loadStaticPng(RequestEntity<?> request) throws Exception {
 		String url = request.getUrl().toString();
 		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".png"));
 		String resourceName = "/static/public/"+stub;
+		InputStreamResource existingResource = checkForResource(resourceName+".png");
+		if (existingResource != null) {
+			return new ResponseEntity<InputStreamResource>(existingResource, HttpStatus.OK);
+		}
+		
 		String xml = loadXML(resourceName);
-		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
+		return new ResponseEntity<ADL>(ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders()), HttpStatus.OK);
 	}
 	
+	private InputStreamResource checkForResource(String resourceName) {
+		InputStream is = this.getClass().getResourceAsStream(resourceName);
+		if (is != null) {
+			InputStreamResource isr = new InputStreamResource(is);
+			return isr;
+		} else {
+			return null;
+		}
+	}
+
 	@GetMapping(path="/public/**/*.svg", produces=Kite9MediaTypes.SVG_VALUE)
 	public @ResponseBody ADL loadStaticSvg(RequestEntity<?> request) throws Exception {
 		String url = request.getUrl().toString();

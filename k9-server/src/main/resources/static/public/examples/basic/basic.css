@@ -4,7 +4,6 @@
 @import url('/public/behaviours/grid/common-grid.css');
 @import url('/public/fonts/metropolis/metropolis.css');
 
-diagram,
 [k9-elem=diagram] {
 	font-size: 50px;
 	font-family: metropolis;
@@ -26,9 +25,13 @@ g.box {
 	kite9-type: container;
 	kite9-margin: 20px;
 	kite9-min-size: 100px 100px;
+	kite9-connection-align: 50%;
+	kite9-connection-align: 50%;
+}
+
+[k9-elem=g].box > [k9-elem=back] {
 	fill: #CCCCAA;
 	stroke: #AAAA88;
-	kite9-connection-align: 50%;
 	stroke-dasharray: none;
 }
 

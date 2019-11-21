@@ -3,8 +3,6 @@
 @import url("/public/behaviours/grid/common-grid.css");
 @import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/fonts/metropolis/metropolis.css');
-@import url('/public/behaviours/image/common-image.css');
-
 
 
 @params {
@@ -14,6 +12,69 @@
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);
 	cell-template-uri: url(template.xml#cell-template);
+}
+
+/* Actions */
+
+action {
+	kite9-type: container;
+	kite9-template: url(template.xml#action);
+	kite9-sizing: minimize;
+}
+
+action.left {
+	kite9-template: url(template.xml#action-left)	
+}
+
+/* Artifacts */
+
+artifact, 
+users,
+computer, 
+interface,
+component,
+channel-artifact,
+internal-model-artifact,
+protocol-artifact,
+agent-artifact {
+	kite9-type: container;
+	kite9-margin: 10px;
+	kite9-link-inset: 10px;
+	kite9-link-gutter: 10px;
+	kite9-type: container;
+	kite9-layout: vertical;	
+	kite9-template: url(template.xml#artifact);
+	kite9-padding: 10px; 
+	kite9-connection-align: 50%;
+	kite9-min-size: 110px 140px;	
+}
+
+agent-artifact {
+	kite9-template: url(template.xml#artifact)  url(redesign/risks/agency_risk_v2.svg);
+}
+
+users {
+	kite9-template: url(template.xml#artifact)  url(redesign/artifacts/users_v2.svg);
+}
+
+interface {
+	kite9-template: url(template.xml#artifact)  url(redesign/artifacts/interface_v2.svg);
+}
+
+internal-model-artifact {
+	kite9-template: url(template.xml#artifact)  url(redesign/risks/internal_model_risk.svg);
+}
+
+channel-artifact {
+	kite9-template: url(template.xml#artifact) url(redesign/risks/channel_risk_v2.svg);
+}
+
+component {
+	kite9-template: url(template.xml#artifact) url(redesign/artifacts/component_v2.svg)";
+}
+
+protocol-artifact {
+	kite9-template: url(template.xml#artifact) url(redesign/risks/protocol_risk_v2.svg);
 }
 
 /* Risks */
@@ -196,6 +257,7 @@ risk.methodology {
 	kite9-template: url(template.xml#fixed) "Method" url(redesign/artifacts/methodology_v2.svg) "Software Methodology";
 }
 
+
 risk-box {
 	kite9-margin: 10px;
 	kite9-link-inset: 10px;
@@ -212,8 +274,30 @@ risk {
 	kite9-connection-align: 50%;
 }
 
-risk code,
-[k9-elem=risk] [k9-elem=code] {
+diagram {
+	kite9-type: diagram;
+	kite9-padding: 15px;
+	kite9-traversal: none;
+	kite9-template: url(template.xml#diagram);
+	background-color: white;
+}
+
+image {
+	kite9-type: container;
+	kite9-horizontal-align: center;
+	kite9-vertical-align: top;
+	kite9-min-size: 50px 50px;
+	kite9-margin: 10px;
+	
+}
+
+image-content {
+    kite9-type: svg;
+ 	kite9-usage: decal;
+}
+
+action code,
+risk code {
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
 	kite9-type: container;
@@ -221,44 +305,108 @@ risk code,
 	kite9-template: url(template.xml#code);
 	font-size: 22px;
 	kite9-margin: 10px;
-	font-family: "metropolis";
-	fill: black;
-	text-align: middle;
 }
 
-risk image,
-[k9-elem=risk] [k9-elem=image] {
-	kite9-vertical-align: top;
-	fill: none;
-	stroke: none;
+action code,
+action title {
+	kite9-horizontal-align: left;
 }
 
-risk title,
-[k9-elem=risk] [k9-elem=title] {
+title {
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-layout: horizontal;
 	kite9-template: url(template.xml#title);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: bottom;
+
+}
+
+.risk-back {
+	stroke: black;
+	stroke-width: 1px;
+}
+
+.code-label-front {
+	stroke-width: 0;
+	font-size: 19px;
+	font-family: "metropolis";
 	fill: black;
-	stroke: none;
+	text-align: middle;
+}
+
+.title-label-front {
 	font-size: 12px;
 	font-family: "metropolis";
 	text-align: middle;
 }
 
-diagram {
-	kite9-type: diagram;
-	kite9-padding: 15px;
-	kite9-traversal: none;
-	kite9-template: url(template.xml#diagram);
-}
-
-label front,
-[k9-elem=label] [k9-elem=front] {
+.action-label-front {
 	font-size: 22px;
 	font-family: "metropolis";
 	text-align: middle;
 	fill: black;
+}
+
+.action-code-label-front {
+	stroke-width: 0;
+	font-size: 22px;
+	font-family: "metropolis";
+	font-weight: 700; 
+	fill: black;
+	text-align: middle;
+}
+
+
+.container-back {
+	stroke-width: 1px; 
+	fill:none;
+	stroke: black;
+}
+
+
+
+
+/* Arrow */
+[kite9-elem=arrow],
+arrow {
+	kite9-padding: 3px 5px 3px 5px; 
+	kite9-type: container;
+	kite9-sizing: minimize;
+	kite9-template: url(template.xml#arrow);
+	kite9-connections: separate;
+	kite9-connection-align: 50%;
+	kite9-link-inset: 4px;
+	fill: black;	
+}
+
+[k9-elem="arrow"] > [k9-elem="label"] > g > text,
+arrow label {
+	fill: white;
+	stroke: none;
+	font-size: 14px;
+	font-family: "metropolis";
+	font-weight: 700;
+	kite9-type: text;
+	kite9-sizing: minimize;
+	kite9-template: url(template.xml#arrow-label-text);
+	kite9-horizontal-align: center;
+	kite9-vertical-align: center;
+	kite9-padding: 6px;
+}
+
+arrow > label > contents {
+	kite9-horizontal-align: center;
+	kite9-vertical-align: center;
+}
+
+/* Risk Descriptions */
+
+description {
+	kite9-type: container;	
+	kite9-template: url(template.xml#description);
+	font-size: 14px;
+	font-family: "metropolis";
+	font-style: italic;
+	kite9-padding: 10px;
 }

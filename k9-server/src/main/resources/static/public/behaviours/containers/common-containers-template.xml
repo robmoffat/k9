@@ -12,14 +12,14 @@
   </svg:defs>
 
    <template id="group-undirected" k9-ui="drag drop delete insert align connect layout copy replace-connected" k9-palette="contain insert replace-connected">
-    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
+    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}'  />
     </back>
     <contents />
   </template>
   
   <template id="group-directed" k9-ui="drag drop delete insert align connect layout copy replace-connected" k9-palette="contain insert replace-connected">
-    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; fill: white; '>
+    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}'  />
     </back>
     <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="stroke">

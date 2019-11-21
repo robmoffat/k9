@@ -22,8 +22,8 @@ public class Kite9ErrorController implements ErrorController {
 	
 	public static final String HIGHLIGHTER = 
 			"<link rel=\"stylesheet\"\n" + 
-			"      href=\"/highlight-9.6.2.min.css\">\n" + 
-			"<script src=\"/highlight-9.6.2.min.js\"></script>";
+			"      href=\"/public/external/highlight-9.6.2.min.css\">\n" + 
+			"<script src=\"/public/external/highlight-9.6.2.min.js\"></script>";
 
 	public static final String BOOTSTRAP = "<link href=\"/public/external/bootstrap-4.3.1.css\" "
 			+ "rel=\"stylesheet\" "
