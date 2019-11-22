@@ -17,7 +17,6 @@ table {
 	fill: white;
 }
 
-
 cell {
 	kite9-template: url(common-grid-template.xml#cell) "0px";
 	kite9-usage: regular;
@@ -30,6 +29,11 @@ cell {
 	kite9-traversal: always;
 }
 
+[k9-elem=--temporary] {
+	fill: #FFFFFF01;	
+}
+
+
 [k9-elem=cell].bordered > [k9-elem=back] {
 	stroke: black;
 	stroke-width: 2px;
@@ -39,6 +43,7 @@ cell {
 	fill: #CECECE;
 	path: #CECECE;
 }
+
 
 cell.left {
 	kite9-horizontal-align: left;

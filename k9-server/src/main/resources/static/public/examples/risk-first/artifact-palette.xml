@@ -27,7 +27,10 @@
         <component id="component">Some component</component>
       </cell>
       <cell style="kite9-occupies: 2 1; ">
-        <risk id="attendant" class="attendant">Attendant Risk</risk>
+        <risk id="attendant" class="attendant">Some Risk</risk>
+      </cell>
+      <cell style="kite9-occupies: 2 1; ">
+        <artifact id="attendant" href="redesign/maze.svg">Amazing</artifact>
       </cell>
 
       <cell style="kite9-occupies: 0 2; ">
@@ -37,14 +40,17 @@
         <action id="praco2" class="left">Practice</action>
       </cell>
       <cell style="kite9-occupies: 2 2; ">
-        <context id="context" style="kite9-min-size: 60px 60px">
+        <container id="context" style="kite9-min-size: 60px 60px">
 
-        </context>
+			<label id="label">
+				Internal Model
+			</label>
+        </container>
       </cell>
       <cell style="kite9-occupies: 3 2; ">
-        <context id="context" class="dotted" style="kite9-min-size: 60px 60px">
+        <container id="context" class="dotted" style="kite9-min-size: 60px 60px">
 
-        </context>
+        </container>
       </cell>
     </table>
   </diagram>

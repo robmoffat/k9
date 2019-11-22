@@ -7,31 +7,31 @@
   <diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram" style="kite9-layout: down; kite9-padding: 0;">
 
     <table style="kite9-grid-size: 2 10; kite9-margin: 0; kite9-padding: 0">
-      <!-- <cell style="kite9-occupies: 0 0; " class="shaded">
+      <cell  class="shaded">
         <risk class="coordination" id="coordination" />
       </cell>
-      <cell style="kite9-occupies: 0 1;  ">
+      <cell >
         <risk class="feature" id="feature" style="kite9-horizontal-align: left; " />
       </cell>
-      <cell style="kite9-occupies: 0 2; " class="shaded">
+      <cell  class="shaded">
         <risk class="map-and-territory" id="map-and-territory" />
       </cell>
-      <cell style="kite9-occupies: 0 3; " class="shaded">
+      <cell class="shaded">
         <risk class="communication" id="communication" />
       </cell>
-      <cell style="kite9-occupies: 0 4; ">
+      <cell >
         <risk class="agency" id="agency" style="kite9-horizontal-align: left; " />
       </cell>
-      <cell style="kite9-occupies: 0 5; "  class="shaded">
+      <cell  class="shaded">
         <risk class="complexity" id="complexity" style="kite9-horizontal-align: left; " />
       </cell>
-      <cell style="kite9-occupies: 0 6; " class="shaded">
+      <cell  class="shaded">
         <risk class="boundary" id="boundary" />
       </cell>
-      <cell style="kite9-occupies: 0 7; kite9-layout: down; ">
+      <cell style=" kite9-layout: down; ">
         <risk class="dependency" id="dependency" />
         <risk class="operational" id="operational" style="kite9-horizontal-align: left; " />
-      </cell> -->
+      </cell> 
 
       <cell style="kite9-occupies: 1 1 0 1; kite9-layout: right; ">
         <container style="kite9-layout: down; kite9-sizing: maximize;">

@@ -81,9 +81,12 @@
   </template>
   
   <template id="artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
-    <image style="kite9-vertical-align: center; kite9-min-size: 80px 80px;">
-        <svg:image x="0" y="0" width="80px" height="80px" xlink:href="#{$template-1}" />
-    </image>
+    <image width="80px" height="80px" href="#{$template-1}" />
+    <title><contents /></title>
+  </template>
+  
+  <template id="generic-artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
+    <image width="80px" height="80px" href="#{../@href}" />
     <title><contents /></title>
   </template>
   
