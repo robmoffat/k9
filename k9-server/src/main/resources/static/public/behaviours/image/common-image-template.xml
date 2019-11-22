@@ -9,10 +9,10 @@
 			<svg:image x="0" y="0" width="#{$width}"
 				height="#{$height}" xlink:href="#{../../@href}" />
 		</decal>
-		<back k9-indicator="stroke pulse" style='kite9-type: svg; '>
+		<front k9-indicator="stroke pulse" style='kite9-type: svg; '>
 			<svg:rect x='0' y='0' width='#{../../@width}' height='#{../../@height}'
 				rx='2' ry='2' />
-		</back>
+		</front>
 	</template>
 
 </svg:svg>

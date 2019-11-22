@@ -4,6 +4,7 @@
        @import url("/public/behaviours/containers/common-containers.css");
        @import url("/public/behaviours/labels/common-labels.css");
        @import url('/public/fonts/metropolis/metropolis.css');
+       @import url("/public/behaviours/indication/indicators.css");
        
        label front,
        [k9-elem=label] [k9-elem=front] {
@@ -15,10 +16,16 @@
        
        label back,
        [k9-elem=label] [k9-elem=back] {
-         stroke: blue;
+         fill: #FFEEAA;
        }
        
     </svg:style>
+    <svg:script type="module">
+      import {initHoverable} from '../hoverable/hoverable.js';
+      
+      initHoverable();
+    
+    </svg:script>
   </svg:defs>
  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
 

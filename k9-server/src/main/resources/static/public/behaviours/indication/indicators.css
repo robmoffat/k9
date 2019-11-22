@@ -25,7 +25,7 @@
 .mouseover > [k9-indicator~=fill],
 .mouseover.grid-temporary {
 	fill: #CCEEFF !important;
-	fill-opacity: 1;
+	fill-opacity: .8;
 	transition: fill 0.2s;
 }
 

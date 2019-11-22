@@ -33,21 +33,22 @@
   </svg:defs>
   
    <template id="generic" k9-ui="drag delete align connect autoconnect edit" k9-palette="insert">
-    <risk-box>
-      <code>
+      <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; ' k9-indicator="fill" > 
+        <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
+      </back>
+	  <code>
         <contents xpath="$template-1" type="string" />
       </code>
-      <image style="kite9-vertical-align: center; kite9-min-size: 50px 50px;">
-        <svg:image x="0" y="0" width="50px" height="50px" xlink:href="#{$template-2}" />
-      </image>
+      <image width="50px" height="50px" href="#{$template-2}" />
       <title>
         <contents />
       </title>
-    </risk-box>
   </template>
   
   <template id="fixed" k9-ui="drag delete align connect autoconnect" k9-palette="insert">
-    <risk-box>
+      <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; ' k9-indicator="fill" > 
+        <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
+      </back>
       <code>
         <contents xpath="$template-1" type="string" />
       </code>
@@ -55,7 +56,6 @@
       <title>
         <contents xpath="$template-3" type="string"/>
       </title>
-    </risk-box>
   </template>
   
   <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
@@ -116,15 +116,6 @@
 
   <template id="arrow-label-text" k9-ui="edit orphan">
     <contents />
-  </template>
-
-  <template id='risk-box' k9-ui="">
-    <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); ' k9-indicator="fill" > 
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' class="risk-back" />
-    </back>
-    <svg:g class="risk">
-      <contents />
-    </svg:g>
   </template>
 
   <template id='code'>

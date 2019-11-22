@@ -6,7 +6,7 @@ diagram {
 }
 
 [k9-elem=back] {
-	fill: #FFFFF01;	/* allows hover events to work */
+	fill: #FFFFFF01;	/* allows hover events to work */
 }
 
 [k9-elem=diagram] > [k9-elem=back] {
@@ -32,11 +32,6 @@ group[layout] {
 	kite9-template: url(common-containers-template.xml#group-directed) '15px';
 }
 
-[k9-elem=back] {
-	fill: white;
-}
-
-
 /* Containers: Have a border */
 
 container {
@@ -49,7 +44,6 @@ container {
 
 [k9-elem=container] > [k9-elem=back] {
 	stroke: black;
-	fill: white;
 	stroke-width: 2px;
 }
 

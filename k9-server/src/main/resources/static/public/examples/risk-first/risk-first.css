@@ -2,11 +2,11 @@
 @import url('/public/behaviours/containers/common-containers.css');
 @import url("/public/behaviours/grid/common-grid.css");
 @import url('/public/behaviours/labels/common-labels.css');
-@import url('/public/fonts/metropolis/metropolis.css');
 @import url('/public/behaviours/image/common-image.css');
+@import url('/public/fonts/metropolis/metropolis.css');
 
 
-
+/*
 @params {
 	palettes: url(risk-palette) "insert" 
 			  url(artifact-palette) "insert"
@@ -14,7 +14,7 @@
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);
 	cell-template-uri: url(template.xml#cell-template);
-}
+}*/
 
 /* Risks */
 
@@ -29,11 +29,6 @@ hidden {
 	kite9-template: url(template.xml#hidden);
 }
 
-risk {
-	kite9-type: container;
-	fill: black;
-	kite9-sizing: minimize;
-}
 
 risk.mitigated {
 	kite9-template: url(template.xml#mitigated);
@@ -183,7 +178,6 @@ risk.map-and-territory {
 	kite9-template: url(template.xml#fixed) "MT" url(redesign/risks/map_and_territory_risk_v2.svg) "Map And Territory Risk";
 }
 
-
 risk.software-dependency {
 	kite9-template: url(template.xml#fixed) "D-Sw" url(redesign/risks/dependency_software_risk_v2.svg) "Software Dependency Risk";
 }
@@ -196,32 +190,31 @@ risk.methodology {
 	kite9-template: url(template.xml#fixed) "Method" url(redesign/artifacts/methodology_v2.svg) "Software Methodology";
 }
 
-risk-box {
+
+risk {
+	kite9-connection-align: 50%;
+	kite9-type: container;
+	kite9-sizing: minimize;
+	fill: black;
+	kite9-layout: down;	
 	kite9-margin: 10px;
 	kite9-link-inset: 10px;
 	kite9-link-gutter: 10px;
 	kite9-type: container;
-	kite9-layout: vertical;	
-	kite9-template: url(template.xml#risk-box);
 	kite9-padding: 10px; 
 	kite9-connection-align: 50%;
-	kite9-min-size: 110px 140px;
-}
-
-risk {
-	kite9-connection-align: 50%;
+	kite9-min-size: 120px 160px;
 }
 
 risk code,
 [k9-elem=risk] [k9-elem=code] {
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-	kite9-type: container;
+	kite9-type: text;
 	kite9-sizing: minimize;
-	kite9-template: url(template.xml#code);
 	font-size: 22px;
-	kite9-margin: 10px;
 	font-family: "metropolis";
+	font-weight: 300;
 	fill: black;
 	text-align: middle;
 }
@@ -229,8 +222,7 @@ risk code,
 risk image,
 [k9-elem=risk] [k9-elem=image] {
 	kite9-vertical-align: top;
-	fill: none;
-	stroke: none;
+	kite9-horizontal-align: left;
 }
 
 risk title,
@@ -244,21 +236,24 @@ risk title,
 	fill: black;
 	stroke: none;
 	font-size: 12px;
-	font-family: "metropolis";
+	font-weight: 100;
+	font-family: metropolis;
 	text-align: middle;
 }
 
-diagram {
-	kite9-type: diagram;
-	kite9-padding: 15px;
-	kite9-traversal: none;
-	kite9-template: url(template.xml#diagram);
-}
-
-label front,
+label > front,
 [k9-elem=label] [k9-elem=front] {
-	font-size: 22px;
-	font-family: "metropolis";
 	text-align: middle;
 	fill: black;
+	font-weight: 100;
+	font-family: metropolis;
+	font-size: 12px;
+}
+
+[k9-elem=label] [k9-elem=back] {
+	fill: #FFFFFF01;
+}
+
+[k9-elem=container] > [k9-elem=back] {
+	stroke-width: 1px;
 }

@@ -1,8 +1,7 @@
 
 /* Labels */
 
-label,
-[k9-elem=label] {
+label {
 	kite9-usage: label;
 	kite9-type: container; 
 	kite9-sizing: minimize;
