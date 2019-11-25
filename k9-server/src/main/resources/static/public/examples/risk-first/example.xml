@@ -14,7 +14,7 @@
     <risk class="methodology" id="id_0"> Software Methodology</risk>
 
     <arrow id="id_2">
-      <text id="lab2">employs</text>
+      <textarea id="lab2">employs</textarea>
     </arrow>
 
     <group id="id_4" style="kite9-padding: 10pt; ">
@@ -22,7 +22,7 @@
     </group>
 
     <arrow id="id_6">
-      <label id="lab3">manages</label>
+      <textarea id="lab3">manages</textarea>
     </arrow>
 
     <risk id="id_8" class="attendant">
@@ -31,7 +31,7 @@
     </risk>
 
     <arrow id="id_9">
-      <label id="lab4">obstructs</label>
+      <textarea id="lab4">obstructs</textarea>
     </arrow>
 
     <risk class="goal" id="id_10">

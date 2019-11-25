@@ -3,7 +3,7 @@
 @import url("/public/behaviours/grid/common-grid.css");
 @import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/behaviours/image/common-image.css');
-@import url('/public/behaviours/text/common-text.css');
+@import url('/public/behaviours/textarea/common-textarea.css');
 
 @import url('/public/fonts/metropolis/metropolis.css');
 @import url('risks.css');
@@ -58,32 +58,27 @@ label > front,
 
 /* Arrow */
 
-[k9-elem=arrow],
-arrow {
-	/*kite9-padding: 4px 5px 4px 5px; */
+arrow,
+[k9-elem="arrow"] {
+	kite9-padding: 4px 5px 4px 5px; 
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow);
 	kite9-connections: separate;
 	kite9-connection-align: 50%;
+	font-size: 14px;
+	font-family: "metropolis";
+	font-weight: 400;
 	/*kite9-link-inset: 3px; */
 }
 
-[k9-elem=arrow] [k9-elem=back] {
+[k9-elem=arrow] > [k9-elem=back] {
 	fill: black;	
 }
 
-[k9-elem="arrow"] > [k9-elem="label"] > g > text,
-arrow label {
+[k9-elem="arrow"] > [k9-elem="textarea"] {
 	fill: white;
 	stroke: none;
-	font-size: 14px;
-	font-family: "metropolis";
-	font-weight: 700;
-	kite9-type: text;
-	kite9-sizing: minimize;
-	kite9-template: url(template.xml#arrow-label-text);
-	/*kite9-padding: 6px; */
 }
 
 /* Risk Descriptions */
