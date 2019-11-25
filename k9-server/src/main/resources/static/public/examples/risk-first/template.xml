@@ -111,7 +111,7 @@
   </template>
 
   <template id='arrow' k9-ui="drag autoconnect align delete cascade connect">
-    <back k9-indicator="fill" style='kite9-usage: decal; kite9-type: svg; ' class="arrow-back">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4px' ry='4px'  />
     </back>
     <contents />

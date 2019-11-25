@@ -6,11 +6,5 @@
     </back>
     <contents />
   </template>
-  
-
-  
-  <template id="text" k9-ui="orphan edit">
-    <contents />
-  </template>
 
 </svg:svg>

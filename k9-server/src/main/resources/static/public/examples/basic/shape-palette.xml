@@ -8,19 +8,12 @@
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
 
     <g id="b1" class="box" k9-palette="insert">
-      <g id="fs1" class="text">Box</g>
+      <text id="fs1">Box</text>
     </g>
 
     <g id="b2" class="box" k9-palette="insert" style="fill: #AA5500; ">
-      <g id="fs1" class="text">Box 2</g>
+      <text id="fs1">Box 2</text>
     </g>
-
-   <!-- <g id="grid" class="group" style="kite9-layout: grid; kite9-grid-size: 2 2;" k9-palette="insert">
-      <g id="cell" class="cell "></g>
-      <g id="cell-2" class="cell "></g>
-      <g id="cell-3" class="cell"></g>
-      <g id="cell-4" class="cell"></g>
-    </g> --> 
 
   </diagram>
 </svg:svg>

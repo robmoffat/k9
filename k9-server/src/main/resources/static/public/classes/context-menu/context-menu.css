@@ -80,3 +80,9 @@
 .contextMenu img.decoration:hover {
 	background-color: white;
 }
+
+.contextMenu textarea {
+	font-family: metropolis, sans-serif;
+	font-size: 1em;
+	font-weight: 400;
+}

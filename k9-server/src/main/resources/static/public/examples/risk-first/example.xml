@@ -5,6 +5,7 @@
     @import url("/public/examples/risk-first/risk-first.css");
     @import url("/public/context/editor/editor.css");
     </svg:style>
+    
   </svg:defs>
 
   <diagram xmlns="http://www.kite9.org/schema/adl" id="diagram-129" name="Pattern Language">
@@ -13,7 +14,7 @@
     <risk class="methodology" id="id_0"> Software Methodology</risk>
 
     <arrow id="id_2">
-      <label id="lab2">employs</label>
+      <text id="lab2">employs</text>
     </arrow>
 
     <group id="id_4" style="kite9-padding: 10pt; ">

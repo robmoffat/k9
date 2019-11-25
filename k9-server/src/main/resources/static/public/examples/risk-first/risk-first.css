@@ -3,14 +3,13 @@
 @import url("/public/behaviours/grid/common-grid.css");
 @import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/behaviours/image/common-image.css');
+@import url('/public/behaviours/text/common-text.css');
+
 @import url('/public/fonts/metropolis/metropolis.css');
 @import url('risks.css');
 @import url('artifacts.css');
 @import url('actions.css');
 
-
-
-/*
 @params {
 	palettes: url(risk-palette) "insert" 
 			  url(artifact-palette) "insert"
@@ -18,7 +17,7 @@
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);
 	cell-template-uri: url(template.xml#cell-template);
-}*/
+}
 
 /* Titles, generally */
 
@@ -59,15 +58,18 @@ label > front,
 
 /* Arrow */
 
-[kite9-elem=arrow],
+[k9-elem=arrow],
 arrow {
-	kite9-padding: 3px 5px 3px 5px; 
+	/*kite9-padding: 4px 5px 4px 5px; */
 	kite9-type: container;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow);
 	kite9-connections: separate;
 	kite9-connection-align: 50%;
-	kite9-link-inset: 4px;
+	/*kite9-link-inset: 3px; */
+}
+
+[k9-elem=arrow] [k9-elem=back] {
 	fill: black;	
 }
 
@@ -81,14 +83,7 @@ arrow label {
 	kite9-type: text;
 	kite9-sizing: minimize;
 	kite9-template: url(template.xml#arrow-label-text);
-	kite9-horizontal-align: center;
-	kite9-vertical-align: center;
-	kite9-padding: 6px;
-}
-
-arrow > label > contents {
-	kite9-horizontal-align: center;
-	kite9-vertical-align: center;
+	/*kite9-padding: 6px; */
 }
 
 /* Risk Descriptions */
