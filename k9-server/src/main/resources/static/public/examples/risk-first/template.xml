@@ -131,7 +131,7 @@
 
   <template id='title'>
     <svg:g class="title-label-front">
-      <front style="kite9-type: text; ">
+      <front style="kite9-type: text; " k9-ui="text">
         <contents />
         <svg:flowRegion>          
           <svg:path d="M0,0 H100 V250 H-100 z" />        

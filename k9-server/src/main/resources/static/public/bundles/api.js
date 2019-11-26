@@ -127,7 +127,7 @@ export function parseTransform(a) {
     	return b;
     }
     
-    for (var i in a = a.match(/(\w+\((\-?\d+\.?\d*e?\-?\d*[(px),\ ]*)+\))+/g))
+    for (var i in a = a.match(/(\w+\((\-?\d*\.?\d*e?\-?\d*[(px),\ ]*)+\))+/g))
     {
         var c = a[i].match(/[\w\.\-]+/g);
         var name = c.shift();
