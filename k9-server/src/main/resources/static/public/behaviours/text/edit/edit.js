@@ -35,7 +35,7 @@ export function initEditContextMenuCallback(transition, selector, textCollector)
 		
 		if (selectedElements.length > 0) {
 			
-			cm.addControl(event, "/public/behaviours/textarea/edit/edit.svg", 'Edit Text', () => {
+			cm.addControl(event, "/public/behaviours/text/edit/edit.svg", 'Edit Text', () => {
 				const defaultText = textCollector(hasLastSelected(selectedElements, true));
 				cm.clear();
 				var htmlElement = cm.get(event);

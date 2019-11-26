@@ -58,7 +58,7 @@ import { initLinkDropLocator, initLinkDropCallback } from '/public/behaviours/li
 import { initLinkLabelContextMenuCallback, initContainerLabelContextMenuCallback } from '/public/behaviours/labels/label/label.js'; 
 
 // text
-import { initEditContextMenuCallback } from '/public/behaviours/textarea/edit/edit.js';
+import { initEditContextMenuCallback } from '/public/behaviours/text/edit/edit.js';
 
 // grid
 import { initCellDropLocator, initCellDragLocator, initCellDropCallback, initCellMoveCallback } from '/public/behaviours/grid/drag/drag.js';

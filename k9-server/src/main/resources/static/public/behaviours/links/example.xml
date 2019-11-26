@@ -20,23 +20,22 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="d" drag="target">
 
-     <g id="b1" drag="yes rect" drop="*" class="box"><g id="fs1" class="text">Press L to Link</g></g>
+     <g id="b1" class="box"><textarea>Press L to Link</textarea></g>
      
-     <container drag="yes target" id="bigbox" style="kite9-layout: vertical; ">
-       <g id="b2" drag="yes rect" drop="link" class="box"><g id="fs2" class="text">B</g></g>
-       
-       <g id="b3" drag="no" drop="link rect" class="box"><g id="fs3" class="text">Can't Drag</g></g>
+     <container id="bigbox" style="kite9-layout: vertical; ">
+       <g id="b2" class="box"><textarea>B</textarea></g>
+       <g id="b3" class="box"><textarea>Can't Drag</textarea></g>
      </container>
      
      <link id="link2" drop="rect" drawDirection="DOWN">
-      <from drag="yes from" id="link2-from" reference="b1" class="arrow"></from>
-      <to drag="yes to" id="link2-to" class="arrow" reference="b3"></to>
+      <from id="link2-from" reference="b1" shape="arrow"></from>
+      <to id="link2-to" shape="arrow" class="gap" reference="b3"></to>
      </link>
      
      
      <link id="link2" drop="rect">
-      <from drag="yes from" id="link2-from" reference="b1" class="hoverable"></from>
-      <to drag="yes to" id="link2-to" class="hoverable" reference="b2"></to>
+      <from id="link2-from" reference="b1" shape="hoverable"></from>
+      <to id="link2-to" shape="hoverable" reference="b2"></to>
      </link>
      
      <align id="a" drawDirection="DOWN">

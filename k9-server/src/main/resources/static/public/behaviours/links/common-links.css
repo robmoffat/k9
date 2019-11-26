@@ -19,20 +19,22 @@ align to {
 	kite9-type: none;
 }
 
+[k9-elem=from],
+[k9-elem=to] {
+	fill: #FFFFFF01;	/* allows hover events to work */
+}
+
 
 /* Links */
 
-link,
-[k9-elem=link] {
+link {
 	kite9-type: link;
 	kite9-template: url(common-links-template.xml#basic-link);
 	kite9-margin: 20px;
 	kite9-link-minimum-length: 20px;
 	kite9-link-corner-radius: 10px;
-	fill: none;
 }
 
-link-body,
 [k9-elem=link-body] {
 	stroke: black;
 	stroke-width: 2px;
@@ -41,20 +43,18 @@ link-body,
 
 [k9-elem=grab] {
 	stroke: none;
+	fill: none;
 }
 
-link.dotted,
-[k9-elem=link].dotted {
+[k9-elem=link].dotted [k9-elem=link-body] {
 	stroke-dasharray: 8;
 }
 
-link.thick,
-[k9-elem=link].thick {
+[k9-elem=link].thick [k9-elem=link-body] {
 	stroke-width: 4px;
 }
 
-link.grey,
-[k9-elem=link].grey {
+[k9-elem=link].grey [k9-elem=link-body] {
 	stroke: #CCCCCC;
 }
 
@@ -70,43 +70,39 @@ to {
 
 from.gap,
 to.gap {
-	kite9-marker-reserve: 2px;
+	kite9-marker-reserve: 20px;
 }
 
 from, 
-to,
-[k9-elem=from],
-[k9-elem=to] {
+to {
 	kite9-type: link-end;
 	kite9-template: url(common-links-template.xml#round-terminator);
 	kite9-padding: 8px 8px 8px 8px;
 }
 
+,
+[k9-elem=from],
+[k9-elem=to] {
+	
+}
+
 [drawDirection=DOWN] from,
-[drawDirection=UP] to,
-[drawDirection=DOWN] [k9-elem=from],
-[drawDirection=UP] [k9-elem=to]  {
+[drawDirection=UP] to  {
 	kite9-template: url(common-links-template.xml#up-terminator);
 }
 
 [drawDirection=UP] from,
-[drawDirection=DOWN] to,
-[drawDirection=UP] [k9-elem=from],
-[drawDirection=DOWN] [k9-elem=to]  {
+[drawDirection=DOWN] to  {
 	kite9-template: url(common-links-template.xml#down-terminator);
 }
 
 [drawDirection=RIGHT] from,
-[drawDirection=LEFT] to,
-[drawDirection=RIGHT] [k9-elem=from],
-[drawDirection=LEFT] [k9-elem=to]  {
+[drawDirection=LEFT] to {
 	kite9-template: url(common-links-template.xml#left-terminator);
 }
 
 [drawDirection=LEFT] from,
-[drawDirection=RIGHT] to,
-[drawDirection=LEFT] [k9-elem=from],
-[drawDirection=RIGHT] [k9-elem=to]  {
+[drawDirection=RIGHT] to  {
 	kite9-template: url(common-links-template.xml#right-terminator);
 }
 

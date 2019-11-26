@@ -95,8 +95,8 @@
     <contents />
     <link-body style="kite9-type: svg; kite9-usage: decal;">
       <svg:path k9-animate="link" d="#{$path}"
-        style="marker-start: url(##{concat(../../adl:from/@class,'-start-marker')}); 
-               marker-end: url(##{concat(../../adl:to/@class,'-end-marker')});" />
+        style="marker-start: url(##{concat(../../adl:from/@shape,'-start-marker')}); 
+               marker-end: url(##{concat(../../adl:to/@shape,'-end-marker')});" />
     </link-body>
   </template>
 
@@ -105,5 +105,9 @@
       <svg:path k9-animate="link" d="#{$path}" />
     </grab>
     <contents />
+  </template>
+  
+  <template id="hub">
+  	<svg:circle r="16" cx="5" cy="5" />
   </template>
 </svg:svg>

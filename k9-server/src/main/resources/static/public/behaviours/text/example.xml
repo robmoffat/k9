@@ -1,0 +1,67 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+       @import url("/public/behaviours/containers/common-containers.css");
+       @import url("/public/behaviours/text/common-text.css");
+       @import url('/public/fonts/metropolis/metropolis.css');
+       @import url("/public/behaviours/indication/indicators.css");
+       
+       connectedtext {
+       	kite9-padding: 8px;
+       	
+       }
+
+       textarea,
+       [k9-elem=textarea] {
+         fill: black;
+         font-family: metropolis;
+         font-size: 25px;
+         font-weight: 600;
+       }
+
+       
+       connectedtext front,
+       [k9-elem=label] [k9-elem=front] {
+         fill: white;
+         font-family: metropolis;
+         font-size: 15px;
+         font-weight: 400;
+       }
+       
+       connectedtext back,
+       [k9-elem=connectedtext] [k9-elem=back] {
+         fill: black;
+       }
+       
+    </svg:style>
+    <svg:script type="module">
+
+
+	import {initHoverable} from '../hoverable/hoverable.js';
+	import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
+	import { initEditContextMenuCallback } from '/public/behaviours/textarea/edit/edit.js';
+    import { initSelectable } from '/public/behaviours/selectable/selectable.js';
+	import { initActionable } from '/public/behaviours/actionable/actionable.js' 
+	
+
+	var transition = null;
+
+	var contextMenu = new ContextMenu([
+		initEditContextMenuCallback(transition)]);
+
+	initHoverable();
+	initSelectable();
+    initActionable(contextMenu);
+    
+    </svg:script>
+  </svg:defs>
+ <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+
+   
+    <textarea id="1">Just Text</textarea>
+    
+    <connectedtext id="2">Connected</connectedtext>
+
+
+  </diagram>
+</svg:svg>
