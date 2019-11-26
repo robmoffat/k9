@@ -12,6 +12,7 @@
 @params {
 	palettes: url(risk-palette) "insert" 
 			  url(artifact-palette) "insert"
+			  url(/public/behaviours/containers/common-containers) "insert"
 	   	      url(/public/behaviours/links/common-links) "link end";
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);

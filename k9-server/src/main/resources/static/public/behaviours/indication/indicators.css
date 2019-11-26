@@ -11,7 +11,7 @@
 }
 
 [id] > [k9-indicator~=fill]  {
-	fill: #b7c0feAA;
+	fill: #b7c0fe66;
 	transition: fill 0.2s;
 }
 
