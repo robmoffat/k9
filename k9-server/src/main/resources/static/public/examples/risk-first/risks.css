@@ -170,7 +170,7 @@ risk.security {
 }
 
 risk.methodology {
-	kite9-template: url(template.xml#fixed) "Method" url(redesign/artifacts/methodology_v2.svg) "Software Methodology";
+	kite9-template: url(template.xml#generic) "Method" url(redesign/artifacts/methodology_v2.svg) "Software Methodology";
 }
 
 

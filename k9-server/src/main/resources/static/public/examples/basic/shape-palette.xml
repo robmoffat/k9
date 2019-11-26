@@ -7,11 +7,11 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: vertical; ">
 
-    <g id="b1" class="box" k9-palette="insert">
+    <g id="b1" class="box">
       <text id="fs1">Box</text>
     </g>
 
-    <g id="b2" class="box" k9-palette="insert" style="fill: #AA5500; ">
+    <g id="b2" class="box" style="fill: #AA5500; ">
       <text id="fs1">Box 2</text>
     </g>
 

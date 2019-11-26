@@ -10,9 +10,9 @@
 @import url('actions.css');
 
 @params {
-	palettes: url(risk-palette) "insert" 
-			  url(artifact-palette) "insert"
-			  url(/public/behaviours/containers/common-containers) "insert"
+	palettes: url(risk-palette) "insert replace-connected"  
+			  url(artifact-palette) "insert replace-connected"
+			  url(/public/behaviours/containers/common-containers) "insert replace-connected contain"
 	   	      url(/public/behaviours/links/common-links) "link end";
 	          	          
 	align-template-uri:  url(link-palette.xml#align-element);

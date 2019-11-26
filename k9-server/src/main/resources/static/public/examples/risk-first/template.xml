@@ -4,35 +4,9 @@
       <svg:stop offset='0%' stop-color='#FFF' />
       <svg:stop offset='100%' stop-color='#DDD' />
     </svg:linearGradient>
-
-    <svg:filter id="dropshadow" height="130%">
-      <svg:feGaussianBlur in="SourceAlpha" stdDeviation="1" />
-      <svg:feOffset dx="2" dy="2" />
-      <svg:feColorMatrix type="matrix" values="0 0 0 0 .5
-                0 0 0 0 .5
-                0 0 0 0 .5
-                0 0 0 1 0" />
-      <svg:feMerge>
-        <svg:feMergeNode />
-        <svg:feMergeNode in="SourceGraphic" />
-      </svg:feMerge>
-    </svg:filter>
-
-    <svg:marker id="arrow-end-marker" markerWidth="7" markerHeight="7" refX="6" refY="4" orient="auto">
-      <svg:path d="M2,2 L6,4 L2,6" class="arrow-marker"></svg:path>
-    </svg:marker>
-
-    <svg:marker id="arrow-start-marker" markerWidth="7" markerHeight="7" refX="2" refY="4" orient="auto">
-      <svg:path d="M6,2 L2,4 L6,6" class="arrow-marker"></svg:path>
-    </svg:marker>
-
-    <svg:marker id="circle-marker" markerWidth="6" markerHeight="6" refX="3" refY="3">
-      <svg:circle cx="3" cy="3" r="2" class="circle-marker"></svg:circle>
-    </svg:marker>
-
   </svg:defs>
   
-   <template id="generic" k9-ui="drag delete align connect autoconnect edit" k9-palette="insert">
+   <template id="generic" k9-ui="drag delete align connect autoconnect copy replace-connected edit" k9-palette="insert replace-connected">
       <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; ' k9-indicator="fill" > 
         <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
       </back>
@@ -45,7 +19,7 @@
       </title>
   </template>
   
-  <template id="fixed" k9-ui="drag delete align connect autoconnect" k9-palette="insert">
+  <template id="fixed" k9-ui="drag delete align connect autoconnect copy replace-connected" k9-palette="insert replace-connected">
       <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; ' k9-indicator="fill" > 
         <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
       </back>
@@ -58,7 +32,7 @@
       </title>
   </template>
   
-  <template id="action" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
+  <template id="action" k9-ui="drag delete align connect autoconnect copy replace-connected edit" k9-palette="insert replace-connected">
     <back style='kite9-usage: decal; kite9-type: svg; fill: url(#risk-background); stroke: black; stroke-width: 1px;' k9-indicator="fill">
       <svg:polygon points='0 0, #{$width - 15} 0, #{$width} #{$height div 2}, #{$width - 15 } #{$height}, 0 #{$height}'  />
     </back>
@@ -69,7 +43,7 @@
     </front>
   </template>
   
-  <template id="action-left" k9-ui="drag drop delete insert align connect layout autoconnect edit" k9-palette="insert">
+  <template id="action-left" k9-ui="drag delete align connect autoconnect copy replace-connected edit" k9-palette="insert replace-connected">
     <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="fill">
       <svg:polygon points='0 #{$height div 2}, 15 0, #{$width} 0, #{$width} #{$height}, 15 #{$height} 0, #{$height div 2}' style='fill: url(#risk-background); stroke: black; stroke-width: 1px;' />
     </back>
@@ -80,12 +54,18 @@
     </front>
   </template>
   
-  <template id="artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
+  <template id="artifact" k9-ui="drag delete align connect autoconnect copy replace-connected" k9-palette="insert replace-connected">
+    <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="pulse" > 
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
+    </back>
     <image width="80px" height="80px" href="#{$template-1}" />
     <title><contents /></title>
   </template>
   
-  <template id="generic-artifact" k9-ui="drag drop delete insert align connect layout autoconnect">
+  <template id="generic-artifact" k9-ui="drag delete align connect autoconnect copy replace-connected edit" k9-palette="insert replace-connected">
+    <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="pulse" > 
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
+    </back>
     <image width="80px" height="80px" href="#{../@href}" />
     <title><contents /></title>
   </template>
@@ -102,23 +82,6 @@
     <back style='kite9-usage: decal; kite9-type: svg; fill-opacity: 0.2; kite9-transform: position;' class="tranparent">
       <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
 	</back>
-  </template>
-  
-  <template id="generic-text" k9-ui="orphan text">
-    <text-label style="kite9-type: text;" class="generic-text">
-      <contents />
-    </text-label>
-  </template>
-
-  <template id='arrow' k9-ui="drag autoconnect align delete cascade connect">
-    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4px' ry='4px'  />
-    </back>
-    <contents />
-  </template>
-
-  <template id="arrow-label-text" k9-ui="edit orphan">
-    <contents />
   </template>
 
   <template id='code'>
@@ -140,13 +103,6 @@
     </svg:g>
   </template>
 
-  <template id="diagram" k9-ui="drop insert layout">
-    <back style='kite9-usage: decal; kite9-type: svg; fill: white; ' k9-indicator="fill">
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' class="diagram-back" />
-    </back>
-    <contents />
-  </template>
-  
   <template id="description">
     <text-label style="kite9-type: text; kite9-padding: 0; " >
       <svg:flowRegion>
