@@ -32,32 +32,32 @@
     </risk>
 
     <link id="id_1" drawDirection="RIGHT">
-      <from reference="id_0" />
+      <from reference="id_0" class="space" />
       <to reference="id_2" />
     </link>
 
     <link id="id_3" drawDirection="RIGHT">
       <from reference="id_2" />
-      <to reference="praco" class="arrow" />
+      <to reference="praco" shape="arrow" class="space" />
     </link>
 
     <link id="id_5" drawDirection="RIGHT">
-      <from reference="praco" />
+      <from reference="praco" class="space" />
       <to reference="id_6" />
     </link>
 
     <link id="id_7" drawDirection="RIGHT">
       <from reference="id_6" />
-      <to reference="id_8" class="arrow space" />
+      <to reference="id_8" shape="arrow" class="space" />
     </link>
 
     <link id="id_15"  drawDirection="RIGHT">
-      <from reference="id_8" />
+      <from reference="id_8" class="space" />
       <to reference="id_9" />
     </link>
     <link id="id_17" drawDirection="RIGHT">
       <from reference="id_9" />
-      <to reference="id_10" class="arrow" />
+      <to reference="id_10" shape="arrow" class="space" />
     </link>
 
   </diagram>
