@@ -68,25 +68,6 @@ public class AdminCommandController extends AbstractCommandController implements
 		} 
 	}
 
-//	protected RestEntity getEntity(String repository, Long id, String property) {
-//		if ((repository == null) || (id == null)) {
-//			return null;
-//		}
-//		
-//		
-//		
-//		
-//		for (Path p : repoMap.keySet()) {
-//			if (p.matches(repository)) {
-//				RestEntityRepository<?> repo = p != null ? repoMap.get(p) : null;
-//				RestEntity ri = ((id != null) && (repo != null)) ? repo.findById(id).orElse(null) : null;
-//				return ri;
-//			}
-//		}
-//		
-//		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find domain object");
-//	}
-
 	@Override
 	public String getPrefix() {
 		return "RCC ";

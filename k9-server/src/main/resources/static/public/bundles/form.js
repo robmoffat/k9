@@ -153,6 +153,7 @@ function input(placeholder, type, value, atts) {
 }
 
 function idFrom(str) {
+	str = str.charAt(0).toLowerCase() + str.slice(1)
 	return str.replace(/\W/g, '');
 }
 

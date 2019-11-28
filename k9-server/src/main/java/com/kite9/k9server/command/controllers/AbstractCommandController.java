@@ -2,6 +2,7 @@ package com.kite9.k9server.command.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,25 +99,27 @@ public abstract class AbstractCommandController implements Logable, Initializing
 			System.out.println("hello");
 			
 			if (subjectUrl != null) {
-				if (!subjectUrl.contains("/api")) {
+				List<String> parts = Arrays.asList(subjectUrl.split("/"));
+				int api = parts.indexOf("api");
+				if (api == -1) {
 					throw new URISyntaxException(subjectUrl, "was expecting /api");
+				} else {
+					parts = parts.subList(api+1, parts.size());
 				}
-
-				subjectUrl = subjectUrl.substring(subjectUrl.indexOf("/api")+4);
-				String[] parts = subjectUrl.split("/");
-				if ((parts.length < 2) || (parts.length > 4)) {
+				
+				if ((parts.size() < 2) || (parts.size() > 4)) {
 					throw new URISyntaxException(subjectUrl, "was expecting 2 or 3 parts");
 				}
 					
 				RestEntity subject = null;
 				
-				String repo = parts[0];
-				RestEntityRepository<?> rer = repoMap.get(repo);
-				Long id = conversionService.convert(parts[1], Long.class);
+				String repo = parts.get(0);
+				RestEntityRepository<?> rer = repoMap.get("/"+repo);
+				Long id = conversionService.convert(parts.get(1), Long.class);
 				subject = rer.findById(id).orElseThrow();
 					
-				if (parts.length == 3) {
-					String field = parts[2];
+				if (parts.size() == 3) {
+					String field = parts.get(2);
 					subject = (RestEntity) subject.getClass().getField(field).get(subject);
 				}
 			

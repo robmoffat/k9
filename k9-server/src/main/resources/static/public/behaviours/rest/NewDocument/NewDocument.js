@@ -23,7 +23,7 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 							form([
 								text('Title', undefined, {'required': true}),
 								text('Description'),
-								text('TemplateUri'),
+								text('Template Uri'),
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {
 									const values = formValues();
