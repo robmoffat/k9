@@ -7,7 +7,7 @@
 import { Instrumentation } from "/public/classes/instrumentation/instrumentation.js";
 import { Metadata } from "/public/classes/metadata/metadata.js";
 import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
-import { Transition } from '/public/classes/transition/transition.js';
+import { Transition } from "/public/classes/transition/transition.js";
 
 // Behaviours
 
@@ -25,6 +25,9 @@ import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/pu
 // identity
 import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
+// navigation
+import { initFocusContextMenuCallback } from "/public/behaviours/navigable/focus/focus.js";
+
 // rest stuff
 import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
 import { initNewDocumentContextMenuCallback } from "/public/behaviours/rest/NewDocument/NewDocument.js";
@@ -35,7 +38,9 @@ var initialized = false;
 function initEditor() {
 
 	var metadata = new Metadata([
-		identityMetadataCallback ]);
+		identityMetadataCallback,
+		//navigableMetadataCallback
+		]);
 	
 	var transition = new Transition(
 			() => metadata.get('content'),		// change uri
@@ -49,6 +54,7 @@ function initEditor() {
 		]);
 	
 	var contextMenu = new ContextMenu([ 
+		initFocusContextMenuCallback(transition),
 		initDeleteEntityContextMenuCallback(transition),
 		initNewDocumentContextMenuCallback(transition),
 		]); 

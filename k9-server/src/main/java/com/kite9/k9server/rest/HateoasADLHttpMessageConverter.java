@@ -25,6 +25,7 @@ import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -146,6 +147,7 @@ public class HateoasADLHttpMessageConverter
 		System.out.println("OUT: "+ out.getAsADLString());
 		Kite9HeaderMeta.addUserMeta(out);
 		out.setMeta(ContentResourceProcessor.CONTENT_REL, changeUri);
+		out.setMeta(Link.REL_SELF, u.toString());
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 

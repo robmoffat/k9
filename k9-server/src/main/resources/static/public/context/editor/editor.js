@@ -75,7 +75,7 @@ function initEditor() {
 		undoableMetadataCallback ]);
 	
 	var transition = new Transition(
-			() => metadata.get('content'),		// uri
+			() => metadata.get('content'),		// command
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 	

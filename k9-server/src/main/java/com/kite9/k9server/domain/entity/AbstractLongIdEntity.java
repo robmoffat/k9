@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.kite9.k9server.command.domain.WithCommands;
 
@@ -76,4 +78,9 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 		}
 	}
 
+	@JsonProperty(access = Access.READ_ONLY)
+	@JacksonXmlProperty(isAttribute = true)
+	public String getLocalId() {
+		return "/api/"+getType()+"s/"+getId();
+	}
 }

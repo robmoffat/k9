@@ -3,12 +3,13 @@
   <svg:defs>
     <svg:style type="text/css"> 
        @import url("/public/examples/basic/basic.css");
+       @import url("/public/behaviours/indication/indicators.css");
     </svg:style>
     
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="b1" class="box" href="example.svg"><g id="fs1" class="text">Clicked.  Click Again</g></g>
+     <g id="/public/behaviours/navigable/example.svg" k9-ui="focus" class="box" href="example.svg"><textarea class="text">Clicked.  Click Again</textarea></g>
      
   </diagram>
 </svg:svg>

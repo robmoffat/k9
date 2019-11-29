@@ -1,7 +1,7 @@
 import { hasLastSelected } from "/public/bundles/api.js";
 import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form.js';
 
-export function initNewDocumentContextMenuCallback(transition, selector) {
+ export function initNewDocumentContextMenuCallback(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
@@ -23,6 +23,7 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 							form([
 								text('Title', undefined, {'required': true}),
 								text('Description'),
+								
 								text('Template Uri'),
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {

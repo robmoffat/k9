@@ -1,5 +1,6 @@
 package com.kite9.k9server.command.controllers;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -120,7 +121,9 @@ public abstract class AbstractCommandController implements Logable, Initializing
 					
 				if (parts.size() == 3) {
 					String field = parts.get(2);
-					subject = (RestEntity) subject.getClass().getField(field).get(subject);
+					Field f = subject.getClass().getDeclaredField(field);
+					f.setAccessible(true);
+					subject = (RestEntity) f.get(subject);
 				}
 			
 				return subject;
