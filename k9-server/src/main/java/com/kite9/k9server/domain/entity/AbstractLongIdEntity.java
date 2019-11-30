@@ -78,8 +78,6 @@ public abstract class AbstractLongIdEntity implements RestEntity {
 		}
 	}
 
-	@JsonProperty(access = Access.READ_ONLY)
-	@JacksonXmlProperty(isAttribute = true)
 	public String getLocalId() {
 		return "/api/"+getType()+"s/"+getId();
 	}

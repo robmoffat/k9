@@ -10,57 +10,38 @@
 		<svg:style type="text/css" xml:space="preserve"> @import url("/public/context/admin/admin.css");</svg:style>
 	</svg:defs>
 	<diagram>
-		<document id="http://k9-server:8080/api/documents/3"
-			entity="true" k9-ui="DeleteEntity Update focus">
-			<title>Document 1</title>
-			<icon>/public/context/admin/icons/document.svg</icon>
-			<description>Document Description</description>
-			<lastUpdated />
-		</document>
-		<link drawDirection="DOWN"
-			id="http://k9-server:8080/api/documents/3-http://k9-server:8080/api/documents/3/revisions{?projection}">
-			<from reference="http://k9-server:8080/api/documents/3" />
-			<to
-				reference="http://k9-server:8080/api/documents/3/revisions{?projection}"
-				class="arrow" />
-		</link>
-		<container
-			id="http://k9-server:8080/api/documents/3/revisions{?projection}">
-			<revision id="/api/revisions/9" entity="true" k9-ui=" focus">
-				<title>test1</title>
-				<icon>https://gravatar.com/avatar/29de34339da3e024b8e6974b05c74530
-				</icon>
-				<description>on Document 1</description>
-				<lastUpdated>2019-11-29 20:02:01 787+0000</lastUpdated>
-			</revision>
-			<label>http://k9-server:8080/api/documents/3/revisions{?projection}
-			</label>
-		</container>
-		<link drawDirection="UP"
-			id="http://k9-server:8080/api/documents/3-/api/projects/1">
-			<from reference="http://k9-server:8080/api/documents/3" />
-			<to reference="/api/projects/1" class="arrow" />
-			<label end="to">project</label>
-		</link>
-		<project id="/api/projects/1" entity="true"
-			k9-ui="DeleteEntity Update AddMember NewDocument focus">
-			<title>First Project</title>
-			<icon>/public/context/admin/icons/project.svg</icon>
-			<description>Lorem Ipsum delor sit amet</description>
-			<lastUpdated />
-		</project>
-		<link drawDirection="RIGHT"
-			id="http://k9-server:8080/api/documents/3-/api/revisions/9">
-			<from reference="http://k9-server:8080/api/documents/3" />
-			<to reference="/api/revisions/9" class="arrow" />
-			<label end="to">currentRevision</label>
-		</link>
-		<revision id="/api/revisions/9" entity="true" k9-ui=" focus">
+		<revision id="http://k9-server:8080/api/revisions/9"
+			entity="true" k9-ui=" focus">
 			<title>test1</title>
 			<icon>https://gravatar.com/avatar/29de34339da3e024b8e6974b05c74530
 			</icon>
 			<description>on Document 1</description>
 			<lastUpdated>2019-11-29 20:02:01 787+0000</lastUpdated>
 		</revision>
+		<link id="http://k9-server:8080/api/revisions/9-/api/documents/3">
+			<from reference="http://k9-server:8080/api/revisions/9" />
+			<to reference="/api/documents/3" class="arrow" />
+			<label end="to">document</label>
+		</link>
+		<document id="/api/documents/3" entity="true"
+			k9-ui="DeleteEntity Update focus">
+			<title>Document 1</title>
+			<icon>/public/context/admin/icons/document.svg</icon>
+			<description>Document Description</description>
+			<lastUpdated />
+		</document>
+		<link id="http://k9-server:8080/api/revisions/9-">
+			<from reference="http://k9-server:8080/api/revisions/9" />
+			<to reference="" class="arrow" />
+			<label end="to">author</label>
+		</link>
+		<user id="" entity="true"
+			k9-ui="DeleteEntity Update NewProject focus">
+			<title>test1</title>
+			<icon>https://gravatar.com/avatar/29de34339da3e024b8e6974b05c74530
+			</icon>
+			<description>emailable</description>
+			<lastUpdated />
+		</user>
 	</diagram>
 </svg:svg>

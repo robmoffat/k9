@@ -115,8 +115,9 @@
   
     <container>
       <xsl:attribute name="id"><xsl:value-of select="$to" /></xsl:attribute>
+      <xsl:attribute name="k9-ui">focus</xsl:attribute>
       <xsl:apply-templates select="adl:value" />
-      <label><xsl:value-of select="$to" /></label>
+      <label><xsl:value-of select="$rel" /></label>
     </container>
   </xsl:template>
   
