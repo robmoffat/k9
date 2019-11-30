@@ -32,13 +32,44 @@ export function initFocusContextMenuCallback(transition, selector) {
 	}
 }
 
-var lastUrl;
+var state = {
+		
+};
 
-export function focusMetadataCallback(metadata) {
-	if (lastUrl != metadata.self) {
-		lastUrl = metadata.self;
-		const title = metadata.title
-		history.pushState(null, title, lastUrl);
-		document.title = title;
+export function initFocusMetadataCallback() {
+	
+	return function(metadata) {
+		const newUrl = metadata.self;
+		if (state.page != newUrl) {
+			const title = metadata.title
+			document.title = title;
+			
+			var newState = {
+				title: title,
+				page: newUrl
+			}
+			
+			if (state.page ==undefined) {
+				// this is done for the initial page load
+				history.replaceState(newState, title, newUrl);		
+			} else {
+				history.pushState(newState, title, newUrl);		
+			}
+			
+			state = newState;
+		}
 	}
+}
+
+export function initFocus(transition) {
+	
+	function popState(event) {
+		console.log("popping");
+		state = event.state;
+		document.title = event.state.title;
+		transition.get(event.state.page);
+	}
+	
+	window.removeEventListener('popstate', popState);
+	window.addEventListener('popstate', popState);
 }

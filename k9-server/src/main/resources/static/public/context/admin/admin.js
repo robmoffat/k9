@@ -26,7 +26,7 @@ import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/pu
 import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
 // navigation
-import { initFocusContextMenuCallback, focusMetadataCallback } from "/public/behaviours/navigable/focus/focus.js";
+import { initFocusContextMenuCallback, initFocusMetadataCallback, initFocus } from "/public/behaviours/navigable/focus/focus.js";
 
 // rest stuff
 import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
@@ -39,7 +39,7 @@ function initEditor() {
 
 	var metadata = new Metadata([
 		identityMetadataCallback,
-		focusMetadataCallback,
+		initFocusMetadataCallback(),
 		]);
 	
 	var transition = new Transition(
@@ -59,6 +59,7 @@ function initEditor() {
 		initNewDocumentContextMenuCallback(transition),
 		]); 
 	
+	initFocus(transition)
 	
 	initActionable(contextMenu);
 		
