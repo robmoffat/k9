@@ -13,7 +13,7 @@ export function initEditContextMenuCallback(transition, selector, action) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return getMainSvg().querySelectorAll("[id][k9-palette~=open]");
+			return getMainSvg().querySelectorAll("[id][k9-ui~=open]");
 		}
 	}
 	

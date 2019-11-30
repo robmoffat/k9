@@ -95,6 +95,12 @@ function reconcileAttributes(fromElement, toElement, tl) {
 }
 
 function reconcileText(fromElement, toElement) {
+	if (fromElement.tagName == 'script') {
+		// we don't reconcile scripts as this means doing a lot of 
+		// parsing / reloading js
+		return;
+	}
+	
 	if (fromElement.textContent != toElement.textContent) {
 		fromElement.textContent = toElement.textContent;
 	}

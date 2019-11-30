@@ -3,18 +3,19 @@ package com.kite9.k9server.adl.renderer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
@@ -31,27 +32,71 @@ public class PublicController {
 	
 	@GetMapping(path="/public/**/*.html", produces=MediaType.TEXT_HTML_VALUE)
 	public ResponseEntity<?> loadStaticHtml(RequestEntity<?> request) throws Exception {
-		String url = request.getUrl().toString();
-		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".html"));
-		String resourceName = "/static/public/"+stub;
-		String xml = loadXML(resourceName);
-		return new ResponseEntity<ADL>(ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders()), HttpStatus.OK);
+		return loadStatic(request, "html");
 	}
 	
 	@GetMapping(path="/public/**/*.png", produces=MediaType.IMAGE_PNG_VALUE)
 	public ResponseEntity<?> loadStaticPng(RequestEntity<?> request) throws Exception {
-		String url = request.getUrl().toString();
-		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".png"));
-		String resourceName = "/static/public/"+stub;
-		InputStreamResource existingResource = checkForResource(resourceName+".png");
-		if (existingResource != null) {
-			return new ResponseEntity<InputStreamResource>(existingResource, HttpStatus.OK);
-		}
-		
-		String xml = loadXML(resourceName);
-		return new ResponseEntity<ADL>(ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders()), HttpStatus.OK);
+		return loadStatic(request, "png");
 	}
 	
+	@GetMapping(path="/public/**/*.svg", produces=Kite9MediaTypes.SVG_VALUE)
+	public ResponseEntity<?> loadStaticSvg(RequestEntity<?> request) throws Exception {
+		return loadStatic(request, "svg");
+	}
+	
+	@GetMapping(path="/public/**/*.xml", produces= { Kite9MediaTypes.ADL_SVG_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_XML_VALUE})
+	public ResponseEntity<?> loadStaticXml(RequestEntity<?> request) throws Exception {
+		return loadStatic(request, "xml");
+	}
+	
+	protected ResponseEntity<?> loadStatic(RequestEntity<?> request, String type) throws Exception {
+		String url = request.getUrl().toString();
+		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf("."));
+		String resourceStub = "/static/public/"+stub;
+		
+		if (type.equals("html")) {
+			InputStreamResource htmlStreamResource = checkForResource(resourceStub + ".html");
+			if (htmlStreamResource != null) {
+				return new ResponseEntity<InputStreamResource>(htmlStreamResource, HttpStatus.OK);
+			}
+		}
+		
+		if (type.equals("png")) {
+			InputStreamResource pngStreamResource = checkForResource(resourceStub + ".png");
+			if (pngStreamResource != null) {
+				return new ResponseEntity<InputStreamResource>(pngStreamResource, HttpStatus.OK);
+			}
+		}
+		
+		if (!type.equals("xml")) { // SVG
+			// check to see if we have a pre-existing svg file
+			String xml = loadXML(resourceStub + ".svg");
+			if (xml != null) {
+				return new ResponseEntity<ADL>(ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders()), createCachingHeaders(), HttpStatus.OK);
+			}
+		}
+		
+		// ok, we need to transform one
+		String xml = loadXML(resourceStub + ".xml");
+		if (xml != null) {
+			return new ResponseEntity<ADL>(ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders()), HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<ADL>(HttpStatus.NOT_FOUND);
+	}
+	
+	/*
+	 * If we have svg files on the server, they're probably not going to change
+	 * much and should be cached.
+	 */
+	private MultiValueMap<String, String> createCachingHeaders() {
+		CacheControl cc = CacheControl.maxAge(5, TimeUnit.DAYS);
+		HttpHeaders h = new HttpHeaders();
+		h.add(HttpHeaders.CACHE_CONTROL, cc.getHeaderValue());
+		return h;
+	}
+
 	private InputStreamResource checkForResource(String resourceName) {
 		InputStream is = this.getClass().getResourceAsStream(resourceName);
 		if (is != null) {
@@ -61,34 +106,14 @@ public class PublicController {
 			return null;
 		}
 	}
-
-	@GetMapping(path="/public/**/*.svg", produces=Kite9MediaTypes.SVG_VALUE)
-	public @ResponseBody ADL loadStaticSvg(RequestEntity<?> request) throws Exception {
-		String url = request.getUrl().toString();
-		String stub = url.substring(url.indexOf("/public/")+8, url.lastIndexOf(".svg"));
-		String resourceName = "/static/public/"+stub;
-		String xml = loadXML(resourceName);
-		return ADLImpl.xmlMode(request.getUrl(), xml, request.getHeaders());
-	}
 	
 	private String loadXML(String resourceName) throws IOException {
 		InputStream resourceAsStream = this.getClass().getResourceAsStream(resourceName);
 		
 		if (resourceAsStream == null) {
-			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ ".xml");
+			return null;
 		}
 		
-		if (resourceAsStream == null) {
-			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ ".svg");
-		} 
-		
-		if (resourceAsStream == null) {
-			resourceAsStream = this.getClass().getResourceAsStream(resourceName+ "/index.xml");
-		}
-		
-		if (resourceAsStream == null) {
-			throw new ResourceNotFoundException(resourceName);
-		}
 		return StreamUtils.copyToString(resourceAsStream, Charset.defaultCharset());
 	}
 	

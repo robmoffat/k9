@@ -2,6 +2,7 @@ package com.kite9.k9server.web;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
@@ -87,9 +89,14 @@ public class WebConfig implements WebMvcConfigurer {
 	   return new LoggingFilter();
 	}
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-	}
+//	@Override
+//	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//		//registry.addResourceHandler("/js/**").addResourceLocations("/js/");
+//		
+//		/* Allows us to cache svg images used as buttons, etc. */
+//		registry.addResourceHandler("/public/behaviours/**/*.svg")
+//        	.setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
+//	}
+	
 	
 }

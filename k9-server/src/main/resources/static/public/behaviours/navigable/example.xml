@@ -28,7 +28,7 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl">
 
-     <g id="/public/behaviours/navigable/example2.svg" class="box" href="example2.svg" k9-ui="focus"><textarea>Click Me</textarea></g>
+     <g id="/public/behaviours/navigable/example2.svg" class="box"  k9-ui="focus"><textarea>Click Me</textarea></g>
      
   </diagram>
 </svg:svg>
