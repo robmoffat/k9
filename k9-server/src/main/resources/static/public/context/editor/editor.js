@@ -29,6 +29,8 @@ import { initXCPContextMenuCallback } from '/public/behaviours/selectable/xcp/xc
 // hoverable
 import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
 
+// navigation
+import { closeMetadataCallback, closeInstrumentationCallback } from "/public/behaviours/navigable/close/close.js";
 
 //zoomable
 import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/public/behaviours/zoomable/zoomable.js";
@@ -72,7 +74,8 @@ function initEditor() {
 
 	var metadata = new Metadata([
 		identityMetadataCallback, 
-		undoableMetadataCallback ]);
+		undoableMetadataCallback,
+		closeMetadataCallback ]);
 	
 	var transition = new Transition(
 			() => metadata.get('content'),		// command
@@ -95,6 +98,7 @@ function initEditor() {
 
 	var instrumentation = new Instrumentation([
 		identityInstrumentationCallback,
+		closeInstrumentationCallback,
 		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
 		initLinkInstrumentationCallback(palette)
