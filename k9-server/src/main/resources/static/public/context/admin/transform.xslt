@@ -13,11 +13,19 @@
   <xsl:template name="entity">
    	<xsl:param name="id"/>
    	<xsl:param name="focus" />
+   	<xsl:variable name="open">
+   		<xsl:if test="@type = 'document'">
+   			open
+   		</xsl:if>
+   	</xsl:variable>
     <xsl:element name="{@type}">
       <xsl:variable name="rel"><xsl:value-of select="../adl:rel" /></xsl:variable>
       <xsl:attribute name="entity">true</xsl:attribute>
-      <xsl:attribute name="k9-ui"><xsl:value-of select="@commands" /> <xsl:value-of select="$focus" /></xsl:attribute>
+      <xsl:attribute name="k9-ui"><xsl:value-of select="@commands" /> <xsl:value-of select="$focus" /> <xsl:value-of select="$open" /></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="$id" /></xsl:attribute>
+      <xsl:if test="@type = 'document'">
+      	<xsl:attribute name="href"><xsl:value-of select="$id" />/content</xsl:attribute>
+      </xsl:if>
       <xsl:copy-of select="adl:title" />
       <xsl:copy-of select="adl:icon" />
       <xsl:copy-of select="adl:description" />

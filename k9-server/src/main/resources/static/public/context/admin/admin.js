@@ -27,6 +27,7 @@ import { identityInstrumentationCallback, identityMetadataCallback } from "/publ
 
 // navigation
 import { initFocusContextMenuCallback, initFocusMetadataCallback, initFocus } from "/public/behaviours/navigable/focus/focus.js";
+import { initOpenContextMenuCallback } from "/public/behaviours/navigable/open/open.js";
 
 // rest stuff
 import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
@@ -55,6 +56,7 @@ function initEditor() {
 	
 	var contextMenu = new ContextMenu([ 
 		initFocusContextMenuCallback(transition),
+		initOpenContextMenuCallback(transition),
 		initDeleteEntityContextMenuCallback(transition),
 		initNewDocumentContextMenuCallback(transition),
 		]); 

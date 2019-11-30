@@ -1,15 +1,8 @@
 import { getMainSvg } from '/public/bundles/screen.js';
+import { hasLastSelected } from '/public/bundles/api.js';
 
-export function initEditContextMenuCallback(transition, selector, action) {
 
-	if (action == undefined) {
-		action = function onClick(event) {
-			var v = event.currentTarget;
-			var url = v.getAttribute("href");
-			transition.get(url);
-		};
-	}
-	
+export function initOpenContextMenuCallback(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
@@ -25,29 +18,12 @@ export function initEditContextMenuCallback(transition, selector, action) {
 		const e = hasLastSelected(selector(), true);
 		
 		if (e) {
-		
-			contextMenu.addControl(event, "/public/behaviours/navigable/open/open.svg", "Open For Editing",
-					function(e2, selector) {
-				contextMenu.destroy();
-				palette.open(event, "insert");
+			contextMenu.addControl(event, "/public/behaviours/navigable/open/open.svg", "Open",
+				function(e2, selector) {
+					contextMenu.destroy();
+					var url = e.getAttribute("href");
+					window.location.href = url;
 			});
 		}
-	}
-
-	window.addEventListener('load', function() {
-		selector().forEach(function(v) {
-			v.removeEventListener("click", onClick);
-			v.addEventListener("click", onClick);
-	    })
-	})
-}
-
-var lastUrl;
-
-export function navigableMetadataCallback(metadata) {
-	
-	if (lastUrl != metadata.self) {
-		lastUrl = metadata.self;
-		history.pushState({}, "", lastUrl)
 	}
 }
