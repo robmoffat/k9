@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.kite9.k9server.command.domain.DeleteEntity;
 import com.kite9.k9server.command.domain.WithCommands;
 import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
@@ -69,32 +71,30 @@ public class Member extends AbstractLongIdEntity implements Secured, MemberExcer
 		
 	}
 	
-	@JsonIgnore
+	@JsonProperty(access = Access.READ_ONLY)
 	@Override
 	public String getIcon() {
-		return null;
-		//return user.getIcon();
+		return user.getIcon();
 	}
 
-	@JsonIgnore
+	@JsonProperty(access = Access.READ_ONLY)
 	@Override
 	public String getTitle() {
 		return user.getUsername();
 	}
 
-	@JsonIgnore
+	@JsonProperty(access = Access.READ_ONLY)
 	@Override
 	public String getDescription() {
-		return "a b c d e gf g h i j k l m n o p q r s t u v w x y z"; //projectRole.toString().toLowerCase()+" in "+project.getTitle();
+		return projectRole.toString().toLowerCase()+" in "+project.getTitle();
 	}
 	
-	@JsonIgnore
+	@JsonProperty(access = Access.READ_ONLY)
 	@Override
 	public Date getLastUpdated() {
 		return null;
 	}
 	
-	@JsonIgnore
 	@Override
 	public RestEntity getParent() {
 		return project;

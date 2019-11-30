@@ -18,8 +18,10 @@ public interface BasicExcerptProjection {
 	
 	String getDescription();
 	
+	@JsonProperty(access = Access.READ_ONLY)
 	String getIcon();
 	
+	@JsonProperty(access = Access.READ_ONLY)
 	Date getLastUpdated();
 	
 	@JacksonXmlProperty(isAttribute = true)
