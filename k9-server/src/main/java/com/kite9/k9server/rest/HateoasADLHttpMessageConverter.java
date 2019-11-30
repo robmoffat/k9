@@ -25,6 +25,7 @@ import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.diagram.dom.elements.ADLDocument;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpHeaders;
@@ -50,6 +51,7 @@ import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
+import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
@@ -145,9 +147,7 @@ public class HateoasADLHttpMessageConverter
 		ADL out = ADLImpl.domMode(u, transcoder, output, EMPTY_HEADERS);
 		
 		System.out.println("OUT: "+ out.getAsADLString());
-		Kite9HeaderMeta.addUserMeta(out);
-		out.setMeta(ContentResourceProcessor.CONTENT_REL, changeUri);
-		out.setMeta(Link.REL_SELF, u.toString());
+		Kite9HeaderMeta.addRegularMeta(out, u.toString(), changeUri, getTitle(t));
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 
@@ -223,9 +223,19 @@ public class HateoasADLHttpMessageConverter
 	@Override
 	protected void addDefaultHeaders(HttpHeaders headers, ResourceSupport t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
-		Kite9HeaderMeta.addUserMeta(headers);
+		Kite9HeaderMeta.addRegularMeta(headers, t.getId().getHref(), changeUri, getTitle(t));
 	}
 
-
+	private String getTitle(ResourceSupport rs) {
+		if (rs instanceof PersistentEntityResource) {
+			Object o = ((PersistentEntityResource) rs).getContent();
+			
+			if (o instanceof RestEntity) {
+				return ((RestEntity) o).getType()+ ": " + ((RestEntity) o).getTitle();
+			}
+		}
+		
+		return null;
+	}
 	
 }

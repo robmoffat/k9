@@ -17,21 +17,40 @@ import com.kite9.k9server.domain.user.User;
  */
 public class Kite9HeaderMeta {
 
-	public static void addUserMeta(ADL t) {
+	public static void addRegularMeta(ADL t, String self, String change, String title) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		t.setMeta("user", authentication.getName());
 		
 		if (authentication.getDetails() instanceof User) {
 			t.setMeta("user-icon", ((User)authentication.getDetails()).getIcon());
 		}
+		if (self != null) {
+			t.setMeta("self", self);
+		}
+		if (change != null) {
+			t.setMeta("content", change);
+		}
+		if (title != null) {
+			t.setMeta("title", title);
+		}
 	}
 	
-	public static void addUserMeta(HttpHeaders headers) {
+	public static void addRegularMeta(HttpHeaders headers, String self, String change, String title) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		headers.add("kite9-user", authentication.getName());
 		
 		if (authentication.getDetails() instanceof User) {
 			headers.add("kite9-user-icon", ((User)authentication.getDetails()).getIcon());
+		}
+		
+		if (self != null) {
+			headers.add("kite9-self", self);
+		}
+		if (change != null) {
+			headers.add("kite9-content", change);
+		}
+		if (title != null) {
+			headers.add("kite9-title", title);
 		}
 	}
 	

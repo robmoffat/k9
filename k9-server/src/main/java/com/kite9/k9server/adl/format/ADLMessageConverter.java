@@ -84,7 +84,7 @@ public class ADLMessageConverter extends AbstractGenericHttpMessageConverter<ADL
 	@Override
 	protected void addDefaultHeaders(HttpHeaders headers, ADL t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
-		Kite9HeaderMeta.addUserMeta(t);
+		Kite9HeaderMeta.addRegularMeta(t, null, null, null);
 		Kite9HeaderMeta.transcribeMetaToHeaders(t, headers);
 	}
 

@@ -31,3 +31,14 @@ export function initFocusContextMenuCallback(transition, selector) {
 		}
 	}
 }
+
+var lastUrl;
+
+export function focusMetadataCallback(metadata) {
+	if (lastUrl != metadata.self) {
+		lastUrl = metadata.self;
+		const title = metadata.title
+		history.pushState(null, title, lastUrl);
+		document.title = title;
+	}
+}
