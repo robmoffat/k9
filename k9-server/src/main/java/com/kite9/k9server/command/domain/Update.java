@@ -14,21 +14,21 @@ import com.kite9.k9server.domain.entity.Updateable;
  */
 public class Update extends AbstractSubjectCommand<Updateable> {
 	
-	public String newTitle;
-	public String newDescription;
+	public String title;
+	public String description;
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public RestEntity applyCommand() throws CommandException {
-		if (newTitle != null) {
-			current.setTitle(newTitle);
+		if (title != null) {
+			current.setTitle(title);
 		}
-		if (newDescription != null) {
-			current.setDescription(newDescription);
+		if (description != null) {
+			current.setDescription(description);
 		}
 		RestEntityCrudRepository<Updateable> repo = (RestEntityCrudRepository<Updateable>) getRepositoryFor(current.getClass());
 		repo.save(current);
-		return context;
+		return current;
 	}
 
 }

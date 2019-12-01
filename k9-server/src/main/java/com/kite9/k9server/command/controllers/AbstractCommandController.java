@@ -59,7 +59,6 @@ public abstract class AbstractCommandController implements Logable, Initializing
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Transactional
 	public Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) throws Exception {
 		checkDomainAccess(context, url);
 		for (Command command : steps) {

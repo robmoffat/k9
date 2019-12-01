@@ -3,6 +3,7 @@ package com.kite9.k9server.command.controllers;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 
 import org.kite9.framework.logging.Logable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class AdminCommandController extends AbstractCommandController implements
 			Kite9MediaTypes.SVG_VALUE
 		}) 
 	@ResponseBody
+	@Transactional
 	public Object applyCommandOnResource (
 				RequestEntity<List<Command>> req,
 				HttpServletRequest request,

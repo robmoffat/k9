@@ -1,33 +1,25 @@
 import { hasLastSelected } from "/public/bundles/api.js";
+import { form, ok, cancel, text, hidden, formValues, p, inlineButtons } from '/public/bundles/form.js';
 
 
 export function initDeleteEntityContextMenuCallback(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("[id][k9-ui~='DeleteEntity'].selected")
+			return document.querySelectorAll("[id][k9-ui~='DeleteEntity']")
 		}
 	}
 	
 	/**
 	 * Takes a node and creates a delete command.
 	 */
-	function createDeleteStep(e, steps, cascade) {
+	function createDeleteStep(e, steps) {
 		var id = e.getAttribute("id");
 		
 		steps.push({
 			fragmentId: id,
 			type: 'DeleteEntity',
-			cascade: cascade
 		});
-		
-		if (!cascade) {
-			Array.from(e.children).forEach(f => {
-				if (orphan(f)) {
-					createDeleteStep(f, steps, false);
-				}
-			});
-		}
 	}
 
 	function performDelete(cm) {
@@ -41,24 +33,41 @@ export function initDeleteEntityContextMenuCallback(transition, selector) {
 		}
 	}
 
-	/**
-	 * This should only be called once.  Adds the delete-key shortcut.
-	 */
-	document.addEventListener('keydown', function(event) {
-		if (event.key == 'Delete') {
-		    performDelete();
-		}
-	});
 	
 	/**
 	 * Provides a delete option for the context menu
 	 */
 	return function(event, cm) {
 		
-		const e = hasLastSelected(selector());
-		
-		if (e.length > 0){
-			
+		const e = hasLastSelected(selector(), true);
+				
+		if (e){
+			cm.addControl(event, "/public/behaviours/rest/DeleteEntity/delete.svg", "Delete", 
+					function(e2, selector) {
+						cm.clear(event);
+						const title = e.querySelector('[k9-elem=title]').textContent;
+						cm.get(event).appendChild(
+							form([
+								p('Delete cannot be undone'),
+								p('Please enter the title of this document to delete'),
+								text('Title', '', {'required': true, pattern: '^'+title+"$"}),
+								inlineButtons([
+									ok('ok', {}, () => {
+										const values = {
+											type: 'DeleteEntity',
+											subjectUri: e.getAttribute('id')
+										}
+										cm.destroy();
+										transition.postCommands([values]);
+									}),
+									cancel('cancel', {}, () => {
+										cm.destroy();
+									})
+								])
+							]))
+							
+					}		
+				)
 		}
 	}
 }

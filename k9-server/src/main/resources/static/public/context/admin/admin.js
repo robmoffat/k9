@@ -32,6 +32,8 @@ import { initOpenContextMenuCallback } from "/public/behaviours/navigable/open/o
 // rest stuff
 import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
 import { initNewDocumentContextMenuCallback } from "/public/behaviours/rest/NewDocument/NewDocument.js";
+import { initNewProjectContextMenuCallback } from "/public/behaviours/rest/NewProject/NewProject.js";
+import { initUpdateContextMenuCallback } from "/public/behaviours/rest/Update/Update.js";
 
 
 var initialized = false;
@@ -59,6 +61,8 @@ function initEditor() {
 		initOpenContextMenuCallback(transition),
 		initDeleteEntityContextMenuCallback(transition),
 		initNewDocumentContextMenuCallback(transition),
+		initNewProjectContextMenuCallback(transition),
+		initUpdateContextMenuCallback(transition),
 		]); 
 	
 	initFocus(transition)

@@ -1,13 +1,15 @@
 import { hasLastSelected } from "/public/bundles/api.js";
 import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form.js';
 
- export function initNewDocumentContextMenuCallback(transition, selector) {
+
+export function initUpdateContextMenuCallback(transition, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return document.querySelectorAll("[id][k9-ui~='NewDocument']")
+			return document.querySelectorAll("[id][k9-ui~='Update']")
 		}
 	}
+	
 	/**
 	 * Provides a delete option for the context menu
 	 */
@@ -16,16 +18,14 @@ import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form
 		const e = hasLastSelected(selector(), true);
 		
 		if (e){
-			cm.addControl(event, "/public/behaviours/rest/NewDocument/add.svg", "New Document", 
+			cm.addControl(event, "/public/behaviours/rest/Update/update.svg", "Update Details", 
 					function(e2, selector) {
 						cm.clear(event);
 						cm.get(event).appendChild(
 							form([
-								text('Title', undefined, {'required': true}),
-								text('Description'),
-								
-								text('Template Uri'),
-								hidden('type', 'NewDocument'),
+								text('Title', e.querySelector('[k9-elem=title]').textContent, {'required': true}),
+								text('Description', e.querySelector('[k9-elem=description]').textContent, {'required': true}),
+								hidden('type', 'Update'),
 								ok('ok', {}, () => {
 									const values = formValues();
 									values['subjectUri'] = e.getAttribute('id');
@@ -40,5 +40,4 @@ import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form
 		}
 	}
 }
-
 
