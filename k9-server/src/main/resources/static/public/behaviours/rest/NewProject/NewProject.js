@@ -1,5 +1,5 @@
 import { hasLastSelected } from "/public/bundles/api.js";
-import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form.js';
+import { form, ok, cancel, text, hidden, formValues, requirements } from '/public/bundles/form.js';
 
  export function initNewProjectContextMenuCallback(transition, selector) {
 	
@@ -21,7 +21,9 @@ import { form, ok, cancel, text, hidden, formValues } from '/public/bundles/form
 							form([
 								text('Title', undefined, {'required': true}),
 								text('Description'),
-								text('Stub', undefined, {'pattern' : "^[a-zA-Z_\\-]+$"}),
+								requirements(
+										text('Stub', undefined, {'pattern' : "^[0-9a-zA-Z_\\-]{5,50}$"}),
+										"5+ upper/lowercase alphanumeric characters, underscore and dash"),								
 								hidden('type', 'NewProject'),
 								ok('ok', {}, () => {
 									const values = formValues();

@@ -30,6 +30,11 @@ export function change(e, f) {
 	return e;
 }
 
+export function requirements(e, description) {
+	e.appendChild(create('div', { 'class': 'requirements' }, [ txt(description) ]));
+	return e;
+}
+
 export function formValues(id) {
 	var e = id != undefined ? document.forms[id] : document.forms['no-form-id'];
 	
@@ -45,6 +50,9 @@ export function formValues(id) {
 		case 'input':
 		case 'textarea':
 			out[e.name] = e.value;
+			break;
+		case 'select':
+			out[e.name] = e.querySelector('option[selected]').textContent;
 			break;
 		}
 	}
@@ -92,7 +100,7 @@ export function select(placeholder, value, atts, options) {
 	return create('div', {}, [
 		create('label', { "for" : id }, [ txt(placeholder) ]),
 		create('div', { 'class' : 'select-dropdown' }, [
-			create('select', {'id': id, 'name': name}, 
+			create('select', {'id': id, 'name': id}, 
 				options.map((o, i) => create('option', 
 						{'selected' : (value != undefined) ? (value==o) : (i==0) }, [txt(o)])))
 		])

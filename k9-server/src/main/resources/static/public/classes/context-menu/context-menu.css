@@ -86,3 +86,7 @@
 	font-size: 1em;
 	font-weight: 400;
 }
+
+.contextMenu input[disabled] {
+	background-color: lightgrey;
+}
