@@ -44,7 +44,7 @@ export function initEditContextMenuCallback(transition, selector, textCollector)
 					inlineButtons([
 						ok('ok', {}, () => {
 							const values = formValues('editText');
-							const steps = Array.from(selectedElements).map(e => createEditStep(e, values['EnterText']));
+							const steps = Array.from(selectedElements).map(e => createEditStep(e, values.enterText));
 							transition.postCommands(steps);
 							cm.destroy();
 						}),

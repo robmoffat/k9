@@ -82,13 +82,18 @@ arrow,
 
 /* Risk Descriptions */
 
-description {
-	kite9-type: container;	
-	kite9-template: url(template.xml#description);
+description,
+[k9-elem=description] {
+	kite9-type: container;
+	kite9-vertical-align: center;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: center;
+	kite9-template: url(/public/behaviours/text/common-text-template.xml#connected) '4px' '4px';
 	font-size: 14px;
 	font-family: "metropolis";
 	font-style: italic;
 	kite9-padding: 10px;
+	kite9-text-bounds-width: 150px;
 }
 
 from.space,

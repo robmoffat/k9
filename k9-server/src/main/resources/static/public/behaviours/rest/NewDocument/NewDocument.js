@@ -32,14 +32,16 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 							form([
 								text('Title', undefined, {'required': true}),
 								text('Description'),
-								change(select('Template', undefined, {}, ['basic', 'risk-first', 'custom']),
-									function(event) {
-										if (event.target.value != 'custom') {
-											templateUri.querySelector('input').setAttribute('disabled', '');
-										} else {
-											templateUri.querySelector('input').removeAttribute('disabled');
-										}
-									}),
+								//change(
+								select('Template', undefined, {}, ['basic', 'risk-first', 'custom']),
+//									function(event) {
+//										if (event.target.value != 'custom') {
+//											templateUri.querySelector('input').setAttribute('disabled', '');
+//										} else {
+//											templateUri.querySelector('input').removeAttribute('disabled');
+//										}
+//										return true;
+//									}),
 								templateUri,
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {

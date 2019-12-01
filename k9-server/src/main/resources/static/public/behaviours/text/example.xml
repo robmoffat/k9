@@ -58,10 +58,11 @@
  <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
 
    
-    <textarea id="1">Just Text</textarea>
+    <textarea id="1" style="kite9-text-bounds-width: 55px; "> Just Text</textarea>
     
     <connectedtext id="2">Connected</connectedtext>
 
+	<connectedtext style="kite9-text-bounds: 55px; 400px; " id="3">Connected with a very low width</connectedtext>
 
   </diagram>
 </svg:svg>

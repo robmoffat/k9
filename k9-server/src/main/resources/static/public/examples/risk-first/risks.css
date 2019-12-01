@@ -4,17 +4,14 @@
 mitigated {
 	kite9-type: container;
 	kite9-template: url(template.xml#mitigated);
+	kite9-min-size: 120px 160px;	
 }
 
 
 hidden {
 	kite9-type: container;
 	kite9-template: url(template.xml#hidden);
-}
-
-
-risk.mitigated {
-	kite9-template: url(template.xml#mitigated);
+	kite9-min-size: 120px 160px;
 }
 
 risk.attendant {

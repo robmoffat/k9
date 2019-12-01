@@ -49,10 +49,8 @@ export function formValues(id) {
 			break;
 		case 'input':
 		case 'textarea':
-			out[e.name] = e.value;
-			break;
 		case 'select':
-			out[e.name] = e.querySelector('option[selected]').textContent;
+			out[e.name] = e.value;
 			break;
 		}
 	}
