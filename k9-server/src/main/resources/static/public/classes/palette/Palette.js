@@ -46,7 +46,7 @@ export class Palette {
 			// create palette
 			palette = document.createElement("div");
 			palette.setAttribute("id", this.id);
-			palette.setAttribute("class", "palette indictators-on");
+			palette.setAttribute("class", "palette");
 			document.querySelector("body").appendChild(palette);
 			
 			// create area for control buttons
