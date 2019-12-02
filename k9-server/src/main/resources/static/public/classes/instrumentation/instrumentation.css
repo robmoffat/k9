@@ -29,10 +29,11 @@
 	opacity: 1;
 }
 
-.instrumentation img:hover {
+.instrumentation img:hover,
+.instrumentation .on img:hover {
 	background-color: #DDDDDD;
 }
 
 .instrumentation .on img {
-	background-color: rgb(238, 238, 238);
+	background-color: #b7c0fe66;
 }
