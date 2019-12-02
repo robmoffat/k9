@@ -40,7 +40,7 @@
         <action id="praco2" class="left">Practice</action>
       </cell>
       <cell style="kite9-occupies: 2 2; ">
-        <container id="context" style="kite9-min-size: 60px 60px">
+        <container id="im" style="kite9-min-size: 60px 60px">
 
 			<label id="label">
 				Internal Model
@@ -48,7 +48,7 @@
         </container>
       </cell>
       <cell style="kite9-occupies: 3 2; ">
-        <container id="context" class="dotted" style="kite9-min-size: 60px 60px">
+        <container id="dottybox" class="dotted" style="kite9-min-size: 60px 60px">
 
         </container>
       </cell>

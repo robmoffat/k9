@@ -4,16 +4,7 @@
     <contents />
   </template>
   
-  <template id='connected' k9-ui="delete edit drag align connect autoconnect copy replace-connected" k9-palette="insert replace-connected">
-    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
-      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
-    </back>
-    <front style="kite9-type: text; ">
-      <contents />
-    </front>
-  </template>
-  
-   <template id='connected' k9-ui="delete edit drag align connect autoconnect copy replace-connected" k9-palette="insert replace-connected">
+  <template id='connected' k9-ui="delete edit insert drag align connect autoconnect copy replace-connected" k9-palette="insert replace-connected">
     <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
     </back>

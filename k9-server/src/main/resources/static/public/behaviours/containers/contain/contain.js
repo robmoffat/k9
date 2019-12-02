@@ -4,7 +4,7 @@ import { getBeforeId } from '/public/bundles/ordering.js';
 
 
 function defaultContainSelector() {
-	return getMainSvg().querySelectorAll("[k9-ui~=insert].selected");
+	return getMainSvg().querySelectorAll("[k9-ui~=contain].selected");
 }
 
 function defaultContainableSelector(palettePanel) {

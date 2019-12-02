@@ -26,6 +26,10 @@ import { initDeleteContextMenuCallback } from '/public/behaviours/selectable/del
 import { initReplaceContextMenuCallback, initReplacePaletteCallback } from '/public/behaviours/selectable/replace/replace.js';
 import { initXCPContextMenuCallback } from '/public/behaviours/selectable/xcp/xcp.js';
 
+// indication
+
+import { toggleInstrumentationCallback } from '/public/behaviours/indication/toggle/toggle.js';
+
 // hoverable
 import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
 
@@ -101,7 +105,8 @@ function initEditor() {
 		closeInstrumentationCallback,
 		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
-		initLinkInstrumentationCallback(palette)
+		initLinkInstrumentationCallback(palette),
+		toggleInstrumentationCallback
 		]);
 	
 	var contextMenu = new ContextMenu([ 

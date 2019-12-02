@@ -9,15 +9,15 @@ export function closeMetadataCallback(metadata) {
 
 export function closeInstrumentationCallback(nav) {
 	
-	var avatar = nav.querySelector("#--close");
+	var close = nav.querySelector("#--close");
 	
-	if ((avatar == undefined) && (closeUrl != undefined)) {
+	if ((close == undefined) && (closeUrl != undefined)) {
 	    nav.appendChild(icon('--close', "Close", '/public/behaviours/navigable/close/close.svg', function() {
 	    	window.location.href = closeUrl;
 	    }));
 	}
 	
-	if ((closeUrl == undefined) && (avatar != undefined)) {
-		nav.removeChild(avatar);
+	if ((closeUrl == undefined) && (close != undefined)) {
+		nav.removeChild(close);
 	}
 }

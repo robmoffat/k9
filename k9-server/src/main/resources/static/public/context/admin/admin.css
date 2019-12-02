@@ -2,7 +2,6 @@
 @import url('/public/behaviours/containers/common-containers.css');
 @import url('/public/behaviours/labels/common-labels.css');
 @import url('/public/fonts/opensans/opensans.css');
-@import url('/public/behaviours/indication/indicators.css');
 
 @script url(admin.js);
 
