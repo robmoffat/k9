@@ -1,18 +1,18 @@
 @import url('/public/behaviours/links/common-links.css');
 @import url('/public/behaviours/containers/common-containers.css');
 @import url('/public/behaviours/labels/common-labels.css');
-@import url('/public/fonts/opensans/opensans.css');
+@import url('/public/fonts/Kanit/Kanit.css');
+@import url('/public/behaviours/text/common-text.css');
 
 @script url(admin.js);
 
 
 * {
-	
+	font-family: Kanit;
 }
 
 diagram,
 [k9-elem=diagram] {
-	font-family: metropolis;
 	font-weight: 600;
 	margin: 40px;
 	font-size: 15px;
@@ -123,8 +123,49 @@ container {
 	kite9-connection-align: 50%;	
 	kite9-sizing: maximize;
 	stroke: black;
+	stroke-width: 5px;
 }
 
-[k9-elem=container] > [k9-elem=back] {
-	stroke: #A0A0A0;
+/*[k9-elem=container] > [k9-elem=back] {
+	stroke: black;
+}*/
+
+.title {
+	kite9-layout: down;
+	stroke: black;
+	stroke-width: 15px;
+	kite9-template: url(/public/behaviours/containers/common-containers-template.xml#container-undirected) '50px';
+	padding-left: 20px;
+	padding-right:20px;
+}
+
+.title > [k9-elem=back] {
+	stroke-width: 15px;
+}
+
+.grand {
+	font-style: italic;
+	font-weight: 800;
+	font-size: 95px;
+}
+
+.subtitle {
+	font-size: 22px;
+	font-style: italic;
+	font-weight: 800;
+}
+
+.circle {
+	kite9-template: url(template.xml#circle);
+	kite9-layout: down;
+}
+
+.circle [k9-elem=back] {
+	stroke: white;
+}
+
+.round {
+	stroke: black;
+	stroke-width: 15px;
+	fill: white;
 }

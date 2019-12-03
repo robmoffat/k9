@@ -35,6 +35,11 @@ import { initNewDocumentContextMenuCallback } from "/public/behaviours/rest/NewD
 import { initNewProjectContextMenuCallback } from "/public/behaviours/rest/NewProject/NewProject.js";
 import { initUpdateContextMenuCallback } from "/public/behaviours/rest/Update/Update.js";
 
+// indicators
+
+import { toggleInstrumentationCallback } from '/public/behaviours/indication/toggle/toggle.js';
+
+
 
 var initialized = false;
 
@@ -54,6 +59,7 @@ function initEditor() {
 		identityInstrumentationCallback,
 //		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
+		toggleInstrumentationCallback,
 		]);
 	
 	var contextMenu = new ContextMenu([ 

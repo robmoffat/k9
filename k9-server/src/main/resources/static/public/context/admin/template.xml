@@ -41,5 +41,20 @@
       <svg:image x="0" y="0" width="100px" height="100px" xlink:href="#{../../text()}" />
     </svg:g>
   </template>
+  
+  <template id="circle">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}'  />
+    </back>
+    <badge style="kite9-type: container; ">
+     <surround style="kite9-type: svg; ">
+      <svg:circle cx='0' cy='0' r='50px' class="round"/>
+     </surround>
+     <inside style="kite9-usage: decal; kite9-type: svg; ">
+    	 <svg:text x="#{$width div 2}" y="90px" class="grand" text-anchor="middle"><contents xpath="substring(text(),1,1)" /></svg:text>
+     </inside>
+    </badge>
+  	<textarea class="subtitle"><contents /></textarea>
+  </template>
 
 </svg:svg>
