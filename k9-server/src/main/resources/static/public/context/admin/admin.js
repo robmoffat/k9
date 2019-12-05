@@ -39,6 +39,9 @@ import { initUpdateContextMenuCallback } from "/public/behaviours/rest/Update/Up
 
 import { toggleInstrumentationCallback } from '/public/behaviours/indication/toggle/toggle.js';
 
+// authentication actions
+
+import { initLoginContextMenuCallback } from '/public/behaviours/auth/login/login.js';
 
 
 var initialized = false;
@@ -69,6 +72,7 @@ function initEditor() {
 		initNewDocumentContextMenuCallback(transition),
 		initNewProjectContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
+		initLoginContextMenuCallback(transition)
 		]); 
 	
 	initFocus(transition)

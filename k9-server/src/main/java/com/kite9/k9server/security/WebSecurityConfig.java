@@ -46,13 +46,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin();
+		http.formLogin().loginPage("/login").permitAll();
 		http.httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 		http.authorizeRequests()
 				.antMatchers("/api/command/**").permitAll() 
-				.antMatchers("/api/change").permitAll() 
+				.antMatchers("/api/admin").permitAll() 
 				.antMatchers("/dist/**").permitAll() // allows rendering tests
 				.antMatchers("/api/renderer/**").permitAll() 
 				.antMatchers("/api/users/**").permitAll()

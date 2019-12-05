@@ -15,5 +15,10 @@ public abstract class AbstractSubjectCommand<X extends RestEntity> extends Abstr
 	public void setSubjectEntity(X e) {
 		this.current = e;
 	}
-
+	/**
+	 * Used for testing
+	 */
+	public void setSubjectUri(String subjectUri) {
+		this.subjectUri = subjectUri;
+	}
 }

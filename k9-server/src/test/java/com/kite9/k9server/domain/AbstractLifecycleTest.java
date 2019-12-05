@@ -69,7 +69,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
 	public DocumentResource updateADocumentResource(DocumentResource d) throws URISyntaxException {
 		Update u = new Update();
-		u.newDescription = "desc 2";
+		u.description = "desc 2";
 		
 		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(d.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<DocumentResource> dOut = restTemplate.exchange(re, DocumentResource.class);
@@ -130,7 +130,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
 		Update u = new Update();
-		u.newDescription = "desc 2";
+		u.description = "desc 2";
 		
 		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, new URI(pIn.getLink(Link.REL_SELF).getHref()));
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);

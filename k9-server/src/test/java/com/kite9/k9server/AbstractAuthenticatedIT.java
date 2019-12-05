@@ -46,7 +46,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 	}
 
 	protected UserResource createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
-		String url = getUrlBase() + "/api/users";
+		String url = getUrlBase() + "/api/admin";
 		UserResource u = new UserResource(username, password, email, Project.createRandomString());
 		RegisterUser ru = new RegisterUser();
 		ru.email = email;
@@ -119,8 +119,9 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setContentType(MediaType.APPLICATION_JSON);
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
+		de.setSubjectUri(url);
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(getUrlBase()+"/api/admin"));
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}

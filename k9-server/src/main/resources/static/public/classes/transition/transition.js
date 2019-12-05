@@ -305,6 +305,18 @@ export class Transition {
 			}
 		}));
 	}
+	
+	postForm(uri, body) {
+		return this.mainHandler(fetch(uri, {
+			credentials: 'include',
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+				"Accept": "image/svg+xml, application/json"
+			},
+			body: body
+		}));
+	}
 
 	postCommands(commands) {
 		return this.mainHandler(fetch(this.uri(), {

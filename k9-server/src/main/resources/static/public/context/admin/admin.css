@@ -160,8 +160,8 @@ container {
 	kite9-layout: down;
 }
 
-.circle [k9-elem=back] {
-	stroke: white;
+.invis [k9-elem=back] {
+	stroke: none;
 }
 
 .round {

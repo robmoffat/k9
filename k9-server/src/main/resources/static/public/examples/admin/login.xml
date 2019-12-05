@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' zoomAndPan="magnify" preserveAspectRatio="xMidYMid" xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> @import url("/public/context/admin/admin.css");</svg:style>
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl" style="kite9-layout: down; ">
+     
+     <group style="kite9-layout: right; ">
+     
+     	<container id="1" href="https://github.com/kite9_org" class="circle invis" k9-ui="auth">LOG IN</container>
+     	
+     	<container id="2" href="https://github.com/kite9_org" class="circle invis" k9-ui="auth">PASSWORD RESET</container>
+          
+     </group>
+
+  </diagram>
+</svg:svg>
