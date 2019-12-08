@@ -1,5 +1,7 @@
 package com.kite9.k9server.command.domain;
 
+import org.springframework.http.HttpStatus;
+
 import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
@@ -18,6 +20,9 @@ public class NewProject extends AbstractSubjectCommand<User> {
 
 	@Override
 	public RestEntity applyCommand() throws CommandException {
+		if (!current.checkWrite()) {
+			throw new CommandException(HttpStatus.UNAUTHORIZED, "User can't write to "+current, this);
+		}
 		
 		Project p = new Project();
 		p.setDescription(description);

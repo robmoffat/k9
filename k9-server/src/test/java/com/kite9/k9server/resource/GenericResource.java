@@ -14,4 +14,5 @@ public class GenericResource extends ResourceSupport {
     public Date lastUpdated;
     public String icon;
     public String commands;
+    public String localId;
 }

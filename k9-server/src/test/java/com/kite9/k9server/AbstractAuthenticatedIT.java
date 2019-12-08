@@ -61,11 +61,20 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		return uOut.getBody();
 	}
 
-	protected <X, Y> ResponseEntity<X> exchangeUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
+	protected <X, Y> ResponseEntity<X> exchangeJsonUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.COOKIE, cookie);
 		headers.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
+		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
+		return pOut;
+	}
+	
+	protected <X, Y> ResponseEntity<X> exchangeHtmlUsingCookie(RestTemplate rt, String url, String cookie, Y in, HttpMethod method, Class<X> out) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.COOKIE, cookie);
+		headers.setAccept(Collections.singletonList(MediaType.TEXT_HTML));
 		HttpEntity<Y> requestEntity = new HttpEntity<Y>(in, headers);
 		ResponseEntity<X> pOut = rt.exchange(url, method, requestEntity, out);
 		return pOut;
@@ -121,9 +130,13 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		DeleteEntity de = new DeleteEntity();
 		de.setSubjectUri(url);
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(getUrlBase()+"/api/admin"));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, getAdminUri());
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
+	}
+
+	protected URI getAdminUri() throws URISyntaxException {
+		return new URI(getUrlBase()+"/api/admin");
 	}
 	
 	protected void deleteViaCookie(RestTemplate restTemplate, String url, String cookie) throws URISyntaxException {
@@ -132,8 +145,9 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setContentType(MediaType.APPLICATION_JSON);
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
+		de.setSubjectUri(url);
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, getAdminUri());
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}
@@ -143,8 +157,9 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 		h.setContentType(MediaType.APPLICATION_JSON);
 		h.setAccept(Collections.singletonList(MediaTypes.HAL_JSON));
 		DeleteEntity de = new DeleteEntity();
+		de.setSubjectUri(url);
 	
-		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, new URI(url));
+		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(de), h, HttpMethod.POST, getAdminUri());
 		ResponseEntity<Void> out = restTemplate.exchange(re, Void.class);
 		Assert.assertEquals(HttpStatus.OK, out.getStatusCode());
 	}

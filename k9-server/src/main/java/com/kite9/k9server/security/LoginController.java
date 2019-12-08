@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.kite9.k9server.adl.renderer.PublicController;
 
-//@Controller
+@Controller
 public class LoginController {
 
 	@GetMapping(path="/login", produces= {MediaType.TEXT_HTML_VALUE})

@@ -2,18 +2,25 @@ package com.kite9.k9server.web;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.batik.bridge.BridgeException;
 import org.apache.batik.dom.util.SAXIOException;
 import org.apache.batik.transcoder.TranscoderException;
 import org.kite9.framework.common.Kite9XMLProcessingException;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.HtmlUtils;
 import org.xml.sax.SAXParseException;
 
@@ -29,7 +36,7 @@ public class Kite9ErrorController implements ErrorController {
 			+ "rel=\"stylesheet\" "
 			+ "crossorigin=\"anonymous\">";
 	
-	@RequestMapping("/error")
+	@RequestMapping(path = "/error", produces = MediaType.TEXT_HTML_VALUE )
 	@ResponseBody
 	public String handleError(HttpServletRequest request) {
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -41,6 +48,23 @@ public class Kite9ErrorController implements ErrorController {
 		processException(sb, exception, 1);
 		addFooter(sb);
 		return sb.toString();
+	}
+	
+	@RequestMapping(path = "/error", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+	@ResponseBody
+	public Map<String, String> handleErrorJson(HttpServletRequest request, HttpServletResponse response) {
+		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+		String uri = (String) request.getAttribute("javax.servlet.error.request_uri");
+		Exception exception = (Exception) request.getAttribute("javax.servlet.error.exception");
+		Map<String, String> out = new HashMap<String, String>();
+		out.put("status", ""+statusCode);
+		response.setStatus(statusCode);
+		out.put("message", exception.getMessage());
+		StringWriter sw = new StringWriter();
+		exception.printStackTrace(new PrintWriter(sw));
+		out.put("trace", sw.toString());
+		out.put("uri", uri);
+		return out;
 	}
 
 	private void addFooter(StringBuilder sb) {

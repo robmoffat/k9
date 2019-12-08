@@ -227,7 +227,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// check that we can log in.
 		ResponseEntity<String> s = formLogin(restTemplate, email, newPassword);
 		Assert.assertEquals(HttpStatus.FOUND, s.getStatusCode());
-		Assert.assertEquals(getUrlBase()+"/", s.getHeaders().getLocation().toString());
+		Assert.assertTrue(s.getHeaders().getLocation().toString().contains(getUrlBase()+"/api/users/"));
 		
 		// check we can't log in with old password
 		s = formLogin(restTemplate, email, password);
@@ -250,38 +250,45 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		// try to access a protected resource, should be automatically redirected to the login page
 		ResponseEntity<String> pOut = restTemplate.getForEntity(getUrlBase()+ "/api/projects", String.class);
-		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));
-	
+		Assert.assertTrue(pOut.getBody().contains("<meta property=\"kite9:user\" content=\"anonymousUser\" />"));
+		Assert.assertTrue(pOut.getBody().contains("<title>Kite9</title>"));
+		Assert.assertTrue(pOut.getBody().contains("k9-ui=\"auth\""));
+		
+		
 		// try posting the login form information, 
 		pOut = formLogin(restTemplate, email, password);
 		Assert.assertEquals(HttpStatus.FOUND, pOut.getStatusCode());
-		Assert.assertEquals(getUrlBase()+"/", pOut.getHeaders().getLocation().toString());
+		String userUrl = pOut.getHeaders().getLocation().toString();
+		Assert.assertTrue(userUrl.contains("/api/users/"));
 		List<String> cookie = pOut.getHeaders().get("Set-Cookie");
 		Assert.assertNotNull(cookie);
+		
+		// get the list of 
 		
 		// try to create a project with this cookie
 		NewProject np = new NewProject();
 		np.title ="Test Project";
 		np.description = "Lorem Ipsum";
 		np.stub = "tp2";
-		ResponseEntity<ProjectResource> projOut = exchangeUsingCookie(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
+		np.setSubjectUri(userUrl);
+		ResponseEntity<ProjectResource> projOut = exchangeJsonUsingCookie(restTemplate, getUrlBase()+"/api/admin", cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.OK, projOut.getStatusCode());
 		
 		// retrieve it again
-		ResponseEntity<ProjectResource> pGet = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+		ResponseEntity<ProjectResource> pGet = exchangeJsonUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
 		Assert.assertEquals("Test Project", pGet.getBody().title);
 	
 		// try with "wrong" cookie
 		String wrongCookie = "JSESSIONID=248647FE4985967E521D59F1B18C6630; Path=/; HttpOnly";
-		pOut = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), wrongCookie, "", HttpMethod.GET, String.class);
-		Assert.assertTrue(pOut.getBody().contains("<title>Please sign in</title>"));		
+		pOut = exchangeHtmlUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), wrongCookie, "", HttpMethod.GET, String.class);
+		Assert.assertTrue(pOut.getBody().contains("k9-ui=\"auth\""));		
 		
 		// tidy up: delete project
 		deleteViaCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0));
 
 		// check it's gone
 		try {
-			pGet = exchangeUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
+			pGet = exchangeJsonUsingCookie(restTemplate, projOut.getBody().getLink(Link.REL_SELF).getHref(), cookie.get(0), "", HttpMethod.GET, ProjectResource.class);
 			Assert.assertTrue(pGet.getStatusCode().is4xxClientError());
 		} catch (ResourceAccessException e) {
 		}

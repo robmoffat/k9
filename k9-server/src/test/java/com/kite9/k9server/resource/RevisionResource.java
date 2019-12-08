@@ -10,6 +10,7 @@ public class RevisionResource extends GenericResource {
 	public String author;
 	public String previousRevision;
 	public String nextRevision;
+	public DocumentResource parent;
     
 	public RevisionResource() {
 		super();
