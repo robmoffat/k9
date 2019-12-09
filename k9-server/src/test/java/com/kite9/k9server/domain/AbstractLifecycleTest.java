@@ -128,6 +128,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
 		Update u = new Update();
 		u.description = "desc 2";
+		u.setSubjectUri(pIn.getLink(Link.REL_SELF).getHref());
 		
 		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(u), createHeaders(), HttpMethod.POST, getAdminUri());
 		ResponseEntity<ProjectResource> pOut = restTemplate.exchange(re, ProjectResource.class);
