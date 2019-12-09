@@ -145,8 +145,9 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 		AddMember am = new AddMember();
 		am.emailAddresses = Collections.singletonList(email);
 		am.role = pr;
+		am.setSubjectUri(forProject.getLink(Link.REL_SELF).getHref());
 		
-		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(am), createHeaders(), HttpMethod.POST, new URI(forProject.getLink(Link.REL_SELF).getHref()));
+		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(am), createHeaders(), HttpMethod.POST, getAdminUri());
 		ResponseEntity<ProjectResource> rOut = restTemplate.exchange(in, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.OK, rOut.getStatusCode());
 		

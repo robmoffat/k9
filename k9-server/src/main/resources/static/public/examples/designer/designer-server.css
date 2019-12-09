@@ -1,17 +1,4 @@
-@font-face {
-	font-family: "opensans-light-webfont";
-	src: url('../fonts/opensans-light-webfont.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: "opensans-bold-webfont";
-	src: url('../fonts/opensans-bold-webfont.ttf') format('truetype');
-}
-
-@font-face {
-	font-family: "opensans-regular-webfont";
-	src: url('../fonts/opensans-regular-webfont.ttf') format('truetype');
-}
+@import url('/public/fonts/opensans/opensans.css');
 
 /*
  * Required so we can process old XML content
@@ -41,14 +28,14 @@ diagram {
 	kite9-type: diagram;
 	kite9-padding: 15px;
 	kite9-traversal: none;
-	kite9-template: url(template.svg#diagram);
+	kite9-template: url(template.xml#diagram);
 }
 
 key {
 	kite9-type: container;
 	kite9-usage: label;
 	kite9-padding: 3px 6px 3px 6px; 
-	kite9-template: url(template.svg#key)
+	kite9-template: url(template.xml#key)
 }
 
 key body {
@@ -79,7 +66,7 @@ key bodyText {
 glyph {
 	kite9-type: container;
 	kite9-layout: down;	
-	kite9-template: url(template.svg#glyph);
+	kite9-template: url(template.xml#glyph);
 	kite9-padding: 6px 10px 6px 10px; 
 	kite9-margin: 10px;
 	kite9-connection-align: 50%;
@@ -95,14 +82,14 @@ glyph symbols {
 diagram glyph label {
 	kite9-type: container;
 	kite9-sizing: minimize;
-	kite9-template: url(template.svg#glyph-label-text);
+	kite9-template: url(template.xml#glyph-label-text);
 	kite9-vertical-align: top;
 	kite9-margin: 5px 
 }
 
 glyph stereotype {
 	kite9-type: container;
-	kite9-template: url(template.svg#glyph-stereotype-text);
+	kite9-template: url(template.xml#glyph-stereotype-text);
 	kite9-vertical-align: bottom;
 	kite9-horizontal-align: center;
 	kite9-margin: 5px; 
@@ -124,7 +111,7 @@ symbol-text-line {
 	kite9-layout: grid;
 	kite9-grid-size: 2 1;
 	kite9-connection-align: 50%;
-	/* kite9-template: url(template.svg#show-box); */
+	/* kite9-template: url(template.xml#show-box); */
 } 
 
 key text-lines text-label,
@@ -138,17 +125,17 @@ symbol-text-line symbols {
 	kite9-horizontal-align: right;
 	kite9-occupies: 1 0;
 	margin: 0px;
-	/* kite9-template: url(template.svg#show-box) */
+	/* kite9-template: url(template.xml#show-box) */
 }
 
 show-box {
-	kite9-template: url(template.svg#show-box);
+	kite9-template: url(template.xml#show-box);
 	kite9-usage: decal;
 	kite9-type: svg;
 }
 
 context {
-	kite9-template: url(template.svg#context);
+	kite9-template: url(template.xml#context);
 	kite9-type: container;
 	kite9-sizing: maximize;
 	kite9-traversal: always;
@@ -161,12 +148,12 @@ context > label {
 	kite9-usage: label;
 	kite9-type: container; 
 	kite9-sizing: minimize;
-	kite9-template: url(template.svg#container-label);
+	kite9-template: url(template.xml#container-label);
 	kite9-padding: 4px;
 }
 
 grid {
-	kite9-template: url(template.svg#grid);
+	kite9-template: url(template.xml#grid);
 	kite9-padding: 0px;
 	kite9-margin: 0px;
 	kite9-type: container;
@@ -176,11 +163,11 @@ grid {
 }
 
 grid.triangles {
-	kite9-template: url(template.svg#grid-triangles);
+	kite9-template: url(template.xml#grid-triangles);
 }
 
 cell {
-	kite9-template: url(template.svg#cell);
+	kite9-template: url(template.xml#cell);
 	kite9-padding: 0px;
 	kite9-margin: 0px;
 	kite9-type: container;
@@ -194,7 +181,7 @@ fromLabel {
 	kite9-type: container; 
 	kite9-padding: 4px; 
 	kite9-sizing: minimize;
-	kite9-template: url(template.svg#connection-label);
+	kite9-template: url(template.xml#connection-label);
 	kite9-margin: 4px;	
 }
 
@@ -205,33 +192,33 @@ text-label {
 
 link {
 	kite9-type: link;
-	kite9-template: url(template.svg#link);
+	kite9-template: url(template.xml#link);
 }
 
 from,
 to {
 	kite9-type: link-end;
-	kite9-template: url(template.svg#empty-terminator);
+	kite9-template: url(template.xml#empty-terminator);
 	kite9-padding: 5px 5px 5px 5px; 
 } 
 
 from.circle,
 to.circle {
-	kite9-marker-start-reference: url(template.svg#circle-marker);
-	kite9-marker-end-reference: url(template.svg#circle-marker);
+	kite9-marker-start-reference: url(template.xml#circle-marker);
+	kite9-marker-end-reference: url(template.xml#circle-marker);
 }
 
 from.arrow,
 to.arrow {
-	kite9-marker-start-reference: url(template.svg#arrow-start-marker);
-	kite9-marker-end-reference: url(template.svg#arrow-end-marker);
+	kite9-marker-start-reference: url(template.xml#arrow-start-marker);
+	kite9-marker-end-reference: url(template.xml#arrow-end-marker);
 	kite9-padding: 5px 12px 5px 1px;
 }
 
 from.arrow-open,
 to.arrow-open {
-	kite9-marker-start-reference: url(template.svg#open-arrow-start-marker);
-	kite9-marker-end-reference: url(template.svg#open-arrow-end-marker);
+	kite9-marker-start-reference: url(template.xml#open-arrow-start-marker);
+	kite9-marker-end-reference: url(template.xml#open-arrow-end-marker);
 	kite9-padding: 5px 12px 5px 1px;
 }
 
@@ -242,22 +229,22 @@ to.gap {
 
 from.diamond, 
 to.diamond {
-	kite9-marker-start-reference: url(template.svg#diamond-start-marker);
-	kite9-marker-end-reference: url(template.svg#diamond-end-marker);
+	kite9-marker-start-reference: url(template.xml#diamond-start-marker);
+	kite9-marker-end-reference: url(template.xml#diamond-end-marker);
 	kite9-padding: 5px 12px 5px 1px;
 }
 
 from.diamond-open, 
 to.diamond-open {
-	kite9-marker-start-reference: url(template.svg#open-diamond-start-marker);
-	kite9-marker-end-reference: url(template.svg#open-diamond-end-marker);
+	kite9-marker-start-reference: url(template.xml#open-diamond-start-marker);
+	kite9-marker-end-reference: url(template.xml#open-diamond-end-marker);
 	kite9-padding: 5px 12px 5px 1px;
 }
 
 from.barbed-arrow, 
 to.barbed-arrow {
-	kite9-marker-start-reference: url(template.svg#barbed-arrow-start-marker);
-	kite9-marker-end-reference: url(template.svg#barbed-arrow-end-marker);
+	kite9-marker-start-reference: url(template.xml#barbed-arrow-start-marker);
+	kite9-marker-end-reference: url(template.xml#barbed-arrow-end-marker);
 	kite9-padding: 5px 7px 5px 1px;
 }
 
@@ -280,19 +267,19 @@ symbol {
 }
 
 symbol.circle {
-	kite9-template: url(template.svg#circle);	 
+	kite9-template: url(template.xml#circle);	 
 }
 
 symbol.hexagon {
-	kite9-template: url(template.svg#hexagon);
+	kite9-template: url(template.xml#hexagon);
 }
 
 symbol.diamond {
-	kite9-template: url(template.svg#diamond);
+	kite9-template: url(template.xml#diamond);
 }
 
 symbol.square {
-	kite9-template: url(template.svg#square);
+	kite9-template: url(template.xml#square);
 }
 
 text-line, k9-text, boldText, bodyText {
@@ -309,11 +296,11 @@ text-line, k9-text, boldText, bodyText {
 
 text-line, k9-text, bodyText {
 	kite9-horizontal-align: left;
-	kite9-template: url(template.svg#generic-text);
+	kite9-template: url(template.xml#generic-text);
 }
 
 boldText {
-	kite9-template: url(template.svg#bold-text);
+	kite9-template: url(template.xml#bold-text);
 	kite9-horizontal-align: center;
 }
 
@@ -325,7 +312,7 @@ arrow {
 	kite9-margin: 10 10 10 10; 
 	kite9-type: container;
 	kite9-sizing: minimize;
-	kite9-template: url(template.svg#arrow);
+	kite9-template: url(template.xml#arrow);
 	kite9-connections: separate;
 	kite9-connection-align: 50%;
 	kite9-link-inset: 4px;
@@ -335,7 +322,7 @@ arrow {
 arrow > label {
 	kite9-type: container;
 	kite9-sizing: minimize;
-	kite9-template: url(template.svg#arrow-label-text);
+	kite9-template: url(template.xml#arrow-label-text);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: center;
 }

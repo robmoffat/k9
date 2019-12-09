@@ -1,3 +1,11 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+       @import url("/public/examples/designer/designer-server.css");
+    </svg:style>
+    
+  </svg:defs>
 <diagram xmlns="http://www.kite9.org/schema/adl" id="The Diagram">
   <glyph id="auto:0-one" rank="0">
     <stereotype id="auto:0-one-stereo">Stereo</stereotype>
@@ -19,3 +27,4 @@
     <to class="arrow" reference="auto:1-two" id="auto:3" />
   </link>
 </diagram>
+</svg:svg>
