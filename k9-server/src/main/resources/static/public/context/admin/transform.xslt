@@ -93,10 +93,8 @@
     </link>
     
     <xsl:apply-templates select="adl:value[not(@type='revision')]" />
-
   </xsl:template>
  
-  
   <xsl:template match="adl:content[adl:collectionValue = 'true']">
    	<xsl:variable name="rel"><xsl:value-of select="adl:rel" /></xsl:variable>
     <xsl:variable name="from">/api<xsl:value-of select="substring-after(../adl:links[@rel='self']/@href,'/api')" /></xsl:variable>
@@ -130,8 +128,7 @@
       <label><xsl:value-of select="$rel" /></label>
     </container>
   </xsl:template>
-  
-  
+   
   <xsl:template match="*">
   </xsl:template>
 </xsl:stylesheet>

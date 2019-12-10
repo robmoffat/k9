@@ -24,7 +24,7 @@ revision,
 member,
 user {
 	kite9-type: container;
-	kite9-template: url(template.xml#entity);
+	kite9-template: url(template.xml#entity) '15px' '15px';
 	kite9-layout: down;
 	kite9-min-size: 150px 250px;
 	kite9-sizing: minimize;
@@ -33,14 +33,6 @@ user {
 	kite9-connection-align: 50%;	
 }
 
-[k9-elem=document] .back,
-[k9-elem=project] .back,
-[k9-elem=member] .back,
-[k9-elem=revision] .back,
-[k9-elem=user] .back {
-	fill: url(#risk-background);
-	stroke: #A0A0A0;
-}
 
 title,
 description, 
@@ -149,15 +141,19 @@ container {
 	font-size: 95px;
 }
 
+title,
+[k9-elem=title],
 .subtitle {
 	font-size: 22px;
 	font-style: italic;
 	font-weight: 800;
+	fill: black;
 }
 
-.circle {
-	kite9-template: url(template.xml#circle);
-	kite9-layout: down;
+badge,
+[k9-elem=badge] {
+	kite9-type: container;
+	kite9-template: url(template.xml#badge);
 }
 
 .invis [k9-elem=back] {
@@ -168,4 +164,8 @@ container {
 	stroke: black;
 	stroke-width: 15px;
 	fill: white;
+}
+
+.panel {
+	kite9-layout: down;
 }

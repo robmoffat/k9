@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg:svg xmlns:svg="http://www.w3.org/2000/svg"
+	xmlns:adl="http://www.kite9.org/schema/adl"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns="http://www.kite9.org/schema/adl"
+	contentScriptType="text/ecmascript" zoomAndPan="magnify"
+	contentStyleType="text/css" preserveAspectRatio="xMidYMid"
+	version="1.0">
+	<svg:defs>
+		<svg:style type="text/css" xml:space="preserve"> @import url("/public/context/admin/admin.css");</svg:style>
+	</svg:defs>
+	
+	<diagram>
+		<user id="/api/users/6" entity="true" k9-ui="DeleteEntity Update NewProject">
+			<icon>https://gravatar.com/avatar/29de34339da3e024b8e6974b05c74530</icon>
+			<title>test1</title>
+		</user>
+	</diagram>
+</svg:svg>

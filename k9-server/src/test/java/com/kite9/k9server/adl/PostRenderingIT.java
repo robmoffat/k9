@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -62,8 +60,6 @@ public class PostRenderingIT extends AbstractRestIT {
 	@Test
 	public void testADLAndSVGRender() throws Exception {
 		byte[] back = withBytesInFormat(Kite9MediaTypes.ADL_SVG);
-		// ensure diagram hasn't been rendered
-		String out = new String(back);
 		XMLCompare.compareXML(StreamUtils.copyToString(this.getClass().getResourceAsStream("/static/public/examples/risk-first/minimal.xml"), Charset.forName("UTF-8")), new String(back));
 	}
 	
@@ -71,11 +67,6 @@ public class PostRenderingIT extends AbstractRestIT {
 	public void testSVGRender() throws Exception {
 		byte[] back = withBytesInFormat(Kite9MediaTypes.SVG);
 		persistInAFile(back, "testSVGRender", "diagram.svg");
-
-		// parse it to make sure it's good svg
-		Document d = parseBytesToXML(back);
-		
-		Element e = d.getDocumentElement();
 		XMLCompare.compareXML(StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/post/diagram.svg"), Charset.forName("UTF-8")), new String(back));
 	}
 

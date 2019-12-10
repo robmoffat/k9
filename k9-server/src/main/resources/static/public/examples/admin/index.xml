@@ -29,11 +29,20 @@
      
      <group style="kite9-layout: right; ">
      
-     	<container id="1" href="https://github.com/kite9_org" class="circle invis" k9-ui="open">DOCS</container>
+     	<container id="1" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     		<badge>D</badge>
+     		<title>DOCS</title>
+     	</container>
      	
-     	<container id="2" href="https://github.com/kite9_org" class="circle invis" k9-ui="open">HUMANS</container>
+     	<container id="2" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     		<badge>H</badge>
+     		<title>HUMANS</title>
+     	</container>
      
-     	<container id="3" href="https://github.com/kite9_org" class="circle invis" k9-ui="open">RISK FIRST</container>
+     	<container id="3" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     		<badge>E</badge>
+     		<title>EXAMPLES</title>
+     	</container>
      
      </group>
 

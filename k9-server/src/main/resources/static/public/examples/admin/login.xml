@@ -7,9 +7,15 @@
      
      <group style="kite9-layout: right; ">
      
-     	<container id="1" href="https://github.com/kite9_org" class="circle invis" k9-ui="auth">LOG IN</container>
+     	<container id="1" href="https://github.com/kite9_org" class="panel invis" k9-ui="auth">
+     		<badge>L</badge>
+     		<title>LOG IN</title>
+     	</container>
      	
-     	<container id="2" href="https://github.com/kite9_org" class="circle invis" k9-ui="auth">PASSWORD RESET</container>
+     	<container id="2" href="https://github.com/kite9_org" class="panel invis" k9-ui="auth">
+     		<badge>P</badge>
+     		<title>PASSWORD RESET</title>
+     	</container>
           
      </group>
 

@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 
-import com.kite9.k9server.XMLCompare;
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.domain.AbstractLifecycleTest;
 import com.kite9.k9server.resource.DocumentResource;
