@@ -94,7 +94,7 @@ label > front,
 }
 
 icon {
-	kite9-type: svg;
+	kite9-type: container;
 	kite9-template: url(template.xml#icon);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;

@@ -59,10 +59,13 @@ public class Kite9ErrorController implements ErrorController {
 		Map<String, String> out = new HashMap<String, String>();
 		out.put("status", ""+statusCode);
 		response.setStatus(statusCode);
-		out.put("message", exception.getMessage());
-		StringWriter sw = new StringWriter();
-		exception.printStackTrace(new PrintWriter(sw));
-		out.put("trace", sw.toString());
+		if (exception != null) {
+			out.put("message", exception.getMessage());
+			StringWriter sw = new StringWriter();
+			exception.printStackTrace(new PrintWriter(sw));
+			out.put("trace", sw.toString());
+		}
+		
 		out.put("uri", uri);
 		return out;
 	}
