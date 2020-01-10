@@ -15,7 +15,7 @@
       </code>
       <image width="50px" height="50px" href="#{$template-2}" />
       <title>
-        <contents />
+        <contents optional="true" />
       </title>
   </template>
   
@@ -38,7 +38,7 @@
     </back>
     <front style="kite9-usage: regular; kite9-type: container; kite9-layout: down; 	kite9-padding: 10px; kite9-padding-right: 40px; ">
       <title>
-      	<contents />
+      	<contents optional="true" />
       </title>
     </front>
   </template>
@@ -49,7 +49,7 @@
     </back>
     <front style="kite9-usage: regular; kite9-type: container; kite9-layout: down; 	kite9-padding: 10px; kite9-padding-left: 40px; ">
       <title>
-      	<contents />
+      	<contents optional="true" />
       </title>
     </front>
   </template>
@@ -59,7 +59,7 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <image width="80px" height="80px" href="#{$template-1}" />
-    <title><contents /></title>
+    <title><contents optional="true" /></title>
   </template>
   
   <template id="generic-artifact" k9-ui="drag delete insert align contain connect autoconnect copy replace-connected edit" k9-palette="insert replace-connected">
@@ -67,14 +67,14 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
     <image width="80px" height="80px" href="#{../@href}" />
-    <title><contents /></title>
+    <title><contents optional="true" /></title>
   </template>
   
   <template id='mitigated' k9-ui="drag delete align insert contain connect layout autoconnect copy replace-connected" k9-palette="contain insert repace-connected">
     <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="pulse fill" > 
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
-    <contents />
+    <contents optional="true" />
     <back style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:line x1="0" y1="#{$height}" x2="#{$width}" y2="0" stroke="black" stroke-width="10px" stroke-opacity="0.2"/>
     </back>
@@ -84,7 +84,7 @@
     <back style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="pulse fill" > 
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='8px' ry='8px' />
     </back>
-    <contents />
+    <contents optional="true" />
     <back style='kite9-usage: decal; kite9-type: svg; fill-opacity: 0.2; fill: black; kite9-transform: position;' class="tranparent">
       <svg:g transform="scale(#{$width div 230}) translate(140,-20)" style="kite9-template: url(/public/examples/risk-first/redesign/decals/hidden_risk_v2.svg);" />
 	</back>
@@ -93,7 +93,7 @@
   <template id='code'>
     <svg:g class="code-label-front">
       <front style="kite9-type: text; ">
-        <contents />
+        <contents optional="true" />
       </front>
     </svg:g>
   </template>
@@ -101,7 +101,7 @@
   <template id='title'>
     <svg:g class="title-label-front">
       <front style="kite9-type: text; " k9-ui="text">
-        <contents />
+        <contents optional="true" />
         <svg:flowRegion>          
           <svg:path d="M0,0 H100 V250 H-100 z" />        
         </svg:flowRegion> 

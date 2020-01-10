@@ -4,7 +4,7 @@
     <back class="back" k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg;  '>
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='4pt' ry='4pt' />
     </back>
-    <contents />
+    <contents optional="true" />
   </template>
 
 </svg:svg>

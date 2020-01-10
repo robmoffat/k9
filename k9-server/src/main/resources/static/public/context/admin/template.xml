@@ -17,13 +17,13 @@
 				rx='#{$template-1}' ry='#{$template-1}' />
 		</back>
 
-		<contents />
+		<contents optional="true" />
 	</template>
 
 	<template id="icon">
 		<inside style="kite9-type: svg; ">
 			<svg:image x="0" y="0" width="100px" height="100px"
-				xlink:href="#{../../@url}" clip-path="url(#iconCircle)"/>
+				xlink:href="pre:#{text()}" clip-path="url(#iconCircle)"/>
 		</inside>
 	</template>
 

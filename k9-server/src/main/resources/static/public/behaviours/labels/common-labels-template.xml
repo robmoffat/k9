@@ -5,7 +5,7 @@
       <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
     </back>
     <front style="kite9-type: text; ">
-      <contents />
+      <contents optional="true" />
     </front>
   </template>
   

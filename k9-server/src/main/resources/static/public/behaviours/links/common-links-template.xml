@@ -57,42 +57,42 @@
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="fill grab">
       <svg:ellipse cx='8' cy='8' rx="8" ry="8" />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
 
   <template id='up-terminator' k9-palette="end" k9-ui="drag invisible end label">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="fill grab">
       <svg:polygon points="0 16, 8 0, 16 16"  />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
   
   <template id='down-terminator' k9-palette="end" k9-ui="drag invisible end label">
     <grab style="kite9-type: svg; kite9-usage: decal;"  k9-indicator="fill grab">
       <svg:polygon points="0 0, 8 16, 16 0" />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
   
   <template id='left-terminator' k9-palette="end" k9-ui="drag invisible end label">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="fill grab">
       <svg:polygon points="16 0, 0 8, 16 16" />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
   
   <template id='right-terminator' k9-palette="end" k9-ui="drag invisible end label">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="fill grab">
       <svg:polygon points="0 0, 16 8, 0 16" />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
 
   <template id="basic-link" k9-ui="delete link cascade drop" k9-palette="link">
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="grab outline">
       <svg:path d="#{$path}" k9-animate="link"/>
     </grab>
-    <contents />
+    <contents optional="true" />
     <link-body style="kite9-type: svg; kite9-usage: decal;">
       <svg:path k9-animate="link" d="#{$path}"
         style="marker-start: url(##{concat(../../adl:from/@shape,'-start-marker')}); 
@@ -104,7 +104,7 @@
     <grab style="kite9-type: svg; kite9-usage: decal;" k9-indicator="grab stroke">
       <svg:path k9-animate="link" d="#{$path}" />
     </grab>
-    <contents />
+    <contents optional="true" />
   </template>
   
   <template id="hub">
