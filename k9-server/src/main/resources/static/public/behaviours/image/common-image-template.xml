@@ -10,7 +10,7 @@
 				height="#{$height}" xlink:href="pre:#{@href}" />
 		</decal>
 		<front k9-indicator="stroke pulse" style='kite9-type: svg; '>
-			<svg:rect x='0' y='0' width='#{@width}' height='#{@height}' rx='2' ry='2' />
+			<svg:rect x='0' y='0' width='pre:#{@width}' height='pre:#{@height}' rx='2' ry='2' />
 		</front>
 	</template>
 
