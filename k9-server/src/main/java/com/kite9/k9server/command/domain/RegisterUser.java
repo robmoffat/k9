@@ -2,6 +2,9 @@ package com.kite9.k9server.command.domain;
 
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 
 import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
@@ -37,7 +40,14 @@ public class RegisterUser extends AbstractSubjectCommand<User> {
 			out.setUsername(username);
 			out.setPassword(Hash.generatePasswordHash(password));
 			out.setSalt(User.createNewSalt());
+			out.setEmailVerified(false);
 			ur.save(out);
+			
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+			SecurityContextImpl context = new SecurityContextImpl(token);
+			token.setDetails(out);
+			SecurityContextHolder.setContext(context);
+			
 			return out;
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't register user.  User may already be registered", e, this);

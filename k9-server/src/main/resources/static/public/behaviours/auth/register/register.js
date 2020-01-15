@@ -24,20 +24,23 @@ export function initRegisterContextMenuCallback(transition, templateUri, selecto
 					contextMenu.clear(event);
 					var htmlElement = contextMenu.get(event);
 					
-					function onchange() {
-						alert('hi');
+					function passwordsSame() {
+						var p1 = document.querySelector("#password");
+						var p2 = document.querySelector("#passwordAgain")
+						if (p1.value != p2.value) {
+							p2.setCustomValidity("passwords should be the same");
+						} else {
+							p2.setCustomValidity('');
+						}
 					}
-					
-					var pwf1 = password('Password', undefined, { required: true, minlength: 8}, onchange);
-					var pwf2 = password('Password (Again)', undefined, { required: true, minlength: 8}, onchange);
 										
 					var f = form([
 						text('User Name', undefined, { required: true}),
-						pwf1,
-						pwf2,
+						password('Password', undefined, { required: true, minlength: 8}),
+						password('Password (Again)', undefined, { required: true, minlength: 8}),
 						email('Email Address', undefined, { required: true}),
 						inlineButtons([
-							ok('register', {}, () => {
+							ok('register', {}, (a) => {
 								
 								if (f.reportValidity()) {
 									const values = formValues('register');
@@ -52,13 +55,20 @@ export function initRegisterContextMenuCallback(transition, templateUri, selecto
 									}
 									transition.postCommands([ command ]);
 									contextMenu.destroy();
+								} else {
+									a.preventDefault();
 								}
 								
 							}),
 							cancel('cancel', [], () => contextMenu.destroy())
 						])
 					], 'register');
+					
 					htmlElement.appendChild(f);
+					
+					document.querySelector("#password").addEventListener('change', passwordsSame);
+					document.querySelector("#passwordAgain").addEventListener('change', passwordsSame);
+					
 				}		
 			)
 		}

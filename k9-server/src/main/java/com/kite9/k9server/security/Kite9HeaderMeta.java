@@ -23,6 +23,7 @@ public class Kite9HeaderMeta {
 		
 		if (authentication.getDetails() instanceof User) {
 			t.setMeta("user-icon", ((User)authentication.getDetails()).getIcon());
+			t.setMeta("user-page", ((User)authentication.getDetails()).getLocalId());
 		}
 		if (self != null) {
 			t.setMeta("self", self);
@@ -41,6 +42,7 @@ public class Kite9HeaderMeta {
 		
 		if (authentication.getDetails() instanceof User) {
 			headers.add("kite9-user-icon", ((User)authentication.getDetails()).getIcon());
+			headers.add("kite9-user-page", ((User)authentication.getDetails()).getLocalId());
 		}
 		
 		if (self != null) {
