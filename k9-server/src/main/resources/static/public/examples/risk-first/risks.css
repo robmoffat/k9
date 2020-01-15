@@ -190,8 +190,8 @@ risk code,
 [k9-elem=risk] [k9-elem=code] {
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-	kite9-type: text;
 	kite9-sizing: minimize;
+	kite9-type: text;
 	font-size: 22px;
 	font-family: "metropolis";
 	font-weight: 300;

@@ -27,7 +27,7 @@ export function initLoginContextMenuCallback(transition, templateUri, selector, 
 						text('User Name', undefined, { required: true}),
 						password('Password', undefined, { required: true}),
 						inlineButtons([
-							ok('ok', {}, () => {
+							ok('login', {}, () => {
 								const values = formValues('login');
 								const body = "username="
 									+values.userName

@@ -23,7 +23,7 @@
 
 title,
 [k9-elem=title] {
-	kite9-type: container;
+	kite9-type: text;
 	kite9-sizing: minimize;
 	kite9-layout: horizontal;
 	kite9-template: url(template.xml#title);

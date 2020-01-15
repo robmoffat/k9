@@ -42,6 +42,7 @@ import { toggleInstrumentationCallback } from '/public/behaviours/indication/tog
 // authentication actions
 
 import { initLoginContextMenuCallback } from '/public/behaviours/auth/login/login.js';
+import { initRegisterContextMenuCallback } from '/public/behaviours/auth/register/register.js';
 
 
 var initialized = false;
@@ -54,7 +55,7 @@ function initEditor() {
 		]);
 	
 	var transition = new Transition(
-			() => metadata.get('content'),		// change uri
+			() => '/api/admin',		// change uri
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 	
@@ -72,7 +73,8 @@ function initEditor() {
 		initNewDocumentContextMenuCallback(transition),
 		initNewProjectContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
-		initLoginContextMenuCallback(transition)
+		initLoginContextMenuCallback(transition),
+		initRegisterContextMenuCallback(transition)
 		]); 
 	
 	initFocus(transition)

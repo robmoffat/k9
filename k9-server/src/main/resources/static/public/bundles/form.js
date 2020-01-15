@@ -59,9 +59,9 @@ export function formValues(id) {
 	return out;
 }
 
-export function form(contents, id) {
+export function form(contents, id, action) {
 	id = id == undefined ? 'no-form-id' : id;
-	return create("form", {"class": "normform", "style": "background: #fff; ", "id": id}, contents);
+	return create("form", {"class": "normform", "style": "background: #fff; ", "id": id, "action" : action }, contents);
 }
 
 export function fieldset(legend, contents){
@@ -121,6 +121,12 @@ export function cancel(placeholder, atts, callback) {
 	var id = idFrom(placeholder);
 	var out = create("input", {...atts, 'type': 'reset', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
 	out.addEventListener('click', callback);
+	return out;
+}
+
+export function submit(placeholder, atts) {
+	var id = idFrom(placeholder);
+	var out = create("input", {...atts, 'type': 'submit', 'name' : id, 'id' : id, 'value': placeholder}, [ txt(placeholder)]);
 	return out;
 }
 
