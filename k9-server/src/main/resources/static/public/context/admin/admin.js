@@ -42,6 +42,7 @@ import { toggleInstrumentationCallback } from '/public/behaviours/indication/tog
 // authentication actions
 
 import { initLoginContextMenuCallback } from '/public/behaviours/auth/login/login.js';
+import { initLogoutContextMenuCallback } from '/public/behaviours/auth/logout/logout.js';
 import { initRegisterContextMenuCallback } from '/public/behaviours/auth/register/register.js';
 
 
@@ -73,8 +74,9 @@ function initEditor() {
 		initNewDocumentContextMenuCallback(transition),
 		initNewProjectContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
-		initLoginContextMenuCallback(transition),
-		initRegisterContextMenuCallback(transition)
+		initLoginContextMenuCallback(transition, metadata),
+		initLogoutContextMenuCallback(transition, metadata),
+		initRegisterContextMenuCallback(transition, metadata)
 		]); 
 	
 	initFocus(transition)

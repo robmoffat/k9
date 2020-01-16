@@ -1,13 +1,13 @@
 import { getMainSvg } from '/public/bundles/screen.js';
 import { hasLastSelected, parseInfo, getContainingDiagram, reverseDirection, createUniqueId } from '/public/bundles/api.js';
-import { text, form, ok, cancel, inlineButtons, formValues, password } from '/public/bundles/form.js';
+import { text, form, ok, cancel, inlineButtons, formValues, password, p } from '/public/bundles/form.js';
 
 
-export function initLoginContextMenuCallback(transition, metadata, templateUri, selector, action) {
+export function initLogoutContextMenuCallback(transition, metadata, templateUri, selector, action) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			if (!metadata.get('user-page')) {
+			if (metadata.get('user-page')) {
 				return getMainSvg().querySelectorAll("[k9-ui~='auth'].selected");
 			} else {
 				return [];
@@ -23,28 +23,19 @@ export function initLoginContextMenuCallback(transition, metadata, templateUri, 
 		const selectedElements = hasLastSelected(selector());
 		
 		if (selectedElements.length > 0) {
-			contextMenu.addControl(event, "/public/behaviours/auth/login/login.svg", "Log In", 
+			contextMenu.addControl(event, "/public/behaviours/auth/logout/logout.svg", "Log Out", 
 				function(e2, selector) {
 					contextMenu.clear(event);
 					var htmlElement = contextMenu.get(event);
 					htmlElement.appendChild(form([
-						text('User Name', undefined, { required: true}),
-						password('Password', undefined, { required: true}),
+						p('Logout: are you sure?'),
 						inlineButtons([
-							ok('login', {}, () => {
-								const values = formValues('login');
-								const body = "username="
-									+values.userName
-									+"&password="
-									+values.password
-									+"&submit=Login";
-								const uri = '/login';
-								transition.postForm(uri, body);
-								contextMenu.destroy();
+							ok('logout', {}, () => {
+								transition.get('/logout');
 							}),
 							cancel('cancel', [], () => contextMenu.destroy())
 						])
-					], 'login'));
+					], 'logout'));
 				}		
 			)
 		}

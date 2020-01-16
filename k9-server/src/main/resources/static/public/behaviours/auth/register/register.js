@@ -3,11 +3,15 @@ import { hasLastSelected, parseInfo, getContainingDiagram, reverseDirection, cre
 import { text, form, ok, cancel, inlineButtons, formValues, password, email } from '/public/bundles/form.js';
 
 
-export function initRegisterContextMenuCallback(transition, templateUri, selector, action) {
+export function initRegisterContextMenuCallback(transition, metadata, selector) {
 	
 	if (selector == undefined) {
 		selector = function() {
-			return getMainSvg().querySelectorAll("[k9-ui~='auth'].selected");
+			if (!metadata.get('user-page')) {
+				return getMainSvg().querySelectorAll("[k9-ui~='auth'].selected");
+			} else {
+				return [];
+			}
 		}
 	}
 	
