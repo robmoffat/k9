@@ -46,7 +46,7 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 								hidden('type', 'NewDocument'),
 								ok('ok', {}, () => {
 									const values = formValues();
-									values['subjectUri'] = e.getAttribute('id');
+									values['subjectUri'] = e.getAttribute('subject-uri');
 									if (values['template'] != 'custom') {
 										const path = templates[values['template']]
 										values.templateUri = new URL(path, document.location).href;

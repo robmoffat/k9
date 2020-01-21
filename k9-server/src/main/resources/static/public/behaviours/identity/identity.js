@@ -5,8 +5,10 @@ var currentUsername;
 var gravatar;
 var navigator;
 var userPage;
+var transition;
 
 export function identityMetadataCallback(metadata) {
+	
 	if (currentUsername != metadata.user) {
 		currentUsername = metadata.user;
 		gravatar = metadata['user-icon'];
@@ -32,7 +34,11 @@ function updateAvatar() {
 	}
 }
 
-export function identityInstrumentationCallback(nav) {
-	navigator = nav;
-	updateAvatar();
+export function initIdentityInstrumentationCallback(t) {
+	transition = t;
+	
+	return function(nav) {
+		navigator = nav;
+		updateAvatar();
+	}
 }

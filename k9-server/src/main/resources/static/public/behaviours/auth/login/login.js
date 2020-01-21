@@ -8,7 +8,7 @@ export function initLoginContextMenuCallback(transition, metadata, templateUri, 
 	if (selector == undefined) {
 		selector = function() {
 			if (!metadata.get('user-page')) {
-				return getMainSvg().querySelectorAll("[k9-ui~='auth'].selected");
+				return getMainSvg().querySelectorAll("[k9-ui~='auth']");
 			} else {
 				return [];
 			}

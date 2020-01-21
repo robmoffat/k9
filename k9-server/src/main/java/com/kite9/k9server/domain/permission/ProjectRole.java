@@ -5,13 +5,12 @@ package com.kite9.k9server.domain.permission;
  */
 public enum ProjectRole {
 	
-	ADMIN("A", "glyphicon-list-alt", true, true, true), 
-	PUBLISHER("P", "publisher", true, true, false), 
-	MEMBER("M", "glyphicon-pencil", true, false, false), 
-	VIEWER("V", "glyphicon-eye-open", false, false, false);
+	ADMIN("A", true, true, true), 
+	PUBLISHER("P",  true, true, false), 
+	MEMBER("M", true, false, false), 
+	VIEWER("V", false, false, false);
 
     String id;
-	String icon;
 	boolean canEditDiagrams;
 	boolean canPublish;
 	boolean canChangeUsers;
@@ -28,9 +27,8 @@ public enum ProjectRole {
 		return canChangeUsers;
 	}
 
-	ProjectRole(String id, String icon, boolean canEditDiagrams, boolean canPublish, boolean canChangeUsers) { 
+	ProjectRole(String id, boolean canEditDiagrams, boolean canPublish, boolean canChangeUsers) { 
 		this.id = id; 
-		this.icon = icon;
 		this.canEditDiagrams = canEditDiagrams;
 		this.canPublish = canPublish;
 		this.canChangeUsers = canChangeUsers;

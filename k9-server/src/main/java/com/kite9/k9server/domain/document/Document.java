@@ -18,6 +18,7 @@ import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.entity.Updateable;
+import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
 
@@ -112,7 +113,7 @@ public class Document extends AbstractLongIdEntity implements Secured, DocumentE
 
 	@Override
 	public String getIcon() {
-		return "/public/context/admin/icons/document.svg";
+		return getLocalId()+ContentResourceProcessor.CONTENT_URL+".svg";
 	}
 	
 	@JsonIgnore

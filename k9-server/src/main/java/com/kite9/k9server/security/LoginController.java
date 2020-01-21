@@ -14,7 +14,7 @@ import com.kite9.k9server.adl.renderer.PublicController;
 public class LoginController {
 
 	@GetMapping(path="/login", produces= {MediaType.TEXT_HTML_VALUE})
-	public ResponseEntity<?> loadStaticXml(RequestEntity<?> request) throws Exception {
+	public ResponseEntity<?> loginUrl(RequestEntity<?> request) throws Exception {
 		URI orig = request.getUrl();
 		URI newUri = new URI(orig.getScheme(), 
 				orig.getUserInfo(), 
@@ -26,4 +26,17 @@ public class LoginController {
 		return PublicController.loadStatic(newUri, request.getHeaders(), "html");
 	}
 	
+
+	@GetMapping(path="/login-failed", produces= {MediaType.TEXT_HTML_VALUE})
+	public ResponseEntity<?> loginFailedUrl(RequestEntity<?> request) throws Exception {
+		URI orig = request.getUrl();
+		URI newUri = new URI(orig.getScheme(), 
+				orig.getUserInfo(), 
+				orig.getHost(), 
+				orig.getPort(), 
+				"/public/examples/admin/failed.html", 
+				null,
+				null);
+		return PublicController.loadStatic(newUri, request.getHeaders(), "html");
+	}
 }

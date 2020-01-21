@@ -47,7 +47,8 @@ public class AdminCommandController extends AbstractCommandController implements
 		produces= {
 			MediaTypes.HAL_JSON_VALUE, 
 			Kite9MediaTypes.ADL_SVG_VALUE, 
-			Kite9MediaTypes.SVG_VALUE
+			Kite9MediaTypes.SVG_VALUE,
+			MediaType.APPLICATION_JSON_VALUE
 		}) 
 	@ResponseBody
 	@Transactional

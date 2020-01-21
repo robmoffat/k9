@@ -16,6 +16,11 @@
      		<badge>P</badge>
      		<title>PASSWORD RESET</title>
      	</container>
+     	
+     	<container id="3" href="https://github.com/kite9_org" class="panel invis" k9-ui="auth">
+     		<badge>R</badge>
+     		<title>REGISTER</title>
+     	</container>
           
      </group>
 

@@ -21,7 +21,6 @@ diagram,
 document,
 project,
 revision,
-member,
 user {
 	kite9-type: container;
 	kite9-template: url(template.xml#entity) '15px' '15px';
@@ -33,13 +32,60 @@ user {
 	kite9-connection-align: 50%;	
 }
 
+container.main {
+	kite9-sizing: maximize;
+	kite9-layout: horizontal;
+}
+
+container.left {
+	kite9-min-width: 150px;
+}
+
+container.left * {
+	kite9-vertical-align: top;
+}
+
+container.right {
+	kite9-sizing: maximize;
+}
+
+container.list {
+	kite9-layout: down;
+}
+
+container.list * {
+	kite9-vertical-align: top;
+	kite9-horizontal-align: left;
+}
+
+container.grid {
+	kite9-layout: grid;
+	kite9-grid-columns: 3;
+}
+
+container.list label {
+	kite9-horizontal-align: center;
+}
+
+member {
+	kite9-type: container;
+	kite9-template: url(template.xml#entity) '15px' '15px';
+	kite9-layout: right;
+	kite9-min-size: 150px 50px;
+	kite9-sizing: minimize;
+	kite9-margin: 10px;
+	kite9-padding: 15px;
+}
+
 
 title,
 description, 
 lastUpdated,
+projectRole,
 [k9-elem=title],
 [k9-elem=description],
-[k9-elem=lastUpdated] {
+[k9-elem=lastUpdated],
+[k9-elem=projectRole] {
 	kite9-type: text;
 	fill: #686868;
 	stroke: #AAAA88;
@@ -48,6 +94,33 @@ lastUpdated,
 	kite9-text-bounds: 250px 240px;
 	text-align: middle;
 }
+
+.list title,
+.list description, 
+.list lastUpdated,
+.list projectRole,
+.list [k9-elem=title],
+.list [k9-elem=description],
+.list [k9-elem=lastUpdated],
+.list [k9-elem=projectRole] {
+	font-size: 12px;
+	kite9-margin: 15px;
+	kite9-text-bounds: 160px 60px;
+	kite9-min-width: 160px;
+	text-align: start;
+	kite9-vertical-align: bottom;
+}
+
+.list projectRole {
+	kite9-min-width: 50px;
+}
+
+
+.list icon {
+	kite9-template: url(template.xml#icon) '40px' '40px';
+	kite9-vertical-align: bottom;
+}
+
 
 lastUpdated {
 	kite9-text-bounds: 230px 250px;
@@ -95,7 +168,7 @@ label > front,
 
 icon {
 	kite9-type: container;
-	kite9-template: url(template.xml#icon);
+	kite9-template: url(template.xml#icon) '100px' '100px';
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
 }

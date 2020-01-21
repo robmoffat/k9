@@ -87,10 +87,12 @@ function reconcileAttributes(fromElement, toElement, tl) {
 
 	});
 
-	tl.add({
-		targets: fromElement,
-		keyframes: [start, end],
-	}, 0);
+	if (fromElement.tagName != 'head') {
+		tl.add({
+			targets: fromElement,
+			keyframes: [start, end],
+		}, 0);
+	}
 
 }
 
@@ -279,10 +281,15 @@ export class Transition {
 		}
 		return response;
 	}
+	
+	handleRedirect(response) {
+		return response;
+	}
 
 	mainHandler(p) {
 		return p
 			.then(this.handleErrors)
+			.then(this.handleRedirect)
 			.then(response => {
 				this.loadCallbacks.forEach(cb => cb(response));
 				return response;
@@ -320,9 +327,9 @@ export class Transition {
 
 	postCommands(commands) {
 		return this.mainHandler(fetch(this.uri(), {
-			credentials: 'include',
 			method: 'POST',
 			body: JSON.stringify(commands),
+			redirect: "manual",
 			headers: {
 				"Content-Type": "application/json; charset=utf-8",
 				"Accept": "image/svg+xml, application/json"

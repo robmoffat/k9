@@ -55,10 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin().loginPage("/login").permitAll().successHandler((req, res, auth) -> {
+		http.formLogin().failureUrl("/login-failed").loginPage("/login").permitAll().successHandler((req, res, auth) -> {
 			User u = (User) auth.getDetails();
 			res.sendRedirect(u.getLocalId());
 		});
+		http.formLogin().permitAll();
 		http.httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();

@@ -1,6 +1,8 @@
 package com.kite9.k9server.command.domain;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +12,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.document.Document;
+import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.user.User;
@@ -24,7 +27,7 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 	public String templateUri;
 	
 	@Override
-	public Document applyCommand() throws CommandException {
+	public Map<String, String> applyCommand() throws CommandException {
 		if (!current.checkWrite()) {
 			throw new CommandException(HttpStatus.UNAUTHORIZED, "User can't write to "+current, this);
 		}
@@ -53,8 +56,10 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 			// ensure the document has the current revision set
 			out.setCurrentRevision(r);
 			getRepositoryFor(Document.class).save(out);
-
-			return out;
+			
+			current.getDocuments().add(out);
+			
+			return Collections.singletonMap("redirect", out.getLocalId()+ContentResourceProcessor.CONTENT_URL);
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}

@@ -28,7 +28,7 @@ export function initUpdateContextMenuCallback(transition, selector) {
 								hidden('type', 'Update'),
 								ok('ok', {}, () => {
 									const values = formValues();
-									values['subjectUri'] = e.getAttribute('id');
+									values['subjectUri'] = e.getAttribute('subject-uri');
 									cm.destroy();
 									transition.postCommands([values]);
 								}),

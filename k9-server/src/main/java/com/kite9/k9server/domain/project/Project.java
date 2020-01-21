@@ -29,7 +29,7 @@ import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.ProjectRole;
 
 @Entity
-@WithCommands({DeleteEntity.class, Update.class, AddMember.class, NewDocument.class})
+@WithCommands({Update.class, AddMember.class, NewDocument.class})
 public class Project extends AbstractLongIdEntity implements Secured, ProjectExcerptProjection, Updateable {
 	
 	@Column(length=50,nullable=false)

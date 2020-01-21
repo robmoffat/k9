@@ -23,7 +23,7 @@ import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
 import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/public/behaviours/zoomable/zoomable.js";
 
 // identity
-import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
+import { initIdentityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
 // navigation
 import { initFocusContextMenuCallback, initFocusMetadataCallback, initFocus } from "/public/behaviours/navigable/focus/focus.js";
@@ -61,7 +61,7 @@ function initEditor() {
 			[ zoomableTransitionCallback ]);
 	
 	var instrumentation = new Instrumentation([
-		identityInstrumentationCallback,
+		initIdentityInstrumentationCallback(transition),
 //		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
 		toggleInstrumentationCallback,
