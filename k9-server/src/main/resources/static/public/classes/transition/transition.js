@@ -87,7 +87,7 @@ function reconcileAttributes(fromElement, toElement, tl) {
 
 	});
 
-	if (fromElement.tagName != 'head') {
+	if (fromElement.style){
 		tl.add({
 			targets: fromElement,
 			keyframes: [start, end],
@@ -117,7 +117,7 @@ function getLocalTranslate(e) {
 }
 
 function getTotalTranslate(e) {
-	if (e == null) {
+	if ((e == null) || (e.style == null)) {
 		return { x: 0, y: 0 };
 	}
 

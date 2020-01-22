@@ -174,7 +174,11 @@ export function handleTransformAsStyle(e) {
 	if (e.hasAttribute('transform')) {
 		const t = parseTransform(e.getAttribute('transform'));
 		const css = transformToCss(t);
-		e.style.setProperty('transform', css, '');
+		if (e.style) {
+			e.style.setProperty('transform', css, '');
+		} else {
+			e.setAttribute("style", "transform: "+css+";");
+		}
 		e.removeAttribute('transform')
 	}
 }
