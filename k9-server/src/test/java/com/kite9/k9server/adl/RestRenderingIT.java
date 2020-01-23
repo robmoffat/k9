@@ -47,15 +47,13 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 		delete(new URI(projectUrl));
 	}
 
-	
-//	
-//	@Test
-//	public void testRestPNG() throws Exception {
-//		byte[] png = loadStaticPNG("/api/documents/3");
-//		persistInAFile(png, "testRestPNG", "diagram.png");
-//		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/testRestPNG/diagram.png"));
-//		Assert.assertEquals(expected.length, png.length);
-//	}
+	@Test
+	public void testRestPNG() throws Exception {
+		byte[] png = load("/api/documents/3/content", MediaType.IMAGE_PNG);
+		persistInAFile(png, "testRestPNG", "diagram.png");
+		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/testRestPNG/diagram.png"));
+		Assert.assertEquals(expected.length, png.length);
+	}
 	
 	@Test
 	public void testRestHTML() throws Exception {

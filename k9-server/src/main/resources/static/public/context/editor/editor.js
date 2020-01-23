@@ -40,7 +40,7 @@ import { closeMetadataCallback, closeInstrumentationCallback } from "/public/beh
 import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/public/behaviours/zoomable/zoomable.js";
 
 // identity
-import { identityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
+import { initIdentityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
 // undo
 import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/undoable/undoable.js";
@@ -101,7 +101,7 @@ function initEditor() {
 	], selectedLink, updateLink);
 
 	var instrumentation = new Instrumentation([
-		identityInstrumentationCallback,
+		initIdentityInstrumentationCallback(transition),
 		closeInstrumentationCallback,
 		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,

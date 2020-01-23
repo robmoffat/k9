@@ -26,6 +26,8 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 	
 	public String templateUri;
 	
+	public boolean redirect;
+	
 	@Override
 	public Map<String, String> applyCommand() throws CommandException {
 		if (!current.checkWrite()) {

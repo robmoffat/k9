@@ -23,18 +23,16 @@
 
 title,
 [k9-elem=title] {
-	kite9-type: text;
-	kite9-sizing: minimize;
-	kite9-layout: horizontal;
-	kite9-template: url(template.xml#title);
 	kite9-horizontal-align: center;
 	kite9-vertical-align: bottom;
-	fill: black;
-	stroke: none;
+	kite9-sizing: minimize;
+	kite9-type: text;
 	font-size: 12px;
+	font-family: "metropolis";
 	font-weight: 200;
-	font-family: metropolis;
+	fill: black;
 	text-align: middle;
+	kite9-text-bounds-width: 110px;
 }
 
 /* Labels */

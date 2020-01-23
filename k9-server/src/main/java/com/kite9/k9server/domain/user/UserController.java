@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,6 +104,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 	/**
 	 * Handles the response to the email request, when the user clicks the link in their inbox.
 	 */
+	@Transactional
 	@RequestMapping(path = URL_PREFIX+EMAIL_VALIDATION_RESPONSE_URL, method=RequestMethod.GET) 
 	public @ResponseBody NotificationResource emailValidationResponse(@RequestParam("code") String code, @PathVariable("email") String email) {
 		User u = getUserAndValidateWithCode(code, email, EMAIL_VALIDATION_RESPONSE_URL);

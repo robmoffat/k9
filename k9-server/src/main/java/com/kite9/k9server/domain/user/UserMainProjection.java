@@ -8,4 +8,6 @@ import com.kite9.k9server.domain.permission.Member;
 public interface UserMainProjection extends BasicExcerptProjection {
 
 	public List<Member> getMemberships();
+	
+	public boolean isEmailVerified();
 }

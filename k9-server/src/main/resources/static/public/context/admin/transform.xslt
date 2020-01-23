@@ -92,8 +92,9 @@
   		<container class="right list" id="revisionbox">
 	  		<xsl:for-each select="./adl:content/adl:value[@type='revision']">
   				<member>
-  					<xsl:attribute name="k9-ui">focus</xsl:attribute>
+  					<xsl:attribute name="k9-ui"></xsl:attribute>
   					<xsl:attribute name="id"><xsl:value-of select="@localId" /></xsl:attribute>
+				    <xsl:copy-of select="adl:icon" />
 				    <xsl:copy-of select="adl:title" />
 				    <xsl:copy-of select="adl:lastUpdated" />
   				</member>

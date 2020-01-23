@@ -105,8 +105,8 @@ projectRole,
 .list [k9-elem=projectRole] {
 	font-size: 12px;
 	kite9-margin: 15px;
-	kite9-text-bounds: 160px 60px;
-	kite9-min-width: 160px;
+	kite9-text-bounds: 180px 60px;
+	kite9-min-width: 180px;
 	text-align: start;
 	kite9-vertical-align: bottom;
 }
@@ -171,17 +171,6 @@ icon {
 	kite9-template: url(template.xml#icon) '100px' '100px';
 	kite9-horizontal-align: center;
 	kite9-vertical-align: top;
-}
-
-link {
-	kite9-link-minimum-length: 40px;
-	kite9-link-corner-radius: 40px;
-}
-
-[k9-elem=link-body] {
-	stroke: black;
-	stroke-width: 2px;
-	fill: none;
 }
 
 container {
