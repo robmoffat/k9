@@ -2,7 +2,6 @@ package com.kite9.k9server.command.domain;
 
 import java.net.URI;
 import java.util.Collections;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,10 +25,10 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 	
 	public String templateUri;
 	
-	public boolean redirect;
+	public boolean open = false;	// sends a redirect after creating.
 	
 	@Override
-	public Map<String, String> applyCommand() throws CommandException {
+	public Object applyCommand() throws CommandException {
 		if (!current.checkWrite()) {
 			throw new CommandException(HttpStatus.UNAUTHORIZED, "User can't write to "+current, this);
 		}
@@ -60,8 +59,11 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 			getRepositoryFor(Document.class).save(out);
 			
 			current.getDocuments().add(out);
-			
-			return Collections.singletonMap("redirect", out.getLocalId()+ContentResourceProcessor.CONTENT_URL);
+			if (open) {
+				return Collections.singletonMap("redirect", out.getLocalId()+ContentResourceProcessor.CONTENT_URL);
+			} else {
+				return out;
+			}
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}
