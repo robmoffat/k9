@@ -20,7 +20,12 @@ import com.kite9.k9server.domain.AbstractLifecycleTest;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 
-
+/**
+ * Tests both the rendering of admin screens, and the rendering of 
+ * diagrams in various formats:  html, svg and adl+xml.
+ * @author robmoffat
+ *
+ */
 public class RestRenderingIT extends AbstractLifecycleTest {
 	
 	String docUrl;
@@ -65,13 +70,13 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 		testMarkupFormat(Kite9MediaTypes.ADL_SVG, "testRest", "diagram.xml");
 	}
 	
-//	@Test
-//	public void testRestSVG() throws Exception {
-//		byte[] svg = loadStaticSVG(docUrl);
-//		persistInAFile(svg, "testExampleSVG", "diagram.svg");
-//		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
-//		XMLCompare.compareXML(new String(svg), expected);
-//	}
+	@Test
+	public void testRestSVG() throws Exception {
+		byte[] svg = loadStaticSVG(docUrl);
+		persistInAFile(svg, "testExampleSVG", "diagram.svg");
+		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
+		XMLCompare.compareXML(new String(svg), expected);
+	}
 	
 
 	protected void testMarkupFormat(MediaType format, String path, String file) throws Exception {

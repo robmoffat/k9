@@ -7,5 +7,6 @@ image[href] {
 
 image[href] front,
 [k9-elem=image] [k9-elem=front] {
-	fill: #FFFFFF01;	
+	fill: white;
+	fill-opacity: .01;
 }

@@ -25,6 +25,7 @@
 
 	<template id="icon">
 		<inside style="kite9-type: svg; ">
+			<svg:rect x="0" y="0" width="pre:#{$template-1}" height="pre:#{$template-2}" fill="white" fill-opacity=".1"/>
 			<svg:image x="0" y="0" width="pre:#{$template-1}" height="pre:#{$template-2}"
 				xlink:href="pre:#{text()}" clip-path="pre:url(#iconCircle-#{$template-2})"/>
 		</inside>

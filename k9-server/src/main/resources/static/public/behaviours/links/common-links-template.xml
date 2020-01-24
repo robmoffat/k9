@@ -2,6 +2,12 @@
   <svg:defs>
 
     <!-- Link Ends -->
+    
+    <svg:marker id="-start-marker" >
+    </svg:marker>
+
+    <svg:marker id="-end-marker">
+    </svg:marker>
 
     <svg:marker id="circle-start-marker" markerWidth="6" markerHeight="6" refX="3" refY="3">
       <svg:circle cx="3" cy="3" r="2" class="circle-marker"></svg:circle>

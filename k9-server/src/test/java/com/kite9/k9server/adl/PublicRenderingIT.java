@@ -60,10 +60,9 @@ public class PublicRenderingIT extends AbstractRestIT {
 		XMLCompare.compareXML(new String(svg), expected);
 	}
 	
-	@Ignore("PNG Tests not yet working")
 	@Test
 	public void testExamplePNG() throws Exception {
-		byte[] png = loadStaticPNG("/public/examples/risk-first/example.png");
+		byte[] png = loadStaticPNG("/public/examples/risk-first/minimal.png");
 		persistInAFile(png, "testExamplePNG", "diagram.png");
 		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/testExamplePNG/diagram.png"));
 		Assert.assertEquals(expected.length, png.length);
