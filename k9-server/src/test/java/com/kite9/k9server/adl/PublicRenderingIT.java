@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

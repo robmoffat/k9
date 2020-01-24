@@ -20,12 +20,7 @@ import com.kite9.k9server.domain.AbstractLifecycleTest;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.ProjectResource;
 
-/**
- * Tests both the rendering of admin screens, and the rendering of 
- * diagrams in various formats:  html, svg and adl+xml.
- * @author robmoffat
- *
- */
+
 public class RestRenderingIT extends AbstractLifecycleTest {
 	
 	String docUrl;
@@ -52,10 +47,12 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 		delete(new URI(projectUrl));
 	}
 
+	
+	
 	@Test
 	public void testRestPNG() throws Exception {
-		byte[] png = load("/api/documents/3/content", MediaType.IMAGE_PNG);
-		persistInAFile(png, "testRestPNG", "diagram.png");
+		byte[] png = load(docUrl, MediaType.IMAGE_PNG);
+		persistInAFile(png, "testRest", "diagram.png");
 		byte[] expected = StreamUtils.copyToByteArray(this.getClass().getResourceAsStream("/rendering/public/testRestPNG/diagram.png"));
 		Assert.assertEquals(expected.length, png.length);
 	}
@@ -72,11 +69,16 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 	
 	@Test
 	public void testRestSVG() throws Exception {
-		byte[] svg = loadStaticSVG(docUrl);
-		persistInAFile(svg, "testExampleSVG", "diagram.svg");
-		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
-		XMLCompare.compareXML(new String(svg), expected);
+		testMarkupFormat(Kite9MediaTypes.SVG, "testRest", "diagram.svg");
 	}
+	
+//	@Test
+//	public void testRestSVG() throws Exception {
+//		byte[] svg = loadStaticSVG(docUrl);
+//		persistInAFile(svg, "testExampleSVG", "diagram.svg");
+//		String expected = StreamUtils.copyToString(this.getClass().getResourceAsStream("/rendering/public/testExampleSVG/diagram.svg"), Charset.forName("UTF-8"));
+//		XMLCompare.compareXML(new String(svg), expected);
+//	}
 	
 
 	protected void testMarkupFormat(MediaType format, String path, String file) throws Exception {
