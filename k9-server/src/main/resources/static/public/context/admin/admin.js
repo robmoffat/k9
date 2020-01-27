@@ -85,7 +85,7 @@ function initEditor() {
 		
 	initHoverable();		// init for main svg area
 		
-	initSelectable();
+	initSelectable(undefined, true);
 
 }
 
