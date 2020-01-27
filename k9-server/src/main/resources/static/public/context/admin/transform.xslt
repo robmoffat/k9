@@ -89,8 +89,10 @@
 		        <xsl:with-param name="focus"></xsl:with-param>
 		    </xsl:call-template>
 		</container>
-  		<container class="right list" id="revisionbox">
-	  		<xsl:for-each select="./adl:content/adl:value[@type='revision']">
+  		<container id="revisionbox">
+  			<xsl:variable name="count"><xsl:value-of select="count(./adl:content/adl:value[@type='revision'])" /></xsl:variable>
+   			<xsl:attribute name="class">right list <xsl:if test="$count > 10">more</xsl:if></xsl:attribute>
+	  		<xsl:for-each select="./adl:content/adl:value[@type='revision' and count(preceding::adl:value) &lt; 11]">
   				<member>
   					<xsl:attribute name="k9-ui"></xsl:attribute>
   					<xsl:attribute name="id"><xsl:value-of select="@localId" /></xsl:attribute>
@@ -99,7 +101,16 @@
 				    <xsl:copy-of select="adl:lastUpdated" />
   				</member>
   			</xsl:for-each>
-  			<label>Revisions of <xsl:value-of select="adl:title" /></label>
+  			<xsl:choose>
+  				<xsl:when test="$count > 10">
+  					<label>Revisions of <xsl:value-of select="adl:title" /> (Latest 10 / <xsl:value-of select="$count" />)</label>
+  				</xsl:when>	 
+  				<xsl:otherwise>
+  					<label>Revisions of <xsl:value-of select="adl:title" /></label>
+  				</xsl:otherwise>
+  			</xsl:choose>
+  			
+  			
 	  	</container>
 	</container>	  	
   </xsl:template>

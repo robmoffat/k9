@@ -62,7 +62,7 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 			if (open) {
 				return Collections.singletonMap("redirect", out.getLocalId()+ContentResourceProcessor.CONTENT_URL);
 			} else {
-				return out;
+				return current;
 			}
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);

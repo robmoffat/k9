@@ -105,10 +105,10 @@ projectRole,
 .list [k9-elem=projectRole] {
 	font-size: 12px;
 	kite9-margin: 15px;
-	kite9-text-bounds: 180px 60px;
+	kite9-text-bounds: 280px 160px;
 	kite9-min-width: 180px;
 	text-align: start;
-	kite9-vertical-align: bottom;
+	kite9-vertical-align: middle;
 }
 
 .list projectRole {
@@ -121,11 +121,6 @@ projectRole,
 	kite9-vertical-align: bottom;
 }
 
-
-lastUpdated {
-	kite9-text-bounds: 230px 250px;
-}
-
 title,
 [k9-elem=title] {
 	font-size: 22px;
@@ -133,15 +128,8 @@ title,
 }
 
 lastUpdated,
-[k9-elem=lastUpdated] {
-	kite9-vertical-align: bottom;
-	fill: #303030;
-	font-size: 15px;
-	font-weight: 400;	
-	font-style: italic;
-}
-
 description,
+[k9-elem=lastUpdated],
 [k9-elem=description] {
 	fill:  #303030;
 	font-size: 15px;
@@ -230,4 +218,9 @@ badge,
 
 .panel {
 	kite9-layout: down;
+}
+
+.grid-temporary {
+	fill: none;
+	fill-opacity: 0;
 }

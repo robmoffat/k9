@@ -5,9 +5,12 @@ import org.springframework.http.ResponseEntity;
 
 import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
+import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.permission.Member;
+import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 
 public class DeleteEntity extends AbstractSubjectCommand<RestEntity>{
@@ -33,6 +36,14 @@ public class DeleteEntity extends AbstractSubjectCommand<RestEntity>{
 		} else {
 			RestEntity parent = current.getParent();
 			r.delete(current);
+			
+			if (current instanceof Document) {
+				((Project)parent).getDocuments().remove(current);
+			} else if (current instanceof Member) {
+				((Project)parent).getMembers().remove(current);
+			}
+	
+			
 			return parent;
 		}
 		
