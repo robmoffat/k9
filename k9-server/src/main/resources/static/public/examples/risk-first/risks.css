@@ -176,6 +176,7 @@ risk {
 	kite9-type: container;
 	kite9-sizing: minimize;
 	fill: black;
+	fill-opacity: 1;
 	kite9-layout: down;	
 	kite9-margin: 10px;
 	kite9-link-inset: 10px;

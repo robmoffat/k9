@@ -33,6 +33,7 @@ g.box {
 
 [k9-elem=g].box > [k9-elem=back] {
 	fill: #CCCCAA;
+	fill-opacity: 1;
 	stroke: #AAAA88;
 	stroke-dasharray: none;
 }

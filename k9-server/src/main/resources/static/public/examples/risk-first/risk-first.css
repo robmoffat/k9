@@ -47,7 +47,8 @@ label > front,
 }
 
 [k9-elem=label] [k9-elem=back] {
-	fill: #FFFFFF01;
+	fill: #FFFFFF;
+	fill-opacity: 0.01;
 }
 
 [k9-elem=container] > [k9-elem=back] {
@@ -72,10 +73,12 @@ arrow,
 
 [k9-elem=arrow] > [k9-elem=back] {
 	fill: black;	
+	fill-opacity: 1; 
 }
 
 [k9-elem=arrow] > [k9-elem=front] {
 	fill: white;
+	fill-opacity: 1; 
 }
 
 /* Risk Descriptions */

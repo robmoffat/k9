@@ -21,7 +21,8 @@ align to {
 
 [k9-elem=from],
 [k9-elem=to] {
-	fill: #FFFFFF01;	/* allows hover events to work */
+	fill: #FFFFFF;	/* allows hover events to work */
+	fill-opacity: 0.01;
 }
 
 

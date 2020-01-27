@@ -30,7 +30,8 @@ cell {
 }
 
 [k9-elem=--temporary] {
-	fill: #FFFFFF01;	
+	fill: #FFFFFF;
+	fill-opacity: 0.01;	
 }
 
 

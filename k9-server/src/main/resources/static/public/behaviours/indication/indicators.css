@@ -12,22 +12,29 @@
  * bar: fatter links to make an easier grab
  * grab: fills the shape so it can always be grabbed
  */
+
+div.indicators-on [id] > [k9-indicator],
+.mouseover > [k9-indicator],
+.mouseover.grid-temporary {
+	transition: 0.2s;	
+}
+ 
+ 
 div.indicators-on [id] > [k9-indicator~=stroke],
 div.palette-item  [id] > [k9-indicator~=stroke] {
-	stroke: #b7c0feAA;
-	transition: stroke 0.2s;
+	stroke: #b7c0fe;
+	stroke-opacity: .8;
 }
 
 div.indicators-on [id] > [k9-indicator~=fill],
 div.palette-item  [id] > [k9-indicator~=fill] {
-	fill: #b7c0fe66;
-	transition: fill 0.2s;
+	fill: #b7c0fe;
+	fill-opacity: .6;
 }
 
 .mouseover > [k9-indicator~=stroke],
 .mouseover > [k9-indicator~=outline] {
 	stroke: #CCEEFF !important;
-	transition: stroke 0.2s;
 }
 
 .mouseover > [k9-indicator~=pulse],
@@ -35,46 +42,43 @@ div.palette-item  [id] > [k9-indicator~=fill] {
 .mouseover.grid-temporary {
 	fill: #CCEEFF !important;
 	fill-opacity: .8;
-	transition: fill 0.2s;
 }
 
 .selected > [k9-indicator~=outline],
 .selected > [k9-indicator~=stroke] {
 	stroke: rgb(255, 204, 0) !important;
 	stroke-width: 2px;
-	transition: stroke 0.2s;
 	stroke-opacity: .8;
 }
 
 .selected > [k9-indicator~=pulse],
-.selected > [k9-indicator~=fill],
-.selected.grid-temporary {
+.selected > [k9-indicator~=fill] {
 	fill: rgb(255, 204, 0) !important;
-	transition: stroke 0.2s;
 	fill-opacity: .8;
 }
 
-[id].selected > g > text {
+[id].selected > text {
 	fill: rgb(255, 204, 0) !important;
-	
+	fill-opacity: .6;	
 }
 
-.mouseover > g > text {
+.mouseover >  text {
 	fill: #CCEEFF !important;
+	fill-opacity: .6;
 }
 
 /*
  * This includes CSS directives for making it easier to grab small elements in the diagram.
  */
 [k9-indicator~=grab] {
-	stroke: #FFFFFF01;
+	stroke: #FFFFFF;
 	stroke-width: 10px !important;
-}
+	stroke-opacity: .01;
+}}
 
 [k9-indicator=bar] {
 	stroke: #b7c0fe;
 	stroke-width: 6px;
-	transition: 0.1s;
 }
 
 /* To be removed */
