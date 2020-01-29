@@ -83,6 +83,7 @@ function initEditor() {
 	
 	var transition = new Transition(
 			() => metadata.get('content'),		// command
+			() => '/login-failed',
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 	

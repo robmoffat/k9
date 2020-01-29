@@ -31,16 +31,35 @@ export function initLoginContextMenuCallback(transition, metadata, templateUri, 
 						text('User Name', undefined, { required: true}),
 						password('Password', undefined, { required: true}),
 						inlineButtons([
-							ok('login', {}, () => {
+							ok('login', {}, (e) => {
+								e.preventDefault();
 								const values = formValues('login');
-								const body = "username="
-									+values.userName
-									+"&password="
-									+values.password
-									+"&submit=Login";
-								const uri = '/login';
-								transition.postForm(uri, body);
 								contextMenu.destroy();
+								fetch('/oauth/token', {
+									method: 'POST',
+									credentials: 'omit',
+									headers: {
+										"Content-Type": "application/x-www-form-urlencoded",
+										"Accept": "application/json",
+										"Authorization": "Basic "+btoa(values.userName + ":" + values.password)
+									},
+									body: "grant_type=client_credentials" 
+								})
+								.then(r => {
+									if (!r.ok) {
+										return transition.get('/login-failed');
+									} else {
+										return r.json();
+									}
+								}).then(r => {
+									if (r) {
+										transition.setCredentials(r['access_token']);
+										transition.get('/api/users')
+									}
+								}).catch(e => {
+									console.log(e);
+									transition.get('/login-failed');
+								})
 							}),
 							cancel('cancel', [], () => contextMenu.destroy())
 						])

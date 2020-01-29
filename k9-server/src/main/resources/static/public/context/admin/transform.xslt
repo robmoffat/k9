@@ -36,7 +36,7 @@
     </xsl:element>  
   </xsl:template>
   
-  <xsl:template match="adl:entity[@type='user']">
+  <xsl:template name="user-page">
   	<container class="main">
   		<container class="left" id="userbox">
 		    <xsl:call-template name="entity">
@@ -47,7 +47,7 @@
   		<container class="right list" id="projectbox" k9-ui="NewProject">
   			<xsl:attribute name="subject-uri"><xsl:value-of select="@localId" /></xsl:attribute>
   			
-  			<xsl:for-each select="./adl:content/adl:value[@type='member']">
+  			<xsl:for-each select="//*[@type='member']">
   				<member>
   					<xsl:attribute name="k9-ui">focus</xsl:attribute>
   					<xsl:attribute name="id"><xsl:value-of select="adl:parent/@localId" /></xsl:attribute>
@@ -62,7 +62,7 @@
   	</container>
   </xsl:template>
   
-  <xsl:template match="adl:entity[@type='project']">
+  <xsl:template name="project-page">
   	<container class="main">
   		<container class="left" id="projectbox">
 		    <xsl:call-template name="entity">
@@ -72,13 +72,18 @@
      	</container>
   		<container class="right grid" id="documentbox" k9-ui="NewDocument">
   			<xsl:attribute name="subject-uri"><xsl:value-of select="@localId" /></xsl:attribute>
-		    <xsl:apply-templates select="./adl:content/adl:value[@type='document']" />
+		    <xsl:for-each select="./adl:content/adl:value[@type='document']">
+		    	<xsl:call-template name="entity">
+		    		<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
+		       		<xsl:with-param name="focus">focus</xsl:with-param>
+		    	</xsl:call-template>
+		    </xsl:for-each>
 		    <label>Documents in <xsl:value-of select="adl:title" /></label>
   		</container>
   	</container>
   </xsl:template>
   
-  <xsl:template match="adl:entity[@type='document']">
+  <xsl:template name="document-page">
   	<container class="main">
   		<container class="left" id="projectbox">
 		    <xsl:apply-templates select="./adl:content/adl:value[@type='project']" />
@@ -115,91 +120,34 @@
 	</container>	  	
   </xsl:template>
   
-  <xsl:template match="adl:entity[not(@type)]">
-    <xsl:apply-templates select="adl:content" />
+  <xsl:template match="/adl:entity[@type='user']">
+  	<xsl:call-template name="user-page" />
+  </xsl:template>
+  
+  <xsl:template match="/adl:entity[@type='project']">
+  	<xsl:call-template name="project-page" />
+  </xsl:template>
+  
+  <xsl:template match="/adl:entity[@type='document']">
+  	<xsl:call-template name="document-page" />
+  </xsl:template>
+  
+  <xsl:template match="/adl:entity[not(@type)]">
+  	<xsl:for-each select="adl:content">
+  		<xsl:choose>
+  			<xsl:when test="@type='user'">
+	  			<xsl:call-template name="user-page" />
+  			</xsl:when>
+  			<xsl:otherwise>
+		  	 	<xsl:call-template name="entity">
+			    	<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
+			        <xsl:with-param name="focus"> focus</xsl:with-param>
+			    </xsl:call-template>
+  			</xsl:otherwise>
+  		</xsl:choose>
+  	</xsl:for-each>
   </xsl:template>
 
-  <xsl:template match="adl:value">
-    <xsl:call-template name="entity">
-    	<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
-		<xsl:with-param name="focus"> focus</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  
-  <xsl:template match="adl:content[@type]">
-    <xsl:call-template name="entity">
-    	<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>	
-		<xsl:with-param name="focus"> focus</xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-  
-  
-  <xsl:template match="adl:content[adl:collectionValue = 'false']">
-    <xsl:variable name="from">/api<xsl:value-of select="substring-after(../adl:links[@rel='self']/@href,'/api')" /></xsl:variable>
-    <xsl:variable name="to"><xsl:value-of select="./adl:value/@localId" /></xsl:variable>
-   	<xsl:variable name="rel">
-   		<xsl:value-of select="adl:rel" />
-   	</xsl:variable>
-    
-    <link>
-      <xsl:attribute name="id"><xsl:value-of select="$from" />-<xsl:value-of select="$to" /></xsl:attribute>
-      <xsl:choose>
-        <xsl:when test="$rel = 'project' and /adl:entity/@type = 'document'">
-          <xsl:attribute name="drawDirection">LEFT</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="$rel = 'project' and /adl:entity/@type = 'member'">
-          <xsl:attribute name="drawDirection">RIGHT</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="$rel = 'user'">
-          <xsl:attribute name="drawDirection">LEFT</xsl:attribute>
-        </xsl:when>
-      </xsl:choose>
-      
-      <from>
-        <xsl:attribute name="reference"><xsl:value-of select="$from" /></xsl:attribute>
-      </from>
-      <to class="arrow">
-        <xsl:attribute name="reference"><xsl:value-of select="$to" /></xsl:attribute>
-      </to>
-      <label end="from"><xsl:value-of select="adl:rel" /></label>     
-    </link>
-    
-    <xsl:apply-templates select="adl:value[not(@type='revision')]" />
-  </xsl:template>
- 
-  <xsl:template match="adl:content[adl:collectionValue = 'true']">
-   	<xsl:variable name="rel"><xsl:value-of select="adl:rel" /></xsl:variable>
-    <xsl:variable name="from">/api<xsl:value-of select="substring-after(../adl:links[@rel='self']/@href,'/api')" /></xsl:variable>
-    <xsl:variable name="to">/api<xsl:value-of select="substring-after(/adl:entity/adl:links[@rel=$rel]/@href,'/api')" /></xsl:variable>
-    
-   <link>
-      <xsl:attribute name="id"><xsl:value-of select="$from" />-<xsl:value-of select="$to" /></xsl:attribute>
-      <xsl:choose>
-        <xsl:when test="$rel = 'members'">
-          <xsl:attribute name="drawDirection">LEFT</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="$rel = 'documents'">
-          <xsl:attribute name="drawDirection">RIGHT</xsl:attribute>
-        </xsl:when>        
-        <xsl:when test="$rel = 'revisions'">
-          <xsl:attribute name="drawDirection">RIGHT</xsl:attribute>
-        </xsl:when>        
-      </xsl:choose>
-      <from>
-        <xsl:attribute name="reference"><xsl:value-of select="$from" /></xsl:attribute>
-      </from>
-      <to class="arrow">
-        <xsl:attribute name="reference"><xsl:value-of select="$to" /></xsl:attribute>
-      </to>
-    </link>
-  
-    <container>
-      <xsl:attribute name="id"><xsl:value-of select="$to" /></xsl:attribute>
-      <xsl:attribute name="k9-ui">focus</xsl:attribute>
-      <xsl:apply-templates select="adl:value" />
-      <label><xsl:value-of select="$rel" /></label>
-    </container>
-  </xsl:template>
    
   <xsl:template match="*">
   </xsl:template>

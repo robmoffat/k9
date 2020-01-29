@@ -238,11 +238,12 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(uri, loadCallbacks, animationCallbacks) {
+	constructor(uri, auth, loadCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 		this.commandList = [];
 		this.uri = uri;
+		this.auth = auth;
 	}
 	
 	transition(documentElement) {
@@ -304,36 +305,33 @@ export class Transition {
 
 	get(uri) {
 		return this.mainHandler(fetch(uri, {
-			credentials: 'include',
 			method: 'GET',
-			headers: {
-				"Content-Type": "application/json; charset=utf-8",
-				"Accept": "image/svg+xml, application/json"
-			}
+			headers: this.getHeaders()
 		}));
 	}
 	
-	postForm(uri, body) {
-		return this.mainHandler(fetch(uri, {
-			credentials: 'include',
-			method: 'POST',
-			headers: {
-				"Content-Type": "application/x-www-form-urlencoded",
-				"Accept": "image/svg+xml, application/json"
-			},
-			body: body
-		}));
+	getHeaders() {
+		var out = {
+			"Content-Type": "application/json; charset=utf-8",
+			"Accept": "image/svg+xml, application/json"
+		};
+		
+		if (this.jwt) {
+			out['Authorization'] = 'Bearer '+this.jwt;
+		}
+		
+		return out;
+	}
+	
+	setCredentials(jwt) {
+		this.jwt = jwt;
 	}
 
 	postCommands(commands) {
 		return this.mainHandler(fetch(this.uri(), {
 			method: 'POST',
 			body: JSON.stringify(commands),
-			redirect: "manual",
-			headers: {
-				"Content-Type": "application/json; charset=utf-8",
-				"Accept": "image/svg+xml, application/json"
-			}
+			headers: this.getHeaders()
 		})).catch(e => {
 			this.get(this.uri());
 			alert(e);

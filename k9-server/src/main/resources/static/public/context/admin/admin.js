@@ -57,6 +57,7 @@ function initEditor() {
 	
 	var transition = new Transition(
 			() => '/api/admin',		// change uri
+			() => '/login-failed',
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 	
