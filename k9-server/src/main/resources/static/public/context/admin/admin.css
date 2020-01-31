@@ -39,6 +39,7 @@ container.main {
 
 container.left {
 	kite9-min-width: 150px;
+	kite9-layout: down;
 }
 
 container.left * {
@@ -77,6 +78,16 @@ member {
 	kite9-padding: 15px;
 }
 
+pmember {
+	kite9-type: container;
+	kite9-template: url(template.xml#entity) '15px' '15px';
+	kite9-layout: right;
+	kite9-min-size: 150px 50px;
+	kite9-sizing: minimize;
+	kite9-margin: 10px;
+	kite9-padding: 5px;
+	kite9-layout: right;
+}
 
 title,
 description, 

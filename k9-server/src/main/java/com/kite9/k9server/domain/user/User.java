@@ -34,7 +34,7 @@ import com.kite9.k9server.security.Hash;
 
 @Entity
 @JsonIgnoreProperties()
-@WithCommands({Update.class, NewProject.class})
+@WithCommands({NewProject.class})
 public class User extends AbstractLongIdEntity implements UserDetails, Secured, Updateable {
 
 	/**
@@ -277,7 +277,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 
 	@Override
 	public String getDescription() {
-		return emailable ? "emailable" : "not emailable";
+		return emailVerified ? "" : "Email Not Verified";
 	}
 
 	@Override

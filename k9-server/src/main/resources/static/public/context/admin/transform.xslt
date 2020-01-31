@@ -66,9 +66,21 @@
   	<container class="main">
   		<container class="left" id="projectbox">
 		    <xsl:call-template name="entity">
-		    	<xsl:with-param name="id">/api<xsl:value-of select="substring-after(/adl:entity/adl:links[@rel='self']/@href,'/api')" /></xsl:with-param>
+		    	<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
 		        <xsl:with-param name="focus"></xsl:with-param>
 		    </xsl:call-template>
+		    
+		    <container class="lower list" id="projectlist">
+			    <xsl:for-each select="./adl:content/adl:value[@type='member']">
+	  				<pmember>
+	  					<xsl:attribute name="id"><xsl:value-of select="@localId" /></xsl:attribute>
+	  					<xsl:copy-of select="adl:projectRole" />
+					    <xsl:copy-of select="adl:icon" />
+					    <xsl:copy-of select="adl:title" />
+	  				</pmember>
+	  			</xsl:for-each>
+	  			<label>Members</label>
+		    </container>
      	</container>
   		<container class="right grid" id="documentbox" k9-ui="NewDocument">
   			<xsl:attribute name="subject-uri"><xsl:value-of select="@localId" /></xsl:attribute>
@@ -114,8 +126,6 @@
   					<label>Revisions of <xsl:value-of select="adl:title" /></label>
   				</xsl:otherwise>
   			</xsl:choose>
-  			
-  			
 	  	</container>
 	</container>	  	
   </xsl:template>

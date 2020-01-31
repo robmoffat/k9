@@ -12,6 +12,7 @@ import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.domain.user.User;
 
 
@@ -116,7 +117,7 @@ public class Revision extends AbstractLongIdEntity implements Secured, RevisionE
 
 	@Override
 	public String getIcon() {
-		return author.getIcon();
+		return getLocalId()+ContentResourceProcessor.CONTENT_URL+".svg";
 	}
 
 	@Override

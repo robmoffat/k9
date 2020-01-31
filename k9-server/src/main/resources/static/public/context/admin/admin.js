@@ -42,7 +42,6 @@ import { toggleInstrumentationCallback } from '/public/behaviours/indication/tog
 // authentication actions
 
 import { initLoginContextMenuCallback } from '/public/behaviours/auth/login/login.js';
-import { initLogoutContextMenuCallback } from '/public/behaviours/auth/logout/logout.js';
 import { initRegisterContextMenuCallback } from '/public/behaviours/auth/register/register.js';
 
 
@@ -50,20 +49,20 @@ var initialized = false;
 
 function initEditor() {
 
-	var metadata = new Metadata([
-		identityMetadataCallback,
-		initFocusMetadataCallback(),
-		]);
-	
 	var transition = new Transition(
 			() => '/api/admin',		// change uri
 			() => '/login-failed',
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
+
+	var metadata = new Metadata([
+		identityMetadataCallback,
+		initFocusMetadataCallback(),
+		]);
+	
 	
 	var instrumentation = new Instrumentation([
 		initIdentityInstrumentationCallback(transition),
-//		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
 		toggleInstrumentationCallback,
 		]);
@@ -76,7 +75,6 @@ function initEditor() {
 		initNewProjectContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
 		initLoginContextMenuCallback(transition, metadata),
-		initLogoutContextMenuCallback(transition, metadata),
 		initRegisterContextMenuCallback(transition, metadata)
 		]); 
 	
