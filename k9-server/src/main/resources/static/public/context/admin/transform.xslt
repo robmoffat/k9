@@ -70,7 +70,8 @@
 		        <xsl:with-param name="focus"></xsl:with-param>
 		    </xsl:call-template>
 		    
-		    <container class="lower list" id="projectlist">
+		    <container class="lower list" id="membersbox" k9-ui="AddMembers">
+  			<xsl:attribute name="subject-uri"><xsl:value-of select="@localId" /></xsl:attribute>
 			    <xsl:for-each select="./adl:content/adl:value[@type='member']">
 	  				<pmember>
 	  					<xsl:attribute name="id"><xsl:value-of select="@localId" /></xsl:attribute>
@@ -87,7 +88,7 @@
 		    <xsl:for-each select="./adl:content/adl:value[@type='document']">
 		    	<xsl:call-template name="entity">
 		    		<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
-		       		<xsl:with-param name="focus">focus</xsl:with-param>
+		       		<xsl:with-param name="focus"> focus</xsl:with-param>
 		    	</xsl:call-template>
 		    </xsl:for-each>
 		    <label>Documents in <xsl:value-of select="adl:title" /></label>
@@ -98,7 +99,12 @@
   <xsl:template name="document-page">
   	<container class="main">
   		<container class="left" id="projectbox">
-		    <xsl:apply-templates select="./adl:content/adl:value[@type='project']" />
+		    <xsl:for-each select="./adl:content/adl:value[@type='project']">
+		    	<xsl:call-template name="entity">
+			    	<xsl:with-param name="id"><xsl:value-of select="@localId" /></xsl:with-param>
+			        <xsl:with-param name="focus"> focus</xsl:with-param>
+		    	</xsl:call-template>
+		    </xsl:for-each>
 		</container>
   		<container class="left" id="documentbox">
 		    <xsl:call-template name="entity">

@@ -13,11 +13,11 @@ import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
-public class AddMember extends AbstractSubjectCommand<Project> {
+public class AddMembers extends AbstractSubjectCommand<Project> {
 	
-	public List<String> emailAddresses;
+	public String emailAddresses;
 	
-	public ProjectRole role;
+	public ProjectRole role = ProjectRole.MEMBER;
 
 	@Override
 	public Project applyCommand() throws CommandException {
@@ -25,7 +25,7 @@ public class AddMember extends AbstractSubjectCommand<Project> {
 		UserRepository users = (UserRepository) getRepositoryFor(User.class);
 		MemberRepository members = (MemberRepository) getRepositoryFor(Member.class);
 		
-		for (String e : emailAddresses) {
+		for (String e : emailAddresses.split(",")) {
 			Member m = getExistingMember(e, existingMembers);
 			if (m == null) {
 				User u = users.findByEmail(e);

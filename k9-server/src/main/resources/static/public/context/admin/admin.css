@@ -25,7 +25,7 @@ user {
 	kite9-type: container;
 	kite9-template: url(template.xml#entity) '15px' '15px';
 	kite9-layout: down;
-	kite9-min-size: 150px 250px;
+	kite9-min-size: 190px 280px;
 	kite9-sizing: minimize;
 	kite9-margin: 10px;
 	kite9-padding: 15px;

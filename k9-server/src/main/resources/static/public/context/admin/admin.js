@@ -33,6 +33,7 @@ import { initOpenContextMenuCallback } from "/public/behaviours/navigable/open/o
 import { initDeleteEntityContextMenuCallback } from "/public/behaviours/rest/DeleteEntity/DeleteEntity.js";
 import { initNewDocumentContextMenuCallback } from "/public/behaviours/rest/NewDocument/NewDocument.js";
 import { initNewProjectContextMenuCallback } from "/public/behaviours/rest/NewProject/NewProject.js";
+import { initAddMembersContextMenuCallback } from "/public/behaviours/rest/AddMembers/AddMembers.js";
 import { initUpdateContextMenuCallback } from "/public/behaviours/rest/Update/Update.js";
 
 // indicators
@@ -73,6 +74,7 @@ function initEditor() {
 		initDeleteEntityContextMenuCallback(transition),
 		initNewDocumentContextMenuCallback(transition),
 		initNewProjectContextMenuCallback(transition),
+		initAddMembersContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
 		initLoginContextMenuCallback(transition, metadata),
 		initRegisterContextMenuCallback(transition, metadata)

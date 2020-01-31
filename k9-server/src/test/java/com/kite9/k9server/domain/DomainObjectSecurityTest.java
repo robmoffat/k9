@@ -18,7 +18,7 @@ import org.springframework.web.client.HttpClientErrorException.Forbidden;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.domain.AddMember;
+import com.kite9.k9server.command.domain.AddMembers;
 import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.MemberResource;
@@ -142,8 +142,8 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	}
 	
 	public ProjectResource createAMemberResource(ProjectResource forProject, String email, ProjectRole pr) throws URISyntaxException {
-		AddMember am = new AddMember();
-		am.emailAddresses = Collections.singletonList(email);
+		AddMembers am = new AddMembers();
+		am.emailAddresses = email;
 		am.role = pr;
 		am.setSubjectUri(forProject.getLink(Link.REL_SELF).getHref());
 		

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.kite9.k9server.command.domain.AddMember;
+import com.kite9.k9server.command.domain.AddMembers;
 import com.kite9.k9server.command.domain.DeleteEntity;
 import com.kite9.k9server.command.domain.NewDocument;
 import com.kite9.k9server.command.domain.NewProject;
@@ -62,7 +62,7 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(NewProject.class),
 	@Type(Update.class),
 	@Type(NewDocument.class),
-	@Type(AddMember.class)	
+	@Type(AddMembers.class)	
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE,
