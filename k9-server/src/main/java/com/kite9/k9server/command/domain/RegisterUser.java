@@ -37,7 +37,7 @@ public class RegisterUser extends AbstractSubjectCommand<User> {
 		try {
 			User out = new User();
 			out.setEmail(email);
-			out.setUsername(username);
+			out.setDisplayName(username);
 			out.setPassword(Hash.generatePasswordHash(password));
 			out.setSalt(User.createNewSalt());
 			out.setEmailVerified(false);

@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.command.domain.AddMembers;
-import com.kite9.k9server.command.domain.DeleteEntity;
 import com.kite9.k9server.command.domain.NewDocument;
 import com.kite9.k9server.command.domain.Update;
 import com.kite9.k9server.command.domain.WithCommands;
@@ -37,9 +36,6 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 	
 	@Column(length=200,nullable=true)
 	private String description;
-	
-	@Column(length=50,nullable=false, unique=true)
-	private String stub;
 		
 	@Column(length=32,nullable=false)
 	private String secret = createRandomString();
@@ -53,11 +49,10 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 	public Project() {
 	}
     
-    public Project(String title, String description, String stub) {
+    public Project(String title, String description) {
 		super();
 		this.title = title;
 		this.description = description;
-		this.stub = stub;
 	}
 	
 	public static String createRandomString() {
@@ -67,7 +62,7 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 
 	@Override
 	public String toString() {
-		return "Project [title=" + title + ", description=" + description + ", stub=" + stub + ", secret=" + secret + ", id=" + id + "]";
+		return "Project [title=" + title + ", description=" + description + ", secret=" + secret + ", id=" + id + "]";
 	}
 
 	public String getTitle() {
@@ -84,14 +79,6 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getStub() {
-		return stub;
-	}
-
-	public void setStub(String stub) {
-		this.stub = stub;
 	}
 
 	public String getSecret() {
@@ -118,7 +105,7 @@ public class Project extends AbstractLongIdEntity implements Secured, ProjectExc
 		
 		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
 		for (Member m : getMembers()) {
-			if (m.getUser().getUsername().equals(principal)) {
+			if (m.getUser().getEmail().equals(principal)) {
 				if (a == Action.WRITE) {
 					return (m.getProjectRole() != ProjectRole.VIEWER);  
 				} else if (a == Action.READ) {

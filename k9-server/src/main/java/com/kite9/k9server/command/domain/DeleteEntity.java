@@ -28,8 +28,8 @@ public class DeleteEntity extends AbstractSubjectCommand<RestEntity>{
 		
 		if (current instanceof User) {
 			((User) current).setEmail(null);
-			String expiredName = ((User) current).getUsername()+"_exp_"+System.currentTimeMillis();
-			((User) current).setUsername(expiredName.substring(0, Math.min(100, expiredName.length())));
+			String expiredName = ((User) current).getDisplayName()+"_exp_"+System.currentTimeMillis();
+			((User) current).setDisplayName(expiredName.substring(0, Math.min(100, expiredName.length())));
 			((User) current).setAccountExpired(true);
 			r.save(current); 
 			return ResponseEntity.noContent();

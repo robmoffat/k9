@@ -45,7 +45,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		
 		UserResource uOut = createUser(restTemplate, username, password, email);
 		String url = uOut.getLink(Link.REL_SELF).getHref();
-		Assert.assertEquals(username, uOut.username);
+		Assert.assertEquals(email, uOut.username);
 		Assert.assertNotNull(uOut.api);
 		
 		
@@ -57,7 +57,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		}
 		
 		// retrieve the user, testing basic authentication
-		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, username);
+		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
 		Collection<UserResource> us = uOuts.getContent();
 		Assert.assertEquals(1, us.size());
 		UserResource firstUser = us.iterator().next();
@@ -79,7 +79,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		}
 		
 		// fetch a JWT token using the basic auth parameters
-		String jwtToken = getJwtToken(restTemplate, username, password);
+		String jwtToken = getJwtToken(restTemplate, email, password);
 
 		// with this token, can we do stuff?  Pull back users first.
 		Resources<UserResource> uOuts2 = retrieveUserViaJwt(restTemplate, jwtToken);
@@ -137,12 +137,12 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertTrue(uOut.emailVerified);
 		
 		// remove the user
-		deleteAndCheckDeleted(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, password, UserResource.class);
+		deleteAndCheckDeleted(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), email, password, UserResource.class);
 		messages.clear();
 
 		// check access is revoked
 		try {
-			retrieveResource(restTemplate, username, password, url, Void.class);
+			retrieveResource(restTemplate, email, password, url, Void.class);
 			Assert.fail();
 		} catch (Throwable e) {
 		}
@@ -235,7 +235,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		Assert.assertEquals(getUrlBase()+"/login", s.getHeaders().getLocation().toString());
 		
 		// delete the user
-		deleteViaBasicAuth(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), username, newPassword);
+		deleteViaBasicAuth(restTemplate, uOut.getLink(Link.REL_SELF).getHref(), email, newPassword);
 
 	}
 	
@@ -269,7 +269,6 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		NewProject np = new NewProject();
 		np.title ="Test Project";
 		np.description = "Lorem Ipsum";
-		np.stub = "tp2";
 		np.setSubjectUri(userUrl);
 		ResponseEntity<ProjectResource> projOut = exchangeJsonUsingCookie(restTemplate, getUrlBase()+"/api/admin", cookie.get(0), new CommandList(np), HttpMethod.POST, ProjectResource.class);
 		Assert.assertEquals(HttpStatus.OK, projOut.getStatusCode());

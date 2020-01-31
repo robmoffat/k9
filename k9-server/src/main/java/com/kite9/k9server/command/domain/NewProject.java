@@ -15,8 +15,6 @@ public class NewProject extends AbstractSubjectCommand<User> {
 	public String title;
 	
 	public String description;
-	
-	public String stub;
 
 	@Override
 	public RestEntity applyCommand() throws CommandException {
@@ -27,7 +25,6 @@ public class NewProject extends AbstractSubjectCommand<User> {
 		Project p = new Project();
 		p.setDescription(description);
 		p.setTitle(title);
-		p.setStub(stub);
 		
 		getRepositoryFor(Project.class).save(p);
 		

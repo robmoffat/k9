@@ -49,7 +49,7 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 			Revision r = new Revision();
 			r.setDocument(out);
 			String userId =  SecurityContextHolder.getContext().getAuthentication().getName();
-			User u = ((UserRepository) getRepositoryFor(User.class)).findByUsername(userId);
+			User u = ((UserRepository) getRepositoryFor(User.class)).findByEmail(userId);
 			r.setAuthor(u);
 			r.setXml(content);
 			getRepositoryFor(Revision.class).save(r);
@@ -60,7 +60,7 @@ public class NewDocument extends AbstractSubjectCommand<Project> {
 			
 			current.getDocuments().add(out);
 			if (open) {
-				return Collections.singletonMap("redirect", out.getLocalId()+ContentResourceProcessor.CONTENT_URL);
+				return out;
 			} else {
 				return current;
 			}

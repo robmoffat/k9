@@ -59,8 +59,8 @@ public class PopulateDomainModel implements CommandLineRunner {
 	@Override
 	public void run(String... arg0) throws Exception {
 		// add some projects
-		Project project1 = new Project("First Project", "Lorem Ipsum delor sit amet", "firstp");
-		Project project2 = new Project("Second Project", "Lorem Ipsum delor sit amet 2", "secondo");
+		Project project1 = new Project("First Project", "Lorem Ipsum delor sit amet");
+		Project project2 = new Project("Second Project", "Lorem Ipsum delor sit amet 2");
 
 		projectRepository.save(project1);
 		projectRepository.save(project2);

@@ -107,7 +107,7 @@ public class Revision extends AbstractLongIdEntity implements Secured, RevisionE
 
 	@Override
 	public String getTitle() {
-		return author.getUsername();
+		return author.getDisplayName();
 	}
 	
 	@Override

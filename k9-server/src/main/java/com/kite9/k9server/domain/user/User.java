@@ -38,10 +38,10 @@ import com.kite9.k9server.security.Hash;
 public class User extends AbstractLongIdEntity implements UserDetails, Secured, Updateable {
 
 	/**
-	 * Users can call themselves anything.  This is used to log in.
+	 * Users can call themselves anything.  This is the display name.
 	 */
 	@Column(unique=true, length=100, nullable=false)
-	private String username;
+	private String displayName;
 
 	/**
 	 * In the database, this just stores the hash of the password, using bcrypt.
@@ -97,9 +97,9 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 	public User() {
 	}
 	
-	public User(String username, String password, String email) {
+	public User(String displayname, String password, String email) {
 		super();
-		this.username = username;
+		this.displayName = displayname;
 		this.password = password;
 		this.email = email;
 	}
@@ -112,7 +112,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		return result;
 	}
 
@@ -125,20 +125,16 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		if (username == null) {
-			if (other.username != null)
+		if (email == null) {
+			if (other.email != null)
 				return false;
-		} else if (!username.equals(other.username))
+		} else if (!email.equals(other.email))
 			return false;
 		return true;
 	}
 
 	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
+		return email;
 	}
 
 	public String getPassword() {
@@ -224,7 +220,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 		}
 		
 		this.api = checkNotNull(newUser.getApi(), this.api);
-		this.username = checkNotNull(newUser.getUsername(), this.username);
+		this.displayName = checkNotNull(newUser.getDisplayName(), this.displayName);
 	}
 
 	private <X> X checkNotNull(X possiblyNull, X original) {
@@ -233,7 +229,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", email=" + email + ", id=" + id + "]";
+		return "User [displayname=" + displayName + ", email=" + email + ", id=" + id + "]";
 	}
 
 	@JsonIgnore
@@ -272,7 +268,7 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 
 	@Override
 	public String getTitle() {
-		return getUsername();
+		return getDisplayName();
 	}
 
 	@Override
@@ -309,12 +305,12 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 		
 		String principal = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		return username.equals(principal);
+		return email.equals(principal);
 	}
 
 	@Override
 	public void setTitle(String title) {
-		this.username = title;
+		this.displayName = title;
 	}
 
 	@Override
@@ -322,4 +318,13 @@ public class User extends AbstractLongIdEntity implements UserDetails, Secured, 
 		// tbd
 	}
 	
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 }

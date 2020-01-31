@@ -79,7 +79,7 @@ public class Member extends AbstractLongIdEntity implements Secured, MemberExcer
 	@JsonProperty(access = Access.READ_ONLY)
 	@Override
 	public String getTitle() {
-		return user.getUsername();
+		return user.getDisplayName();
 	}
 
 	@JsonProperty(access = Access.READ_ONLY)

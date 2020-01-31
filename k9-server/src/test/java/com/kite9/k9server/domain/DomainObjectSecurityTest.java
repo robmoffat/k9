@@ -35,8 +35,9 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	public void setupAltUser() throws Exception {
 		String username = "altuser";
 		String password = "facts11";
-		altUser = createUser(restTemplate, username, password, "viewer@example.com");
-		altToken = getJwtToken(restTemplate, username, password);
+		String email = "viewer@example.com";
+		altUser = createUser(restTemplate, username, password, email);
+		altToken = getJwtToken(restTemplate, email, password);
 	}
 	
 	
@@ -137,8 +138,9 @@ public class DomainObjectSecurityTest extends AbstractLifecycleTest {
 	public void switchBadUser() throws URISyntaxException {
 		String username = "badactor";
 		String password = "facts11";
-		u = createUser(restTemplate, username, password, "badthing3@example.com");
-		jwtToken = getJwtToken(restTemplate, username, password);
+		String email = "badthing3@example.com";
+		u = createUser(restTemplate, username, password, email);
+		jwtToken = getJwtToken(restTemplate, email, password);
 	}
 	
 	public ProjectResource createAMemberResource(ProjectResource forProject, String email, ProjectRole pr) throws URISyntaxException {

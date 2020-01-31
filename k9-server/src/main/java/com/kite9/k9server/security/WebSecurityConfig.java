@@ -127,10 +127,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 				User u = users.findByEmail(username);
 				if (u == null) {
-					u = users.findByUsername(username);
-				}
-				
-				if (u == null) {
 					throw new UsernameNotFoundException("No username / email matching: "+username);
 				}
 

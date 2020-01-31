@@ -11,11 +11,11 @@ import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 public interface MemberRepository extends RestEntityCrudRepository<Member> {
 
 	@Override
-	@Query("select m from Member m where m.user.username = ?#{ principal }")
+	@Query("select m from Member m where m.user.email = ?#{ principal }")
 	public Iterable<Member> findAll();
 	
 	@Override
-	@Query( "select m from Member m where m.id in :ids and m.user.username = ?#{ principal }")
+	@Query( "select m from Member m where m.id in :ids and m.user.email = ?#{ principal }")
 	public Iterable<Member> findAllById(Iterable<Long> ids);
 	
 }

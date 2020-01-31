@@ -44,7 +44,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
 
 			@Override
 			public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-				User u = users.findByUsername(clientId);
+				User u = users.findByEmail(clientId);
 
 				BaseClientDetails out = new BaseClientDetails(clientId, JwtConfig.RESOURCE_ID, JwtConfig.APPLICATION_SCOPE, "client_credentials", UserAuthenticationProvider.USER_AUTHORITY);
 				out.setClientSecret(u.getPassword());

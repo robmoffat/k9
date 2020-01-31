@@ -24,9 +24,10 @@ public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 		userNumber++;
 		String username ="abc1234"+userNumber;
 		String password = "facts";
-		u = createUser(restTemplate, username, password, "thing"+userNumber+"@example.com");
+		String email = "thing"+userNumber+"@example.com";
+		u = createUser(restTemplate, username, password, email);
 		userUrl = u.getLink(Link.REL_SELF).getHref();
-		jwtToken = getJwtToken(restTemplate, username, password);
+		jwtToken = getJwtToken(restTemplate, email, password);
 	}
 	
 	@After

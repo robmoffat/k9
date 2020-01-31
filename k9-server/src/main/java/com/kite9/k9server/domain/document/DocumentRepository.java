@@ -10,10 +10,10 @@ import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 @RepositoryRestResource(excerptProjection=DocumentExcerptProjection.class)
 public interface DocumentRepository extends RestEntityCrudRepository<Document> {
 
-	@Query("select d from Document d join d.project.members m where m.user.username = ?#{ principal }")
+	@Query("select d from Document d join d.project.members m where m.user.email = ?#{ principal }")
 	public Iterable<Document> findAll();
 	
-	@Query( "select d from Document d join d.project.members m where d.id in :ids and m.user.username = ?#{ principal }")
+	@Query( "select d from Document d join d.project.members m where d.id in :ids and m.user.email = ?#{ principal }")
 	public Iterable<Document> findAllById(Iterable<Long> ids);
 	
 }

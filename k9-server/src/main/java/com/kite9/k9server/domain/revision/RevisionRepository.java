@@ -11,11 +11,11 @@ import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 public interface RevisionRepository extends RestEntityCrudRepository<Revision> {
 
 	@Override
-	@Query("select r from Revision r join r.document.project.members m where m.user.username = ?#{ principal }")
+	@Query("select r from Revision r join r.document.project.members m where m.user.email = ?#{ principal }")
 	public Iterable<Revision> findAll();
 	
 	@Override
-	@Query( "select r from Revision r join r.document.project.members m where r.id in :ids and m.user.username = ?#{ principal }")
+	@Query( "select r from Revision r join r.document.project.members m where r.id in :ids and m.user.email = ?#{ principal }")
 	public Iterable<Revision> findAllById(Iterable<Long> ids);
 	
 }

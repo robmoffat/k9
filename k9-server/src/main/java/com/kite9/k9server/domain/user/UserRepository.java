@@ -28,18 +28,11 @@ public interface UserRepository extends RestEntityCrudRepository<User> {
 	public User findByApi(String api);
 	
 	/**
-	 * Used by the {@link UserRepositoryImpl} and {@link UserAuthenticationProvider}
+	 * Used by the {@link UserRepositoryImpl} and {@link UserAuthenticationProvider} and {@link OAuth2AuthorizationServerConfig}
 	 * Not to be exported, as it is not secure.
 	 */
 	@RestResource(exported=false)
 	public User findByEmail(String email);
-	
-	/**
-	 * Used by {@link UserAuthenticationProvider} and {@link OAuth2AuthorizationServerConfig}
-	 * Not to be exported, as it is not secure.
-	 */
-	@RestResource(exported=false)
-	public User findByUsername(String username);
 	
 	@Override
 	@Query("select u from User u where u.accountExpired = false")

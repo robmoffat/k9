@@ -152,7 +152,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 	protected void createNewRevisionOnDocument(ADL input, Document d, boolean needsRevision) {
 		if (needsRevision) {
 			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			User u = userRepository.findByUsername(username);
+			User u = userRepository.findByEmail(username);
 		
 			Revision rOld = d.getCurrentRevision();
 	
@@ -183,7 +183,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 		Revision r = d.getCurrentRevision();
 		adl.setMeta("redo", ""+(r.getNextRevision() != null));
 		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
-		adl.setMeta("author", r.getAuthor().getUsername());
+		adl.setMeta("author", r.getAuthor().getEmail());
 		
 		String revisionUrl = entityLinks.linkFor(Revision.class).slash(r.getId()).toString();
 		String documentUrl = entityLinks.linkFor(Document.class).slash(r.getDocument().getId()).toString();

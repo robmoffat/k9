@@ -47,11 +47,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
 	private Authentication handleFormBasedAuthentication(Authentication authentication) {
 		User u = userRepository.findByEmail(authentication.getName());
-		
-		if (u == null) {
-			u = userRepository.findByUsername(authentication.getName());
-		}
-		
 		WebSecurityConfig.checkUser(u, true);
 		String givenPassword = (String) authentication.getCredentials();
 		if (Hash.checkPassword(givenPassword, u.getPassword())) {

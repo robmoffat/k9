@@ -182,7 +182,7 @@ public class UserController implements ResourceProcessor<PersistentEntityResourc
 		message.setTo(u.getEmail());
 		message.setFrom(fromAddress);
 		message.setSubject(subject);
-		message.setText((template.replace("{username}", u.getUsername()) + responseUrl));
+		message.setText((template.replace("{username}", u.getDisplayName()) + responseUrl));
 
 		mailSender.send(message);
 

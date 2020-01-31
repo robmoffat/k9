@@ -60,6 +60,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		nd.description = "Some name for a document";
 		nd.title = "My Document";
 		nd.templateUri=uri;
+		nd.open = true;
 		nd.setSubjectUri(forProject.getLink(Link.REL_SELF).getHref());
 		
 		RequestEntity<List<Command>> in = new RequestEntity<>(new CommandList(nd), createHeaders(), HttpMethod.POST,getAdminUri());
@@ -94,7 +95,6 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		NewProject np = new NewProject();
 		np.title = "Test Project 2";
 		np.description = "Lorem Ipsum 1";
-		np.stub = "tp"+stubNumber;
 		np.setSubjectUri(userUrl);
 		RequestEntity<List<Command>> re = new RequestEntity<>(new CommandList(np), createHeaders(), HttpMethod.POST, getAdminUri());
 		
