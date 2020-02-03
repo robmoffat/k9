@@ -100,6 +100,5 @@ public class Hash {
 
 	public static boolean checkPassword(String rawPassword, String encodedPassword) {
 		return encoder.matches(rawPassword, encodedPassword);
-
 	}
 }

@@ -49,7 +49,6 @@ public class ProjectResource extends GenericResource {
 			return false;
 		return true;
 	}
-	
-	
+
 	
 }

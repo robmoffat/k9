@@ -12,6 +12,7 @@ import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
+import com.kite9.k9server.security.Hash;
 
 public class AddMembers extends AbstractSubjectCommand<Project> {
 	
@@ -26,15 +27,21 @@ public class AddMembers extends AbstractSubjectCommand<Project> {
 		MemberRepository members = (MemberRepository) getRepositoryFor(Member.class);
 		
 		for (String e : emailAddresses.split(",")) {
+			e=e.strip();
 			Member m = getExistingMember(e, existingMembers);
 			if (m == null) {
 				User u = users.findByEmail(e);
 				
 				if (u == null) {
-					throw new CommandException(HttpStatus.FORBIDDEN, "Not implemented adding members where they aren't part of the project");
+					String username = e.substring(0, e.indexOf("@")-1);
+					u = new User(username, null, e);
+					u.setPasswordExpired(true);
+					users.save(u);
+					
 				}
 				
 				m = new Member(current, role, u);
+				current.getMembers().add(m);
 			}
 			m.setProjectRole(role);
 			members.save(m);
