@@ -56,11 +56,11 @@
       <version>1.12</version>
     </dependency>
 
-    <!-- dependency>
+    <dependency>
     	<groupId>org.kohsuke</groupId>
     	<artifactId>github-api</artifactId>
     	<version>1.106</version>
-    </dependency -->
+    </dependency>
     
     
 
@@ -86,10 +86,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-mail</artifactId>
     </dependency>
-    <!-- dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -103,20 +99,8 @@
 		<artifactId>spring-boot-starter-oauth2-client</artifactId>
 	</dependency>
 
-    <!-- security -->
-    <!-- <dependency>
-        <groupId>org.springframework.security.oauth.boot</groupId>
-        <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-        <version>2.1.2.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-data</artifactId>
-      <version>5.1.5.RELEASE</version>
-    </dependency> -->
-       
     <!-- Required for OAuth in Java11 on Eclipse (I think) -->
-    <dependency>
+    <!-- dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
       <version>2.3.2</version>
@@ -125,7 +109,7 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
       <version>2.3.0.1</version>
-    </dependency>
+    </dependency -->
 
     <!-- Database connections -->
     <dependency>

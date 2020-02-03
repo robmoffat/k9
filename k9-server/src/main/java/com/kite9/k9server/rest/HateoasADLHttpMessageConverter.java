@@ -151,7 +151,7 @@ public class HateoasADLHttpMessageConverter
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 
-	protected Document generateRestXML(ResourceSupport t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
+	protected Document generateRestXML(RepresentationModel<RepresentationModel<? extends T>> t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
 		Document out = dom.createDocument(XMLHelper.KITE9_NAMESPACE, null, null);
 		DOMResult domResult = new DOMResult(out);
 		ToXmlGenerator generator = createXMLGenerator(domResult);

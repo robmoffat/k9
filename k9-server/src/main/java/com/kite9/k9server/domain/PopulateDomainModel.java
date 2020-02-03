@@ -5,22 +5,16 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.document.DocumentRepository;
-import com.kite9.k9server.domain.permission.Member;
 import com.kite9.k9server.domain.permission.MemberRepository;
-import com.kite9.k9server.domain.permission.ProjectRole;
 import com.kite9.k9server.domain.project.Project;
 import com.kite9.k9server.domain.project.ProjectRepository;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.revision.RevisionRepository;
-import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
-import com.kite9.k9server.security.Hash;
 
 /**
  * Populates the in-memory database with some test details.  
@@ -29,17 +23,11 @@ import com.kite9.k9server.security.Hash;
  * @author robmoffat
  *
  */
-@Component
-@Profile(PopulateDomainModel.PROFILE)
+//@Component
+//@Profile(PopulateDomainModel.PROFILE)
 public class PopulateDomainModel implements CommandLineRunner {
 	
 	public static final String PROFILE = "populate";
-	
-	public static final User TEST_USER = new User("test1", Hash.generatePasswordHash("blah"), "robmoffat@mac.com");
-	
-	static {
-		TEST_USER.setApi("test-user-api-key");
-	}
 
 	@Autowired
 	ProjectRepository projectRepository;
@@ -73,16 +61,6 @@ public class PopulateDomainModel implements CommandLineRunner {
 		documentRepository.save(document1);
 		documentRepository.save(document2);
 		documentRepository.save(document3);
-				
-		// add the test user
-		userRepository.save(TEST_USER);
-		
-		// add the user to the projects
-		Member m1 = new Member(project1, ProjectRole.ADMIN, TEST_USER);
-		Member m2 = new Member(project2, ProjectRole.ADMIN, TEST_USER);
-		
-		memberRepository.save(m1);
-		memberRepository.save(m2);
 		
 		// add a revision
 		Revision r = new Revision();
