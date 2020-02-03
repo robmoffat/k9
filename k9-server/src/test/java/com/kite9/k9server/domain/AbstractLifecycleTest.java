@@ -87,11 +87,8 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 		dOut = restTemplate.exchange(in, DocumentResource.class);
 		return dOut.getBody();
 	}
-
-	static int stubNumber = 1;
 	
 	public ProjectResource createAProjectResource() throws URISyntaxException {
-		stubNumber++;
 		NewProject np = new NewProject();
 		np.title = "Test Project 2";
 		np.description = "Lorem Ipsum 1";

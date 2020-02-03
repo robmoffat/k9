@@ -59,7 +59,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		// retrieve the user, testing basic authentication
 		Resources<UserResource> uOuts = retrieveUserViaBasicAuth(restTemplate, password, email);
 		Collection<UserResource> us = uOuts.getContent();
-		Assert.assertEquals(1, us.size());
+		Assert.assertEquals(1, us.stream().filter(u -> u.getEmail().equals(email)).count());
 		UserResource firstUser = us.iterator().next();
 		Assert.assertEquals(username, firstUser.title);
 		Assert.assertNull(firstUser.password);
@@ -244,7 +244,7 @@ public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
 		RestTemplate restTemplate = getRestTemplate();
 		
 		// first, create a user
-		String email = "test-user1@example.com";
+		String email = "test-user14@example.com";
 		String password = "1234";
 		UserResource uOut = createUser(restTemplate, "Kite9TestUser", password, email);
 		
