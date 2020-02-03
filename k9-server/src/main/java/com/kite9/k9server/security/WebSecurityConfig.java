@@ -1,34 +1,17 @@
 package com.kite9.k9server.security;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationProcessingFilter;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
@@ -39,14 +22,13 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  */
 @Configuration
-@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	UserRepository users;
 	
-	@Autowired
-	ResourceServerTokenServices tokenServices;
+//	@Autowired
+//	ResourceServerTokenServices tokenServices;
 	
 	/**
 	 * This login approach handles both form-based and api-key based login, and
@@ -55,12 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin().failureUrl("/login-failed").loginPage("/login").permitAll().successHandler((req, res, auth) -> {
-			User u = (User) auth.getDetails();
-			res.sendRedirect(u.getLocalId());
-		});
-		http.formLogin().permitAll();
-		http.httpBasic();
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 		http.authorizeRequests()
@@ -78,21 +54,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/public/**").permitAll()
 				.antMatchers("/examples/**").permitAll()
 				.antMatchers("/**").authenticated()
-		.and().addFilterBefore(jwtAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class);
-	}
+				.and().oauth2Login();
+	} 
 	
 	
-	
-	
-	public OAuth2AuthenticationProcessingFilter jwtAuthFilter() throws Exception {
-			OAuth2AuthenticationProcessingFilter resourcesServerFilter = new OAuth2AuthenticationProcessingFilter();
-		resourcesServerFilter.setAuthenticationManager(authenticationManager());
-		resourcesServerFilter.setStateless(false);
-		resourcesServerFilter.afterPropertiesSet();
-		
-		return resourcesServerFilter;
-		
-	}
+//	
+//	
+//	public OAuth2AuthenticationProcessingFilter jwtAuthFilter() throws Exception {
+//			OAuth2AuthenticationProcessingFilter resourcesServerFilter = new OAuth2AuthenticationProcessingFilter();
+//		resourcesServerFilter.setAuthenticationManager(authenticationManager());
+//		resourcesServerFilter.setStateless(false);
+//		resourcesServerFilter.afterPropertiesSet();
+//		
+//		return resourcesServerFilter;
+//		
+//	}
 	
 
 	public static void checkUser(User u, boolean checkPassword) throws AccountStatusException {
@@ -110,14 +86,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 	}
 
-	/**
-	 * This allows the user id to be used to define which projects/users etc we
-	 * can view when we do a "findAll"
-	 */
-	@Bean
-	public SecurityEvaluationContextExtension usePrincipalInQueries() {
-		return new SecurityEvaluationContextExtension();
-	}
+//	/**
+//	 * This allows the user id to be used to define which projects/users etc we
+//	 * can view when we do a "findAll"
+//	 */
+//	@Bean
+//	public SecurityEvaluationContextExtension usePrincipalInQueries() {
+//		return new SecurityEvaluationContextExtension();
+//	}
 	
 	@Bean
 	public UserDetailsService userDetailsService() {
@@ -136,18 +112,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	}
 	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.parentAuthenticationManager(oauthAuthenticationManager())
-			.authenticationProvider(new UserAuthenticationProvider(users));
-	}
-
-	protected AuthenticationManager oauthAuthenticationManager() throws Exception {
-		OAuth2AuthenticationManager oauthAuthenticationManager = new OAuth2AuthenticationManager();
-		oauthAuthenticationManager.setResourceId(JwtConfig.RESOURCE_ID);
-		oauthAuthenticationManager.setTokenServices(tokenServices);
-		return oauthAuthenticationManager;
-	}
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		auth
+//			.parentAuthenticationManager(oauthAuthenticationManager())
+//			.authenticationProvider(new UserAuthenticationProvider(users));
+//	}
+//
+//	protected AuthenticationManager oauthAuthenticationManager() throws Exception {
+//		OAuth2AuthenticationManager oauthAuthenticationManager = new OAuth2AuthenticationManager();
+//		oauthAuthenticationManager.setResourceId(JwtConfig.RESOURCE_ID);
+//		oauthAuthenticationManager.setTokenServices(tokenServices);
+//		return oauthAuthenticationManager;
+//	}
 
 }

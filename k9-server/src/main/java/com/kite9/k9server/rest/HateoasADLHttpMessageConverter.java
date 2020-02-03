@@ -27,7 +27,7 @@ import org.kite9.diagram.dom.elements.ADLDocument;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -64,7 +64,7 @@ import com.kite9.k9server.security.Kite9HeaderMeta;
  *
  */
 public class HateoasADLHttpMessageConverter 
-	extends AbstractGenericHttpMessageConverter<ResourceSupport> {
+	extends AbstractGenericHttpMessageConverter<RepresentationModel<?>> {
 
 	public static final HttpHeaders EMPTY_HEADERS = new HttpHeaders();
 	public static final Charset DEFAULT = Charset.forName("UTF-8");
@@ -95,7 +95,7 @@ public class HateoasADLHttpMessageConverter
 	
 	@Override
 	protected boolean supports(Class<?> clazz) {
-		return ResourceSupport.class.isAssignableFrom(clazz);
+		return RepresentationModel.class.isAssignableFrom(clazz);
 	}
 
 	@Override
@@ -109,12 +109,12 @@ public class HateoasADLHttpMessageConverter
 	}
 
 	@Override
-	public ResourceSupport read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+	public RepresentationModel<?> read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		throw new UnsupportedOperationException("Can't read with this converter");
 	}
 	
 	@Override
-	protected ResourceSupport readInternal(Class<? extends ResourceSupport> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+	protected RepresentationModel<?> readInternal(Class<? extends RepresentationModel<?>> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
 		throw new UnsupportedOperationException("Can't read with this converter");
 	}
 
@@ -126,7 +126,7 @@ public class HateoasADLHttpMessageConverter
 
 
 	@Override
-	protected void writeInternal(ResourceSupport t, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+	protected void writeInternal(RepresentationModel<?> t, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
 		try {
 			MediaType contentType = outputMessage.getHeaders().getContentType();	
 			Format f = formatSupplier.getFormatFor(contentType);
@@ -138,7 +138,7 @@ public class HateoasADLHttpMessageConverter
 	
 	
 
-	protected void writeADL(ResourceSupport t, HttpOutputMessage outputMessage, Format f) throws Exception {
+	protected void writeADL(RepresentationModel<?> t, HttpOutputMessage outputMessage, Format f) throws Exception {
 		URI u = new URI(t.getId().getHref());
 		Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
 		Document input = generateRestXML(t, transcoder.getDomImplementation());

@@ -1,6 +1,6 @@
 package com.kite9.k9server.domain.user;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * Sent from the {@link UserController} when some activity has been performed.
@@ -8,7 +8,7 @@ import org.springframework.hateoas.ResourceSupport;
  * @author robmoffat
  *
  */
-public class NotificationResource extends ResourceSupport {
+public class NotificationResource extends RepresentationModel<NotificationResource> {
 
 	private String message;
 

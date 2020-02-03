@@ -17,7 +17,7 @@ import com.kite9.k9server.security.UserAuthenticationProvider;
  * @author robmoffat
  *
  */
-@RepositoryRestResource(excerptProjection=UserMainProjection.class)
+//@RepositoryRestResource(excerptProjection=UserMainProjection.class)
 public interface UserRepository extends RestEntityCrudRepository<User> {
 	
 	/**

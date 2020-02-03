@@ -35,8 +35,8 @@ import com.kite9.k9server.web.HttpException;
  * 
  * @author robmoffat
  */
-@Controller
-@RequestMapping(path="/api/users")
+//@Controller
+//@RequestMapping(path="/api/users")
 public class UserController implements ResourceProcessor<PersistentEntityResource>{
 	
 	

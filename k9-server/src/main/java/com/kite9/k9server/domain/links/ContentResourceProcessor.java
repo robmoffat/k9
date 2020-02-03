@@ -1,10 +1,12 @@
 package com.kite9.k9server.domain.links;
 
 import java.net.URI;
+import java.util.Optional;
 
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.hateoas.server.RepresentationModelProcessor;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,7 @@ import com.kite9.k9server.domain.revision.Revision;
  * @param <X>
  */
 @Component
-public class ContentResourceProcessor implements ResourceProcessor<PersistentEntityResource> {
+public class ContentResourceProcessor implements RepresentationModelProcessor<PersistentEntityResource> {
 
 	public static final String CONTENT_REL = "content";
 	public static final String CONTENT_URL = "/content";
@@ -37,12 +39,13 @@ public class ContentResourceProcessor implements ResourceProcessor<PersistentEnt
 	}
 
 	protected void addContentRels(PersistentEntityResource resource, AbstractLongIdEntity r) {
-		resource.add(new Link(createContentControllerUrl(resource), CONTENT_REL));
+		Optional<String> s = createContentControllerUrl(resource);
+		s.ifPresent(ss -> resource.add(new Link(CONTENT_REL, ss)));
 	}
 	
-	private String createContentControllerUrl(PersistentEntityResource resource) {
-		Link l = resource.getLink(Link.REL_SELF);
-		return l.getHref()+CONTENT_URL;
+	private Optional<String> createContentControllerUrl(PersistentEntityResource resource) {
+		Optional<Link> ol = resource.getLink(IanaLinkRelations.SELF);
+		return ol.map(l -> l.getHref()+CONTENT_URL);
 	}
 
 	public ADL buildADL(RequestEntity<?> request, Revision r) {

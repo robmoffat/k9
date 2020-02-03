@@ -11,6 +11,7 @@ import org.kite9.framework.logging.Logable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -189,7 +190,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 		String documentUrl = entityLinks.linkFor(Document.class).slash(r.getDocument().getId()).toString();
 		
 		adl.setMeta("revision", revisionUrl+ContentResourceProcessor.CONTENT_URL);
-		adl.setMeta(Link.REL_SELF, documentUrl);
+		adl.setMeta(IanaLinkRelations.SELF.value(), documentUrl);
 		adl.setMeta(ContentResourceProcessor.CONTENT_REL, documentUrl+ContentResourceProcessor.CONTENT_URL);
 		return adl;
 	}

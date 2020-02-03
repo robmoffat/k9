@@ -12,7 +12,6 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.config.EnableEntityLinks;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.util.StringUtils;
@@ -28,7 +27,6 @@ import com.kite9.k9server.adl.format.ADLMessageConverter;
 import com.kite9.k9server.adl.format.FormatSupplier;
 
 @Configuration
-@EnableEntityLinks
 @EnableHypermediaSupport(type=EnableHypermediaSupport.HypermediaType.HAL)
 public class RestDataConfig implements RepositoryRestConfigurer {
 
