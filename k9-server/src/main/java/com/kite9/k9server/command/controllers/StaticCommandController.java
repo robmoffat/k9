@@ -46,5 +46,5 @@ public class StaticCommandController extends AbstractCommandController implement
 		
 		return (ADL) performSteps(req.getBody(), input, null, req.getHeaders(), uri);
 	}
-
+	
 }
