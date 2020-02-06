@@ -7,12 +7,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.kite9.k9server.command.domain.AddMembers;
-import com.kite9.k9server.command.domain.DeleteEntity;
 import com.kite9.k9server.command.domain.NewDocument;
-import com.kite9.k9server.command.domain.NewProject;
-import com.kite9.k9server.command.domain.RegisterUser;
-import com.kite9.k9server.command.domain.Update;
+import com.kite9.k9server.command.domain.RenameDocument;
 import com.kite9.k9server.command.revision.Redo;
 import com.kite9.k9server.command.revision.Undo;
 import com.kite9.k9server.command.xml.AppendXML;
@@ -57,15 +53,11 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(Redo.class),
 	
 	// domain-specific
-	@Type(RegisterUser.class),
-	@Type(DeleteEntity.class),
-	@Type(NewProject.class),
-	@Type(Update.class),
-	@Type(NewDocument.class),
-	@Type(AddMembers.class)	
+	@Type(RenameDocument.class),
+	@Type(NewDocument.class)
 })
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
-	getterVisibility=Visibility.NONE,
+	getterVisibility=Visibility.NONE, 
 	setterVisibility =Visibility.NONE)
 public interface Command {
 					

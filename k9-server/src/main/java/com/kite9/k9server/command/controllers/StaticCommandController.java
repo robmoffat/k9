@@ -25,7 +25,7 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-@Controller 
+//@Controller 
 public class StaticCommandController extends AbstractCommandController implements Logable {
 		
 	@Autowired

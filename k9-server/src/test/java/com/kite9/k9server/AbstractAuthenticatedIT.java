@@ -27,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.domain.DeleteEntity;
 import com.kite9.k9server.command.domain.RegisterUser;
-import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.project.Repository;
 import com.kite9.k9server.resource.UserResource;
 
 /**
@@ -47,7 +47,7 @@ public abstract class AbstractAuthenticatedIT extends AbstractRestIT {
 
 	protected UserResource createUser(RestTemplate restTemplate, String username, String password, String email) throws URISyntaxException {
 		String url = getUrlBase() + "/api/admin";
-		UserResource u = new UserResource(username, password, email, Project.createRandomString());
+		UserResource u = new UserResource(username, password, email, Repository.createRandomString());
 		RegisterUser ru = new RegisterUser();
 		ru.email = email;
 		ru.username = username;

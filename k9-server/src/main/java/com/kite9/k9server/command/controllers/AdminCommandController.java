@@ -32,7 +32,7 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-@BasePathAwareController 
+//@BasePathAwareController 
 public class AdminCommandController extends AbstractCommandController implements Logable {
 	
 	@Autowired

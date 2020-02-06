@@ -1,4 +1,4 @@
-package com.kite9.k9server.rest;
+package com.kite9.k9server.adl.format;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,9 +24,11 @@ import org.kite9.diagram.batik.format.Kite9SVGTranscoder;
 import org.kite9.diagram.dom.ADLExtensibleDOMImplementation;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.diagram.dom.elements.ADLDocument;
+import org.kite9.framework.common.Kite9ProcessingException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -35,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,12 +50,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
-import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.entity.RestEntity;
-import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
@@ -63,6 +64,7 @@ import com.kite9.k9server.security.Kite9HeaderMeta;
  * @author robmoffat
  *
  */
+@Component
 public class HateoasADLHttpMessageConverter 
 	extends AbstractGenericHttpMessageConverter<RepresentationModel<?>> {
 
@@ -74,11 +76,15 @@ public class HateoasADLHttpMessageConverter
 	private XmlFactory xmlFactory;
 	private WstxOutputFactory wstxOutputFactory;
 	private ResourceLoader resourceLoader;
-	private String resource;
+	private String resource = "clas";
 	private TransformerFactory transFact;
-	private String changeUri;
+	private String changeUri = "/admin";
 	 
-	public HateoasADLHttpMessageConverter(ObjectMapper objectMapper, FormatSupplier formatSupplier, String resource, ResourceLoader resourceLoader, String changeUri) {
+	public HateoasADLHttpMessageConverter(
+			ObjectMapper objectMapper, 
+			FormatSupplier formatSupplier, 
+			ResourceLoader resourceLoader,
+			@Value("${kite9.rest.transform:classpath:/static/public/context/admin/transform.xslt}") String resource) {
 		super();
 		this.objectMapper = objectMapper;
 		this.formatSupplier = formatSupplier;
@@ -90,7 +96,6 @@ public class HateoasADLHttpMessageConverter
 		this.transFact = TransformerFactory.newInstance();
 		this.transFact.setErrorListener(new DefaultErrorHandler(true));
 		setSupportedMediaTypes(formatSupplier.getMediaTypes());
-		this.changeUri = changeUri;
 	}
 	
 	@Override
@@ -139,7 +144,7 @@ public class HateoasADLHttpMessageConverter
 	
 
 	protected void writeADL(RepresentationModel<?> t, HttpOutputMessage outputMessage, Format f) throws Exception {
-		URI u = new URI(t.getId().getHref());
+		URI u = new URI(getSelfRef(t));
 		Kite9SVGTranscoder transcoder = new Kite9SVGTranscoder();
 		Document input = generateRestXML(t, transcoder.getDomImplementation());
 		ADLDocument output = transformXML(input, transcoder.getDomImplementation());
@@ -151,7 +156,11 @@ public class HateoasADLHttpMessageConverter
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 
-	protected Document generateRestXML(RepresentationModel<RepresentationModel<? extends T>> t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
+	private String getSelfRef(RepresentationModel<?> t) {
+		return t.getLink(IanaLinkRelations.SELF).orElseThrow(() -> new Kite9ProcessingException("Couldn't get url for "+t)).getHref();
+	}
+
+	protected Document generateRestXML(RepresentationModel<?> t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
 		Document out = dom.createDocument(XMLHelper.KITE9_NAMESPACE, null, null);
 		DOMResult domResult = new DOMResult(out);
 		ToXmlGenerator generator = createXMLGenerator(domResult);
@@ -221,21 +230,21 @@ public class HateoasADLHttpMessageConverter
 
 
 	@Override
-	protected void addDefaultHeaders(HttpHeaders headers, ResourceSupport t, MediaType contentType) throws IOException {
+	protected void addDefaultHeaders(HttpHeaders headers, RepresentationModel<?> t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
-		Kite9HeaderMeta.addRegularMeta(headers, t.getId().getHref(), changeUri, getTitle(t));
+		Kite9HeaderMeta.addRegularMeta(headers, getSelfRef(t), changeUri, getTitle(t));
 	}
 
-	private String getTitle(ResourceSupport rs) {
-		if (rs instanceof PersistentEntityResource) {
-			Object o = ((PersistentEntityResource) rs).getContent();
+	private String getTitle(RepresentationModel<?> rs) {
+		if (rs instanceof EntityModel) {
+			Object o = ((EntityModel<?>) rs).getContent();
 			
 			if (o instanceof RestEntity) {
 				return ((RestEntity) o).getType()+ ": " + ((RestEntity) o).getTitle();
 			}
 		}
 		
-		return null;
+		return "";
 	}
 	
 }

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 
-@Component
-@RepositoryRestResource(excerptProjection=RevisionExcerptProjection.class)
+//@Component
+//@RepositoryRestResource(excerptProjection=RevisionExcerptProjection.class)
 public interface RevisionRepository extends RestEntityCrudRepository<Revision> {
 
 	@Override

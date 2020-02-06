@@ -22,7 +22,7 @@ import com.kite9.k9server.AbstractUserBasedTest;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.domain.NewDocument;
 import com.kite9.k9server.command.domain.NewProject;
-import com.kite9.k9server.command.domain.Update;
+import com.kite9.k9server.command.domain.RenameDocument;
 import com.kite9.k9server.resource.DocumentResource;
 import com.kite9.k9server.resource.MemberResource;
 import com.kite9.k9server.resource.ProjectResource;
@@ -70,7 +70,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	}
 
 	public DocumentResource updateADocumentResource(DocumentResource d) throws URISyntaxException {
-		Update u = new Update();
+		RenameDocument u = new RenameDocument();
 		u.description = "desc 2";
 		u.setSubjectUri(d.getLink(Link.REL_SELF).getHref());
 		
@@ -123,7 +123,7 @@ public abstract class AbstractLifecycleTest extends AbstractUserBasedTest {
 	}
 
 	public ProjectResource updateAProjectResource(ProjectResource pIn) throws URISyntaxException {
-		Update u = new Update();
+		RenameDocument u = new RenameDocument();
 		u.description = "desc 2";
 		u.setSubjectUri(pIn.getLink(Link.REL_SELF).getHref());
 		

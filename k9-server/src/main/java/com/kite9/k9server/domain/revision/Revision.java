@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kite9.k9server.domain.document.Document;
-import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.AbstractEntity;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.Secured;
 import com.kite9.k9server.domain.links.ContentResourceProcessor;
@@ -20,7 +20,7 @@ import com.kite9.k9server.domain.user.User;
  * Contains a single diagram revision.  
  */
 @Entity
-public class Revision extends AbstractLongIdEntity implements Secured, RevisionExcerptProjection {
+public class Revision extends AbstractEntity implements Secured, RevisionExcerptProjection {
 
 	@ManyToOne(targetEntity=Document.class, optional=false, fetch=FetchType.EAGER)
     Document document;

@@ -1,6 +1,7 @@
 package com.kite9.k9server.security;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -9,7 +10,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.user.User;
 
 /** 
  * Provides utility function for adding user details to the ADL meta and the headers.
@@ -20,46 +20,11 @@ import com.kite9.k9server.domain.user.User;
 public class Kite9HeaderMeta {
 
 	public static void addRegularMeta(ADL t, String self, String change, String title) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2User user = (OAuth2User) authentication.getPrincipal();
-			t.setMeta("user", user.getAttribute("name"));
-			t.setMeta("user-icon", user.getAttribute("avatar_url"));
-			t.setMeta("user-page", "/api/users/"+authentication.getName());
-			
-		} else {
-			t.setMeta("user", "anonymousUser");
-		}
-		if (self != null) {
-			t.setMeta("self", self);
-		}
-		if (change != null) {
-			t.setMeta("content", change);
-		}
-		if (title != null) {
-			t.setMeta("title", title);
-		}
+		perform((k, v) -> t.setMeta(k, v), self, change, title);
 	}
 	
 	public static void addRegularMeta(HttpHeaders headers, String self, String change, String title) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		headers.add("kite9-user", authentication.getName());
-		
-		if (authentication.getDetails() instanceof User) {
-			headers.add("kite9-user-icon", ((User)authentication.getDetails()).getIcon());
-			headers.add("kite9-user-page", ((User)authentication.getDetails()).getLocalId());
-		}
-		
-		if (self != null) {
-			headers.add("kite9-self", self);
-		}
-		if (change != null) {
-			headers.add("kite9-content", change);
-		}
-		if (title != null) {
-			headers.add("kite9-title", title);
-		}
+		perform((k, v) -> headers.add("kite9-"+v, v), self, change, title);
 	}
 	
 	public static void transcribeMetaToHeaders(ADL t, HttpHeaders headers) {
@@ -67,4 +32,29 @@ public class Kite9HeaderMeta {
 			headers.set("kite9-"+item.getKey(), item.getValue());
 		}
 	}
+		
+	private static void perform(BiConsumer<String, String> consumer, String self, String change, String title) {	
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication instanceof OAuth2AuthenticationToken) {
+			OAuth2User user = (OAuth2User) authentication.getPrincipal();
+			consumer.accept("user", user.getAttribute("name"));
+			consumer.accept("user-icon", user.getAttribute("avatar_url"));
+			consumer.accept("user-page", "/api/users/"+authentication.getName());
+			
+		} else {
+			consumer.accept("user", "anonymousUser");
+		}
+		if (self != null) {
+			consumer.accept("self", self);
+		}
+		if (change != null) {
+			consumer.accept("content", change);
+		}
+		if (title != null) {
+			consumer.accept("title", title);
+		}
+	}
+	
+
 }

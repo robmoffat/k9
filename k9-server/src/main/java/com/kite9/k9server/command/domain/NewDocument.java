@@ -12,12 +12,12 @@ import com.kite9.k9server.command.AbstractSubjectCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.links.ContentResourceProcessor;
-import com.kite9.k9server.domain.project.Project;
+import com.kite9.k9server.domain.project.Repository;
 import com.kite9.k9server.domain.revision.Revision;
 import com.kite9.k9server.domain.user.User;
 import com.kite9.k9server.domain.user.UserRepository;
 
-public class NewDocument extends AbstractSubjectCommand<Project> {
+public class NewDocument extends AbstractSubjectCommand<Repository> {
 	
 	public String title;
 	

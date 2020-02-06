@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
 
-@Component
-@RepositoryRestResource(excerptProjection=DocumentExcerptProjection.class)
+//@Component
+//@RepositoryRestResource(excerptProjection=DocumentExcerptProjection.class)
 public interface DocumentRepository extends RestEntityCrudRepository<Document> {
 
 	@Query("select d from Document d join d.project.members m where m.user.email = ?#{ principal }")

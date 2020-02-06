@@ -12,7 +12,7 @@ import com.kite9.k9server.domain.entity.Updateable;
  * @author robmoffat
  *
  */
-public class Update extends AbstractSubjectCommand<Updateable> {
+public class RenameDocument extends AbstractSubjectCommand<Updateable> {
 	
 	public String title;
 	public String description;

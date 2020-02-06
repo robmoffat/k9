@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.document.Document;
-import com.kite9.k9server.domain.entity.AbstractLongIdEntity;
+import com.kite9.k9server.domain.entity.AbstractEntity;
 import com.kite9.k9server.domain.revision.Revision;
 
 /**
@@ -22,7 +22,7 @@ import com.kite9.k9server.domain.revision.Revision;
  *
  * @param <X>
  */
-@Component
+//@Component
 public class ContentResourceProcessor implements RepresentationModelProcessor<PersistentEntityResource> {
 
 	public static final String CONTENT_REL = "content";
@@ -31,14 +31,14 @@ public class ContentResourceProcessor implements RepresentationModelProcessor<Pe
 	@Override
 	public PersistentEntityResource process(PersistentEntityResource resource) {
 		if (appliesTo(resource.getContent())) {
-			AbstractLongIdEntity r = (AbstractLongIdEntity) resource.getContent();
+			AbstractEntity r = (AbstractEntity) resource.getContent();
 			addContentRels(resource, r);
 		}
 		
 		return resource;
 	}
 
-	protected void addContentRels(PersistentEntityResource resource, AbstractLongIdEntity r) {
+	protected void addContentRels(PersistentEntityResource resource, AbstractEntity r) {
 		Optional<String> s = createContentControllerUrl(resource);
 		s.ifPresent(ss -> resource.add(new Link(CONTENT_REL, ss)));
 	}
