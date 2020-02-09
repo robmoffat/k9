@@ -1,6 +1,7 @@
 package com.kite9.k9server.domain.project;
 
 import java.util.Date;
+import java.util.List;
 
 import com.kite9.k9server.domain.entity.RestEntity;
 
@@ -31,4 +32,5 @@ public abstract class Repository extends RestEntity<Repository> {
 		return "NewDocument";
 	}
 
+	public abstract List<Document> getDocuments();
 }

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.domain.document.Document;
 import com.kite9.k9server.domain.entity.AbstractEntity;
+import com.kite9.k9server.domain.project.Document;
 import com.kite9.k9server.domain.revision.Revision;
 
 /**
