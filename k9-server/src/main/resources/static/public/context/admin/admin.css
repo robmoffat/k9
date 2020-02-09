@@ -23,6 +23,7 @@ organisation,
 document,
 project,
 revision,
+directory,
 user {
 	kite9-type: container;
 	kite9-template: url(template.xml#entity) '15px' '15px';
@@ -59,6 +60,8 @@ container.list {
 container.list * {
 	kite9-vertical-align: top;
 	kite9-horizontal-align: left;
+	kite9-min-size: 250px 60px;
+	kite9-layout: right;
 }
 
 container.grid {
@@ -68,16 +71,15 @@ container.grid {
 
 container.list label {
 	kite9-horizontal-align: center;
+	kite9-vertical-align: bottom;
 }
 
 title,
 description, 
 lastUpdated,
-projectRole,
 [k9-elem=title],
 [k9-elem=description],
-[k9-elem=lastUpdated],
-[k9-elem=projectRole] {
+[k9-elem=lastUpdated] {
 	kite9-type: text;
 	fill: #686868;
 	stroke: #AAAA88;
@@ -102,11 +104,6 @@ projectRole,
 	text-align: start;
 	kite9-vertical-align: middle;
 }
-
-.list projectRole {
-	kite9-min-width: 50px;
-}
-
 
 .list icon {
 	kite9-template: url(template.xml#icon) '40px' '40px';
@@ -159,10 +156,6 @@ container {
 	stroke: black;
 	stroke-width: 5px;
 }
-
-/*[k9-elem=container] > [k9-elem=back] {
-	stroke: black;
-}*/
 
 .title {
 	kite9-layout: down;

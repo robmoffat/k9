@@ -15,52 +15,33 @@
 		</svg:svg>
 	</xsl:template>
 
-	<xsl:template name="entity">
-		<xsl:param name="id" />
-		<xsl:param name="focus" />
-		<xsl:variable name="open">
-			<xsl:if test="@type = 'document'">
-				open
-			</xsl:if>
-		</xsl:variable>
-		<xsl:element name="{@type}">
-			<xsl:variable name="rel">
-				<xsl:value-of select="../adl:rel" />
-			</xsl:variable>
-			<xsl:attribute name="entity">true</xsl:attribute>
-			<xsl:attribute name="k9-ui"><xsl:value-of
-				select="@commands" /> <xsl:value-of select="$focus" /> <xsl:value-of
-				select="$open" /></xsl:attribute>
-			<xsl:attribute name="id"><xsl:value-of
-				select="$id" /></xsl:attribute>
-			<xsl:attribute name="subject-uri"><xsl:value-of
-				select="$id" /></xsl:attribute>
-			<xsl:if test="@type = 'document'">
-				<xsl:attribute name="href"><xsl:value-of
-					select="$id" />/content</xsl:attribute>
-			</xsl:if>
-			<xsl:copy-of select="adl:title" />
-			<xsl:copy-of select="adl:icon" />
-			<xsl:copy-of select="adl:description" />
-			<lastUpdated>
-				<xsl:value-of
-					select="translate(adl:lastUpdated, 'T.', '  ')" />
-			</lastUpdated>
-		</xsl:element>
+	<xsl:template name="entity-box">
+		<xsl:attribute name="id">
+			<xsl:value-of select="adl:links[adl:rel='self']/adl:href" />
+		</xsl:attribute>
+		<xsl:copy-of select="adl:title" />
+		<xsl:copy-of select="adl:icon" />
+		<xsl:copy-of select="adl:description" />
+		<lastUpdated>
+			<xsl:value-of
+				select="translate(adl:lastUpdated, 'T.', '  ')" />
+		</lastUpdated>
+	</xsl:template>
+	
+	<xsl:template name="entity-list">
+		<xsl:attribute name="id">
+			<xsl:value-of select="adl:links[adl:rel='self']/adl:href" />
+		</xsl:attribute>
+		<xsl:copy-of select="adl:icon" />
+		<xsl:copy-of select="adl:title" />
 	</xsl:template>
 
 	<xsl:template name="user-page">
 		<container class="main">
 			<container class="left" id="userbox">
-				<xsl:call-template name="entity">
-					<xsl:with-param name="id">
-						<xsl:value-of
-							select="adl:links[adl:rel='self']/adl:href" />
-					</xsl:with-param>
-					<xsl:with-param name="focus">
-						auth
-					</xsl:with-param>
-				</xsl:call-template>
+				<user>
+					<xsl:call-template name="entity-box" />
+				</user>
 			</container>
 			<container class="right grid" id="projectbox">
 				<xsl:attribute name="subject-uri"><xsl:value-of
@@ -68,143 +49,59 @@
 
 				<xsl:for-each select="adl:repositories">
 					<repository>
-						<xsl:attribute name="k9-ui">focus</xsl:attribute>
-						<xsl:attribute name="id"><xsl:value-of
-							select="adl:links[adl:rel='self']/adl:href" /></xsl:attribute>
-						<xsl:copy-of select="adl:title" />
-						<xsl:copy-of select="adl:icon" />
-						<xsl:copy-of select="adl:description" />
+						<xsl:call-template name="entity-box" />
 					</repository>
 				</xsl:for-each>
-				<label>My Projects</label>
+				<label>My Repositories</label>
 			</container>
 			<xsl:if test="adl:organisations">
 				<container class="right grid" id="projectbox">
 					<xsl:for-each select="adl:organisations">
 						<organisation>
-							<xsl:attribute name="k9-ui">focus</xsl:attribute>
-							<xsl:attribute name="id"><xsl:value-of
-								select="adl:links[adl:rel='self']/adl:href" /></xsl:attribute>
-							<xsl:copy-of select="adl:title" />
-							<xsl:copy-of select="adl:icon" />
-							<xsl:copy-of select="adl:description" />
+							<xsl:call-template name="entity-box" />
 						</organisation>
 					</xsl:for-each>
 					<label>My Organisations</label>
 				</container>
 			</xsl:if>
-
 		</container>
 	</xsl:template>
 
-	<xsl:template name="project-page">
+
+	<xsl:template name="directory-page">
 		<container class="main">
 			<container class="left" id="projectbox">
-				<xsl:call-template name="entity">
-					<xsl:with-param name="id">
-						<xsl:value-of select="@localId" />
-					</xsl:with-param>
-					<xsl:with-param name="focus"></xsl:with-param>
-				</xsl:call-template>
-
-				<container class="lower list" id="membersbox"
-					k9-ui="AddMembers">
-					<xsl:attribute name="subject-uri"><xsl:value-of
-						select="@localId" /></xsl:attribute>
-					<xsl:for-each
-						select="./adl:content/adl:value[@type='member']">
-						<pmember>
-							<xsl:attribute name="id"><xsl:value-of
-								select="@localId" /></xsl:attribute>
-							<xsl:copy-of select="adl:projectRole" />
-							<xsl:copy-of select="adl:icon" />
-							<xsl:copy-of select="adl:title" />
-						</pmember>
-					</xsl:for-each>
-					<label>Members</label>
-				</container>
+				<xsl:for-each select="adl:parent[adl:type='user']">
+					<user>
+						<xsl:call-template name="entity-box" />
+					</user>
+				</xsl:for-each>		
+				<xsl:for-each select="adl:parent[adl:type='organisation']">
+					<organisation>
+						<xsl:call-template name="entity-box" />
+					</organisation>
+				</xsl:for-each>		
 			</container>
-			<container class="right grid" id="documentbox"
-				k9-ui="NewDocument">
+			<container class="right grid" id="documentbox">
 				<xsl:attribute name="subject-uri"><xsl:value-of
-					select="@localId" /></xsl:attribute>
-				<xsl:for-each
-					select="./adl:content/adl:value[@type='document']">
-					<xsl:call-template name="entity">
-						<xsl:with-param name="id">
-							<xsl:value-of select="@localId" />
-						</xsl:with-param>
-						<xsl:with-param name="focus">
-							focus
-						</xsl:with-param>
-					</xsl:call-template>
+					select="adl:links[adl:rel='self']/adl:href" /></xsl:attribute>
+				<xsl:for-each select="adl:documents">
+					<document>
+						<xsl:call-template name="entity-box" />
+					</document>
 				</xsl:for-each>
-				<label>
-					Documents in
-					<xsl:value-of select="adl:title" />
-				</label>
+				<label>Diagrams</label>
 			</container>
-		</container>
-	</xsl:template>
+				<container class="right list" id="projectbox">
+				<xsl:attribute name="subject-uri"><xsl:value-of
+					select="adl:links[adl:rel='self']/adl:href" /></xsl:attribute>
 
-	<xsl:template name="document-page">
-		<container class="main">
-			<container class="left" id="projectbox">
-				<xsl:for-each
-					select="./adl:content/adl:value[@type='project']">
-					<xsl:call-template name="entity">
-						<xsl:with-param name="id">
-							<xsl:value-of select="@localId" />
-						</xsl:with-param>
-						<xsl:with-param name="focus">
-							focus
-						</xsl:with-param>
-					</xsl:call-template>
+				<xsl:for-each select="adl:subDirectories">
+					<directory>
+						<xsl:call-template name="entity-list" />
+					</directory>
 				</xsl:for-each>
-			</container>
-			<container class="left" id="documentbox">
-				<xsl:call-template name="entity">
-					<xsl:with-param name="id">
-						<xsl:value-of select="@localId" />
-					</xsl:with-param>
-					<xsl:with-param name="focus"></xsl:with-param>
-				</xsl:call-template>
-			</container>
-			<container id="revisionbox">
-				<xsl:variable name="count">
-					<xsl:value-of
-						select="count(./adl:content/adl:value[@type='revision'])" />
-				</xsl:variable>
-				<xsl:attribute name="class">right list <xsl:if
-					test="$count > 10">more</xsl:if></xsl:attribute>
-				<xsl:for-each
-					select="./adl:content/adl:value[@type='revision' and count(preceding::adl:value) &lt; 11]">
-					<member>
-						<xsl:attribute name="k9-ui"></xsl:attribute>
-						<xsl:attribute name="id"><xsl:value-of
-							select="@localId" /></xsl:attribute>
-						<xsl:copy-of select="adl:icon" />
-						<xsl:copy-of select="adl:title" />
-						<xsl:copy-of select="adl:lastUpdated" />
-					</member>
-				</xsl:for-each>
-				<xsl:choose>
-					<xsl:when test="$count > 10">
-						<label>
-							Revisions of
-							<xsl:value-of select="adl:title" />
-							(Latest 10 /
-							<xsl:value-of select="$count" />
-							)
-						</label>
-					</xsl:when>
-					<xsl:otherwise>
-						<label>
-							Revisions of
-							<xsl:value-of select="adl:title" />
-						</label>
-					</xsl:otherwise>
-				</xsl:choose>
+				<label>Sub-Folders</label>
 			</container>
 		</container>
 	</xsl:template>
@@ -213,34 +110,9 @@
 		<xsl:call-template name="user-page" />
 	</xsl:template>
 
-	<xsl:template match="/adl:entity[adl:type='project']">
-		<xsl:call-template name="project-page" />
+	<xsl:template match="/adl:entity[adl:type='directory']">
+		<xsl:call-template name="directory-page" />
 	</xsl:template>
-
-	<xsl:template match="/adl:entity[adl:type='document']">
-		<xsl:call-template name="document-page" />
-	</xsl:template>
-
-	<xsl:template match="/adl:entity[not(adl:type)]">
-		<xsl:for-each select="adl:content">
-			<xsl:choose>
-				<xsl:when test="@type='user'">
-					<xsl:call-template name="user-page" />
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="entity">
-						<xsl:with-param name="id">
-							<xsl:value-of select="@localId" />
-						</xsl:with-param>
-						<xsl:with-param name="focus">
-							focus
-						</xsl:with-param>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:for-each>
-	</xsl:template>
-
 
 	<xsl:template match="*">
 	</xsl:template>

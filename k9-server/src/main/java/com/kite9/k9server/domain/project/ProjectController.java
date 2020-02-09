@@ -44,7 +44,7 @@ public class ProjectController {
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHUser user = github.getUser(name);
 		
-		List<Repository> repoList = getRepos(name, lb.slash("/repos"), user);
+		List<Repository> repoList = getRepos(name, lb.slash("/users").slash(name), user);
 		List<Organisation> orgList = getOrganisations(name, lb.slash("/orgs"), user);
 		User out = createUser(lb.withSelfRel(), user, repoList, orgList);
 		return out;
@@ -135,12 +135,12 @@ public class ProjectController {
 
 					@Override
 					public String getTitle() {
-						return n;
+						return path;
 					}
 
 					@Override
 					public String getDescription() {
-						return "";
+						return n;
 					}
 
 					@Override
@@ -194,7 +194,7 @@ public class ProjectController {
 			HttpServletRequest req,
 			Authentication authentication) throws Exception {
 		String path = getDirectoryPath(reponame, req);
-		return getDirectory(userorg, reponame, authentication, path);
+		return getDirectory("orgs", userorg, reponame, authentication, path);
 	}
 
 
@@ -216,25 +216,26 @@ public class ProjectController {
 			HttpServletRequest req,
 			Authentication authentication) throws Exception {
 		String path = getDirectoryPath(reponame, req);
-		return getDirectory(userorg, reponame, authentication, path);
+		return getDirectory("users", userorg, reponame, authentication, path);
 	}
 
 
-	public Directory getDirectory(String userorg, String reponame, Authentication authentication, String path)
+	public Directory getDirectory(String type, String userorg, String reponame, Authentication authentication, String path)
 			throws Exception, IOException {
 
 		GitHub github = apiFactory.createApiFor(authentication);
 		GHUser user = github.getUser(userorg);
 		GHRepository repo = user.getRepository(reponame);
-		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();		
-		Directory out = buildDirectory(repo, path);
+		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();	
+		Link userLink = lb.slash(type).slash(userorg).withSelfRel();
+		Directory out = buildDirectory(repo, path, createUser(userLink, user, Collections.emptyList(), Collections.emptyList()));
 		
-		out.add(lb.slash("repos").slash(userorg).slash(reponame).withSelfRel());
+		out.add(lb.slash(type).slash(userorg).slash(reponame).withSelfRel());
 		return out;
 	}
 
 
-	public Directory buildDirectory(GHRepository repo, String path) {
+	public Directory buildDirectory(GHRepository repo, String path, RestEntity<?> userOrg) {
 		Directory out = new Directory() {
 			
 			@Override
@@ -242,6 +243,7 @@ public class ProjectController {
 				return repo.getName();
 			}
 
+			
 			
 			@Override
 			public String getDescription() {
@@ -258,7 +260,7 @@ public class ProjectController {
 
 							@Override
 							public String getTitle() {
-								return c.getName();
+								return c.getName().replace(".kite9.xml", "");
 							}
 
 							@Override
@@ -352,8 +354,7 @@ public class ProjectController {
 
 			@Override
 			public RestEntity<?> getParent() {
-				// TODO Auto-generated method stub
-				return null;
+				return userOrg;
 			}
 		};
 		return out;

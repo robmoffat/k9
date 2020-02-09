@@ -9,7 +9,7 @@ public abstract class Directory extends RestEntity<Repository> {
 
 	@Override
 	public String getIcon() {
-		return "";
+		return "/public/context/admin/icons/folder.svg";
 	}
 
 	@Override
