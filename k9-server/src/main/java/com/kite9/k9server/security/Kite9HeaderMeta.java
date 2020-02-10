@@ -40,7 +40,7 @@ public class Kite9HeaderMeta {
 			OAuth2User user = (OAuth2User) authentication.getPrincipal();
 			consumer.accept("user", user.getAttribute("name"));
 			consumer.accept("user-icon", user.getAttribute("avatar_url"));
-			consumer.accept("user-page", "/api/users/"+authentication.getName());
+			consumer.accept("user-page", "/");
 			
 		} else {
 			consumer.accept("user", "anonymousUser");

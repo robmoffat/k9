@@ -1,64 +1,36 @@
 package com.kite9.k9server.command.controllers;
 
-import java.lang.reflect.Field;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.kite9.framework.common.Kite9ProcessingException;
 import org.kite9.framework.logging.Kite9Log;
 import org.kite9.framework.logging.Logable;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.Repository;
-import org.springframework.data.repository.support.Repositories;
-import org.springframework.data.rest.core.Path;
-import org.springframework.data.rest.core.UriToEntityConverter;
-import org.springframework.data.rest.core.mapping.ResourceMappings;
-import org.springframework.data.rest.core.mapping.ResourceMetadata;
 import org.springframework.format.support.DefaultFormattingConversionService;
-import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.ContextCommand;
-import com.kite9.k9server.command.RepoCommand;
-import com.kite9.k9server.command.SubjectCommand;
 import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.entity.RestEntity;
-import com.kite9.k9server.domain.entity.RestEntityRepository;
-import com.kite9.k9server.domain.entity.Secured;
+import com.kite9.k9server.domain.github.GitHubAPIFactory;
 
-public abstract class AbstractCommandController implements Logable, InitializingBean {
+public abstract class AbstractCommandController implements Logable {
 
 	Kite9Log log = new Kite9Log(this);
-
-	@Autowired
-	Repositories repositories;
 	
 	@Autowired
-	EntityLinks entityLinks;
-	
-	@Autowired
-	ResourceMappings mappings;
+	GitHubAPIFactory githubApiFactory;
 	
 	@Autowired
 	DefaultFormattingConversionService conversionService;
-	
-	private Map<String, RestEntityRepository<?>> repoMap;
-		
+			
 	public AbstractCommandController() {
 		super();
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	public Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) throws Exception {
 		checkDomainAccess(context, url);
 		for (Command command : steps) {
@@ -70,17 +42,17 @@ public abstract class AbstractCommandController implements Logable, Initializing
 				((ContextCommand)command).setCommandContext(context, url, headers);
 			}
 			
-			if (command instanceof RepoCommand) {
-				((RepoCommand)command).setRepositories(repositories);
-			}
+//			if (command instanceof RepoCommand) {
+//				((RepoCommand)command).setRepositories(repositories);
+//			}
 			
-			if (command instanceof SubjectCommand) {
-				RestEntity subjectEntity = getSubjectEntity(((SubjectCommand) command).getSubjectUrl(), context);
-				((SubjectCommand)command).setSubjectEntity(subjectEntity);
-				if (subjectEntity != context) {
-					checkDomainAccess(subjectEntity, url);
-				}
-			}
+//			if (command instanceof SubjectCommand) {
+//				RestEntity subjectEntity = getSubjectEntity(((SubjectCommand) command).getSubjectUrl(), context);
+//				((SubjectCommand)command).setSubjectEntity(subjectEntity);
+//				if (subjectEntity != context) {
+//					checkDomainAccess(subjectEntity, url);
+//				}
+//			}
 		
 			input = command.applyCommand();
 		}
@@ -94,7 +66,7 @@ public abstract class AbstractCommandController implements Logable, Initializing
 	 * Specifically, {@link UriToEntityConverter} doesn't handle properties, and you 
 	 * can't override it without creating a cycle.
 	 */
-	protected RestEntity getSubjectEntity(String subjectUrl, RestEntity context) throws Kite9ProcessingException {
+/*	protected RestEntity getSubjectEntity(String subjectUrl, RestEntity context) throws Kite9ProcessingException {
 		try {
 			System.out.println("hello");
 			
@@ -132,7 +104,7 @@ public abstract class AbstractCommandController implements Logable, Initializing
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't do getSubjectEntity", e);
 		}
-	}
+	} */
 
 	@Override
 	public String getPrefix() {
@@ -144,25 +116,9 @@ public abstract class AbstractCommandController implements Logable, Initializing
 		return true;
 	}
 
-	protected void checkDomainAccess(RestEntity d, URI url) {
-		if (d instanceof Secured) {
-			if (!((Secured) d).checkWrite()) {
-				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No write access for "+url);
-			}
-		}
-	}
-	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		repoMap = new HashMap<>();
+	protected void checkDomainAccess(RestEntity<?> d, URI url) {
 		
-		for (Class<?> domainType : repositories) {
-			ResourceMetadata mapping = mappings.getMetadataFor(domainType);
-			Path p = mapping.getPath();
-			Repository<?, ?> r = (Repository<?, ?>) repositories.getRepositoryFor(domainType).get();
-			if (r instanceof RestEntityRepository<?>) {
-				repoMap.put(p.toString(), (RestEntityRepository<?>) r);
-			}
-		}
+		// do something here.
+		
 	}
 }

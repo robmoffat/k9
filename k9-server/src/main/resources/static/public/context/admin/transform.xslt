@@ -19,6 +19,9 @@
 		<xsl:attribute name="id">
 			<xsl:value-of select="adl:links[adl:rel='self']/adl:href" />
 		</xsl:attribute>
+		<xsl:attribute name="k9-ui">
+			<xsl:value-of select="adl:commands" />
+		</xsl:attribute>
 		<xsl:copy-of select="adl:title" />
 		<xsl:copy-of select="adl:icon" />
 		<xsl:copy-of select="adl:description" />
@@ -31,6 +34,9 @@
 	<xsl:template name="entity-list">
 		<xsl:attribute name="id">
 			<xsl:value-of select="adl:links[adl:rel='self']/adl:href" />
+		</xsl:attribute>
+		<xsl:attribute name="k9-ui">
+			<xsl:value-of select="adl:commands" />
 		</xsl:attribute>
 		<xsl:copy-of select="adl:icon" />
 		<xsl:copy-of select="adl:title" />

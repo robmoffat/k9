@@ -25,5 +25,11 @@ public abstract class User extends RestEntity<User> {
 	public abstract List<Organisation> getOrganisations();
 	
 	public abstract List<Repository> getRepositories();
+
+	@Override
+	public String getCommands() {
+		return "focus";
+	}
+	
 	
 }

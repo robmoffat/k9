@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
@@ -33,6 +34,7 @@ import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.XMLCommand;
+import com.kite9.k9server.domain.github.GitHubAPIFactory;
 import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.domain.project.Document;
 import com.kite9.k9server.domain.project.DocumentRepository;
@@ -48,25 +50,15 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-//@BasePathAwareController 
+//@RestController
 public class ContentCommandController extends AbstractCommandController implements Logable {
 	
-	@Autowired
-	UserRepository userRepository;
 	
-	@Autowired
-	RevisionRepository revisionRepository;
-	
-	@Autowired
-	DocumentRepository documentRepository;
-		
-	@Autowired
-	ResourceMappings mappings;
-	
+
 	/**
 	 * This is used for applying commands to domain objects.
 	 */
-	@RequestMapping(method={RequestMethod.POST}, 
+/*	@RequestMapping(method={RequestMethod.POST}, 
 		path= {"/documents/{id}"+ContentResourceProcessor.CONTENT_URL}, 
 		consumes= {MediaType.APPLICATION_JSON_VALUE},
 		produces= {
@@ -106,10 +98,12 @@ public class ContentCommandController extends AbstractCommandController implemen
 		} catch (Throwable e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't process commands", e, req.getBody());
 		} 
-	}
+	}*/
 	
-	@GetMapping(path="/{repository}/{id}"+ContentResourceProcessor.CONTENT_URL)
-	public @ResponseBody ADL content(
+	@GetMapping(path="/{type}/{owner}/{repository}/**.kite9.xml")
+	public ADL content(
+			@PathVariable("type") String type,
+			@PathVariable("owner") String owner,
 			@PathVariable("repository") String repository,
 			@PathVariable("id") long id,
 			HttpServletRequest request,

@@ -29,7 +29,7 @@ public abstract class Repository extends RestEntity<Repository> {
 
 	@Override
 	public String getCommands() {
-		return "NewDocument";
+		return "focus";
 	}
 
 	public abstract List<Document> getDocuments();
