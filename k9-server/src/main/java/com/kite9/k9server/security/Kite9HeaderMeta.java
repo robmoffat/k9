@@ -19,12 +19,12 @@ import com.kite9.k9server.adl.holder.ADL;
  */
 public class Kite9HeaderMeta {
 
-	public static void addRegularMeta(ADL t, String self, String change, String title) {
-		perform((k, v) -> t.setMeta(k, v), self, change, title);
+	public static void addRegularMeta(ADL t, String self, String title) {
+		perform((k, v) -> t.setMeta(k, v), self, title);
 	}
 	
-	public static void addRegularMeta(HttpHeaders headers, String self, String change, String title) {
-		perform((k, v) -> headers.add("kite9-"+v, v), self, change, title);
+	public static void addRegularMeta(HttpHeaders headers, String self, String title) {
+		perform((k, v) -> headers.add("kite9-"+v, v), self, title);
 	}
 	
 	public static void transcribeMetaToHeaders(ADL t, HttpHeaders headers) {
@@ -33,7 +33,7 @@ public class Kite9HeaderMeta {
 		}
 	}
 		
-	private static void perform(BiConsumer<String, String> consumer, String self, String change, String title) {	
+	private static void perform(BiConsumer<String, String> consumer, String self, String title) {	
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication instanceof OAuth2AuthenticationToken) {
@@ -47,9 +47,6 @@ public class Kite9HeaderMeta {
 		}
 		if (self != null) {
 			consumer.accept("self", self);
-		}
-		if (change != null) {
-			consumer.accept("content", change);
 		}
 		if (title != null) {
 			consumer.accept("title", title);

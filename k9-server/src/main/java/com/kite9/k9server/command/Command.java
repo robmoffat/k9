@@ -49,13 +49,14 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(ADLMoveCells.class),
 
 	// document-specific
-	@Type(Undo.class),
-	@Type(Redo.class),
+	//@Type(Undo.class),
+	//@Type(Redo.class),
 	
 	// domain-specific
-	@Type(RenameDocument.class),
-	@Type(NewDocument.class)
+	//@Type(RenameDocument.class),
+	//@Type(NewDocument.class)
 })
+
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, 
 	getterVisibility=Visibility.NONE, 
 	setterVisibility =Visibility.NONE)

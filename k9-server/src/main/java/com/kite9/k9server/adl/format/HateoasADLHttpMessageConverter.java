@@ -78,7 +78,6 @@ public class HateoasADLHttpMessageConverter
 	private ResourceLoader resourceLoader;
 	private String resource = "clas";
 	private TransformerFactory transFact;
-	private String changeUri = "/admin";
 	 
 	public HateoasADLHttpMessageConverter(
 			ObjectMapper objectMapper, 
@@ -152,7 +151,7 @@ public class HateoasADLHttpMessageConverter
 		ADL out = ADLImpl.domMode(u, transcoder, output, EMPTY_HEADERS);
 		
 		System.out.println("OUT: "+ out.getAsADLString());
-		Kite9HeaderMeta.addRegularMeta(out, u.toString(), changeUri, getTitle(t));
+		Kite9HeaderMeta.addRegularMeta(out, u.toString(), getTitle(t));
 		f.handleWrite(out, outputMessage.getBody(), true, null, null);
 	}
 
@@ -232,7 +231,7 @@ public class HateoasADLHttpMessageConverter
 	@Override
 	protected void addDefaultHeaders(HttpHeaders headers, RepresentationModel<?> t, MediaType contentType) throws IOException {
 		super.addDefaultHeaders(headers, t, contentType);
-		Kite9HeaderMeta.addRegularMeta(headers, getSelfRef(t), changeUri, getTitle(t));
+		Kite9HeaderMeta.addRegularMeta(headers, getSelfRef(t), getTitle(t));
 	}
 
 	private String getTitle(RepresentationModel<?> rs) {

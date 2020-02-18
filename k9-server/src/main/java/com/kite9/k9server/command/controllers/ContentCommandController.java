@@ -1,47 +1,45 @@
 package com.kite9.k9server.command.controllers;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 
-import org.kite9.framework.common.Kite9ProcessingException;
+import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.framework.logging.Logable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.core.mapping.ResourceMappings;
-import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.kohsuke.github.GHBlob;
+import org.kohsuke.github.GHBlobBuilder;
+import org.kohsuke.github.GHBranch;
+import org.kohsuke.github.GHCommit;
+import org.kohsuke.github.GHCommitBuilder;
+import org.kohsuke.github.GHPerson;
+import org.kohsuke.github.GHRef;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHTree;
+import org.kohsuke.github.GitHub;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
-import com.kite9.k9server.domain.links.ContentResourceProcessor;
 import com.kite9.k9server.domain.project.Document;
-import com.kite9.k9server.domain.project.DocumentRepository;
-import com.kite9.k9server.domain.revision.Revision;
-import com.kite9.k9server.domain.revision.RevisionRepository;
-import com.kite9.k9server.domain.user.User;
-import com.kite9.k9server.domain.user.UserRepository;
 
 /**
  * Accepts commands to the system in order to modify XML.  Contents are returned back in whatever format is
@@ -50,7 +48,7 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-//@RestController
+@RestController
 public class ContentCommandController extends AbstractCommandController implements Logable {
 	
 	
@@ -58,81 +56,84 @@ public class ContentCommandController extends AbstractCommandController implemen
 	/**
 	 * This is used for applying commands to domain objects.
 	 */
-/*	@RequestMapping(method={RequestMethod.POST}, 
-		path= {"/documents/{id}"+ContentResourceProcessor.CONTENT_URL}, 
+	@RequestMapping(method={RequestMethod.POST}, 
+		path = "/{type:users|orgs}/{userorg}/{reponame}/**", 
 		consumes= {MediaType.APPLICATION_JSON_VALUE},
+		
 		produces= {
 			MediaTypes.HAL_JSON_VALUE, 
 			Kite9MediaTypes.ADL_SVG_VALUE, 
 			Kite9MediaTypes.SVG_VALUE
 		}) 
-	@Transactional
-	public @ResponseBody ADL applyCommandOnResource (
-				RequestEntity<List<Command>> req,
-				@PathVariable(required=false, name="id") Long id) throws CommandException {
-		
-		Document ri = documentRepository.findById(id)
-				.orElseThrow(() -> new CommandException(HttpStatus.NOT_FOUND,"No document found "+id, req.getBody()));
-				
+	public ADL applyCommandOnResource (
+			@PathVariable("type") String type, 
+			@PathVariable("userorg") String userorg, 
+			@PathVariable("reponame") String reponame, 
+			HttpServletRequest req,
+			Authentication authentication,
+			@RequestHeader HttpHeaders headers,
+			@RequestBody List<Command> request) throws CommandException {
+						
 		try {
-
-			ADL input = ADLImpl.xmlMode(req.getUrl(), ri.getCurrentRevision().getXml(), req.getHeaders());
+			String xmlPath = getDirectoryPath(reponame, req);
+			String svgPath = xmlPath.replace(".kite9.xml", ".kite9.svg");
+			GitHub github = apiFactory.createApiFor(authentication);
+			GHPerson p = getUserOrOrg(type, userorg, github);
+			GHRepository repo = p.getRepository(reponame);
+			String fullUrl = req.getRequestURL().toString();
+			String branchName = repo.getDefaultBranch();
+			GHBranch branch = repo.getBranch(branchName);
+			GHTree tree = repo.getTree(branchName);
+			
+			ADL input = getKite9File(repo, p, type, userorg, reponame, xmlPath, headers, fullUrl);
 
 			if (log.go()) {
 				log.send("Before: " + input.getAsADLString());
 			}
 			
-			input = (ADL) performSteps(req.getBody(), input, ri, req.getHeaders(), req.getUrl());
-			
-			createNewRevisionOnDocument(input, ri, needsRevision(req.getBody()));
+			input = (ADL) performSteps(request, input, headers, new URI(fullUrl));
 			checkRenderable(input);
+			
+			// submit the blobs
+			String adl = input.getAsADLString();
+			String svg = new XMLHelper().toXML(input.getAsSVGRepresentation());
+
+			Date d = new Date();
+			
+			GHBlob adlBlob = repo.createBlob().textContent(adl).create();
+			GHBlob svgBlob = repo.createBlob().textContent(svg).create();
+
+			// now create a directory tree with these files in it
+			GHTree newTree = repo.createTree()
+				.baseTree(tree.getSha())
+				.add(xmlPath, adl, false)
+				.add(svgPath, svg, false)
+				.create();
+			
+			GHCommit c = repo.createCommit()
+				.committer(GitHubAPIFactory.getUserLogin(authentication), GitHubAPIFactory.getEmail(authentication), d)
+				.message("Kite9 Diagram Change")
+				.parent(branch.getSHA1())
+				.tree(newTree.getSha())
+				.create();
+			
+			repo.getRef("heads/"+branchName).updateTo(c.getSHA1());
 			
 			if (log.go()) {
 				log.send("After: " + input.getAsADLString());
 			}
 			
-			addDocumentMeta(input, ri);
 			return input;
 		} catch (CommandException e) {
 			throw e;
 		} catch (Throwable e) {
-			throw new CommandException(HttpStatus.CONFLICT, "Couldn't process commands", e, req.getBody());
+			throw new CommandException(HttpStatus.CONFLICT, "Couldn't process commands", e, request);
 		} 
-	}*/
-	
-	@GetMapping(path="/{type}/{owner}/{repository}/**.kite9.xml")
-	public ADL content(
-			@PathVariable("type") String type,
-			@PathVariable("owner") String owner,
-			@PathVariable("repository") String repository,
-			@PathVariable("id") long id,
-			HttpServletRequest request,
-			@RequestHeader HttpHeaders headers) throws Exception {
-		
-		String uri = request.getRequestURI();
-		String url = request.getRequestURL().toString();
-		
-		if (repository.equals("documents")) {
-			Document d = documentRepository.findById(id)
-					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No document "+id));
-			String xml = d.getCurrentRevision().getXml();
-					
-			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
-			addDocumentMeta(out, d);
-			return out;
-		} else if (repository.equals("revisions")) {
-			Revision r = revisionRepository.findById(id)
-					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No revision "+id));
-			String xml = r.getXml();
-			
-			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
-			return out;
-		} else {
-			throw new Kite9ProcessingException("/content not available at "+uri);
-		}
-		
-		
 	}
+	
+
+
+
 
 	private boolean needsRevision(List<Command> body) {
 		for (Command command : body) {
@@ -144,50 +145,9 @@ public class ContentCommandController extends AbstractCommandController implemen
 		return false;
 	}
 
-	protected void createNewRevisionOnDocument(ADL input, Document d, boolean needsRevision) {
-		if (needsRevision) {
-			String username = SecurityContextHolder.getContext().getAuthentication().getName();
-			User u = userRepository.findByEmail(username);
-		
-			Revision rOld = d.getCurrentRevision();
-	
-			// save the new revision
-			Revision rNew = new Revision();
-			rNew.setAuthor(u);
-			rNew.setDocument(d);
-			rNew.setXml(input.getAsADLString());
-			rNew.setPreviousRevision(rOld);
-			revisionRepository.save(rNew);
-			
-			// update the old revision
-			rOld.setNextRevision(rNew);
-			revisionRepository.save(rOld);
-			
-			// update the document
-			d.setCurrentRevision(rNew);
-		
-			documentRepository.save(d);
-		}
-	}
 
 
-	/**
-	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
-	 */
-	private ADL addDocumentMeta(ADL adl, Document d) {
-		Revision r = d.getCurrentRevision();
-		adl.setMeta("redo", ""+(r.getNextRevision() != null));
-		adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
-		adl.setMeta("author", r.getAuthor().getEmail());
-		
-		String revisionUrl = entityLinks.linkFor(Revision.class).slash(r.getId()).toString();
-		String documentUrl = entityLinks.linkFor(Document.class).slash(r.getDocument().getId()).toString();
-		
-		adl.setMeta("revision", revisionUrl+ContentResourceProcessor.CONTENT_URL);
-		adl.setMeta(IanaLinkRelations.SELF.value(), documentUrl);
-		adl.setMeta(ContentResourceProcessor.CONTENT_REL, documentUrl+ContentResourceProcessor.CONTENT_URL);
-		return adl;
-	}
+
 
 	@Override
 	public String getPrefix() {

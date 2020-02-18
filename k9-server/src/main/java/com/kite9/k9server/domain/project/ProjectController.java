@@ -1,7 +1,6 @@
 package com.kite9.k9server.domain.project;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -9,8 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.io.Charsets;
-import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHPerson;
 import org.kohsuke.github.GHPersonSet;
@@ -18,40 +15,29 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.PagedIterable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.BasicLinkBuilder;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.github.AbstractGithubController;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
-import com.kite9.k9server.domain.github.GithubConfig;
 
 
 @RestController
-public class ProjectController {
+public class ProjectController extends AbstractGithubController {
 		
-	@Autowired
-	GitHubAPIFactory apiFactory;
-	
-	
 	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
 		GitHub github = apiFactory.createApiFor(authentication);
-		String name = GithubConfig.getUserLogin(authentication);
+		String name = GitHubAPIFactory.getUserLogin(authentication);
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHUser user = github.getUser(name);
 		
@@ -164,16 +150,6 @@ public class ProjectController {
 	}
 
 
-	public String safeGetName(GHPerson o) {
-		String n;
-		try {
-			n = o.getName();
-		} catch (IOException e) {
-			throw new UnsupportedOperationException("eh?");
-		}
-		return n;
-	}
-	
 	@GetMapping(path = "/{type:users|orgs}/{userorg}", produces = MediaType.ALL_VALUE)
 	public User getOrgPage(
 			@PathVariable("type") String type, 
@@ -186,87 +162,6 @@ public class ProjectController {
 		return createUser(lb.slash(type).slash(userOrg).withSelfRel(), org, repoList, Collections.emptyList());
 	}
 	
-	@GetMapping(path = "/{type:users|orgs}/{userorg}/{reponame}/**", produces = MediaType.ALL_VALUE)
-	public Object getRepoPage(
-			@PathVariable("type") String type, 
-			@PathVariable("userorg") String userorg, 
-			@PathVariable("reponame") String reponame, 
-			HttpServletRequest req,
-			@RequestHeader HttpHeaders headers,
-			Authentication authentication) throws Exception {
-		
-		String path = getDirectoryPath(reponame, req);
-		GitHub github = apiFactory.createApiFor(authentication);
-		String name = GithubConfig.getUserLogin(authentication);
-		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
-		GHPerson p = getUserOrOrg(type, userorg, github);
-		GHRepository repo = p.getRepository(reponame);
-		
-		if (path.endsWith(".kite9.xml")) {
-			return getKite9File(repo, p, type, userorg, reponame, path, headers, req.getRequestURL().toString());
-		} else {
-			return getDirectory(repo, p, type, userorg, reponame, path);			
-		}
-	}
-
-
-	public GHPerson getUserOrOrg(String type, String userorg, GitHub github) throws IOException {
-		GHPerson p = null;
-		switch (type) {
-		case "users":
-			p = github.getUser(userorg);
-			break;
-		case "orgs":
-			p = github.getOrganization(userorg);
-			break;
-		default:
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "type " + type + " not expected");
-		}
-		return p;
-	}
-	
-	public ADL getKite9File(GHRepository repo, GHPerson user, String type, String userorg, String reponame, String path, HttpHeaders headers, String url) {
-		try {
-			GHContent content = repo.getFileContent(path);
-			String xml = StreamUtils.copyToString(content.read(), Charsets.UTF_8);
-			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
-			addDocumentMeta(out, content);
-			return out;
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't load document", e);
-		}
-	}
-
-	/**
-	 * Since we are in a document, add some meta-data about revisions, and the redo situation.
-	 */
-	private ADL addDocumentMeta(ADL adl, GHContent content) {
-		adl.setMeta("sha", content.getSha());
-		//adl.setMeta("redo", ""+(r.getNextRevision() != null));
-		//adl.setMeta("undo", ""+(r.getPreviousRevision() != null));
-		//adl.setMeta("author", r.getAuthor().getEmail());
-		
-//		String revisionUrl = entityLinks.linkFor(Revision.class).slash(r.getId()).toString();
-//		String documentUrl = entityLinks.linkFor(Document.class).slash(r.getDocument().getId()).toString();
-		
-		adl.setMeta(IanaLinkRelations.SELF.value(), content.getGitUrl());
-		//adl.setMeta(ContentResourceProcessor.CONTENT_REL, documentUrl+ContentResourceProcessor.CONTENT_URL);
-		return adl;
-	}
-
-	
-
-	public String getDirectoryPath(String reponame, HttpServletRequest req) {
-		String path = req.getRequestURI();
-		int after = path.indexOf(reponame);
-		after += reponame.length() + 1;
-		if (after > path.length()) {
-			return "";
-		} else {
-			return path.substring(after);
-		}
-	}
-
 	public Directory getDirectory(GHRepository repo, GHPerson user, String type, String userorg, String reponame, String path)
 			throws Exception, IOException {
 
@@ -401,4 +296,21 @@ public class ProjectController {
 		};
 		return out;
 	}
+
+
+	@GetMapping(path = "/{type:users|orgs}/{userorg}/{reponame}/**", produces = MediaType.ALL_VALUE)
+	public Object getRepoPage(@PathVariable("type") String type, @PathVariable("userorg") String userorg, @PathVariable("reponame") String reponame, HttpServletRequest req, @RequestHeader HttpHeaders headers, Authentication authentication)
+			throws Exception {
+				
+				String path = getDirectoryPath(reponame, req);
+				GitHub github = apiFactory.createApiFor(authentication);
+				GHPerson p = getUserOrOrg(type, userorg, github);
+				GHRepository repo = p.getRepository(reponame);
+				
+				if (path.endsWith(".kite9.xml")) {
+					return getKite9File(repo, p, type, userorg, reponame, path, headers, req.getRequestURL().toString());
+				} else {
+					return getDirectory(repo, p, type, userorg, reponame, path);			
+				}
+			}
 }

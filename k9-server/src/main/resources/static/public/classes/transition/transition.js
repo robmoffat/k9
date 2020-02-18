@@ -312,13 +312,13 @@ export class Transition {
 	
 	getHeaders() {
 		var out = {
-			"Content-Type": "application/json; charset=utf-8",
+			"Content-Type": "application/json",
 			"Accept": "image/svg+xml, application/json"
 		};
 		
-		if (this.jwt) {
-			out['Authorization'] = 'Bearer '+this.jwt;
-		}
+//		if (this.jwt) {
+//			out['Authorization'] = 'Bearer '+this.jwt;
+//		}
 		
 		return out;
 	}

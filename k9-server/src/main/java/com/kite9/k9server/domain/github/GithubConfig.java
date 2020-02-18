@@ -2,7 +2,6 @@ package com.kite9.k9server.domain.github;
 
 import java.io.IOException;
 import java.security.KeyFactory;
-import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -13,10 +12,12 @@ import org.kohsuke.github.GHAppInstallation;
 import org.kohsuke.github.GHAppInstallationToken;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
 
 /**
@@ -26,6 +27,10 @@ import org.springframework.util.StreamUtils;
  */
 @Configuration
 public class GithubConfig {
+	
+	@Autowired
+	OAuth2AuthorizedClientRepository clientRepository;
+	
 
 	@Bean
 	public GitHubAPIFactory createAPIFactory() throws IOException {
@@ -43,11 +48,10 @@ public class GithubConfig {
 
 			@Override
 			public GitHub createApiFor(Authentication p) throws Exception {
+				OAuth2AuthorizedClient client = clientRepository.loadAuthorizedClient("github", p, null);
+				String token = client.getAccessToken().getTokenValue();
 				GitHub api = createApi();
-				String login = getUserLogin(p);
-				GHAppInstallation installation = api.getApp().getInstallationByUser(login);
-				GHAppInstallationToken token = installation.createToken().create();
-				GitHub gh = new GitHubBuilder().withAppInstallationToken(token.getToken()).build();
+				GitHub gh = new GitHubBuilder().withOAuthToken(token).build();
 				return gh;
 			}
 
@@ -121,13 +125,6 @@ public class GithubConfig {
 		} catch (Exception e) {
 			throw new UnsupportedOperationException("Couldn't create private key", e);
 		}
-	}
-	
-
-	public static String getUserLogin(Authentication p) {
-		OAuth2User user = (OAuth2User) p.getPrincipal();
-		String login = user.getAttribute("login");
-		return login;
 	}
 	
 }

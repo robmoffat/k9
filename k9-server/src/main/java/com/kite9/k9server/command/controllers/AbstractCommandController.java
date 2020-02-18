@@ -14,33 +14,30 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.ContextCommand;
 import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.github.AbstractGithubController;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
 
-public abstract class AbstractCommandController implements Logable {
+public abstract class AbstractCommandController extends AbstractGithubController implements Logable {
 
 	Kite9Log log = new Kite9Log(this);
 	
 	@Autowired
 	GitHubAPIFactory githubApiFactory;
-	
-	@Autowired
-	DefaultFormattingConversionService conversionService;
 			
 	public AbstractCommandController() {
 		super();
 	}
 
 	@SuppressWarnings({ "rawtypes" })
-	public Object performSteps(List<Command> steps, Object input, RestEntity context, HttpHeaders headers, URI url) throws Exception {
-		checkDomainAccess(context, url);
+	public Object performSteps(List<Command> steps, Object input, HttpHeaders headers, URI url) throws Exception {
 		for (Command command : steps) {
 			if (command instanceof XMLCommand) {
 				((XMLCommand) command).setOn((ADL) input);
 			}
 			
-			if (command instanceof ContextCommand) {
-				((ContextCommand)command).setCommandContext(context, url, headers);
-			}
+//			if (command instanceof ContextCommand) {
+//				((ContextCommand)command).setCommandContext(context, url, headers);
+//			}
 			
 //			if (command instanceof RepoCommand) {
 //				((RepoCommand)command).setRepositories(repositories);
@@ -116,9 +113,4 @@ public abstract class AbstractCommandController implements Logable {
 		return true;
 	}
 
-	protected void checkDomainAccess(RestEntity<?> d, URI url) {
-		
-		// do something here.
-		
-	}
 }

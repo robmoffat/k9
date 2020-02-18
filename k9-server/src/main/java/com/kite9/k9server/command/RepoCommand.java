@@ -10,8 +10,4 @@ import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
  */
 public interface RepoCommand extends Command {
 	
-	public void setRepositories(Repositories r);
-	
-	public <X extends RestEntity> RestEntityCrudRepository<X> getRepositoryFor(Class<X> c);
-
 }
