@@ -1,6 +1,4 @@
-package com.kite9.k9server.domain.project;
-
-import com.kite9.k9server.domain.entity.RestEntity;
+package com.kite9.k9server.domain.entity;
 
 public abstract class Document extends RestEntity<Document> {
 

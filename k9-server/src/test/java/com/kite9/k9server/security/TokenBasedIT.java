@@ -33,7 +33,7 @@ import com.kite9.k9server.domain.user.UserController;
 import com.kite9.k9server.resource.ProjectResource;
 import com.kite9.k9server.resource.UserResource;
 
-public class RestUserAndSecurityIT extends AbstractAuthenticatedIT {
+public class TokenBasedIT extends AbstractAuthenticatedIT {
 	
 	@Test
 	public void testCreateUserRestAPI() throws URISyntaxException {

@@ -14,14 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 
+import reactor.core.publisher.Mono;
+
 public class AbstractGithubController {
 
+	@Autowired
+	protected OAuth2AuthorizedClientRepository clientRepository;
 
 	@Autowired
 	protected GitHubAPIFactory apiFactory;
@@ -87,10 +94,19 @@ public class AbstractGithubController {
 		return n;
 	}
 
-	public ADL getKite9File(GHRepository repo, GHPerson user, String type, String userorg, String reponame, String path,
+	/**
+	 * This has been optimised so that you don't need to build the Github api first
+	 */
+	public ADL getKite9File(Authentication p,  String type, String userorg, String reponame, String path,
 			HttpHeaders headers, String url) {
 		try {
-			GHContent content = repo.getFileContent(path);
+			WebClient c = WebClient.create("https://api.github.com");
+			Mono<GHContent> mono = c.get()
+				.uri("/repos/"+userorg+"/"+reponame+"/contents/"+path)
+				.header("Authorization" , "token "+GitHubAPIFactory.getOAuthToken(clientRepository, p))
+				.retrieve().bodyToMono(GHContent.class);
+			
+			GHContent content = mono.block();
 			String xml = StreamUtils.copyToString(content.read(), Charsets.UTF_8);
 			ADL out = ADLImpl.xmlMode(new URI(url), xml, headers);
 			addDocumentMeta(out, content);

@@ -1,39 +1,44 @@
 package com.kite9.k9server.resource;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.kite9.k9server.domain.entity.Organisation;
+import com.kite9.k9server.domain.entity.Repository;
+import com.kite9.k9server.domain.entity.User;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-public class UserResource extends GenericResource {
+public class UserResource extends User {
+	
+	List<Organisation> organisations;
+	List<Repository> repositories;
+	String title;
+	String description;
+	String icon;
 
-	public String username;
-	public String password;
-
-	public String email;
-	public String api;
-	public String salt;
-	public boolean accountExpired = false;
-	public boolean accountLocked = false;
-	public boolean passwordExpired = false;
-	public boolean emailable = true;
-	public boolean emailVerified = false;
-
-	public UserResource() {
+	@Override
+	public List<Organisation> getOrganisations() {
+		return organisations;
 	}
 
-	public UserResource(String username, String password, String email, String api) {
-		super();
-		this.username = username;
-		this.password = password;
-		this.api = api;
-		this.email = email;
+	@Override
+	public List<Repository> getRepositories() {
+		return repositories;
 	}
 
-	public String getEmail() {
-		return email;
+	@Override
+	public String getTitle() {
+		return title;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	@Override
+	public String getDescription() {
+		return description;
 	}
 
+	@Override
+	public String getIcon() {
+		return icon;
+	}
+
+	
 }

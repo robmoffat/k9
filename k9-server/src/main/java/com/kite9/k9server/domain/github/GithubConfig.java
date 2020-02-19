@@ -8,22 +8,19 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 import org.apache.commons.io.Charsets;
-import org.kohsuke.github.GHAppInstallation;
-import org.kohsuke.github.GHAppInstallationToken;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
 
 /**
  * This configures the basic API to talk to github.
+ * 
  * @author robmoffat
- *
  */
 @Configuration
 public class GithubConfig {
@@ -31,11 +28,16 @@ public class GithubConfig {
 	@Autowired
 	OAuth2AuthorizedClientRepository clientRepository;
 	
+	public final String pem;
+	public final PrivateKey pk;
+	
+	public GithubConfig() throws IOException {
+		pem = StreamUtils.copyToString(this.getClass().getResourceAsStream("/kite9-automatic-diagrams.2020-02-04.private-key.pem"), Charsets.UTF_8);
+		pk = createPrivateKeyFromString(pem);
+	}
 
 	@Bean
 	public GitHubAPIFactory createAPIFactory() throws IOException {
-		String pem = StreamUtils.copyToString(this.getClass().getResourceAsStream("/kite9-automatic-diagrams.2020-02-04.private-key.pem"), Charsets.UTF_8);
-		PrivateKey pk = createPrivateKeyFromString(pem);
 		
 		return new GitHubAPIFactory() {
 			
@@ -48,13 +50,10 @@ public class GithubConfig {
 
 			@Override
 			public GitHub createApiFor(Authentication p) throws Exception {
-				OAuth2AuthorizedClient client = clientRepository.loadAuthorizedClient("github", p, null);
-				String token = client.getAccessToken().getTokenValue();
-				GitHub api = createApi();
+				String token = GitHubAPIFactory.getOAuthToken(clientRepository, p);
 				GitHub gh = new GitHubBuilder().withOAuthToken(token).build();
 				return gh;
 			}
-
 		};
 	}
 	
@@ -98,18 +97,21 @@ public class GithubConfig {
     }
 	
 	private static RSAPrivateCrtKey createPrivateKeyFromPKCS1(byte[] pkcs1Bytes) {
-	    int pkcs1Length = pkcs1Bytes.length;
+		int pkcs1Length = pkcs1Bytes.length;
 
-		   int totalLength = pkcs1Length + 22;
-		    byte[] pkcs8Header = new byte[] {
-		            0x30, (byte) 0x82, (byte) ((totalLength >> 8) & 0xff), (byte) (totalLength & 0xff), // Sequence + total length
-		            0x2, 0x1, 0x0, // Integer (0)
-		            0x30, 0xD, 0x6, 0x9, 0x2A, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xF7, 0xD, 0x1, 0x1, 0x1, 0x5, 0x0, // Sequence: 1.2.840.113549.1.1.1, NULL
-		            0x4, (byte) 0x82, (byte) ((pkcs1Length >> 8) & 0xff), (byte) (pkcs1Length & 0xff) // Octet string + length
-		    };
-		    byte[] pkcs8bytes = join(pkcs8Header, pkcs1Bytes);
-		    return createPrivateKeyFromPKCS8(pkcs8bytes);
-		}
+		int totalLength = pkcs1Length + 22;
+		byte[] pkcs8Header = new byte[] { 0x30, (byte) 0x82, (byte) ((totalLength >> 8) & 0xff),
+				(byte) (totalLength & 0xff), // Sequence + total length
+				0x2, 0x1, 0x0, // Integer (0)
+				0x30, 0xD, 0x6, 0x9, 0x2A, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xF7, 0xD, 0x1, 0x1, 0x1, 0x5, 0x0, // Sequence:
+																														// 1.2.840.113549.1.1.1,
+																														// NULL
+				0x4, (byte) 0x82, (byte) ((pkcs1Length >> 8) & 0xff), (byte) (pkcs1Length & 0xff) // Octet string +
+																									// length
+		};
+		byte[] pkcs8bytes = join(pkcs8Header, pkcs1Bytes);
+		return createPrivateKeyFromPKCS8(pkcs8bytes);
+	}
 
 	private static byte[] join(byte[] byteArray1, byte[] byteArray2){
 	    byte[] bytes = new byte[byteArray1.length + byteArray2.length];
@@ -126,5 +128,5 @@ public class GithubConfig {
 			throw new UnsupportedOperationException("Couldn't create private key", e);
 		}
 	}
-	
+
 }

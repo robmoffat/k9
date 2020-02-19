@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.project;
+package com.kite9.k9server.domain.entity;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -26,13 +26,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.github.AbstractGithubController;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
 
 
 @RestController
-public class ProjectController extends AbstractGithubController {
+public class EntityController extends AbstractGithubController {
 		
 	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
@@ -97,11 +96,6 @@ public class ProjectController extends AbstractGithubController {
 					@Override
 					public String getDescription() {
 						return r.getDescription();
-					}
-
-					@Override
-					public List<Document> getDocuments() {
-						return Collections.emptyList();
 					}
 				};
 				
@@ -299,18 +293,23 @@ public class ProjectController extends AbstractGithubController {
 
 
 	@GetMapping(path = "/{type:users|orgs}/{userorg}/{reponame}/**", produces = MediaType.ALL_VALUE)
-	public Object getRepoPage(@PathVariable("type") String type, @PathVariable("userorg") String userorg, @PathVariable("reponame") String reponame, HttpServletRequest req, @RequestHeader HttpHeaders headers, Authentication authentication)
-			throws Exception {
-				
-				String path = getDirectoryPath(reponame, req);
-				GitHub github = apiFactory.createApiFor(authentication);
-				GHPerson p = getUserOrOrg(type, userorg, github);
-				GHRepository repo = p.getRepository(reponame);
-				
-				if (path.endsWith(".kite9.xml")) {
-					return getKite9File(repo, p, type, userorg, reponame, path, headers, req.getRequestURL().toString());
-				} else {
-					return getDirectory(repo, p, type, userorg, reponame, path);			
-				}
-			}
+	public Object getRepoPage(
+			@PathVariable("type") String type, 
+			@PathVariable("userorg") String userorg,
+			@PathVariable("reponame") String reponame, 
+			HttpServletRequest req, 
+			@RequestHeader HttpHeaders headers,
+			Authentication authentication) throws Exception {
+		
+		String path = getDirectoryPath(reponame, req);
+
+		if (path.endsWith(".kite9.xml")) {
+			return getKite9File(authentication, type, userorg, reponame, path, headers, req.getRequestURL().toString());
+		} else {
+			GitHub github = apiFactory.createApiFor(authentication);
+			GHPerson p = getUserOrOrg(type, userorg, github);
+			GHRepository repo = p.getRepository(reponame);
+			return getDirectory(repo, p, type, userorg, reponame, path);
+		}
+	}
 }

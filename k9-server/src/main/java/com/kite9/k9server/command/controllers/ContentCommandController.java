@@ -18,6 +18,7 @@ import org.kohsuke.github.GHRef;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHTree;
 import org.kohsuke.github.GitHub;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,8 +40,8 @@ import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.command.XMLCommand;
+import com.kite9.k9server.domain.entity.Document;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
-import com.kite9.k9server.domain.project.Document;
 
 /**
  * Accepts commands to the system in order to modify XML.  Contents are returned back in whatever format is
@@ -50,9 +52,7 @@ import com.kite9.k9server.domain.project.Document;
  */
 @RestController
 public class ContentCommandController extends AbstractCommandController implements Logable {
-	
-	
-
+		
 	/**
 	 * This is used for applying commands to domain objects.
 	 */
@@ -85,7 +85,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 			GHBranch branch = repo.getBranch(branchName);
 			GHTree tree = repo.getTree(branchName);
 			
-			ADL input = getKite9File(repo, p, type, userorg, reponame, xmlPath, headers, fullUrl);
+			ADL input = getKite9File(authentication, type, userorg, reponame, xmlPath, headers, fullUrl);
 
 			if (log.go()) {
 				log.send("Before: " + input.getAsADLString());

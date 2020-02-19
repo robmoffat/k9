@@ -1,38 +1,70 @@
 package com.kite9.k9server.resource;
 
 import java.util.Date;
+import java.util.Objects;
 
-import org.springframework.hateoas.ResourceSupport;
+import com.kite9.k9server.domain.entity.Document;
+import com.kite9.k9server.domain.entity.RestEntity;
 
 
-public class DocumentResource extends GenericResource {
+public class DocumentResource extends Document {
 
-    public String project;
-	public String currentRevision = null;
-    
-    public Date dateCreated = new Date();
-    public Date lastUpdated;
+   private String title;
+   private String description;
+   private String icon;
+   private Date lastUpdated;
+   private String type;
+   private RestEntity<?> parent;
     
     public DocumentResource() {
     }
-	
-    public DocumentResource(String title, String description, String project) {
+
+	public DocumentResource(String title, String description, String icon, Date lastUpdated, String type,
+			RestEntity<?> parent) {
 		super();
 		this.title = title;
 		this.description = description;
-		this.project = project;
+		this.icon = icon;
+		this.lastUpdated = lastUpdated;
+		this.type = type;
+		this.parent = parent;
+	}
+
+	@Override
+	public String getTitle() {
+		return title;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public String getIcon() {
+		return icon;
+	}
+
+	@Override
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public RestEntity<?> getParent() {
+		return null;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((currentRevision == null) ? 0 : currentRevision.hashCode());
-		result = prime * result + ((dateCreated == null) ? 0 : dateCreated.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
-		result = prime * result + ((project == null) ? 0 : project.hashCode());
-		result = prime * result + ((title == null) ? 0 : title.hashCode());
+		result = prime * result + Objects.hash(description, icon, lastUpdated, parent, title, type);
 		return result;
 	}
 
@@ -40,37 +72,15 @@ public class DocumentResource extends GenericResource {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+		if (!super.equals(obj))
+			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		DocumentResource other = (DocumentResource) obj;
-		if (currentRevision == null) {
-			if (other.currentRevision != null)
-				return false;
-		} else if (!currentRevision.equals(other.currentRevision))
-			return false;
-		if (dateCreated == null) {
-			if (other.dateCreated != null)
-				return false;
-		} else if (!dateCreated.equals(other.dateCreated))
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (lastUpdated == null) {
-			if (other.lastUpdated != null)
-				return false;
-		} else if (!lastUpdated.equals(other.lastUpdated))
-			return false;
-		if (title == null) {
-			if (other.title != null)
-				return false;
-		} else if (!title.equals(other.title))
-			return false;
-		return true;
+		return Objects.equals(description, other.description) && Objects.equals(icon, other.icon)
+				&& Objects.equals(lastUpdated, other.lastUpdated) && Objects.equals(parent, other.parent)
+				&& Objects.equals(title, other.title) && Objects.equals(type, other.type);
 	}
 
-    
     
 }

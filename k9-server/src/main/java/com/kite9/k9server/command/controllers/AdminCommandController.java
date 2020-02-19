@@ -32,7 +32,6 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-//@BasePathAwareController 
 public class AdminCommandController extends AbstractCommandController implements Logable {
 	
 	@Autowired
@@ -51,7 +50,6 @@ public class AdminCommandController extends AbstractCommandController implements
 			MediaType.APPLICATION_JSON_VALUE
 		}) 
 	@ResponseBody
-	@Transactional
 	public Object applyCommandOnResource (
 				RequestEntity<List<Command>> req,
 				HttpServletRequest request,

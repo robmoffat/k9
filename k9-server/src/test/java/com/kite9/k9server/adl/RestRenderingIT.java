@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -38,7 +39,7 @@ public class RestRenderingIT extends AbstractLifecycleTest {
 		ProjectResource pr = createAProjectResource();
 		this.projectUrl = pr.getLink("self").getHref();
 		DocumentResource dr  = createADocumentResource(pr, "http://localhost:"+port+"/public/templates/basic.xml");
-		this.docUrl = dr.getLink("self").getHref();
+		this.docUrl = dr.getLink(IanaLinkRelations.SELF).getHref();
 	}
 
 	@After

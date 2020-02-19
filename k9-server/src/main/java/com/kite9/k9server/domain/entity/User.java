@@ -1,9 +1,7 @@
-package com.kite9.k9server.domain.project;
+package com.kite9.k9server.domain.entity;
 
 import java.util.Date;
 import java.util.List;
-
-import com.kite9.k9server.domain.entity.RestEntity;
 
 public abstract class User extends RestEntity<User> {
 

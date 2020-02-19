@@ -38,3 +38,6 @@ k9-server/kite9.log
 
 # Eclipse
 .settings
+
+# Secrets
+*.private-key.pem

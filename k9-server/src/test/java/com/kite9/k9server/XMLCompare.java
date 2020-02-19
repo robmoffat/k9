@@ -6,7 +6,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
 
-import org.hibernate.engine.jdbc.ReaderInputStream;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.Assert;
 import org.w3c.dom.Document;
 import org.xmlunit.builder.Input;

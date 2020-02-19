@@ -1,51 +1,39 @@
 package com.kite9.k9server;
 
-import java.net.URISyntaxException;
-
-import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resources;
-import org.springframework.web.client.ResourceAccessException;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
 
-import com.kite9.k9server.resource.UserResource;
+import com.kite9.k9server.domain.github.GitHubAPIFactory;
+import com.kite9.k9server.domain.github.GithubConfig;
+import com.kite9.k9server.domain.github.JWTHelper;
 
-
+/**
+ * The authentication object here is a dummy.   
+ * By mocking the GithubApiFactory we can use the applications' auth token.
+ * 
+ * @author robmoffat
+ *
+ */
 public abstract class AbstractUserBasedTest extends AbstractAuthenticatedIT {
 
-	protected UserResource u;
-	protected String userUrl;
-	protected String jwtToken;
-	private static int userNumber = 0;
+	@MockBean
+	GitHubAPIFactory apiFactory;
+	
+	@Autowired
+	GithubConfig githubConfig;
 	
 	@Before
-	public void withUser() throws URISyntaxException {
-		userNumber++;
-		String username ="abc1234"+userNumber;
-		String password = "facts";
-		String email = "thing"+userNumber+"@example.com";
-		u = createUser(restTemplate, username, password, email);
-		userUrl = u.getLink(Link.REL_SELF).getHref();
-		jwtToken = getJwtToken(restTemplate, email, password);
-	}
-	
-	@After
-	public void removeUser() throws URISyntaxException {
-		System.out.println("CLEANING UP ");
-		deleteViaJwt(restTemplate, userUrl, jwtToken);
-		try {
-			Resources<UserResource> resources = retrieveUserViaJwt(restTemplate, jwtToken);
-			if (resources.getContent().size() == 0) {
-				return;
-			} else {
-				for (UserResource userResource : resources.getContent()) {
-					Assert.assertNotEquals(userUrl, userResource.getLink(Link.REL_SELF).getHref());
-				}
-			}
-		} catch (ResourceAccessException e) {
-			// it's been deleted.
-		}
+	public void setupAuth() throws Exception {
+		Mockito.when(apiFactory.createApiFor(Mockito.any(Authentication.class))).thenAnswer((iom) -> {
+			String jwt = JWTHelper.createSignedJwt(githubConfig.pk);
+			GitHub github = new GitHubBuilder().withJwtToken(jwt).build();
+			return github;
+		});
 	}
 	
 }
