@@ -10,9 +10,12 @@ import java.util.Base64;
 import org.apache.commons.io.Charsets;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
@@ -23,16 +26,23 @@ import org.springframework.util.StreamUtils;
  * @author robmoffat
  */
 @Configuration
-public class GithubConfig {
+public class GithubConfig implements InitializingBean {
 	
 	@Autowired
 	OAuth2AuthorizedClientRepository clientRepository;
 	
-	public final String pem;
-	public final PrivateKey pk;
+	@Autowired
+	ResourceLoader resourceLoader;
 	
-	public GithubConfig() throws IOException {
-		pem = StreamUtils.copyToString(this.getClass().getResourceAsStream("/kite9-automatic-diagrams.2020-02-04.private-key.pem"), Charsets.UTF_8);
+	public String pem;
+	public PrivateKey pk;
+	
+	@Value("${kite9.app-key-location:file:kite9-automatic-diagrams.2020-02-04.private-key.pem}")
+	private String privateKeyLocation;
+	
+	
+	public void afterPropertiesSet() throws IOException {
+		pem = StreamUtils.copyToString(resourceLoader.getResource(privateKeyLocation).getInputStream(), Charsets.UTF_8);
 		pk = createPrivateKeyFromString(pem);
 	}
 
@@ -41,13 +51,6 @@ public class GithubConfig {
 		
 		return new GitHubAPIFactory() {
 			
-			@Override
-			public GitHub createApi() throws Exception {
-				String jwt = JWTHelper.createSignedJwt(pk);
-				GitHub github = new GitHubBuilder().withJwtToken(jwt).build();
-				return github;
-			}
-
 			@Override
 			public GitHub createApiFor(Authentication p) throws Exception {
 				String token = GitHubAPIFactory.getOAuthToken(clientRepository, p);

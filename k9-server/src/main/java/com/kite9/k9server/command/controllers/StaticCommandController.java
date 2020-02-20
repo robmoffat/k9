@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.kite9.framework.logging.Logable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.domain.user.UserRepository;
 
 /**
  * Applies commands to given xml url, but no persistence done.
@@ -25,15 +22,9 @@ import com.kite9.k9server.domain.user.UserRepository;
  * @author robmoffat
  *
  */
-//@Controller 
+@Controller 
 public class StaticCommandController extends AbstractCommandController implements Logable {
 		
-	@Autowired
-	UserRepository userRepository;
-	
-	@Autowired
-	ResourceMappings mappings;
-	
 	@RequestMapping(method={RequestMethod.POST}, path="/api/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ADL applyCommandOnStatic (
 			RequestEntity<List<Command>> req,

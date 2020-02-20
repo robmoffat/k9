@@ -24,7 +24,7 @@ public class Kite9HeaderMeta {
 	}
 	
 	public static void addRegularMeta(HttpHeaders headers, String self, String title) {
-		perform((k, v) -> headers.add("kite9-"+v, v), self, title);
+		perform((k, v) -> headers.add("kite9-"+k, v), self, title);
 	}
 	
 	public static void transcribeMetaToHeaders(ADL t, HttpHeaders headers) {

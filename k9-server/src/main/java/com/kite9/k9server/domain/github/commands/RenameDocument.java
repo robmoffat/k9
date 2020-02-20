@@ -1,6 +1,6 @@
-package com.kite9.k9server.command.domain;
+package com.kite9.k9server.domain.github.commands;
 
-import com.kite9.k9server.command.AbstractSubjectCommand;
+import com.kite9.k9server.command.AbstractGitHubCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.RestEntityCrudRepository;
@@ -12,7 +12,7 @@ import com.kite9.k9server.domain.entity.Updateable;
  * @author robmoffat
  *
  */
-public class RenameDocument extends AbstractSubjectCommand<Updateable> {
+public class RenameDocument extends AbstractGitHubCommand<Updateable> {
 	
 	public String title;
 	public String description;

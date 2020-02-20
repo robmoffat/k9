@@ -91,7 +91,7 @@ public class ContentCommandController extends AbstractCommandController implemen
 				log.send("Before: " + input.getAsADLString());
 			}
 			
-			input = (ADL) performSteps(request, input, headers, new URI(fullUrl));
+			input = (ADL) performSteps(request, input, authentication, headers, new URI(fullUrl));
 			checkRenderable(input);
 			
 			// submit the blobs
@@ -131,23 +131,6 @@ public class ContentCommandController extends AbstractCommandController implemen
 		} 
 	}
 	
-
-
-
-
-	private boolean needsRevision(List<Command> body) {
-		for (Command command : body) {
-			if (command instanceof XMLCommand) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-
-
-
 
 	@Override
 	public String getPrefix() {

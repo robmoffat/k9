@@ -37,7 +37,7 @@ public class AbstractGithubController {
 		super();
 	}
 
-	public GHPerson getUserOrOrg(String type, String userorg, GitHub github) throws IOException {
+	public static GHPerson getUserOrOrg(String type, String userorg, GitHub github) throws IOException {
 		GHPerson p = null;
 		switch (type) {
 		case "users":
@@ -73,7 +73,7 @@ public class AbstractGithubController {
 	
 	
 
-	public String getDirectoryPath(String reponame, HttpServletRequest req) {
+	public static String getDirectoryPath(String reponame, HttpServletRequest req) {
 		String path = req.getRequestURI();
 		int after = path.indexOf(reponame);
 		after += reponame.length() + 1;
@@ -84,7 +84,7 @@ public class AbstractGithubController {
 		}
 	}
 
-	public String safeGetName(GHPerson o) {
+	public static String safeGetName(GHPerson o) {
 		String n;
 		try {
 			n = o.getName();

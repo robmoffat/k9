@@ -24,6 +24,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.UriTemplate;
+import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.DefaultCurieProvider;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.hateoas.server.core.DefaultLinkRelationProvider;
@@ -101,7 +102,7 @@ public abstract class AbstractRestIT {
 	    DefaultCurieProvider curieProvider = new DefaultCurieProvider("a", new UriTemplate("http://localhost:8080/{rel}"));
 	    DefaultLinkRelationProvider relProvider = new DefaultLinkRelationProvider();
 
-	    objectMapper.setHandlerInstantiator(new Jackson2HalModule.HalHandlerInstantiator(relProvider, curieProvider, null));
+	    objectMapper.setHandlerInstantiator(new Jackson2HalModule.HalHandlerInstantiator(relProvider, curieProvider, MessageResolver.DEFAULTS_ONLY));
 
 	    MappingJackson2HttpMessageConverter halConverter = new MappingJackson2HttpMessageConverter();
 	    halConverter.setObjectMapper(objectMapper);

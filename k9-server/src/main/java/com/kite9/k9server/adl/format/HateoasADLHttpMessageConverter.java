@@ -156,7 +156,9 @@ public class HateoasADLHttpMessageConverter
 	}
 
 	private String getSelfRef(RepresentationModel<?> t) {
-		return t.getLink(IanaLinkRelations.SELF).orElseThrow(() -> new Kite9ProcessingException("Couldn't get url for "+t)).getHref();
+		return t.getLink(IanaLinkRelations.SELF).orElseThrow(
+			() -> new Kite9ProcessingException("Couldn't get url for "+t))
+				.getHref();
 	}
 
 	protected Document generateRestXML(RepresentationModel<?> t, DOMImplementation dom) throws XMLStreamException, IOException, JsonGenerationException, JsonMappingException {
@@ -235,12 +237,8 @@ public class HateoasADLHttpMessageConverter
 	}
 
 	private String getTitle(RepresentationModel<?> rs) {
-		if (rs instanceof EntityModel) {
-			Object o = ((EntityModel<?>) rs).getContent();
-			
-			if (o instanceof RestEntity) {
-				return ((RestEntity) o).getType()+ ": " + ((RestEntity) o).getTitle();
-			}
+		if (rs instanceof RestEntity) {
+			return ((RestEntity) rs).getType()+ ": " + ((RestEntity) rs).getTitle();
 		}
 		
 		return "";

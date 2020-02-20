@@ -87,6 +87,16 @@
 						<xsl:call-template name="entity-box" />
 					</organisation>
 				</xsl:for-each>		
+				<xsl:for-each select="adl:parent[adl:type='directory']">
+					<directory>
+						<xsl:call-template name="entity-box" />
+					</directory>
+				</xsl:for-each>
+				<xsl:for-each select="adl:parent[adl:type='project']">
+					<project>
+						<xsl:call-template name="entity-box" />
+					</project>
+				</xsl:for-each>
 			</container>
 			<container class="right grid" id="documentbox">
 				<xsl:attribute name="subject-uri"><xsl:value-of
