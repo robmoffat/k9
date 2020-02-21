@@ -101,6 +101,7 @@
 			<container class="right grid" id="documentbox">
 				<xsl:attribute name="subject-uri"><xsl:value-of
 					select="adl:links[adl:rel='self']/adl:href" /></xsl:attribute>
+				<xsl:attribute name="k9-ui">NewDocument</xsl:attribute>
 				<xsl:for-each select="adl:documents">
 					<document>
 						<xsl:call-template name="entity-box" />

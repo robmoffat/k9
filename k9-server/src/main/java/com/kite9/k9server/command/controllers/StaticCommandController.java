@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 
 /**
@@ -25,17 +24,17 @@ import com.kite9.k9server.command.Command;
 @Controller 
 public class StaticCommandController extends AbstractCommandController implements Logable {
 		
-	@RequestMapping(method={RequestMethod.POST}, path="/api/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(method={RequestMethod.POST}, path="/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ADL applyCommandOnStatic (
 			RequestEntity<List<Command>> req,
 			@RequestParam(required=true, name="on") String sourceUri) throws Exception {
 		
+		
 		URI uri = new URI(sourceUri);
 		URI base = req.getUrl();
 		uri = base.resolve(uri);
-		ADL input = ADLImpl.uriMode(uri, req.getHeaders());
-		
-		return (ADL) performSteps(req.getBody(), input, null, req.getHeaders(), uri);
+			
+		return (ADL) performSteps(req.getBody(), null, null, req.getHeaders(), uri);
 	}
 	
 }

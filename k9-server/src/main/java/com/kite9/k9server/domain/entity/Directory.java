@@ -17,7 +17,7 @@ public abstract class Directory extends RestEntity<Repository> {
 
 	@Override
 	public String getCommands() {
-		return "focus NewDocument";
+		return "focus";
 	}
 
 	public abstract List<Document> getDocuments() throws IOException;

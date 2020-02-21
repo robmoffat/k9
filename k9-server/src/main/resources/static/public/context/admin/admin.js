@@ -40,19 +40,12 @@ import { initUpdateContextMenuCallback } from "/public/behaviours/rest/Update/Up
 
 import { toggleInstrumentationCallback } from '/public/behaviours/indication/toggle/toggle.js';
 
-// authentication actions
-
-import { initLoginContextMenuCallback } from '/public/behaviours/auth/login/login.js';
-import { initRegisterContextMenuCallback } from '/public/behaviours/auth/register/register.js';
-
-
 var initialized = false;
 
 function initEditor() {
 
 	var transition = new Transition(
-			() => '/api/admin',		// change uri
-			() => '/login-failed',
+			() => '/admin',		// change uri
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 
@@ -76,8 +69,6 @@ function initEditor() {
 		initNewProjectContextMenuCallback(transition),
 		initAddMembersContextMenuCallback(transition),
 		initUpdateContextMenuCallback(transition),
-		initLoginContextMenuCallback(transition, metadata),
-		initRegisterContextMenuCallback(transition, metadata)
 		]); 
 	
 	initFocus(transition)

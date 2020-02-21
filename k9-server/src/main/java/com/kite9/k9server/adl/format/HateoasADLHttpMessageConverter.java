@@ -27,7 +27,6 @@ import org.kite9.diagram.dom.elements.ADLDocument;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
@@ -238,7 +237,7 @@ public class HateoasADLHttpMessageConverter
 
 	private String getTitle(RepresentationModel<?> rs) {
 		if (rs instanceof RestEntity) {
-			return ((RestEntity) rs).getType()+ ": " + ((RestEntity) rs).getTitle();
+			return ((RestEntity<?>) rs).getType()+ ": " + ((RestEntity<?>) rs).getTitle();
 		}
 		
 		return "";

@@ -9,38 +9,27 @@ import javax.servlet.http.HttpServletRequest;
 import org.kite9.diagram.dom.XMLHelper;
 import org.kite9.framework.logging.Logable;
 import org.kohsuke.github.GHBlob;
-import org.kohsuke.github.GHBlobBuilder;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GHCommitBuilder;
 import org.kohsuke.github.GHPerson;
-import org.kohsuke.github.GHRef;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHTree;
 import org.kohsuke.github.GitHub;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.command.XMLCommand;
-import com.kite9.k9server.domain.entity.Document;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
 
 /**
@@ -50,7 +39,6 @@ import com.kite9.k9server.domain.github.GitHubAPIFactory;
  * @author robmoffat
  *
  */
-@RestController
 public class ContentCommandController extends AbstractCommandController implements Logable {
 		
 	/**

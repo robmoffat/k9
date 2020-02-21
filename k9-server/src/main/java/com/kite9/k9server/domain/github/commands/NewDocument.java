@@ -28,13 +28,11 @@ public class NewDocument extends AbstractGitHubCommand {
 	public String title;
 		
 	public String templateUri;
-	
-	public String currentUrl;
-	
+		
 	public boolean open = false;	// sends a redirect after creating.
 	
 	public static final Pattern p = Pattern.compile(
-		"^.*(orgs|user)\\/([a-zA-Z-_0-9]+)\\/([a-zA-Z0-9-_]+)\\/(.*)");
+		"^.*(orgs|users)\\/([a-zA-Z-_0-9]+)\\/([a-zA-Z0-9-_]+)(\\/.*)?");
 	
 	@Override
 	public Object applyCommand() throws CommandException {
@@ -42,13 +40,16 @@ public class NewDocument extends AbstractGitHubCommand {
 			String content = getNewDocumentContent();
 			
 			// parse out the originating url
-			URI u = new URI(currentUrl);
+			URI u = new URI(subjectUri);
 			String pathPart = u.getPath();
 			Matcher m = p.matcher(pathPart);
-			String type = m.group(0);
-			String owner = m.group(1);
-			String reponame = m.group(2);
-			String path = m.group(3);
+			m.find();
+			String type = m.group(1);
+			String owner = m.group(2);
+			String reponame = m.group(3);
+			String path = m.groupCount() >=4 ? m.group(4) : "";
+			
+			path = path.startsWith("/") ? path.substring(1) : path;
 			
 			// get the current github details
 			GHPerson p = AbstractGithubController.getUserOrOrg(type, owner, github);
@@ -76,8 +77,7 @@ public class NewDocument extends AbstractGitHubCommand {
 			repo.getRef("heads/"+branchName).updateTo(c.getSHA1());
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 			
-			return EntityController.templateDirectory(repo, path, 
-					EntityController.templateUserOrg(lb.withSelfRel(), p, null, null));
+			return EntityController.templateDirectoryPage(type, owner, reponame, path, p, repo, lb);
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}

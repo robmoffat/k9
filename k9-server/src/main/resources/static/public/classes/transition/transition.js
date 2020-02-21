@@ -238,7 +238,7 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(uri, auth, loadCallbacks, animationCallbacks) {
+	constructor(uri, loadCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 		this.commandList = [];
@@ -315,10 +315,6 @@ export class Transition {
 			"Content-Type": "application/json",
 			"Accept": "image/svg+xml, application/json"
 		};
-		
-//		if (this.jwt) {
-//			out['Authorization'] = 'Bearer '+this.jwt;
-//		}
 		
 		return out;
 	}

@@ -11,6 +11,12 @@ import com.kite9.k9server.adl.holder.ADL;
 public interface XMLCommand extends Command {
 
 	void setOn(ADL on);
+	
+	/**
+	 * XML commands can optionally provide the ADL as base64 encoded, if there
+	 * is no context url to load
+	 */
+	String getBase64EncodedState();
 
 	@Override
 	ADL applyCommand() throws CommandException;

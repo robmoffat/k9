@@ -4,9 +4,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.Charsets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,14 +34,13 @@ import com.kite9.k9server.command.controllers.StaticCommandController;
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 public class CommandsTest {
 	
+	private static final String SETUP_XML = "/public/commands/test_command1.xml";
+
 	public static final String END_SVG_DOCUMENT = "</svg:svg>";
 
 	public static final String NS = " xmlns=\"http://www.kite9.org/schema/adl\"\n  xmlns:svg='http://www.w3.org/2000/svg' ";
 
 	public static final String START_SVG_DOCUMENT = "<svg:svg xmlns:xlink='http://www.w3.org/1999/xlink' " + NS + ">";
-		
-	@MockBean
-	MailSender mailSender;
 	
 	@Autowired
 	StaticCommandController commandController;
@@ -51,7 +52,7 @@ public class CommandsTest {
 	
 	@Before
 	public void setupUrl() {
-		sourceURI = "http://localhost:"+port+"/public/commands/test_command1.xml";
+		sourceURI = "http://localhost:"+port+SETUP_XML;
 	}
 	
 
@@ -66,8 +67,25 @@ public class CommandsTest {
 		
 		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(replace), sourceURI);
 		performSaveAndCheck(out, "replace");
-
 	}
+	
+	@Test
+	public void testReplaceCommandOnProvidedADL() throws CommandException, Exception {
+		Replace replace = new Replace();
+		replace.fragmentId = "link";
+		replace.uriStr= "#one";
+		replace.approach = Replace.Approach.SHALLOW;
+		replace.keptAttributes = Arrays.asList("rank", "id");
+	
+		String adl = StreamUtils.copyToString(CommandsTest.class.getResourceAsStream("/static"+SETUP_XML), Charsets.UTF_8);
+		String base64 = new String(Base64.getEncoder().encode(adl.getBytes()));
+		replace.base64adl = base64;
+		
+		
+		ADL out = commandController.applyCommandOnStatic(buildRequestEntity(replace), sourceURI);
+		performSaveAndCheck(out, "replace");
+	}
+	
 	
 	@Test
 	public void testReplaceCommand2() throws CommandException, Exception {

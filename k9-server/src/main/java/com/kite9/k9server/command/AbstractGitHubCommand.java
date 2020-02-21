@@ -7,9 +7,9 @@ import org.springframework.security.core.Authentication;
 public abstract class AbstractGitHubCommand implements GithubCommand {
 
 	protected String subjectUri;
-	protected GitHub github;
-	protected HttpHeaders requestHeaders;
-	protected Authentication a;
+	protected transient GitHub github;
+	protected transient HttpHeaders requestHeaders;
+	protected transient Authentication a;
 	
 	@Override
 	public void setGithubApi(GitHub g, HttpHeaders requestHeaders, Authentication a) {

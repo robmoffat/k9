@@ -9,9 +9,11 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.adl.format.media.Kite9MediaTypes;
@@ -26,6 +28,7 @@ import com.kite9.k9server.command.CommandException;
  * @author robmoffat
  *
  */
+@RestController
 public class AdminCommandController extends AbstractCommandController implements Logable {
 	
 	/**
@@ -42,11 +45,12 @@ public class AdminCommandController extends AbstractCommandController implements
 		}) 
 	@ResponseBody
 	public Object applyCommandOnResource (
+				Authentication a,
 				RequestEntity<List<Command>> req,
 				HttpServletRequest request) throws CommandException {
 				
 		try {
-			return performSteps(req.getBody(), null, null, req.getHeaders(), req.getUrl());
+			return performSteps(req.getBody(), null, a, req.getHeaders(), req.getUrl());
 		} catch (ResponseStatusException e) {
 			throw e;
 		} catch (Throwable e) {

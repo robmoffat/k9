@@ -229,23 +229,29 @@ public class EntityController extends AbstractGithubController {
 			GHPerson p = getUserOrOrg(type, userorg, github);
 			GHRepository repo = p.getRepository(reponame);
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();	
-			RestEntity<?> parent  = null;
-			LinkBuilder userOrgLinkBuilder = lb.slash(type).slash(userorg);
-			LinkBuilder repoLinkbuilder = userOrgLinkBuilder.slash(reponame);
-			if (path.length() == 0) {
-				parent = templateUserOrg(userOrgLinkBuilder.withSelfRel(), p, Collections.emptyList(), Collections.emptyList());
-			} else if (path.indexOf("/") == -1) {
-				parent = templateRepo(repoLinkbuilder.withSelfRel(), repo);
-			} else {
-				String parentPath = path.substring(0, path.lastIndexOf("/"));
-				parent = templateDirectory(repoLinkbuilder.slash(parentPath), repo, parentPath, parent, null, null);
-			}
-			
-			List<Directory> subDirectories = templateSubDirectories(repoLinkbuilder.slash(path), repo, path);
-			List<Document> documents = templateDiagrams(repoLinkbuilder.slash(path), repo, path);
-			Directory out = templateDirectory(repoLinkbuilder.slash(path), repo, path, parent, documents, subDirectories);
-			return out; 
+			return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb); 
 		}
+	}
+
+
+	public static Directory templateDirectoryPage(String type, String userorg, String reponame, String path, GHPerson p,
+			GHRepository repo, LinkBuilder lb) throws IOException {
+		RestEntity<?> parent  = null;
+		LinkBuilder userOrgLinkBuilder = lb.slash(type).slash(userorg);
+		LinkBuilder repoLinkbuilder = userOrgLinkBuilder.slash(reponame);
+		if (path.length() == 0) {
+			parent = templateUserOrg(userOrgLinkBuilder.withSelfRel(), p, Collections.emptyList(), Collections.emptyList());
+		} else if (path.indexOf("/") == -1) {
+			parent = templateRepo(repoLinkbuilder.withSelfRel(), repo);
+		} else {
+			String parentPath = path.substring(0, path.lastIndexOf("/"));
+			parent = templateDirectory(repoLinkbuilder.slash(parentPath), repo, parentPath, parent, null, null);
+		}
+		
+		List<Directory> subDirectories = templateSubDirectories(repoLinkbuilder.slash(path), repo, path);
+		List<Document> documents = templateDiagrams(repoLinkbuilder.slash(path), repo, path);
+		Directory out = templateDirectory(repoLinkbuilder.slash(path), repo, path, parent, documents, subDirectories);
+		return out;
 	}
 
 

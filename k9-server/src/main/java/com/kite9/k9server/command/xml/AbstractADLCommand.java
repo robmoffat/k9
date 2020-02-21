@@ -29,6 +29,7 @@ import com.kite9.k9server.command.XMLCommand;
 public abstract class AbstractADLCommand implements XMLCommand {
 	
 	protected String fragmentId;
+	protected String base64adl;
 	protected ADL adl;
 	
 	public AbstractADLCommand() {
@@ -44,6 +45,11 @@ public abstract class AbstractADLCommand implements XMLCommand {
 	@Override
 	public void setOn(ADL on) {
 		this.adl = on;
+	}
+	
+	@Override
+	public String getBase64EncodedState() {
+		return base64adl;
 	}
 
 	public static final Log LOG = LogFactory.getLog(Command.class);
