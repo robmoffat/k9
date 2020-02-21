@@ -243,7 +243,6 @@ export class Transition {
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
 		this.commandList = [];
 		this.uri = uri;
-		this.auth = auth;
 	}
 	
 	transition(documentElement) {

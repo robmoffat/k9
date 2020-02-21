@@ -288,11 +288,6 @@ public class EntityController extends AbstractGithubController {
 					}
 	
 					@Override
-					public String getCommands() {
-						return "";
-					}
-	
-					@Override
 					public RestEntity<?> getParent() {
 						return null;
 					}

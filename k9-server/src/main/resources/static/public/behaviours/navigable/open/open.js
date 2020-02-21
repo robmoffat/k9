@@ -21,7 +21,7 @@ export function initOpenContextMenuCallback(transition, selector) {
 			contextMenu.addControl(event, "/public/behaviours/navigable/open/open.svg", "Open",
 				function(e2, selector) {
 					contextMenu.destroy();
-					var url = e.getAttribute("href");
+					var url = e.getAttribute("id");
 					window.location.href = url;
 			});
 		}

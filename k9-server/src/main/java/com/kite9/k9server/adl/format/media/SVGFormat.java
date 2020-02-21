@@ -4,8 +4,10 @@ import java.io.OutputStream;
 
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.springframework.http.MediaType;
+import org.w3c.dom.Document;
 
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.adl.holder.Payload;
 
 /**
  * Converts ADL to SVG.
@@ -20,7 +22,9 @@ public class SVGFormat implements Format {
 	}
 
 	public void handleWrite(ADL data, OutputStream baos, boolean watermark, Integer width, Integer height) throws Exception {
-		data.getTranscoder().writeSVGToOutput(data.getAsSVGRepresentation(), new TranscoderOutput(baos));
+		Document svg = data.getAsSVGRepresentation();
+		Payload.insertEncodedADLInSVG(data, svg);
+		data.getTranscoder().writeSVGToOutput(svg, new TranscoderOutput(baos));
 	}
 
 	public String getExtension() {

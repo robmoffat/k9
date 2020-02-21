@@ -6,7 +6,6 @@ import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.kite9.diagram.batik.format.Kite9PNGTranscoder;
 import org.kite9.diagram.dom.XMLHelper;
 import org.springframework.http.MediaType;
 import org.w3c.dom.Document;

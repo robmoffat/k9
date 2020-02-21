@@ -60,6 +60,4 @@ public interface ADL {
 	 */
 	ADLDocument parseDocument(String content, URI uri);
 	
-
-	
 }
