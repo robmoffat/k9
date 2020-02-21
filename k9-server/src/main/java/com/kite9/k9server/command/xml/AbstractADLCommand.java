@@ -14,6 +14,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.CommandException;
@@ -29,6 +30,8 @@ import com.kite9.k9server.command.XMLCommand;
 public abstract class AbstractADLCommand implements XMLCommand {
 	
 	protected String fragmentId;
+	
+	@JsonProperty(required = false)
 	protected String base64adl;
 	protected ADL adl;
 	

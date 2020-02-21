@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.command.controllers.StaticCommandController;
 
 /** 
  * Provides utility function for adding user details to the ADL meta and the headers.
@@ -20,11 +21,11 @@ import com.kite9.k9server.adl.holder.ADL;
 public class Kite9HeaderMeta {
 
 	public static void addRegularMeta(ADL t, String self, String title) {
-		perform((k, v) -> t.setMeta(k, v), self, title);
+		perform((k, v) -> t.setMeta(k, v), self, title, StaticCommandController.CHANGE_URL);
 	}
 	
 	public static void addRegularMeta(HttpHeaders headers, String self, String title) {
-		perform((k, v) -> headers.add("kite9-"+k, v), self, title);
+		perform((k, v) -> headers.add("kite9-"+k, v), self, title, StaticCommandController.CHANGE_URL);
 	}
 	
 	public static void transcribeMetaToHeaders(ADL t, HttpHeaders headers) {
@@ -33,7 +34,7 @@ public class Kite9HeaderMeta {
 		}
 	}
 		
-	private static void perform(BiConsumer<String, String> consumer, String self, String title) {	
+	private static void perform(BiConsumer<String, String> consumer, String self, String title, String changeUrl) {	
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication instanceof OAuth2AuthenticationToken) {
@@ -50,6 +51,10 @@ public class Kite9HeaderMeta {
 		}
 		if (title != null) {
 			consumer.accept("title", title);
+		}
+		
+		if (changeUrl != null) {
+			consumer.accept("change", changeUrl);
 		}
 	}
 	

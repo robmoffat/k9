@@ -24,7 +24,9 @@ import com.kite9.k9server.command.Command;
 @Controller 
 public class StaticCommandController extends AbstractCommandController implements Logable {
 		
-	@RequestMapping(method={RequestMethod.POST}, path="/command/v1", consumes= {MediaType.APPLICATION_JSON_VALUE})
+	public static final String CHANGE_URL = "/command/v1";
+
+	@RequestMapping(method={RequestMethod.POST}, path=CHANGE_URL, consumes= {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody ADL applyCommandOnStatic (
 			RequestEntity<List<Command>> req,
 			@RequestParam(required=true, name="on") String sourceUri) throws Exception {

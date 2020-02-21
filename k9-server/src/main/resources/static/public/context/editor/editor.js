@@ -82,7 +82,7 @@ function initEditor() {
 		closeMetadataCallback ]);
 	
 	var transition = new Transition(
-			() => '/command/v1',		// command
+			() => '/command/v1?on='+metadata.get('self'),		// command
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 	

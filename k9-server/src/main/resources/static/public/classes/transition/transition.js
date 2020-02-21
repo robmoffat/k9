@@ -4,6 +4,7 @@
 
 import { anime } from '/public/external/anime-3.0.1.js'
 import { parseTransform, transformToCss, number, handleTransformAsStyle } from '/public/bundles/api.js';
+import { getMainSvg } from '/public/bundles/screen.js';
 
 const numeric = ['width', 'height', 'x', 'y', 'rx', 'ry'];
 
@@ -323,6 +324,11 @@ export class Transition {
 	}
 
 	postCommands(commands) {
+		// before we post commands, add adl payload if there is one.
+		const firstCommand = commands[0];
+		const base64Text = getMainSvg().getElementById("adl:markup");
+		firstCommand.base64adl = base64Text.textContent;
+		
 		return this.mainHandler(fetch(this.uri(), {
 			method: 'POST',
 			body: JSON.stringify(commands),
