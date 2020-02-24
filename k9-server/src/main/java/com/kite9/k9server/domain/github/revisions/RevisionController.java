@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class RevisionController extends AbstractGithubController {
 	
 	@PostMapping(
 			path =  {"/{type:users|orgs}/{userorg}/{reponame}/**"}, 
-			produces = MediaType.APPLICATION_JSON_VALUE)
+			produces = MediaTypes.HAL_JSON_VALUE)
 	public CollectionModel<Revision> update(
 			@PathVariable("type") String type, 
 			@PathVariable("userorg") String userorg,
@@ -72,7 +73,8 @@ public class RevisionController extends AbstractGithubController {
 		Decoder d = Base64.getDecoder();
 		
 		for (Map.Entry<String, String> file : details.filesToContentBase64.entrySet()) {
-			String fp = file.getKey();
+			String url = file.getKey();
+			String fp = getDirectoryPath(reponame, url);
 			if (fp.endsWith("svg") || fp.endsWith("xml")) {
 				String content = new String(d.decode(file.getValue()), Charsets.UTF_8);
 				repo.createBlob().textContent(content).create();
@@ -138,7 +140,7 @@ public class RevisionController extends AbstractGithubController {
 			return new Revision(
 				ghc.getSHA1(),
 				ghc.getCommitDate(),
-				ghc.getAuthor().getLogin());
+				ghc.getCommitShortInfo().getCommitter().getName());
 		} catch (IOException e) {
 			throw new Kite9ProcessingException("Couldn't build revision", e);
 		}

@@ -47,9 +47,10 @@ public class NewDocument extends AbstractGitHubCommand {
 			String type = m.group(1);
 			String owner = m.group(2);
 			String reponame = m.group(3);
-			String path = m.groupCount() >=4 ? m.group(4) : "";
-			
+			String path = m.group(4);
+			path = path == null ? "" : path;
 			path = path.startsWith("/") ? path.substring(1) : path;
+			path = path.length() > 0 ? path + "/" : path;
 			
 			// get the current github details
 			GHPerson p = AbstractGithubController.getUserOrOrg(type, owner, github);
@@ -63,7 +64,7 @@ public class NewDocument extends AbstractGitHubCommand {
 			
 			GHTree newTree = repo.createTree()
 					.baseTree(tree.getSha())
-					.add(path+"/"+title+".kite9.xml", content, false)
+					.add(path+title+".kite9.xml", content, false)
 					.create();
 			
 			

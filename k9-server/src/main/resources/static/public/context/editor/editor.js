@@ -42,9 +42,10 @@ import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/pu
 // identity
 import { initIdentityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
-// undo
-import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/undoable/undoable.js";
-import { createUndoCallback, createRedoCallback } from '/public/behaviours/undoable/undoredo/undoredo.js';
+// undo, redo, revisions
+//import { createUndoableInstrumentationCallback, revisionedLoadCallback } from "/public/behaviours/revisioned/undoable.js";
+//import { createUndoCallback, createRedoCallback } from '/public/behaviours/revisioned/undoredo.js';
+import { initCommitDocumentCallback } from '/public/behaviours/revisioned/commit.js';
 
 // Containers
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';
@@ -78,13 +79,13 @@ function initEditor() {
 
 	var metadata = new Metadata([
 		identityMetadataCallback, 
-		undoableMetadataCallback,
 		closeMetadataCallback ]);
-	
+		
 	var transition = new Transition(
 			() => '/command/v1?on='+metadata.get('self'),		// command
-			[(r) => metadata.transitionCallback(r)],
-			[ zoomableTransitionCallback ]);
+			[(r) => metadata.transitionCallback(r) ],			// load callbacks
+			[ initCommitDocumentCallback(() => metadata.get('self')) ],  // document callbacks
+			[ zoomableTransitionCallback ]);	// animation callbacks
 	
 	var palette = new Palette("--palette", [
 		initInsertPaletteCallback(transition),
@@ -103,7 +104,7 @@ function initEditor() {
 	var instrumentation = new Instrumentation([
 		initIdentityInstrumentationCallback(transition),
 		closeInstrumentationCallback,
-		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
+//		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
 		initLinkInstrumentationCallback(palette),
 		toggleInstrumentationCallback

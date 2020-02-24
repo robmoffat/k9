@@ -239,9 +239,10 @@ function reconcileElement(inFrom, inTo, toDelete, tl) {
 
 export class Transition {
 	
-	constructor(uri, loadCallbacks, animationCallbacks) {
+	constructor(uri, loadCallbacks, documentCallbacks, animationCallbacks) {
 		this.loadCallbacks = loadCallbacks == undefined ? [] : loadCallbacks;
 		this.animationCallbacks = animationCallbacks == undefined ? [] : animationCallbacks;
+		this.documentCallbacks = documentCallbacks == undefined ? [] : documentCallbacks;
 		this.commandList = [];
 		this.uri = uri;
 	}
@@ -298,9 +299,13 @@ export class Transition {
 			.then(response => response.text())
 			.then(text => {
 				var parser = new DOMParser();
-				return parser.parseFromString(text, "image/svg+xml");
+				var doc = parser.parseFromString(text, "image/svg+xml");
+				return {doc, text};
 			})
-			.then(doc => this.transition(doc.documentElement))
+			.then(d => {
+				this.documentCallbacks.forEach(cb => cb(d.doc, d.text));
+				this.transition(d.doc.documentElement);
+			})
 	}
 
 	get(uri) {

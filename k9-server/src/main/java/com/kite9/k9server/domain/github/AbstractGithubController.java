@@ -75,6 +75,10 @@ public class AbstractGithubController {
 
 	public static String getDirectoryPath(String reponame, HttpServletRequest req) {
 		String path = req.getRequestURI();
+		return getDirectoryPath(reponame, path);
+	}
+
+	public static String getDirectoryPath(String reponame, String path) {
 		int after = path.indexOf(reponame);
 		after += reponame.length() + 1;
 		if (after > path.length()) {
