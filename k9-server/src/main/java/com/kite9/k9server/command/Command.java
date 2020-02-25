@@ -20,7 +20,6 @@ import com.kite9.k9server.command.xml.adl.ADLMoveCells;
 import com.kite9.k9server.command.xml.adl.ADLReplace;
 import com.kite9.k9server.command.xml.adl.CopyLink;
 import com.kite9.k9server.domain.github.commands.NewDocument;
-import com.kite9.k9server.domain.github.commands.RenameDocument;
 
 /**
  * Performs some change on the ADL.
@@ -51,7 +50,6 @@ import com.kite9.k9server.domain.github.commands.RenameDocument;
 	//@Type(Redo.class),
 	
 	// github-specific
-	@Type(RenameDocument.class),
 	@Type(NewDocument.class)
 })
 
