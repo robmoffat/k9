@@ -2,8 +2,11 @@ package com.kite9.k9server.adl.holder;
 
 import static org.apache.batik.util.SVGConstants.SVG_NAMESPACE_URI;
 
+import java.net.URI;
 import java.util.Base64;
 
+import org.apache.commons.io.Charsets;
+import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,6 +53,13 @@ public class Payload {
 		
 		firstDef.appendChild(scriptTag);
 		return scriptTag;
+	}
+
+	public static ADL extractEncodedADLInSVG(URI in, HttpHeaders headers, Document doc) {
+		Element e = doc.getElementById(ADL_MARKUP_ID);
+		String content = e.getTextContent();
+		byte[] xml = Base64.getDecoder().decode(content);
+		return ADLImpl.xmlMode(in, new String(xml, Charsets.UTF_8), headers);
 	}
 
 }

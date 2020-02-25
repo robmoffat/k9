@@ -31,7 +31,6 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 						cm.get(event).appendChild(
 							form([
 								text('Title', undefined, {'required': true}),
-								text('Description'),
 								//change(
 								select('Template', undefined, {}, ['basic', 'risk-first', 'custom']),
 								select('Format', 'svg', {},['svg', 'png', 'adl'] ),
