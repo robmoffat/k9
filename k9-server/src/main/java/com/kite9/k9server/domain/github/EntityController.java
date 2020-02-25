@@ -1,6 +1,8 @@
 package com.kite9.k9server.domain.github;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.kite9.framework.common.Kite9ProcessingException;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHPerson;
 import org.kohsuke.github.GHPersonSet;
@@ -15,6 +18,8 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.PagedIterable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.BasicLinkBuilder;
@@ -24,8 +29,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kite9.k9server.adl.format.FormatSupplier;
+import com.kite9.k9server.adl.format.media.Format;
+import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.domain.entity.Directory;
 import com.kite9.k9server.domain.entity.Document;
 import com.kite9.k9server.domain.entity.Organisation;
@@ -36,6 +45,9 @@ import com.kite9.k9server.domain.entity.User;
 
 @RestController
 public class EntityController extends AbstractGithubController {
+	
+	@Autowired
+	FormatSupplier formatSupplier;
 		
 	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
@@ -218,24 +230,49 @@ public class EntityController extends AbstractGithubController {
 			@PathVariable("reponame") String reponame, 
 			HttpServletRequest req, 
 			@RequestHeader HttpHeaders headers,
+			@RequestParam(required = false, name = "revision", defaultValue = "") String revisionSha1,
 			Authentication authentication) throws Exception {
 		
 		String path = getDirectoryPath(reponame, req);
+		
+		return formatSupplier.getFormatFor(path).map(f -> {
+			return (Object) getADLRequest(type, userorg, reponame, req, headers, authentication, path, f, revisionSha1);
+		}).orElseGet(() -> {
+			return getDirectoryPage(type, userorg, reponame, authentication, path); 
+		});
+	}
 
-		if (path.endsWith(".kite9.xml")) {
-			return getKite9File(authentication, type, userorg, reponame, path, headers, req.getRequestURL().toString());
-		} else {
+
+	protected ADL getADLRequest(String type, String userorg, String reponame, HttpServletRequest req,
+			HttpHeaders headers, Authentication authentication, String path, Format f, String revisionSha1) {
+		try {
+			String url = req.getRequestURL().toString();
+			InputStream is = getRepositoryInputStream(authentication, type, userorg, reponame, path, headers, url, revisionSha1);
+			ADL adl = f.handleRead(is, new URI(url), headers);
+			adl.setMeta(IanaLinkRelations.SELF.value(), adl.getUri().toString());
+			return adl;
+		} catch (Exception e) {
+			throw new Kite9ProcessingException("Couldn't build ADL from "+path, e);
+		}
+	}
+
+
+	protected Object getDirectoryPage(String type, String userorg, String reponame, Authentication authentication,
+			String path) {
+		try {
 			GitHub github = apiFactory.createApiFor(authentication);
 			GHPerson p = getUserOrOrg(type, userorg, github);
 			GHRepository repo = p.getRepository(reponame);
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();	
-			return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb); 
+			return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb, formatSupplier);
+		} catch (Exception e) {
+			throw new Kite9ProcessingException("Couldn't format directory page "+path, e);
 		}
 	}
 
 
 	public static Directory templateDirectoryPage(String type, String userorg, String reponame, String path, GHPerson p,
-			GHRepository repo, LinkBuilder lb) throws IOException {
+			GHRepository repo, LinkBuilder lb, FormatSupplier fs) throws IOException {
 		RestEntity<?> parent  = null;
 		LinkBuilder userOrgLinkBuilder = lb.slash(type).slash(userorg);
 		LinkBuilder repoLinkbuilder = userOrgLinkBuilder.slash(reponame);
@@ -249,22 +286,22 @@ public class EntityController extends AbstractGithubController {
 		}
 		
 		List<Directory> subDirectories = templateSubDirectories(repoLinkbuilder.slash(path), repo, path);
-		List<Document> documents = templateDiagrams(repoLinkbuilder.slash(path), repo, path);
+		List<Document> documents = templateDiagrams(repoLinkbuilder.slash(path), repo, path, fs);
 		Directory out = templateDirectory(repoLinkbuilder.slash(path), repo, path, parent, documents, subDirectories);
 		return out;
 	}
 
 
-	public static List<Document> templateDiagrams(LinkBuilder lb, GHRepository repo, String path) throws IOException {
+	public static List<Document> templateDiagrams(LinkBuilder lb, GHRepository repo, String path, FormatSupplier fs) throws IOException {
 		return repo.getDirectoryContent(path).stream()
 			.filter(c -> c.isFile())
-			.filter(c -> c.getName().endsWith(".kite9.xml"))
+			.filter(c -> fs.getFormatFor(c.getName()).isPresent())
 			.map(c -> {
 				Document out = new Document() {
 	
 					@Override
 					public String getTitle() {
-						return c.getName().replace(".kite9.xml", "");
+						return c.getName();
 					}
 	
 					@Override
@@ -274,7 +311,7 @@ public class EntityController extends AbstractGithubController {
 	
 					@Override
 					public String getIcon() {
-						return c.getUrl().replace(".kite9.xml", ".kite9.svg");
+						return c.getUrl();
 					}
 	
 					@Override
@@ -343,5 +380,9 @@ public class EntityController extends AbstractGithubController {
 			return out;
 		})
 		.collect(Collectors.toList());
+	}
+	
+	public boolean matchesFormat(String name) {
+		return formatSupplier.getFormatFor(name).isPresent();
 	}
 }

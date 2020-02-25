@@ -6,11 +6,13 @@ import java.util.List;
 
 import org.kite9.framework.logging.Kite9Log;
 import org.kite9.framework.logging.Logable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
@@ -21,6 +23,9 @@ import com.kite9.k9server.domain.github.AbstractGithubController;
 public abstract class AbstractCommandController extends AbstractGithubController implements Logable {
 
 	Kite9Log log = new Kite9Log(this);
+	
+	@Autowired
+	FormatSupplier fs;
 			
 	public AbstractCommandController() {
 		super();
@@ -50,7 +55,7 @@ public abstract class AbstractCommandController extends AbstractGithubController
 			}
 			
 			if (command instanceof GithubCommand) {
-				((GithubCommand) command).setGithubApi(apiFactory.createApiFor(a), headers, a);
+				((GithubCommand) command).setGithubApi(apiFactory.createApiFor(a), headers, a, fs);
 			}
 		
 			input = command.applyCommand();

@@ -15,7 +15,6 @@ import org.apache.commons.io.Charsets;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GHCommitBuilder;
 import org.kohsuke.github.GHCommitQueryBuilder;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHTree;
@@ -35,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.domain.entity.Revision;
 import com.kite9.k9server.domain.github.AbstractGithubController;
 import com.kite9.k9server.domain.github.GitHubAPIFactory;
@@ -46,6 +46,9 @@ public class RevisionController extends AbstractGithubController {
 	
 	@Autowired
 	GitHubAPIFactory apiFactory;
+	
+	@Autowired
+	FormatSupplier formatSupplier;
 	
 	@PostMapping(
 			path =  {"/{type:users|orgs}/{userorg}/{reponame}/**"}, 
@@ -75,21 +78,23 @@ public class RevisionController extends AbstractGithubController {
 		for (Map.Entry<String, String> file : details.filesToContentBase64.entrySet()) {
 			String url = file.getKey();
 			String fp = getDirectoryPath(reponame, url);
-			if (fp.endsWith("svg") || fp.endsWith("xml")) {
-				String content = new String(d.decode(file.getValue()), Charsets.UTF_8);
-				repo.createBlob().textContent(content).create();
-				treeBuilder.add(fp, content, false);
-			} else {
-				// assume binary content
+
+			boolean binary = formatSupplier.getFormatFor(fp)
+				.map(f -> f.isBinaryFormat())
+				.orElse(true);
+			
+			if (binary) {
 				byte[] content = d.decode(file.getValue());
 				repo.createBlob().binaryContent(content).create();
+				treeBuilder.add(fp, content, false);
+			} else {
+				String content = new String(d.decode(file.getValue()), Charsets.UTF_8);
+				repo.createBlob().textContent(content).create();
 				treeBuilder.add(fp, content, false);
 			}
 		}
 		
 		GHTree newTree = treeBuilder.create();
-		GHCommitBuilder commitBuilder = repo.createCommit();
-
 		Date date = new Date();
 		
 		GHCommit c = repo.createCommit()

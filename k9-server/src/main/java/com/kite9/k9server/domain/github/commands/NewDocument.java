@@ -1,11 +1,15 @@
 package com.kite9.k9server.domain.github.commands;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.Charsets;
+import org.apache.xmlgraphics.util.WriterOutputStream;
+import org.kohsuke.github.GHBlob;
 import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHPerson;
@@ -13,10 +17,11 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GHTree;
 import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.BasicLinkBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.AbstractGitHubCommand;
 import com.kite9.k9server.command.CommandException;
 import com.kite9.k9server.domain.github.AbstractGithubController;
@@ -28,6 +33,8 @@ public class NewDocument extends AbstractGitHubCommand {
 	public String title;
 		
 	public String templateUri;
+	
+	public String format;
 		
 	public boolean open = false;	// sends a redirect after creating.
 	
@@ -37,7 +44,7 @@ public class NewDocument extends AbstractGitHubCommand {
 	@Override
 	public Object applyCommand() throws CommandException {
 		try {
-			String content = getNewDocumentContent();
+			ADL adlContent = getNewDocumentContent(requestHeaders);
 			
 			// parse out the originating url
 			URI u = new URI(subjectUri);
@@ -58,13 +65,28 @@ public class NewDocument extends AbstractGitHubCommand {
 			String branchName = repo.getDefaultBranch();
 			GHBranch branch = repo.getBranch(branchName);
 			GHTree tree = repo.getTree(branchName);
+
+			// work out filename, format
+			Format formatter = fs.getFormatFor(format).orElseThrow();
 			
-			// create content in github
-			repo.createBlob().textContent(content).create();
+			// create blob
+			GHBlob blob; 
+			if (formatter.isBinaryFormat()) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				formatter.handleWrite(adlContent, baos, false, 0, 0);
+				blob = repo.createBlob().binaryContent(baos.toByteArray()).create();
+			} else {
+				StringWriter sw = new StringWriter();
+				WriterOutputStream osw = new WriterOutputStream(sw, Charsets.UTF_8.name());
+				formatter.handleWrite(adlContent, osw, false, 0, 0);
+				blob = repo.createBlob().textContent(sw.toString()).create();
+			}
 			
+			// create tree
+			@SuppressWarnings("deprecation")
 			GHTree newTree = repo.createTree()
 					.baseTree(tree.getSha())
-					.add(path+title+".kite9.xml", content, false)
+					.shaEntry(path+title+"."+formatter.getExtension(), blob.getSha(), false)
 					.create();
 			
 			
@@ -78,17 +100,17 @@ public class NewDocument extends AbstractGitHubCommand {
 			repo.getRef("heads/"+branchName).updateTo(c.getSHA1());
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 			
-			return EntityController.templateDirectoryPage(type, owner, reponame, path, p, repo, lb);
+			return EntityController.templateDirectoryPage(type, owner, reponame, path, p, repo, lb, fs);
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}
 	}
 
-	public String getNewDocumentContent() throws URISyntaxException {
+	public ADL getNewDocumentContent(HttpHeaders h) throws Exception {
 		// we need to return ADL which copies the templateUri;
-		ADL adl = ADLImpl.uriMode(new URI(templateUri), requestHeaders);
-		String content = adl.getAsADLString();
-		return content;
+		Format f = fs.getFormatFor(templateUri).orElseThrow();
+		ADL adl = f.handleRead(new URI(templateUri), h);
+		return adl;
 	}
 
 }

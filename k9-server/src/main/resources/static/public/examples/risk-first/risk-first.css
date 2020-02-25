@@ -15,8 +15,8 @@
 			  url(/public/behaviours/containers/common-containers) "insert replace-connected contain"
 	   	      url(/public/behaviours/links/common-links) "link end";
 	          	          
-	align-template-uri:  url(link-palette.xml#align-element);
-	cell-template-uri: url(template.xml#cell-template);
+	align-template-uri:  url(link-palette.adl#align-element);
+	cell-template-uri: url(template.adl#cell-template);
 }
 
 /* Titles, generally */

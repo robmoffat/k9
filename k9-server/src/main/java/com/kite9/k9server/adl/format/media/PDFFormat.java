@@ -28,4 +28,9 @@ public final class PDFFormat implements Format {
 	public String getExtension() {
 		return "pdf";
 	}
+
+	@Override
+	public boolean isBinaryFormat() {
+		return true;
+	}
 }

@@ -46,9 +46,9 @@ public class PublicController {
 		return loadStatic(request.getUrl(), request.getHeaders(), "svg");
 	}
 	
-	@GetMapping(path="/public/**/*.xml", produces= { Kite9MediaTypes.ADL_SVG_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_XML_VALUE})
+	@GetMapping(path="/public/**/*.adl", produces= { Kite9MediaTypes.ADL_SVG_VALUE, MediaType.APPLICATION_XML_VALUE, MediaType.TEXT_XML_VALUE})
 	public ResponseEntity<?> loadStaticXml(RequestEntity<?> request) throws Exception {
-		return loadStatic(request.getUrl(), request.getHeaders(), "xml");
+		return loadStatic(request.getUrl(), request.getHeaders(), "adl");
 	}
 	
 	public static ResponseEntity<?> loadStatic(URI url, HttpHeaders headers, String type) throws Exception {
@@ -70,7 +70,7 @@ public class PublicController {
 			}
 		}
 		
-		if (!type.equals("xml")) { // SVG
+		if (!type.equals("adl")) { // SVG
 			// check to see if we have a pre-existing svg file
 			String xml = loadXML(resourceStub + ".svg");
 			if (xml != null) {
@@ -79,7 +79,7 @@ public class PublicController {
 		}
 		
 		// ok, we need to transform one
-		String xml = loadXML(resourceStub + ".xml");
+		String xml = loadXML(resourceStub + ".adl");
 		if (xml != null) {
 			return new ResponseEntity<ADL>(ADLImpl.xmlMode(url, xml, headers), HttpStatus.OK);
 		}

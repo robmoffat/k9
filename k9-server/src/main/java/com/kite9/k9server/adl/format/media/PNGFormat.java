@@ -1,12 +1,15 @@
 package com.kite9.k9server.adl.format.media;
 
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.kite9.diagram.dom.XMLHelper;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.w3c.dom.Document;
 
@@ -46,6 +49,23 @@ public class PNGFormat implements Format {
 
 	public String getExtension() {
 		return "png";
+	}
+
+	@Override
+	public boolean isBinaryFormat() {
+		return true;
+	}
+
+	@Override
+	public ADL handleRead(InputStream someFormat, URI in, HttpHeaders headers) throws Exception {
+		throw new UnsupportedOperationException();
+		// todo: need to get this from the metadata in the png
+	}
+
+	@Override
+	public ADL handleRead(URI in, HttpHeaders headers) {
+		throw new UnsupportedOperationException();
+		// todo: need to get this from the metadata in the png
 	}
 	
 }

@@ -3,12 +3,13 @@ package com.kite9.k9server.adl.format;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
-import com.kite9.k9server.adl.format.media.ADLAndSVGFormat;
+import com.kite9.k9server.adl.format.media.ADLFormat;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.format.media.HTMLFormat;
 import com.kite9.k9server.adl.format.media.PNGFormat;
@@ -23,7 +24,7 @@ public class BasicFormatSupplier implements FormatSupplier {
 	public static final Format[] FORMATS = new Format[] {
 			new PNGFormat(),
 			new SVGFormat(),
-			new ADLAndSVGFormat(),
+			new ADLFormat(),
 			new HTMLFormat(),
 		} ;
 	
@@ -58,6 +59,17 @@ public class BasicFormatSupplier implements FormatSupplier {
 	public Map<String, MediaType> getMediaTypeMap() {
 		return Arrays.stream(FORMATS)
 			.collect(Collectors.toMap(f -> f.getExtension(), f -> f.getMediaTypes()[0]));
+	}
+
+	@Override
+	public Optional<Format> getFormatFor(String path) {
+		for (Format format : FORMATS) {
+			if (path.endsWith(format.getExtension())) {
+				return Optional.of(format);
+			}
+		}
+		
+		return Optional.empty();
 	}
 
 	

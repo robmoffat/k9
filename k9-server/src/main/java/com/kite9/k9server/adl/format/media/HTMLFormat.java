@@ -75,4 +75,8 @@ public class HTMLFormat implements Format {
 		return "html";
 	}
 
+	@Override
+	public boolean isBinaryFormat() {
+		return false;
+	}
 }

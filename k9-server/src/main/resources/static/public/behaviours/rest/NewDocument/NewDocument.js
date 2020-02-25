@@ -2,8 +2,8 @@ import { hasLastSelected } from "/public/bundles/api.js";
 import { form, ok, cancel, text, hidden, formValues, select, change } from '/public/bundles/form.js';
 
 const templates = {
-	'basic': '/public/examples/basic/example.xml',
-	'risk-first': '/public/examples/risk-first/example.xml'		
+	'basic': '/public/examples/basic/example.adl',
+	'risk-first': '/public/examples/risk-first/example.adl'		
 }
 
 
@@ -34,6 +34,7 @@ export function initNewDocumentContextMenuCallback(transition, selector) {
 								text('Description'),
 								//change(
 								select('Template', undefined, {}, ['basic', 'risk-first', 'custom']),
+								select('Format', 'svg', {},['svg', 'png', 'adl'] ),
 //									function(event) {
 //										if (event.target.value != 'custom') {
 //											templateUri.querySelector('input').setAttribute('disabled', '');
