@@ -5,7 +5,12 @@ import static org.apache.batik.util.SVGConstants.SVG_NAMESPACE_URI;
 import java.net.URI;
 import java.util.Base64;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.io.Charsets;
+import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.http.HttpHeaders;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,10 +61,20 @@ public class Payload {
 	}
 
 	public static ADL extractEncodedADLInSVG(URI in, HttpHeaders headers, Document doc) {
-		Element e = doc.getElementById(ADL_MARKUP_ID);
-		String content = e.getTextContent();
+		Element e2 = findFirst(doc.getDocumentElement(), "defs");
+		Element e3 = findFirst(e2, "script");
+		String content = e3.getTextContent();
 		byte[] xml = Base64.getDecoder().decode(content);
 		return ADLImpl.xmlMode(in, new String(xml, Charsets.UTF_8), headers);
+	}
+
+	private static Element findFirst(Element e, String name) {
+		NodeList out = e.getElementsByTagNameNS(SVG_NAMESPACE_URI, name);
+		if (out.getLength() == 0) {
+			throw new Kite9ProcessingException("Couldn't find "+name);
+		} else {
+			return (Element) out.item(0);
+		}
 	}
 
 }

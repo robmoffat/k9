@@ -16,10 +16,9 @@ function updateOpacity() {
 	}
 }
 
-
-export function undoableMetadataCallback(metadata) {
-	canUndo = metadata.undo == 'true';
-	canRedo = metadata.redo == 'true';
+export function undoableRevisionsCallback(revisions, sha) {
+	canUndo = (revisions.length > 0) && (revisions[revisions.length-1].sha1 != sha);
+	canRedo = (revisions.length > 0) && (revisions[0].sha1 != sha);
 	updateOpacity();
 }
 
@@ -28,7 +27,7 @@ function ensureButton(nav, name, cb) {
 	
 	if (b == undefined) {
 		var b = icon('--'+name, name, 
-				 "/public/behaviours/undoable/"+name+".svg",
+				 "/public/behaviours/revisioned/"+name+".svg",
 				 cb);
 		nav.appendChild(b);
 	}

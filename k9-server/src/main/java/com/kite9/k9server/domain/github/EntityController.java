@@ -41,6 +41,7 @@ import com.kite9.k9server.domain.entity.Organisation;
 import com.kite9.k9server.domain.entity.Repository;
 import com.kite9.k9server.domain.entity.RestEntity;
 import com.kite9.k9server.domain.entity.User;
+import com.kite9.k9server.security.Kite9HeaderMeta;
 
 
 @RestController
@@ -249,7 +250,7 @@ public class EntityController extends AbstractGithubController {
 			String url = req.getRequestURL().toString();
 			InputStream is = getRepositoryInputStream(authentication, type, userorg, reponame, path, headers, url, revisionSha1);
 			ADL adl = f.handleRead(is, new URI(url), headers);
-			adl.setMeta(IanaLinkRelations.SELF.value(), adl.getUri().toString());
+			Kite9HeaderMeta.addRegularMeta(adl, url, "Kite9 Editor");
 			return adl;
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't build ADL from "+path, e);
@@ -306,12 +307,12 @@ public class EntityController extends AbstractGithubController {
 	
 					@Override
 					public String getDescription() {
-						return null;
+						return "";
 					}
 	
 					@Override
 					public String getIcon() {
-						return c.getUrl();
+						return c.getHtmlUrl();
 					}
 	
 					@Override

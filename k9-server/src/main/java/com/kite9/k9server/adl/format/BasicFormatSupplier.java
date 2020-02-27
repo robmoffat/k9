@@ -18,13 +18,17 @@ import com.kite9.k9server.adl.format.media.SVGFormat;
 @Component
 public class BasicFormatSupplier implements FormatSupplier {
 	
+	private static final SVGFormat SVG_FORMAT = new SVGFormat();
+
+	private static final ADLFormat ADL_FORMAT = new ADLFormat();
+
 	/**
 	 * Ordered most specific to least.
 	 */
 	public static final Format[] FORMATS = new Format[] {
 			new PNGFormat(),
-			new SVGFormat(),
-			new ADLFormat(),
+			SVG_FORMAT,
+			ADL_FORMAT,
 			new HTMLFormat(),
 		} ;
 	
@@ -70,6 +74,16 @@ public class BasicFormatSupplier implements FormatSupplier {
 		}
 		
 		return Optional.empty();
+	}
+
+	@Override
+	public ADLFormat getADLFormat() {
+		return ADL_FORMAT;
+	}
+
+	@Override
+	public SVGFormat getSVGFormat() {
+		return SVG_FORMAT;
 	}
 
 	

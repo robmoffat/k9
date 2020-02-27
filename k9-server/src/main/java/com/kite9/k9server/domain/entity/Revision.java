@@ -14,16 +14,18 @@ public class Revision {
 	private String sha1;
 	private Date date;
 	private String username;
+	private boolean current;
 	
 	public Revision() {
 		super();
 	}
 
-	public Revision(String sha1, Date date, String username) {
+	public Revision(String sha1, Date date, String username, boolean current) {
 		super();
 		this.sha1 = sha1;
 		this.date = date;
 		this.username = username;
+		this.current = current;
 	}
 
 	@Override
@@ -61,6 +63,10 @@ public class Revision {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public boolean isCurrent() {
+		return current;
 	}
 
 }

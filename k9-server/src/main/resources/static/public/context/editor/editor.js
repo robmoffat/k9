@@ -12,6 +12,7 @@ import { Palette, initPaletteHoverableAllowed } from '/public/classes/palette/Pa
 import { Linker } from '/public/classes/linker/Linker.js';
 import { Overlay } from '/public/classes/overlay/overlay.js';
 import { Dragger } from '/public/classes/dragger/dragger.js';
+import { Revisions } from '/public/classes/revisions/revisions.js';
 
 // Behaviours
 
@@ -43,9 +44,9 @@ import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/pu
 import { initIdentityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
 // undo, redo, revisions
-//import { createUndoableInstrumentationCallback, revisionedLoadCallback } from "/public/behaviours/revisioned/undoable.js";
-//import { createUndoCallback, createRedoCallback } from '/public/behaviours/revisioned/undoredo.js';
-import { initCommitDocumentCallback } from '/public/behaviours/revisioned/commit.js';
+import { createUndoableInstrumentationCallback, undoableRevisionsCallback } from "/public/behaviours/revisioned/undoable.js";
+import { createUndoCallback, createRedoCallback } from '/public/behaviours/revisioned/undoredo/undoredo.js';
+import { initHistoryDocumentCallback, initHistoryMetadataCallback } from '/public/behaviours/revisioned/history.js';
 
 // Containers
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';
@@ -76,15 +77,19 @@ import { initCellAppendContextMenuCallback } from '/public/behaviours/grid/appen
 var initialized = false;
 
 function initEditor() {
+	
+	var revisions = new Revisions(
+		[undoableRevisionsCallback]);
 
 	var metadata = new Metadata([
-		identityMetadataCallback, 
+		identityMetadataCallback,
+		initHistoryMetadataCallback(revisions),
 		closeMetadataCallback ]);
 		
 	var transition = new Transition(
 			() => '/command/v1?on='+metadata.get('self'),		// command
 			[(r) => metadata.transitionCallback(r) ],			// load callbacks
-			[ initCommitDocumentCallback(() => metadata.get('self')) ],  // document callbacks
+			[ initHistoryDocumentCallback(revisions, metadata) ],  // document callbacks
 			[ zoomableTransitionCallback ]);	// animation callbacks
 	
 	var palette = new Palette("--palette", [
@@ -104,7 +109,7 @@ function initEditor() {
 	var instrumentation = new Instrumentation([
 		initIdentityInstrumentationCallback(transition),
 		closeInstrumentationCallback,
-//		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
+		createUndoableInstrumentationCallback(createUndoCallback(transition), createRedoCallback(transition)),
 		zoomableInstrumentationCallback,
 		initLinkInstrumentationCallback(palette),
 		toggleInstrumentationCallback

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.controllers.StaticCommandController;
+import com.kite9.k9server.domain.github.revisions.RevisionController;
 
 /** 
  * Provides utility function for adding user details to the ADL meta and the headers.
@@ -35,6 +36,8 @@ public class Kite9HeaderMeta {
 	}
 		
 	private static void perform(BiConsumer<String, String> consumer, String self, String title, String changeUrl) {	
+		String revisionsUrl = RevisionController.getRevisionUrl(self);
+		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication instanceof OAuth2AuthenticationToken) {
@@ -55,6 +58,10 @@ public class Kite9HeaderMeta {
 		
 		if (changeUrl != null) {
 			consumer.accept("change", changeUrl);
+		}
+		
+		if (revisionsUrl != null) {
+			consumer.accept("revisions", revisionsUrl);
 		}
 	}
 	

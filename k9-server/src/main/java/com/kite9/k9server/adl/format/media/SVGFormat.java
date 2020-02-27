@@ -46,6 +46,9 @@ public class SVGFormat implements Format {
 	@Override
 	public ADL handleRead(InputStream someFormat, URI in, HttpHeaders headers) throws Exception {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setValidating(false);
+		dbf.setNamespaceAware(true);
+		dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		// an instance of builder to parse the specified xml file
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(someFormat);
