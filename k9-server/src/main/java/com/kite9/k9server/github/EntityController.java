@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.github;
+package com.kite9.k9server.github;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,12 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.domain.entity.Directory;
-import com.kite9.k9server.domain.entity.Document;
-import com.kite9.k9server.domain.entity.Organisation;
-import com.kite9.k9server.domain.entity.Repository;
-import com.kite9.k9server.domain.entity.RestEntity;
-import com.kite9.k9server.domain.entity.User;
+import com.kite9.k9server.domain.Directory;
+import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.Organisation;
+import com.kite9.k9server.domain.Repository;
+import com.kite9.k9server.domain.RestEntity;
+import com.kite9.k9server.domain.User;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 
@@ -53,7 +53,7 @@ public class EntityController extends AbstractGithubController {
 	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
 		GitHub github = apiFactory.createApiFor(authentication);
-		String name = GitHubAPIFactory.getUserLogin(authentication);
+		String name = GithubContentAPI.getUserLogin(authentication);
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHUser user = github.getUser(name);
 		
@@ -234,29 +234,9 @@ public class EntityController extends AbstractGithubController {
 			@RequestParam(required = false, name = "revision", defaultValue = "") String revisionSha1,
 			Authentication authentication) throws Exception {
 		
-		String path = getDirectoryPath(reponame, req);
-		
-		return formatSupplier.getFormatFor(path).map(f -> {
-			return (Object) getADLRequest(type, userorg, reponame, req, headers, authentication, path, f, revisionSha1);
-		}).orElseGet(() -> {
-			return getDirectoryPage(type, userorg, reponame, authentication, path); 
-		});
+		String path = getDirectoryPath(reponame, req);	
+		return getDirectoryPage(type, userorg, reponame, authentication, path); 
 	}
-
-
-	protected ADL getADLRequest(String type, String userorg, String reponame, HttpServletRequest req,
-			HttpHeaders headers, Authentication authentication, String path, Format f, String revisionSha1) {
-		try {
-			String url = req.getRequestURL().toString();
-			InputStream is = getRepositoryInputStream(authentication, type, userorg, reponame, path, headers, url, revisionSha1);
-			ADL adl = f.handleRead(is, new URI(url), headers);
-			Kite9HeaderMeta.addRegularMeta(adl, url, "Kite9 Editor");
-			return adl;
-		} catch (Exception e) {
-			throw new Kite9ProcessingException("Couldn't build ADL from "+path, e);
-		}
-	}
-
 
 	protected Object getDirectoryPage(String type, String userorg, String reponame, Authentication authentication,
 			String path) {
@@ -287,7 +267,7 @@ public class EntityController extends AbstractGithubController {
 		}
 		
 		List<Directory> subDirectories = templateSubDirectories(repoLinkbuilder.slash(path), repo, path);
-		List<Document> documents = templateDiagrams(repoLinkbuilder.slash(path), repo, path, fs);
+		List<Document> documents = templateDiagrams(lb.slash("content").slash(userorg).slash(reponame), repo, path, fs);
 		Directory out = templateDirectory(repoLinkbuilder.slash(path), repo, path, parent, documents, subDirectories);
 		return out;
 	}

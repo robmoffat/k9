@@ -3,8 +3,8 @@ package com.kite9.k9server.resource;
 import java.util.Date;
 import java.util.Objects;
 
-import com.kite9.k9server.domain.entity.Document;
-import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.Document;
+import com.kite9.k9server.domain.RestEntity;
 
 
 public class DocumentResource extends Document {

@@ -1,10 +1,10 @@
-package com.kite9.k9server.command;
+package com.kite9.k9server.command.content;
 
-import org.kohsuke.github.GitHub;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 
 import com.kite9.k9server.adl.format.FormatSupplier;
+import com.kite9.k9server.command.Command;
 
 /**
  * Encapsulates the commands are often applied to a subject, e.g. a particular 
@@ -13,7 +13,7 @@ import com.kite9.k9server.adl.format.FormatSupplier;
  * @author robmoffat
  *
  */
-public interface GithubCommand extends Command {
+public interface ContentCommand extends Command {
 	
-	public void setGithubApi(GitHub g, HttpHeaders h, Authentication a, FormatSupplier fs);
+	public void setContentApi(ContentAPI g, HttpHeaders h, Authentication a, FormatSupplier fs);
 }

@@ -2,7 +2,7 @@ package com.kite9.k9server.resource;
 
 import java.util.Objects;
 
-import com.kite9.k9server.domain.entity.Organisation;
+import com.kite9.k9server.domain.Organisation;
 
 public class OrganisationResource extends Organisation {
 	

@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.github;
+package com.kite9.k9server.github;
 
 import java.io.IOException;
 import java.security.KeyFactory;
@@ -8,6 +8,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
 import org.apache.commons.io.Charsets;
+import org.kite9.framework.common.Kite9ProcessingException;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,6 +20,9 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
+
+import com.kite9.k9server.command.content.ContentAPI;
+import com.kite9.k9server.command.content.ContentAPIFactory;
 
 /**
  * This configures the basic API to talk to github.
@@ -47,15 +51,32 @@ public class GithubConfig implements InitializingBean {
 	}
 
 	@Bean
-	public GitHubAPIFactory createAPIFactory() throws IOException {
+	public ContentAPIFactory createGithubAPIFactory() throws IOException {
 		
-		return new GitHubAPIFactory() {
+		return new ContentAPIFactory() {
 			
 			@Override
-			public GitHub createApiFor(Authentication p) throws Exception {
-				String token = GitHubAPIFactory.getOAuthToken(clientRepository, p);
-				GitHub gh = new GitHubBuilder().withOAuthToken(token).build();
-				return gh;
+			public ContentAPI createAPI(Authentication a, String path) throws IOException {
+				String token = GithubContentAPI.getOAuthToken(clientRepository, a);
+				
+				return new GithubContentAPI(a, path, token) {
+					
+					GitHub gh = null;
+
+					@Override
+					public GitHub getGitHubAPI() {
+						try {
+							if (gh == null) {
+								gh = new GitHubBuilder().withOAuthToken(token).build();
+							}
+							
+							return gh;
+						} catch (IOException e) {
+							throw new Kite9ProcessingException("Couldn't get handle to github", e);
+						}
+					}
+					
+				};
 			}
 		};
 	}

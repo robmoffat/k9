@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.kite9.k9server.command.content.NewDocument;
 import com.kite9.k9server.command.xml.AppendXML;
 import com.kite9.k9server.command.xml.Copy;
 import com.kite9.k9server.command.xml.Delete;
@@ -19,7 +20,6 @@ import com.kite9.k9server.command.xml.adl.ADLDelete;
 import com.kite9.k9server.command.xml.adl.ADLMoveCells;
 import com.kite9.k9server.command.xml.adl.ADLReplace;
 import com.kite9.k9server.command.xml.adl.CopyLink;
-import com.kite9.k9server.domain.github.commands.NewDocument;
 
 /**
  * Performs some change on the ADL.
@@ -45,11 +45,9 @@ import com.kite9.k9server.domain.github.commands.NewDocument;
 	@Type(ADLReplace.class),
 	@Type(ADLMoveCells.class),
 
-	// document-specific
-	//@Type(Undo.class),
-	//@Type(Redo.class),
-	
-	// github-specific
+	// content-specific
+	@Type(Undo.class),
+	@Type(Redo.class),
 	@Type(NewDocument.class)
 })
 

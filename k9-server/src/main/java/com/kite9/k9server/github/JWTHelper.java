@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.github;
+package com.kite9.k9server.github;
 
 import java.security.PrivateKey;
 import java.security.Signature;

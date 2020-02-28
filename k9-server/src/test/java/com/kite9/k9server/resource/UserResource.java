@@ -3,9 +3,9 @@ package com.kite9.k9server.resource;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.kite9.k9server.domain.entity.Organisation;
-import com.kite9.k9server.domain.entity.Repository;
-import com.kite9.k9server.domain.entity.User;
+import com.kite9.k9server.domain.Organisation;
+import com.kite9.k9server.domain.Repository;
+import com.kite9.k9server.domain.User;
 
 public class UserResource extends User {
 	

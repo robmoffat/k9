@@ -10,8 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import com.kite9.k9server.AbstractRestIT;
-import com.kite9.k9server.domain.github.GithubConfig;
-import com.kite9.k9server.domain.github.JWTHelper;
+import com.kite9.k9server.github.GithubConfig;
+import com.kite9.k9server.github.JWTHelper;
 
 /**
  * Makes sure there is a new user available to send REST requests with.

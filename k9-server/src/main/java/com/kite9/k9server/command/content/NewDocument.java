@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.github.commands;
+package com.kite9.k9server.command.content;
 
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
@@ -22,82 +22,37 @@ import org.springframework.http.HttpStatus;
 
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.command.AbstractGitHubCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.domain.github.AbstractGithubController;
-import com.kite9.k9server.domain.github.EntityController;
-import com.kite9.k9server.domain.github.GitHubAPIFactory;
+import com.kite9.k9server.github.AbstractGithubController;
+import com.kite9.k9server.github.EntityController;
+import com.kite9.k9server.github.GithubContentAPI;
 
-public class NewDocument extends AbstractGitHubCommand {
+public class NewDocument extends AbstractContentCommand {
 	
 	public String title;
 		
 	public String templateUri;
 	
 	public String format;
-		
-	public boolean open = false;	// sends a redirect after creating.
-	
-	public static final Pattern p = Pattern.compile(
-		"^.*(orgs|users)\\/([a-zA-Z-_0-9]+)\\/([a-zA-Z0-9-_]+)(\\/.*)?");
 	
 	@Override
 	public Object applyCommand() throws CommandException {
 		try {
 			ADL adlContent = getNewDocumentContent(requestHeaders);
-			
-			// parse out the originating url
-			URI u = new URI(subjectUri);
-			String pathPart = u.getPath();
-			Matcher m = p.matcher(pathPart);
-			m.find();
-			String type = m.group(1);
-			String owner = m.group(2);
-			String reponame = m.group(3);
-			String path = m.group(4);
-			path = path == null ? "" : path;
-			path = path.startsWith("/") ? path.substring(1) : path;
-			path = path.length() > 0 ? path + "/" : path;
-			
-			// get the current github details
-			GHPerson p = AbstractGithubController.getUserOrOrg(type, owner, github);
-			GHRepository repo = p.getRepository(reponame);
-			String branchName = repo.getDefaultBranch();
-			GHBranch branch = repo.getBranch(branchName);
-			GHTree tree = repo.getTree(branchName);
-
 			// work out filename, format
 			Format formatter = fs.getFormatFor(format).orElseThrow();
 			
-			// create blob
-			GHBlob blob; 
 			if (formatter.isBinaryFormat()) {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				formatter.handleWrite(adlContent, baos, false, 0, 0);
-				blob = repo.createBlob().binaryContent(baos.toByteArray()).create();
+				api.commitRevision(baos.toByteArray(), "Created New Diagram in Kite9 named "+title);
 			} else {
 				StringWriter sw = new StringWriter();
 				WriterOutputStream osw = new WriterOutputStream(sw, Charsets.UTF_8.name());
 				formatter.handleWrite(adlContent, osw, false, 0, 0);
-				blob = repo.createBlob().textContent(sw.toString()).create();
+				api.commitRevision(sw.toString(), "Created New Diagram in Kite9 named "+title);
 			}
-			
-			// create tree
-			@SuppressWarnings("deprecation")
-			GHTree newTree = repo.createTree()
-					.baseTree(tree.getSha())
-					.shaEntry(path+title+"."+formatter.getExtension(), blob.getSha(), false)
-					.create();
-			
-			
-			GHCommit c = repo.createCommit()
-					.committer(GitHubAPIFactory.getUserLogin(a), GitHubAPIFactory.getEmail(a), new Date())
-					.message("Created Kite9 Diagram From Template "+templateUri)
-					.parent(branch.getSHA1())
-					.tree(newTree.getSha())
-					.create();
-				
-			repo.getRef("heads/"+branchName).updateTo(c.getSHA1());
+
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 			
 			return EntityController.templateDirectoryPage(type, owner, reponame, path, p, repo, lb, fs);

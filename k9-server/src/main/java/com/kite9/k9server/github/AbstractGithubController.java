@@ -1,7 +1,8 @@
-package com.kite9.k9server.domain.github;
+package com.kite9.k9server.github;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,9 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.kite9.k9server.adl.format.FormatSupplier;
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.content.ContentAPIFactory;
+import com.kite9.k9server.command.content.ContentCommand;
+import com.kite9.k9server.command.controllers.AbstractCommandController;
 
 import reactor.core.publisher.Mono;
 
@@ -24,7 +32,8 @@ public class AbstractGithubController {
 	protected OAuth2AuthorizedClientRepository clientRepository;
 
 	@Autowired
-	protected GitHubAPIFactory apiFactory;
+	protected ContentAPIFactory apiFactory;
+
 	
 	public AbstractGithubController() {
 		super();
@@ -44,7 +53,8 @@ public class AbstractGithubController {
 		}
 		return p;
 	}
-	
+
+
 	public static String getDirectoryPath(String reponame, HttpServletRequest req) {
 		String path = req.getRequestURI();
 		return getDirectoryPath(reponame, path);
@@ -70,23 +80,6 @@ public class AbstractGithubController {
 		return n;
 	}
 
-	/**
-	 * This has been optimised so that you don't need to build the Github api first
-	 */
-	public InputStream getRepositoryInputStream(Authentication p,  String type, String userorg, String reponame, String path,
-			HttpHeaders headers, String url, String revisionSha1) {
-		try {
-			WebClient c = WebClient.create("https://api.github.com");
-			Mono<GHContent> mono = c.get()
-				.uri("/repos/"+userorg+"/"+reponame+"/contents/"+path)
-				.header("Authorization" , "token "+GitHubAPIFactory.getOAuthToken(clientRepository, p))
-				.retrieve().bodyToMono(GHContent.class);
-			
-			GHContent content = mono.block();
-			return content.read();
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't load document", e);
-		}
-	}
+	
 
 }

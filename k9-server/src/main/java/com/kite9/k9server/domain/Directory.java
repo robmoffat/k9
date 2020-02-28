@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.entity;
+package com.kite9.k9server.domain;
 
 import java.io.IOException;
 import java.util.List;

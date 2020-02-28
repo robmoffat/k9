@@ -1,9 +1,14 @@
-package com.kite9.k9server.domain.entity;
+package com.kite9.k9server.domain;
 
 import java.util.Date;
 import java.util.List;
 
-public abstract class User extends RestEntity<User> {
+public abstract class Repository extends RestEntity<Repository> {
+	
+	@Override
+	public String getIcon() {
+		return "/public/context/admin/icons/project.svg";
+	}
 
 	@Override
 	public Date getLastUpdated() {
@@ -17,17 +22,11 @@ public abstract class User extends RestEntity<User> {
 
 	@Override
 	public String getType() {
-		return "user";
+		return "project";
 	}
-
-	public abstract List<Organisation> getOrganisations();
-	
-	public abstract List<Repository> getRepositories();
 
 	@Override
 	public String getCommands() {
 		return "focus";
 	}
-	
-	
 }

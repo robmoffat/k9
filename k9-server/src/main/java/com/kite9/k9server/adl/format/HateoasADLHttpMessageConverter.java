@@ -52,7 +52,7 @@ import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.domain.entity.RestEntity;
+import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**

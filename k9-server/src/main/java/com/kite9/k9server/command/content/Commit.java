@@ -1,4 +1,4 @@
-package com.kite9.k9server.domain.github.revisions;
+package com.kite9.k9server.command.content;
 
 public class Commit {
 	
