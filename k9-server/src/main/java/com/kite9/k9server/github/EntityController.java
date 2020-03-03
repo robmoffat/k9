@@ -1,7 +1,6 @@
 package com.kite9.k9server.github;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
@@ -19,29 +18,29 @@ import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.PagedIterable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.LinkBuilder;
 import org.springframework.hateoas.server.mvc.BasicLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kite9.k9server.adl.format.FormatSupplier;
-import com.kite9.k9server.adl.format.media.Format;
-import com.kite9.k9server.adl.holder.ADL;
+import com.kite9.k9server.command.Command;
+import com.kite9.k9server.command.content.ContentAPI;
 import com.kite9.k9server.domain.Directory;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Organisation;
 import com.kite9.k9server.domain.Repository;
 import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.User;
-import com.kite9.k9server.security.Kite9HeaderMeta;
 
 
 @RestController
@@ -52,7 +51,7 @@ public class EntityController extends AbstractGithubController {
 		
 	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
-		GitHub github = apiFactory.createApiFor(authentication);
+		GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, "/")).getGitHubAPI();
 		String name = GithubContentAPI.getUserLogin(authentication);
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHUser user = github.getUser(name);
@@ -171,7 +170,7 @@ public class EntityController extends AbstractGithubController {
 			@PathVariable("type") String type, 
 			@PathVariable(name = "userorg") String userOrg, 
 			Authentication authentication) throws Exception {
-		GitHub github = apiFactory.createApiFor(authentication);
+		GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, "/")).getGitHubAPI();
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHPerson org = getUserOrOrg(type, userOrg, github);
 		List<Repository> repoList = templateRepos(lb.slash(type).slash(userOrg), org);
@@ -221,11 +220,28 @@ public class EntityController extends AbstractGithubController {
 		return out;
 	}
 
+	@PostMapping(path =  {"/{type:users|orgs}/{userorg}/{reponame}/**",
+		"/{type:users|orgs}/{userorg}/{reponame}"}, 
+			produces = MediaType.ALL_VALUE)
+	public Object postCommandOnDirectoryPage(@PathVariable("type") String type, 
+			@PathVariable("userorg") String userorg,
+			@PathVariable("reponame") String reponame, 
+			HttpServletRequest req, 
+			@RequestHeader HttpHeaders headers,
+			RequestEntity<List<Command>> reqEntity, 
+			@RequestParam(required = false, name = "revision", defaultValue = "") String revisionSha1,
+			
+			Authentication authentication) throws Exception {
+		
+		String url = req.getRequestURL().toString();
+		return performSteps(reqEntity.getBody(), null, authentication, headers, new URI(url));
+	}
+	
 
 	@GetMapping(path =  {"/{type:users|orgs}/{userorg}/{reponame}/**",
 			"/{type:users|orgs}/{userorg}/{reponame}"}, 
 			produces = MediaType.ALL_VALUE)
-	public Object getRepoPage(
+	public Object getDirectoryPage(
 			@PathVariable("type") String type, 
 			@PathVariable("userorg") String userorg,
 			@PathVariable("reponame") String reponame, 
@@ -241,7 +257,7 @@ public class EntityController extends AbstractGithubController {
 	protected Object getDirectoryPage(String type, String userorg, String reponame, Authentication authentication,
 			String path) {
 		try {
-			GitHub github = apiFactory.createApiFor(authentication);
+			GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, path)).getGitHubAPI();
 			GHPerson p = getUserOrOrg(type, userorg, github);
 			GHRepository repo = p.getRepository(reponame);
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();	
@@ -250,7 +266,7 @@ public class EntityController extends AbstractGithubController {
 			throw new Kite9ProcessingException("Couldn't format directory page "+path, e);
 		}
 	}
-
+	
 
 	public static Directory templateDirectoryPage(String type, String userorg, String reponame, String path, GHPerson p,
 			GHRepository repo, LinkBuilder lb, FormatSupplier fs) throws IOException {
@@ -365,5 +381,23 @@ public class EntityController extends AbstractGithubController {
 	
 	public boolean matchesFormat(String name) {
 		return formatSupplier.getFormatFor(name).isPresent();
+	}
+
+
+	/**
+	 * This is a hack to get the redirect working from NewDocument.   Problem is that this means newDocument is
+	 * excessively coupled to the github backend.
+	 * @throws IOException 
+	 */
+	public static Object templateDirectoryRedirect(String subjectUri, ContentAPI api, FormatSupplier fs) throws IOException {
+		String type = GithubContentAPI.getPathSegment(GithubContentAPI.TYPE, subjectUri);
+		String reponame = GithubContentAPI.getPathSegment(GithubContentAPI.REPONAME, subjectUri);
+		String userorg = GithubContentAPI.getPathSegment(GithubContentAPI.OWNER, subjectUri);
+		String path = GithubContentAPI.getPathSegment(GithubContentAPI.FILEPATH, subjectUri);
+		GitHub github = ((GithubContentAPI)api).getGitHubAPI();
+		GHPerson p = getUserOrOrg(type, userorg, github);
+		GHRepository repo = p.getRepository(reponame);
+		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
+		return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb, fs);
 	}
 }

@@ -6,19 +6,32 @@ import java.util.List;
 
 import org.kite9.framework.logging.Kite9Log;
 import org.kite9.framework.logging.Logable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.adl.holder.ADLImpl;
 import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.XMLCommand;
+import com.kite9.k9server.command.content.ContentAPIFactory;
+import com.kite9.k9server.command.content.ContentCommand;
 
 public abstract class AbstractCommandController implements Logable {
 
 	Kite9Log log = new Kite9Log(this);
+	
+
+	@Autowired
+	protected ContentAPIFactory apiFactory;
+	
+	@Autowired
+	protected FormatSupplier fs;
+	
 				
 	public AbstractCommandController() {
 		super();
@@ -53,6 +66,12 @@ public abstract class AbstractCommandController implements Logable {
 			}
 			
 			xmlCommand.setOn((ADL) input);
+		}
+		
+		Authentication a = SecurityContextHolder.getContext().getAuthentication();
+
+		if (command instanceof ContentCommand) {
+			((ContentCommand) command).setContentApi(apiFactory.createAPI(a, url.toString()), headers, a, fs);
 		}
 	}
 

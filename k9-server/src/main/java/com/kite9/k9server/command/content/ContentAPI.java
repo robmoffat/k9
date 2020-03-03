@@ -20,4 +20,6 @@ public interface ContentAPI {
 	public String commitRevision(String contents, String message);
 	
 	public InputStream updateCurrentRevision(String revision);
+	
+	public ContentAPI withPath(String ext);
 }

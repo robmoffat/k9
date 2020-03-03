@@ -46,8 +46,8 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(ADLMoveCells.class),
 
 	// content-specific
-	@Type(Undo.class),
-	@Type(Redo.class),
+//	@Type(Undo.class),
+//	@Type(Redo.class),
 	@Type(NewDocument.class)
 })
 

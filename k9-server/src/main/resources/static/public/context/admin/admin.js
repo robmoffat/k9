@@ -45,7 +45,7 @@ var initialized = false;
 function initEditor() {
 
 	var transition = new Transition(
-			() => '/admin',		// change uri
+			() => metadata.get('self'),		// change uri
 			[(r) => metadata.transitionCallback(r)],
 			[ zoomableTransitionCallback ]);
 

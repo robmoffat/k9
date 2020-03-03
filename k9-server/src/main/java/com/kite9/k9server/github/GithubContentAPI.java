@@ -33,11 +33,17 @@ public abstract class GithubContentAPI implements ContentAPI {
 	private Authentication a;
 	private String path;
 	private String oauthToken;
+	private String owner;
+	private String reponame;
+	private String filepath;
 
 	public GithubContentAPI(Authentication a, String path, String oauthToken) {
 		this.path = path;
 		this.a = a;
 		this.oauthToken = oauthToken;
+		this.owner = getPathSegment(OWNER, path);
+		this.reponame = getPathSegment(REPONAME, path);
+		this.filepath = getPathSegment(FILEPATH, path);
 	}
 
 	public static String getOAuthToken(OAuth2AuthorizedClientRepository clientRepository, Authentication p) {
@@ -63,9 +69,10 @@ public abstract class GithubContentAPI implements ContentAPI {
 	@Override
 	public InputStream updateCurrentRevision(String revision) {
 		try {
-			GHRepository repo = getGitHubAPI().getRepository(getPathSegment(OWNER)+"/"+getPathSegment(REPONAME));
+			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			String branchName = repo.getDefaultBranch();
 			repo.getRef("heads/"+branchName).updateTo(revision);	
+			return null;
 		} catch (IOException e) {
 			throw new Kite9ProcessingException("Couldn't commit change to: "+path, e);
 		}
@@ -73,7 +80,7 @@ public abstract class GithubContentAPI implements ContentAPI {
 
 	public String commitRevision(String message, Consumer<GHTreeBuilder> fn) {
 		try {
-			GHRepository repo = getGitHubAPI().getRepository(getPathSegment(OWNER)+"/"+getPathSegment(REPONAME));
+			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			String branchName = repo.getDefaultBranch();
 			GHTree tree = repo.getTree(branchName);
 			GHBranch branch = repo.getBranch(branchName);
@@ -99,12 +106,12 @@ public abstract class GithubContentAPI implements ContentAPI {
 
 	@Override
 	public String commitRevision(byte[] contents, String message) {
-		return commitRevision(message, tb -> tb.add(getPathSegment(FILENAME), contents, false));
+		return commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 
 	@Override
 	public String commitRevision(String contents, String message) {
-		return commitRevision(message, tb -> tb.add(getPathSegment(FILENAME), contents, false));
+		return commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 
 	/**
@@ -114,7 +121,7 @@ public abstract class GithubContentAPI implements ContentAPI {
 	public InputStream getRevision(String rev) {
 		try {
 			WebClient c = WebClient.create("https://api.github.com");
-			Mono<GHContent> mono = c.get().uri("/repos/" + path)
+			Mono<GHContent> mono = c.get().uri("/repos/" + owner+"/"+reponame+"/contents" + filepath)
 					.header("Authorization", "token " + oauthToken)
 					.retrieve()
 					.bodyToMono(GHContent.class);
@@ -129,25 +136,41 @@ public abstract class GithubContentAPI implements ContentAPI {
 	public abstract GitHub getGitHubAPI();
 	
 	public static final Pattern p = Pattern.compile(
-			"^.*(orgs|users)\\/([a-zA-Z-_0-9]+)\\/([a-zA-Z0-9-_]+)(\\/.*)?");
+			"^.*(orgs|users|content)\\/([a-zA-Z-_0-9]+)\\/([a-zA-Z0-9-_]+)(\\/.*)?");
 	
 	public static final int TYPE = 1;
 	public static final int OWNER = 2;
 	public static final int REPONAME = 3;
-	public static final int FILENAME = 4;
+	public static final int FILEPATH = 4;
 	
-	public String getPathSegment(int part) {
-		Matcher m = p.matcher(path);
-		m.find();
-		if (part == FILENAME) {
-			String path = m.group(4);
-			path = path == null ? "" : path;
-			path = path.startsWith("/") ? path.substring(1) : path;
-			path = path.length() > 0 ? path + "/" : path;
-			return path;
+	public static String getPathSegment(int part, String ps) {
+		Matcher m = p.matcher(ps);
+		if (m.find()) {
+			if (part == FILEPATH) {
+				String path = m.group(4);
+				path = path == null ? "" : path;
+				path = path.startsWith("/") ? path.substring(1) : path;
+				//path = path.length() > 0 ? path + "/" : path;
+				return path;
+			} else {
+				return m.group(part);
+			}
 		} else {
-			return m.group(part);
+			return null;
 		}
 	}
 
+	@Override
+	public ContentAPI withPath(String ext) {
+		GithubContentAPI me = this;
+		return new GithubContentAPI(a, path + ext, oauthToken) {
+			
+			@Override
+			public GitHub getGitHubAPI() {
+				return me.getGitHubAPI();
+			}
+		};
+	}
+
+	
 }

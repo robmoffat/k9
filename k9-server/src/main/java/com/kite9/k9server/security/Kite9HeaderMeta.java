@@ -41,10 +41,10 @@ public class Kite9HeaderMeta {
 			consumer.accept("user", user.getAttribute("name"));
 			consumer.accept("user-icon", user.getAttribute("avatar_url"));
 			consumer.accept("user-page", "/");
-			
 		} else {
 			consumer.accept("user", "anonymousUser");
 		}
+
 		if (self != null) {
 			consumer.accept("self", self);
 		}

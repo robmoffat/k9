@@ -87,7 +87,7 @@ function initEditor() {
 		closeMetadataCallback ]);
 		
 	var transition = new Transition(
-			() => '/command/v1?on='+metadata.get('self'),		// command
+			() => metadata.get('self'),		// command
 			[(r) => metadata.transitionCallback(r) ],			// load callbacks
 			[ initHistoryDocumentCallback(revisions, metadata) ],  // document callbacks
 			[ zoomableTransitionCallback ]);	// animation callbacks

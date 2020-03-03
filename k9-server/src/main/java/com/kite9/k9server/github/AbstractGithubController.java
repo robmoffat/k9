@@ -1,32 +1,20 @@
 package com.kite9.k9server.github;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHPerson;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.kite9.k9server.adl.format.FormatSupplier;
-import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.content.ContentAPIFactory;
-import com.kite9.k9server.command.content.ContentCommand;
 import com.kite9.k9server.command.controllers.AbstractCommandController;
 
-import reactor.core.publisher.Mono;
-
-public class AbstractGithubController {
+public class AbstractGithubController extends AbstractCommandController {
 
 	@Autowired
 	protected OAuth2AuthorizedClientRepository clientRepository;

@@ -41,3 +41,4 @@ k9-server/kite9.log
 
 # Secrets
 *.private-key.pem
+application-credentials.yml
