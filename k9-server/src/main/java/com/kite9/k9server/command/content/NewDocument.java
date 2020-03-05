@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.github.EntityController;
+import com.kite9.k9server.persistence.github.EntityController;
 
 public class NewDocument extends AbstractContentCommand {
 	
@@ -28,7 +28,7 @@ public class NewDocument extends AbstractContentCommand {
 			ContentAPI apiForFile = api.withPath("/"+ title+"."+formatter.getExtension());
 			
 			AbstractContentCommand.persistContent(adlContent, formatter, apiForFile, "Created New Diagram in Kite9 named "+title);
-			return EntityController.templateDirectoryRedirect(subjectUri, api, fs);
+			return EntityController.templateDirectoryRedirect(url.toString(), api, fs);
 		} catch (Exception e) {
 			throw new CommandException(HttpStatus.CONFLICT, "Couldn't create document: ", e, this);
 		}

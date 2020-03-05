@@ -5,7 +5,8 @@ import com.kite9.k9server.adl.holder.ADL;
 /**
  * ADL Commands manipulate some XML, which is passed in using setOn.
  * 
- * XMLCommands will result in a new revision being created on the xml they are changing.
+ * XMLCommands will result in a new revision being created on the xml they are changing.  i.e. they 
+ * require a commit on the backing ContentAPI.
  *
  */
 public interface XMLCommand extends Command {

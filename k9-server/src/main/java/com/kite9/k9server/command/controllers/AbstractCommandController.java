@@ -71,7 +71,7 @@ public abstract class AbstractCommandController implements Logable {
 		Authentication a = SecurityContextHolder.getContext().getAuthentication();
 
 		if (command instanceof ContentCommand) {
-			((ContentCommand) command).setContentApi(apiFactory.createAPI(a, url.toString()), headers, a, fs);
+			((ContentCommand) command).setContentApi(apiFactory.createAPI(a, url.toString()), headers, a, fs, url);
 		}
 	}
 

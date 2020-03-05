@@ -12,7 +12,6 @@ import { Palette, initPaletteHoverableAllowed } from '/public/classes/palette/Pa
 import { Linker } from '/public/classes/linker/Linker.js';
 import { Overlay } from '/public/classes/overlay/overlay.js';
 import { Dragger } from '/public/classes/dragger/dragger.js';
-import { Revisions } from '/public/classes/revisions/revisions.js';
 
 // Behaviours
 
@@ -44,9 +43,8 @@ import { zoomableInstrumentationCallback, zoomableTransitionCallback } from "/pu
 import { initIdentityInstrumentationCallback, identityMetadataCallback } from "/public/behaviours/identity/identity.js";
 
 // undo, redo, revisions
-import { createUndoableInstrumentationCallback, undoableRevisionsCallback } from "/public/behaviours/revisioned/undoable.js";
+import { createUndoableInstrumentationCallback, undoableMetadataCallback } from "/public/behaviours/revisioned/undoable.js";
 import { createUndoCallback, createRedoCallback } from '/public/behaviours/revisioned/undoredo/undoredo.js';
-import { initHistoryDocumentCallback, initHistoryMetadataCallback } from '/public/behaviours/revisioned/history.js';
 
 // Containers
 import { initInsertPaletteCallback, initInsertContextMenuCallback } from '/public/behaviours/containers/insert/insert.js';
@@ -78,18 +76,14 @@ var initialized = false;
 
 function initEditor() {
 	
-	var revisions = new Revisions(
-		[undoableRevisionsCallback]);
-
 	var metadata = new Metadata([
 		identityMetadataCallback,
-		initHistoryMetadataCallback(revisions),
+		undoableMetadataCallback,
 		closeMetadataCallback ]);
 		
 	var transition = new Transition(
 			() => metadata.get('self'),		// command
 			[(r) => metadata.transitionCallback(r) ],			// load callbacks
-			[ initHistoryDocumentCallback(revisions, metadata) ],  // document callbacks
 			[ zoomableTransitionCallback ]);	// animation callbacks
 	
 	var palette = new Palette("--palette", [

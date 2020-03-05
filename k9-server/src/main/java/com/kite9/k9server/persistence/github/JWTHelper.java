@@ -1,4 +1,4 @@
-package com.kite9.k9server.github;
+package com.kite9.k9server.persistence.github;
 
 import java.security.PrivateKey;
 import java.security.Signature;

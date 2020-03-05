@@ -1,6 +1,7 @@
 package com.kite9.k9server.command.content;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * This is an API that controls updating/reading a single diagram with some kind of backing storage.
@@ -10,10 +11,7 @@ import java.io.InputStream;
  */
 public interface ContentAPI {
 
-	/**
-	 * Returns a specific revision, or the latest one, if rev is null or an empty string
-	 */
-	public InputStream getRevision(String rev);
+	public InputStream getCurrentRevisionContent();
 	
 	public String commitRevision(byte[] contents, String message);
 	
@@ -22,4 +20,9 @@ public interface ContentAPI {
 	public InputStream updateCurrentRevision(String revision);
 	
 	public ContentAPI withPath(String ext);
+	
+	public List<Version> getVersionHistory();
+	
+	public Version getCurrentVersion();
+
 }

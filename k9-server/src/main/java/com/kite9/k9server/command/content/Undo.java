@@ -1,15 +1,15 @@
 package com.kite9.k9server.command.content;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 
+import com.kite9.k9server.adl.format.media.Format;
 import com.kite9.k9server.adl.holder.ADL;
-import com.kite9.k9server.adl.holder.ADLImpl;
-import com.kite9.k9server.command.AbstractRepoCommand;
 import com.kite9.k9server.command.CommandException;
-import com.kite9.k9server.domain.Document;
-import com.kite9.k9server.domain.revision.Revision;
 
-public class Undo extends AbstractRepoCommand {
+public class Undo extends AbstractContentCommand {
 
 	public Undo() {
 		super();
@@ -17,20 +17,18 @@ public class Undo extends AbstractRepoCommand {
 	
 	@Override
 	public ADL applyCommand() throws CommandException {
-		Revision rPrevious = getCurrentRevision().getPreviousRevision();
-		
-		if (rPrevious == null) {
-			throw new CommandException(HttpStatus.FORBIDDEN, "No previous state to undo to", this);
+		try {
+			Version current = api.getCurrentVersion();
+			List<Version> versions = api.getVersionHistory();
+			int idx = versions.indexOf(current);
+			idx = Math.min(versions.size()-1, idx + 1);
+			current = versions.get(idx);
+			InputStream is = api.updateCurrentRevision(current.getVersionId());
+			Format f = fs.getFormatFor(url.getPath()).orElseThrow();
+			ADL adl = f.handleRead(is, url, requestHeaders);
+			return adl;
+		} catch (Exception e) {
+			throw new CommandException(HttpStatus.BAD_REQUEST, "Couldn't redo:", e, this);
 		}
-		
-		Document d = (Document) context;
-		d.setCurrentRevision(rPrevious);
-		getRepositoryFor(Document.class).save(d); 
-				
-		return ADLImpl.xmlMode(uri, rPrevious.getXml(), requestHeaders);
-	}
-	
-	public Revision getCurrentRevision() {
-		return ((Document) context).getCurrentRevision();
 	}
 }

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.kite9.k9server.command.content.NewDocument;
+import com.kite9.k9server.command.content.Redo;
+import com.kite9.k9server.command.content.Undo;
 import com.kite9.k9server.command.xml.AppendXML;
 import com.kite9.k9server.command.xml.Copy;
 import com.kite9.k9server.command.xml.Delete;
@@ -46,8 +48,8 @@ import com.kite9.k9server.command.xml.adl.CopyLink;
 	@Type(ADLMoveCells.class),
 
 	// content-specific
-//	@Type(Undo.class),
-//	@Type(Redo.class),
+	@Type(Undo.class),
+	@Type(Redo.class),
 	@Type(NewDocument.class)
 })
 
