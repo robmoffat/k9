@@ -2,6 +2,7 @@ package com.kite9.k9server.command.controllers;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.command.content.AbstractContentCommand;
 import com.kite9.k9server.command.content.ContentAPI;
-import com.kite9.k9server.command.content.Version;
+import com.kite9.k9server.command.content.ContentAPI.Operation;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
@@ -90,13 +91,8 @@ public class ContentCommandController extends AbstractCommandController {
 	}
 
 	private void addUndoRedoMeta(ADL adl, ContentAPI api, String url) {
-		Version v = api.getCurrentVersion();
-		List<Version> allVersions = api.getVersionHistory();
-		int idx = allVersions.indexOf(v);
-		
-		boolean redo = idx > 0;
-		boolean undo = idx < allVersions.size() -1;
-		adl.setMeta("undo", ""+undo);
-		adl.setMeta("redo", ""+redo);
+		EnumSet<Operation> ops = api.getOperations();
+		adl.setMeta("undo", ""+ops.contains(Operation.UNDO));
+		adl.setMeta("redo", ""+ops.contains(Operation.REDO));
 	}
 }

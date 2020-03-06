@@ -3,6 +3,7 @@ package com.kite9.k9server.persistence.github;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -11,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.kite9.framework.common.Kite9ProcessingException;
-import org.kohsuke.github.GHBranch;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHRef;
@@ -25,12 +25,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kite9.k9server.command.content.ContentAPI;
-import com.kite9.k9server.command.content.Version;
 
 import reactor.core.publisher.Mono;
 
@@ -74,25 +72,6 @@ public abstract class GithubContentAPI implements ContentAPI {
 		OAuth2User user = (OAuth2User) p.getPrincipal();
 		String login = user.getAttribute("login");
 		return login;
-	}
-
-	@Override
-	public InputStream updateCurrentRevision(String revision) {
-		try {
-			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
-			GHRef branchHead = repo.getRef("heads/"+branchName);
-			
-			// we need to keep track of the latest revision
-			GHRef lastRef = getLastRef(repo);
-			if (lastRef == null) {
-				repo.createRef("refs/tags/"+tagLast, branchHead.getObject().getSha());
-			}
-			
-			branchHead.updateTo(revision, true);	
-			return getCurrentRevisionContent();
-		} catch (IOException e) {
-			throw new Kite9ProcessingException("Couldn't commit change to: "+path, e);
-		}
 	}
 
 	private GHRef getLastRef(GHRepository repo) {
@@ -151,13 +130,13 @@ public abstract class GithubContentAPI implements ContentAPI {
 	}
 
 	@Override
-	public String commitRevision(byte[] contents, String message) {
-		return commitRevision(message, tb -> tb.add(filepath, contents, false));
+	public void commitRevision(byte[] contents, String message) {
+		commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 
 	@Override
-	public String commitRevision(String contents, String message) {
-		return commitRevision(message, tb -> tb.add(filepath, contents, false));
+	public void commitRevision(String contents, String message) {
+		commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 
 	/**
@@ -212,12 +191,11 @@ public abstract class GithubContentAPI implements ContentAPI {
 	}
 
 
-	@Override
-	public List<Version> getVersionHistory() {
+	public List<String> getVersionHistory() {
 		try {
 			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			GHRef lastRef = getLastRef(repo);
-			List<Version> versions;
+			List<String> versions;
 			if (lastRef != null) {
 				versions = getVersionsForGivenTag(repo, lastRef.getRef());
 			} else {
@@ -230,10 +208,10 @@ public abstract class GithubContentAPI implements ContentAPI {
 		}
 	}
 
-	private List<Version> getVersionsForGivenTag(GHRepository repo, String tag) {
-		List<Version> versions = StreamSupport.stream(
+	private List<String> getVersionsForGivenTag(GHRepository repo, String tag) {
+		List<String> versions = StreamSupport.stream(
 			repo.queryCommits().path(filepath).from(tag).list().spliterator(), false)
-			.map(ghc -> new Version(ghc.getSHA1()))
+			.map(ghc -> ghc.getSHA1())
 			.collect(Collectors.toList());
 		return versions;
 	}
@@ -250,17 +228,76 @@ public abstract class GithubContentAPI implements ContentAPI {
 		};
 	}
 
-	@Override
-	public Version getCurrentVersion() {
+	private String getCurrentVersion() {
 		try {
 			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			GHRef lastRef = getHeadRef(repo);
-			return new Version(lastRef.getObject().getSha());
+			return lastRef.getObject().getSha();
 		} catch (IOException e) {
 			throw new Kite9ProcessingException("Couldn't retrieve history for "+path, e);
 		}		
 	}
 
+	public String getOauthToken() {
+		return oauthToken;
+	}
+
+
+	public InputStream updateCurrentRevision(String revision) {
+		try {
+			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
+			GHRef branchHead = repo.getRef("heads/"+branchName);
+			
+			// we need to keep track of the latest revision
+			GHRef lastRef = getLastRef(repo);
+			if (lastRef == null) {
+				repo.createRef("refs/tags/"+tagLast, branchHead.getObject().getSha());
+			}
+			
+			branchHead.updateTo(revision, true);	
+			return getCurrentRevisionContent();
+		} catch (IOException e) {
+			throw new Kite9ProcessingException("Couldn't commit change to: "+path, e);
+		}
+	}
 	
+	@Override
+	public InputStream undo() {
+		String current = getCurrentVersion();
+		List<String> versions = getVersionHistory();
+		int idx = versions.indexOf(current);
+		idx = Math.max(0, idx - 1);
+		current = versions.get(idx);
+		return updateCurrentRevision(current);
+	}
+
+	@Override
+	public InputStream redo() {
+		String current = getCurrentVersion();
+		List<String> versions = getVersionHistory();
+		int idx = versions.indexOf(current);
+		idx = Math.max(0, idx + 1);
+		current = versions.get(idx);
+		return updateCurrentRevision(current);
+	}
+
+	@Override
+	public EnumSet<Operation> getOperations() {
+		String v = getCurrentVersion();
+		List<String> allVersions = getVersionHistory();
+		int idx = allVersions.indexOf(v);
+		EnumSet<Operation> out = EnumSet.noneOf(Operation.class);
+		boolean redo = idx > 0;
+		boolean undo = idx < allVersions.size() -1;
+		if (redo) {
+			out.add(Operation.REDO);
+		}
+		
+		if (undo) {
+			out.add(Operation.UNDO);
+		}
+		
+		return out;
+	}
 	
 }

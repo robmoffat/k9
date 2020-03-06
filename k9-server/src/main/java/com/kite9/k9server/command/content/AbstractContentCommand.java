@@ -30,16 +30,16 @@ public abstract class AbstractContentCommand implements ContentCommand {
 		this.url = url;
 	}
 
-	public static String persistContent(ADL adlContent, Format formatter, ContentAPI api, String commitMessage) throws Exception {
+	public static void persistContent(ADL adlContent, Format formatter, ContentAPI api, String commitMessage) throws Exception {
 		if (formatter.isBinaryFormat()) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			formatter.handleWrite(adlContent, baos, false, 0, 0);
-			return api.commitRevision(baos.toByteArray(), commitMessage);
+			api.commitRevision(baos.toByteArray(), commitMessage);
 		} else {
 			StringWriter sw = new StringWriter();
 			WriterOutputStream osw = new WriterOutputStream(sw, Charsets.UTF_8.name());
 			formatter.handleWrite(adlContent, osw, false, 0, 0);
-			return api.commitRevision(sw.toString(), commitMessage);
+			api.commitRevision(sw.toString(), commitMessage);
 		}
 	}
 	

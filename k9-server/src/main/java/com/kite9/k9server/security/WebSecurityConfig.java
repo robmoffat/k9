@@ -23,19 +23,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 		http.authorizeRequests()
-				.antMatchers("/api/command/**").permitAll() 
-				.antMatchers("/api/admin").permitAll() 
-				.antMatchers("/dist/**").permitAll() // allows rendering tests
-				.antMatchers("/api/renderer/**").permitAll() 
-				.antMatchers("/api/users/**").permitAll()
-				.antMatchers("/api/profile/**").permitAll()
-				.antMatchers("/api").permitAll()
+				.antMatchers("/").permitAll() 
 				.antMatchers("/stylesheet.js").permitAll()
 				.antMatchers("/stylesheet.css").permitAll()
 				.antMatchers("/oauth/token").permitAll()
 				.antMatchers("/console/**").permitAll()
 				.antMatchers("/public/**").permitAll()
-				.antMatchers("/examples/**").permitAll()
 				.antMatchers("/**").authenticated()
 				.and()
 				.oauth2Login();

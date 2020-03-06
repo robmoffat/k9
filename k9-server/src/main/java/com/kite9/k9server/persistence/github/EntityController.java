@@ -43,13 +43,19 @@ import com.kite9.k9server.domain.RestEntity;
 import com.kite9.k9server.domain.User;
 
 
-@RestController
+/**
+ * TODO: At some point, we should refactor this so most of this code is common, and the github-specifics is separate.
+ * 
+ * @author robmoffat
+ *
+ */
+@RestController()
 public class EntityController extends AbstractGithubController {
 	
 	@Autowired
 	FormatSupplier formatSupplier;
 		
-	@GetMapping(path = "/", produces = MediaType.ALL_VALUE)
+	@GetMapping(path = "/home", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
 		GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, "/")).getGitHubAPI();
 		String name = GithubContentAPI.getUserLogin(authentication);
@@ -58,7 +64,7 @@ public class EntityController extends AbstractGithubController {
 		
 		List<Repository> repoList = templateRepos(lb.slash("/users").slash(name), user);
 		List<Organisation> orgList = templateOrganisations(lb.slash("/orgs"), user);
-		User out = templateUserOrg(lb.withSelfRel(), user, repoList, orgList);
+		User out = templateUserOrg(lb.slash("home").withSelfRel(), user, repoList, orgList);
 		return out;
 	}
 
