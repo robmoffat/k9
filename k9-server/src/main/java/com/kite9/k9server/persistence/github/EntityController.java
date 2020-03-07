@@ -57,7 +57,7 @@ public class EntityController extends AbstractGithubController {
 		
 	@GetMapping(path = "/home", produces = MediaType.ALL_VALUE)
 	public User getHomePage(Authentication authentication) throws Exception {
-		GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, "/")).getGitHubAPI();
+		GitHub github = getGithubApi(authentication);
 		String name = GithubContentAPI.getUserLogin(authentication);
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHUser user = github.getUser(name);
@@ -67,7 +67,6 @@ public class EntityController extends AbstractGithubController {
 		User out = templateUserOrg(lb.slash("home").withSelfRel(), user, repoList, orgList);
 		return out;
 	}
-
 
 	public static User templateUserOrg(Link self, GHPerson user, List<Repository> repoList, List<Organisation> orgList) {
 		User out = new User() {
@@ -176,7 +175,7 @@ public class EntityController extends AbstractGithubController {
 			@PathVariable("type") String type, 
 			@PathVariable(name = "userorg") String userOrg, 
 			Authentication authentication) throws Exception {
-		GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, "/")).getGitHubAPI();
+		GitHub github = getGithubApi(authentication);
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		GHPerson org = getUserOrOrg(type, userOrg, github);
 		List<Repository> repoList = templateRepos(lb.slash(type).slash(userOrg), org);
@@ -263,7 +262,7 @@ public class EntityController extends AbstractGithubController {
 	protected Object getDirectoryPage(String type, String userorg, String reponame, Authentication authentication,
 			String path) {
 		try {
-			GitHub github = ((GithubContentAPI) apiFactory.createAPI(authentication, path)).getGitHubAPI();
+			GitHub github = getGithubApi(authentication);
 			GHPerson p = getUserOrOrg(type, userorg, github);
 			GHRepository repo = p.getRepository(reponame);
 			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();	

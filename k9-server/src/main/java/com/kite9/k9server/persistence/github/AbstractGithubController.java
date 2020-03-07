@@ -8,24 +8,21 @@ import org.kohsuke.github.GHPerson;
 import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.kite9.k9server.command.content.ContentAPIFactory;
 import com.kite9.k9server.command.controllers.AbstractCommandController;
 
 public class AbstractGithubController extends AbstractCommandController {
 
 	@Autowired
-	protected OAuth2AuthorizedClientRepository clientRepository;
+	protected GithubContentAPIFactory apiFactory;
 
-	@Autowired
-	protected ContentAPIFactory apiFactory;
-
-	
-	public AbstractGithubController() {
-		super();
+	protected GitHub getGithubApi(Authentication authentication) throws Exception {
+		return apiFactory.createGithub(authentication);
 	}
+
 
 	public static GHPerson getUserOrOrg(String type, String userorg, GitHub github) throws IOException {
 		GHPerson p = null;

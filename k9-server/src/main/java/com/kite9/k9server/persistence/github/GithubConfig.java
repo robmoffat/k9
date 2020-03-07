@@ -6,34 +6,30 @@ import java.security.PrivateKey;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.Charsets;
-import org.kite9.framework.common.Kite9ProcessingException;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.util.StreamUtils;
 
-import com.kite9.k9server.command.content.ContentAPI;
 import com.kite9.k9server.command.content.ContentAPIFactory;
+import com.kite9.k9server.persistence.queue.ChangeQueue;
 
 /**
  * This configures the basic API to talk to github.
  * 
  * @author robmoffat
  */
-@Configuration
 public class GithubConfig implements InitializingBean {
 	
-	@Autowired
-	OAuth2AuthorizedClientRepository clientRepository;
+	
 	
 	@Autowired
 	ResourceLoader resourceLoader;
@@ -50,35 +46,11 @@ public class GithubConfig implements InitializingBean {
 		pk = createPrivateKeyFromString(pem);
 	}
 
-	@Bean
+	@Bean(name = "githubContentAPIFactory")
 	public ContentAPIFactory createGithubAPIFactory() throws IOException {
 		
-		return new ContentAPIFactory() {
-			
-			@Override
-			public ContentAPI createAPI(Authentication a, String path) throws IOException {
-				String token = GithubContentAPI.getOAuthToken(clientRepository, a);
 				
-				return new GithubContentAPI(a, path, token) {
-					
-					GitHub gh = null;
-
-					@Override
-					public GitHub getGitHubAPI() {
-						try {
-							if (gh == null) {
-								gh = new GitHubBuilder().withOAuthToken(token).build();
-							}
-							
-							return gh;
-						} catch (IOException e) {
-							throw new Kite9ProcessingException("Couldn't get handle to github", e);
-						}
-					}
-					
-				};
-			}
-		};
+		return new GithubContentAPIFactory(this, changeQueues);
 	}
 	
 	 // PKCS#8 format

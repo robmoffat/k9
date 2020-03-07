@@ -28,11 +28,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.kite9.k9server.command.content.ContentAPI;
+import com.kite9.k9server.persistence.cache.VersionedContentAPI;
 
 import reactor.core.publisher.Mono;
 
-public abstract class GithubContentAPI implements ContentAPI {
+public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 
 	private Authentication a;
 	private String path;
@@ -145,15 +145,28 @@ public abstract class GithubContentAPI implements ContentAPI {
 	@Override
 	public InputStream getCurrentRevisionContent() {
 		try {
-			GHContent content = getGHContent();
+			GHContent content = getGHContent(null);
+			return content.read();
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't load document", e);
+		}
+	}
+	
+	@Override
+	public InputStream getVersionContent(String k) {
+		try {
+			GHContent content = getGHContent(k);
 			return content.read();
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't load document", e);
 		}
 	}
 
-	private GHContent getGHContent() {
+	private GHContent getGHContent(String revision) {
 		String uri = "/repos/" + owner+"/"+reponame+"/contents/" + filepath;
+		if (revision != null) {
+			uri = uri + "?ref="+revision;
+		}
 		WebClient c = WebClient.create("https://api.github.com");
 		Mono<GHContent> mono = c.get().uri(uri)
 				.header("Authorization", "token " + oauthToken)
@@ -217,7 +230,7 @@ public abstract class GithubContentAPI implements ContentAPI {
 	}
 
 	@Override
-	public ContentAPI withPath(String ext) {
+	public VersionedContentAPI<String> withPath(String ext) {
 		GithubContentAPI me = this;
 		return new GithubContentAPI(a, path + ext, oauthToken) {
 			
@@ -228,7 +241,7 @@ public abstract class GithubContentAPI implements ContentAPI {
 		};
 	}
 
-	private String getCurrentVersion() {
+	public String getCurrentVersion() {
 		try {
 			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			GHRef lastRef = getHeadRef(repo);
