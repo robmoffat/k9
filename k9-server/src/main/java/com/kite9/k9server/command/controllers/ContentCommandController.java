@@ -2,7 +2,6 @@ package com.kite9.k9server.command.controllers;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.EnumSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,6 @@ import com.kite9.k9server.command.Command;
 import com.kite9.k9server.command.XMLCommand;
 import com.kite9.k9server.command.content.AbstractContentCommand;
 import com.kite9.k9server.command.content.ContentAPI;
-import com.kite9.k9server.command.content.ContentAPI.Operation;
 import com.kite9.k9server.security.Kite9HeaderMeta;
 
 /**
@@ -43,11 +41,11 @@ public class ContentCommandController extends AbstractCommandController {
 		Format f = fs.getFormatFor(path).orElseThrow();
 		
 		try {
-			ContentAPI api = apiFactory.createAPI(authentication, path);
+			ContentAPI api = apiFactory.createAPI(authentication, url);
 			InputStream is = api.getCurrentRevisionContent();
 			ADL adl = f.handleRead(is, new URI(url), headers);
 			Kite9HeaderMeta.addRegularMeta(adl, url, "Kite9 Editor");
-			addUndoRedoMeta(adl, api, url);
+			api.addMeta(adl);
 			return adl;
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't get content for " + path, e);
@@ -71,7 +69,7 @@ public class ContentCommandController extends AbstractCommandController {
 	protected ADL updateInner(HttpHeaders headers, RequestEntity<List<Command>> reqEntity, Authentication authentication,
 			String url, String path, Format f, boolean commit) {
 		try {
-			ContentAPI api = apiFactory.createAPI(authentication, path);
+			ContentAPI api = apiFactory.createAPI(authentication, url);
 			InputStream is = api.getCurrentRevisionContent();
 			ADL adl = f.handleRead(is, new URI(url), headers);
 			adl = (ADL) performSteps(reqEntity.getBody(), adl, authentication, headers, new URI(url));
@@ -79,7 +77,7 @@ public class ContentCommandController extends AbstractCommandController {
 				AbstractContentCommand.persistContent(adl, f, api, "Changed "+path+" in Kite9 Editor");
 			}
 			Kite9HeaderMeta.addRegularMeta(adl, url, "Kite9 Editor");
-			addUndoRedoMeta(adl, api, url);
+			api.addMeta(adl);
 			return adl;
 		} catch (Exception e) {
 			throw new Kite9ProcessingException("Couldn't get content for "+path, e);
@@ -88,11 +86,5 @@ public class ContentCommandController extends AbstractCommandController {
 
 	private String getPathToFileInRepo(String url) {
 		return url.substring(url.indexOf("/content/"));
-	}
-
-	private void addUndoRedoMeta(ADL adl, ContentAPI api, String url) {
-		EnumSet<Operation> ops = api.getOperations();
-		adl.setMeta("undo", ""+ops.contains(Operation.UNDO));
-		adl.setMeta("redo", ""+ops.contains(Operation.REDO));
 	}
 }

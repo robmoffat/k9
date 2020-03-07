@@ -3,6 +3,8 @@ package com.kite9.k9server.command.content;
 import java.io.InputStream;
 import java.util.EnumSet;
 
+import com.kite9.k9server.adl.holder.ADL;
+
 /**
  * This is an API that controls updating/reading a single diagram with some kind of backing storage.
  * 
@@ -34,5 +36,11 @@ public interface ContentAPI {
 	public ContentAPI withPath(String ext);
 	
 	public EnumSet<Operation> getOperations();
+	
+	public default void addMeta(ADL adl) {
+		EnumSet<Operation> ops = getOperations();
+		adl.setMeta("undo", ""+ops.contains(Operation.UNDO));
+		adl.setMeta("redo", ""+ops.contains(Operation.REDO));
+	}
 	
 }

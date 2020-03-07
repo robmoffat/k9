@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.apache.commons.io.Charsets;
 import org.kite9.framework.common.Kite9ProcessingException;
 import org.springframework.util.StreamUtils;
 
+import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.content.ContentAPI;
 
 public class MemoryCachingContentAPI<K> implements ContentAPI {
@@ -20,7 +22,7 @@ public class MemoryCachingContentAPI<K> implements ContentAPI {
 	
 	protected String path;
 	private List<HasInputStream> versions;
-	private int currentVersion;
+	private AtomicInteger currentVersion;
 	private VersionedContentAPI<K> back;
 	
 	public MemoryCachingContentAPI(String path, VersionedContentAPI<K> back) {
@@ -62,7 +64,7 @@ public class MemoryCachingContentAPI<K> implements ContentAPI {
 	protected void setup(VersionedContentAPI<K> backing) {
 		List<K> allVersions = backing.getVersionHistory();
 		K currentK = backing.getCurrentVersion();
-		currentVersion = allVersions.indexOf(currentK);
+		currentVersion = new AtomicInteger(allVersions.indexOf(currentK));
 		versions = allVersions.stream()
 				.map(k -> buildOnDemandCache(k, backing))
 				.collect(Collectors.toList());
@@ -70,46 +72,43 @@ public class MemoryCachingContentAPI<K> implements ContentAPI {
 		
 	@Override
 	public InputStream getCurrentRevisionContent() {
-		return versions.get(currentVersion).get();
+		return versions.get(currentVersion.get()).get();
 	}
 
 	@Override
 	public void commitRevision(byte[] contents, String message) {
 		versions.add(0, createHolder(contents));
-		currentVersion = 0;
+		currentVersion.set(0);
 	}
 
 	@Override
 	public void commitRevision(String contents, String message) {
 		versions.add(0, createHolder(contents));
-		currentVersion = 0;
+		currentVersion.set(0);
 	}
 
 	@Override
 	public InputStream undo() {
-		if (currentVersion < versions.size() - 1) {
-			currentVersion ++ ;
-		}
+		currentVersion.getAndUpdate(i -> Math.min(i+1, versions.size() - 1));
 		return getCurrentRevisionContent();
 	}
 
 	@Override
 	public InputStream redo() {
-		if (currentVersion > 0) {
-			currentVersion --;
-		}
+		currentVersion.getAndUpdate(i -> Math.max(i-1, 0));
 		return getCurrentRevisionContent();
 	}
 
 	@Override
 	public EnumSet<Operation> getOperations() {
 		EnumSet<Operation> out = EnumSet.of(Operation.COMMIT);
+		int cv = currentVersion.get();
 		
-		if (currentVersion > 0) {
+		if (cv > 0) {
 			out.add(Operation.REDO);
 		}
 		
-		if (currentVersion < versions.size() - 1) {
+		if (cv < versions.size() - 1) {
 			out.add(Operation.UNDO);
 		}
 		
@@ -121,4 +120,11 @@ public class MemoryCachingContentAPI<K> implements ContentAPI {
 		return new MemoryCachingContentAPI<K>(path + ext, back.withPath(ext));
 	}
 
+	@Override
+	public void addMeta(ADL adl) {
+		ContentAPI.super.addMeta(adl);
+		adl.setMeta("revision", ""+currentVersion);
+	}
+
+	
 }

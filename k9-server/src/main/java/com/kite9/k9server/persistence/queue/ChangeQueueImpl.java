@@ -19,8 +19,8 @@ public class ChangeQueueImpl implements ChangeQueue {
 
 
 	@Override
-	public boolean isDone() {
-		return workQueue.isEmpty();
+	public int getQueueSize() {
+		return workQueue.size();
 	}
 
 	@Override

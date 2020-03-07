@@ -2,6 +2,7 @@ package com.kite9.k9server.persistence.queue;
 
 import java.io.InputStream;
 
+import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.content.ContentAPI;
 import com.kite9.k9server.persistence.cache.DelegatingContentAPI;
 import com.kite9.k9server.persistence.queue.ChangeQueue.Change;
@@ -60,5 +61,12 @@ public class CommandQueueContentAPI extends DelegatingContentAPI {
 		return new CommandQueueContentAPI(super.withPath(ext), cq, backingStore.withPath(ext));
 	}
 
+	@Override
+	public void addMeta(ADL adl) {
+		super.addMeta(adl);
+		adl.setMeta("commits", ""+cq.getQueueSize());
+	}
+
+	
 	
 }

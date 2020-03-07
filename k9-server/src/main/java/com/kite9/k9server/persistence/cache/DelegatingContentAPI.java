@@ -3,6 +3,7 @@ package com.kite9.k9server.persistence.cache;
 import java.io.InputStream;
 import java.util.EnumSet;
 
+import com.kite9.k9server.adl.holder.ADL;
 import com.kite9.k9server.command.content.ContentAPI;
 
 public class DelegatingContentAPI implements ContentAPI {
@@ -40,6 +41,11 @@ public class DelegatingContentAPI implements ContentAPI {
 
 	public EnumSet<Operation> getOperations() {
 		return delegate.getOperations();
+	}
+
+	@Override
+	public void addMeta(ADL adl) {
+		delegate.addMeta(adl);
 	}
 	
 	

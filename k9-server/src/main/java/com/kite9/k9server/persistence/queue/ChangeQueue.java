@@ -26,7 +26,7 @@ public interface ChangeQueue {
 		}
 	}
 
-	public boolean isDone();
+	public int getQueueSize();
 	
 	public void addItem(Change c);
 }

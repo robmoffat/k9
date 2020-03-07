@@ -79,7 +79,8 @@ function initEditor() {
 	var metadata = new Metadata([
 		identityMetadataCallback,
 		undoableMetadataCallback,
-		closeMetadataCallback ]);
+		closeMetadataCallback,
+		m => console.log(m)]);
 		
 	var transition = new Transition(
 			() => metadata.get('self'),		// command

@@ -57,6 +57,7 @@ public final class GithubContentAPIFactory implements ContentAPIFactory {
 	}
 
 	private ContentAPI buildNewCache(Authentication a, String path, ChangeQueue cq, String token) {
+		System.out.println("Building Cache For: "+path);
 		VersionedContentAPI<String> backingApi = createGitHubAPI(a, path, token);
 		ContentAPI front = createMemoryCachingAPI(backingApi, path);
 		return new CommandQueueContentAPI(front, cq, backingApi);
