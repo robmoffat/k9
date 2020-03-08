@@ -1,0 +1,84 @@
+@import url('/public/behaviours/links/common-links.css');
+@import url('/public/behaviours/containers/common-containers.css');
+@import url('/public/behaviours/labels/common-labels.css');
+@import url('/public/behaviours/grid/common-grid.css');
+@import url('/public/behaviours/text/common-text.css');
+@import url('/public/fonts/metropolis/metropolis.css');
+
+
+[k9-elem=diagram] {
+	font-size: 50px;
+	font-family: metropolis;
+}
+
+@params {
+	palettes: url(shape-palette) "insert replace-connected" 
+   	          url(/public/behaviours/links/common-links) "link end"
+   	          url(/public/behaviours/containers/common-containers) "insert replace-connected contain"
+   	          url(/public/behaviours/grid/common-tables) "replace-cell";
+          
+	cell-template-uri: url(/public/behaviours/grid/common-tables.xml#t1);
+}
+
+g.box {
+	kite9-template: url(template.xml#box);
+	kite9-padding: 10px;
+	kite9-sizing: minimize;
+	kite9-type: container;
+	kite9-margin: 20px;
+	kite9-min-size: 100px 100px;
+	kite9-connection-align: 50%;
+	kite9-connection-align: 50%;
+}
+
+[k9-elem=g].box > [k9-elem=back] {
+	fill: #CCCCAA;
+	fill-opacity: 1;
+	stroke: #AAAA88;
+	stroke-dasharray: none;
+}
+
+g.clearbox {
+	kite9-padding: 10px;
+	kite9-sizing: maximize;
+	kite9-type: container;
+	kite9-margin: 20px;
+	kite9-min-size: 100px 100px;
+	kite9-connection-align: 50%;
+}
+
+textarea,
+[k9-elem=textarea] {
+	kite9-type: text;
+	kite9-margin: 4px;
+	kite9-vertical-align: center;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: center;
+	stroke: black;
+	fill: #333300;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 50px;
+}
+
+/* Labels */
+
+[k9-elem=label],
+g.label,
+label {
+	fill: gray;
+	font-family: "metropolis";
+	text-align: start;
+	font-size: 16px;
+	kite9-padding: 10px;
+}
+
+[k9-elem=label] text,
+g.label text,
+label text {
+	fill: black;
+}
+
+cell {
+	kite9-min-size: 40px 40px;
+}

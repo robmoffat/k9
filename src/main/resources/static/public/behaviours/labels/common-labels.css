@@ -1,0 +1,25 @@
+
+/* Labels */
+
+label {
+	kite9-usage: label;
+	kite9-type: container; 
+	kite9-sizing: minimize;
+	kite9-template: url(common-labels-template.xml#label) '4px';
+	kite9-padding: 4px;
+	kite9-margin: 4px;
+	kite9-sizing: minimize;
+}
+
+@params {
+	label-template-uri:  url(common-labels.xml#label);
+}
+
+label[end=to] {
+	kite9-link-end: to;
+}
+
+label[end=from] {
+	kite9-link-end: from;
+}
+

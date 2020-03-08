@@ -1,0 +1,25 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css">
+      @import url("/public/behaviours/containers/common-containers.css");
+      @import url("/public/behaviours/grid/common-grid.css");
+      @import url("/public/behaviours/indication/indicators.css");
+      
+      cell {
+         kite9-min-size: 40px 15px;
+         kite9-margin: 15px;
+      }
+    
+    </svg:style>
+  </svg:defs>
+ <diagram xmlns="http://www.kite9.org/schema/adl" id="dia" style="kite9-layout: down; ">
+
+    <table id="table1" style="kite9-grid-size: 1 4; ">
+      <cell id="t1"></cell>
+      <cell id="t2" class="shaded"></cell>
+      <cell id="t3" class="shaded bordered"></cell>
+      <cell id="t4" class="bordered"></cell>
+    </table>
+
+  </diagram>
+</svg:svg>

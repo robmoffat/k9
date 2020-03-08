@@ -1,0 +1,13 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.kite9.org/schema/adl' xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <template id='label' k9-ui="delete orphan edit">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
+    </back>
+    <front style="kite9-type: text; ">
+      <contents optional="true" />
+    </front>
+  </template>
+  
+  
+</svg:svg>

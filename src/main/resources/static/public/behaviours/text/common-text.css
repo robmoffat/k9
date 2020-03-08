@@ -1,0 +1,17 @@
+/* Basic Text Support */
+
+textarea {
+	kite9-type: text;
+	kite9-vertical-align: center;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: center;
+	kite9-template: url(common-text-template.xml#textarea);
+}
+
+connectedtext {
+	kite9-type: container;
+	kite9-vertical-align: center;
+	kite9-connection-align: 50%;
+	kite9-horizontal-align: center;
+	kite9-template: url(common-text-template.xml#connected) '4px' '4px';
+}

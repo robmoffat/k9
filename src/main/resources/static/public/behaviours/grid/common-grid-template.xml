@@ -1,0 +1,19 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.kite9.org/schema/adl' xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- tables -->
+
+  <template id='table' k9-ui="grid drag delete layout copy">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
+    </back>
+    <contents optional="true" />
+  </template>
+  
+  <template id="cell" k9-ui="cell drop delete cascade orphan insert layout replace-cell" k9-palette="replace-cell">
+    <back k9-indicator="pulse stroke" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
+    </back>
+    <contents optional="true" />
+  </template>
+
+</svg:svg>

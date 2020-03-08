@@ -1,0 +1,68 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.kite9.org/schema/adl' xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <svg:defs>
+    <svg:filter id="layout-filter">
+       <svg:feColorMatrix in="SourceGraphic"
+        type="matrix"
+        values="0 0 0 .72 0
+                0 0 0 .75 0
+                0 0 0 1 0
+                0 0 0 1 0" />
+    </svg:filter>
+  </svg:defs>
+
+   <template id="group-undirected" k9-ui="drag drop delete insert align connect layout copy replace-connected" k9-palette="contain insert replace-connected">
+    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}'  />
+    </back>
+    <contents optional="true" />
+  </template>
+  
+  <template id="group-directed" k9-ui="drag drop delete insert align connect layout copy replace-connected" k9-palette="contain insert replace-connected">
+    <back k9-indicator="stroke pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}'  />
+    </back>
+    <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="stroke">
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#layout-filter)" />
+    </indicator>
+    <contents optional="true" />
+  </template>
+  
+   <template id="container-directed" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
+    </back>
+    <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="stroke">
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#layout-filter)" />
+    </indicator>
+    <contents optional="true" />
+  </template>
+  
+  <template id="container-undirected" k9-palette="contain insert replace-connected"  k9-ui="drag drop delete insert align connect layout copy label replace-connected">
+    <back k9-indicator="pulse" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' rx='#{$template-1}' ry='#{$template-1}' />
+    </back>
+    <contents optional="true" />
+  </template>
+  
+
+  <template id="diagram-undirected" k9-ui="drop layout insert">
+    <back class="back" k9-indicator="pulse stroke" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
+    </back>
+    <contents optional="true" />
+  </template>
+  
+  
+  <template id="diagram-directed" k9-ui="drop layout insert">
+    <back class="back" k9-indicator="pulse stroke" style='kite9-usage: decal; kite9-type: svg; '>
+      <svg:rect x='0' y='0' width='#{$width}' height='#{$height}' />
+    </back>
+    <indicator style='kite9-usage: decal; kite9-type: svg; ' k9-indicator="stroke">
+      <svg:image x="#{$width - 25}" y="#{$height - 25}" width="20" height="20" xlink:href="/public/behaviours/containers/layout/#{../../@layout}.svg" filter="url(#layout-filter)" />
+    </indicator>
+    <contents optional="true" />
+  </template>
+  
+  
+</svg:svg>

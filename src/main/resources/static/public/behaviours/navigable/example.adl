@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'>
+  <svg:defs>
+    <svg:style type="text/css"> 
+       @import url("/public/examples/basic/basic.css");
+       @import url("/public/behaviours/indication/indicators.css");
+    </svg:style>
+
+    <svg:script type="module">
+    import { Transition } from "/public/classes/transition/transition.js";
+	import { initHoverable } from '/public/behaviours/hoverable/hoverable.js';
+	import { ContextMenu } from "/public/classes/context-menu/context-menu.js";
+    import { initSelectable } from '/public/behaviours/selectable/selectable.js';
+	import { initActionable } from '/public/behaviours/actionable/actionable.js';
+	import { initFocusContextMenuCallback } from '/public/behaviours/navigable/focus/focus.js';
+	
+	var transition = new Transition();
+
+	var contextMenu = new ContextMenu([
+		initFocusContextMenuCallback(transition)]);
+
+	initHoverable();
+	initSelectable();
+    initActionable(contextMenu);
+
+    </svg:script>
+    
+  </svg:defs>
+  <diagram xmlns="http://www.kite9.org/schema/adl">
+
+     <g id="/public/behaviours/navigable/example2.svg" class="box"  k9-ui="focus"><textarea>Click Me</textarea></g>
+     
+  </diagram>
+</svg:svg>

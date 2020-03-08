@@ -1,0 +1,17 @@
+<svg:svg xmlns:svg='http://www.w3.org/2000/svg'
+	xmlns='http://www.kite9.org/schema/adl'
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<!-- batik hates it if you don't specify height & width -->
+
+	<template id="image-editable" k9-ui="href">
+		<decal style="kite9-type: svg; kite9-usage: decal;">
+			<svg:image x="0" y="0" width="#{$width}"
+				height="#{$height}" xlink:href="pre:#{@href}" />
+		</decal>
+		<front k9-indicator="stroke pulse" style='kite9-type: svg; '>
+			<svg:rect x='0' y='0' width='pre:#{@width}' height='pre:#{@height}' rx='2' ry='2' />
+		</front>
+	</template>
+
+</svg:svg>

@@ -1,0 +1,9 @@
+
+.dropping [k9-indicator~=fill] {
+	fill: #b7c0fe44 !important;
+}
+
+.dropping [k9-indicator~=stroke] {
+	stroke: #b7c0feAA !important;
+}
+

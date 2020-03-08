@@ -1,41 +1,26 @@
-# Introducing Kite9 - Redux #
+# Kite9 Server
 
-I have been working for a long time on some diagramming software, called Kite9.   It’s an attempt to bring Enterprise Architecture kicking and screaming into the 21st century, with automatic layout, single page web-design and collaborative, real-time editing capabilities.
+Kite9 Server is a Docker-ized Spring Boot Executable Jar which handles the following concerns:
 
-But, it got stuck.  My original architecture got bogged down in a morass of technical debt.  After a long hiatus, I’ve decided that yes, I still want to work on this, and it’s time to dust off my original design and see if it can be repaired.   Specifically:
+- Providing REST endpoints for creating Kite9 diagrams (in various formats)
+- Providing User-level security and a Project abstraction.
+- Providing a Command-based interface for modifying diagrams held internally in ADL format (i.e. Kite9 + SVG)
+- Providing storage of stylesheets and related artifacts
 
-## Goals ##
+Since the user creation / password setting workflow requires mail, it has a Docker Postfix component.  Data is held in
+Mysql installed locally.  The configuration for this is in `src/docker/default.properties`.
 
-1.  Release instantly.  i.e. full automated tests.  I don’t know yet what this means for Javascript, but I’ll figure it out.
-2.  Proper load-balancing etc.  So, containerisation.
-3.  Integration tests running against the server.
-4.  BPML Support
-5.  Swimlane Diagrams
-6.  Sharing Entities between diagrams
-7.  Fixing up the GUI so we can do quick releases.
-8.  Unleashing the full power of SVG.
-9.  New layouts, including hierarchical layout and gridded layout (more on these later).
+In the past, I've also run on aws, hence `src/docker/aws-machine.properties` in there too.
 
-... But, whatever - let's see what happens!
+## Integration Tests
 
-## Some Promises ##
+These are run using a local Docker installation.  To start:
 
-Ok, so that’s what I want to do.  But, there are a couple of other changes I want to instill along the way:
+```
+docker-machine start
+eval $(docker-machine env default)
+mvn integration-test
+```
 
-### Releases Every Two Weeks ###
+The fabric8 maven plugin will set up the required docker instances and run the tests.
 
-I really want to develop in an Agile way, releasing frequently.   This is a hard thing to master, especially when the functionality is complicated and intricate like Kite9.  The other problem is it's going to mean developing in a certain order, really thinking ahead about what I need to do next.   For this reason, I've pretty much planned out a year's worth of minor sprints - looking for areas of dependency between each of them to try and make sure we implement this in the right order.  Will be interesting to see how this works out.
-
-### Release Notes ###
-
-Each Sprint is going to get a release into "production", and each will have release notes detailing exactly what went on.  In addition, I am going to use this as an opportunity to document the development process, so other people can (maybe) learn what to do via the process.  By and large, a lot of the problems in Kite9 are now because the techniques I used were wrong, or are now out-of-date, so this is a chance to really use some best practices.  Maybe this will be interesting to other people.  
-
-There was a good reason why this didn't happen before:  the first version of Kite9 was really an experiment:  Could I develop a really sound layout algorithm?  And then, could I make a usable editor based on this?  Since we are not in "experiment mode" now, but in "build some really decent software" mode, I think this changes matters, hence the blog posts.
-
-[Review Progress Here](docs/sprints)
-
-### Build Kite9 In Kite9 ###
-
-I'd like Kite9 to "bootstrap" itself to a certain extent:  the user-interface that we build will as far as possible will be written using Kite9 itself.  Ideally, Kite9 could be used to build other user interfaces.  This is certainly an idea I've had before.  Let's see if we can make this work.
-
-Ok, on with the show...
