@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kite9.k9server.adl.format.FormatSupplier;
 import com.kite9.k9server.command.Command;
-import com.kite9.k9server.command.content.HasOperations;
 import com.kite9.k9server.domain.Directory;
 import com.kite9.k9server.domain.Document;
 import com.kite9.k9server.domain.Organisation;
@@ -240,7 +239,18 @@ public class EntityController extends AbstractGithubController {
 			Authentication authentication) throws Exception {
 		
 		String url = req.getRequestURL().toString();
-		return performSteps(reqEntity.getBody(), null, authentication, headers, new URI(url));
+		Object out = performSteps(reqEntity.getBody(), null, authentication, headers, new URI(url));
+		
+		if (out != null) {
+			return out;
+		} else {
+			GitHub github = getGithubApi(authentication);
+			String path = GithubContentAPI.getPathSegment(GithubContentAPI.FILEPATH, url);
+			GHPerson p = getUserOrOrg(type, userorg, github);
+			GHRepository repo = p.getRepository(reponame);
+			LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
+			return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb, fs);
+		}
 	}
 	
 
@@ -388,25 +398,6 @@ public class EntityController extends AbstractGithubController {
 	public boolean matchesFormat(String name) {
 		return formatSupplier.getFormatFor(name).isPresent();
 	}
-
-
-	/**
-	 * This is a hack to get the redirect working from NewDocument.   Problem is that this means newDocument is
-	 * excessively coupled to the github backend.
-	 * @throws IOException 
-	 */
-	public static Object templateDirectoryRedirect(String subjectUri, HasOperations api, FormatSupplier fs) throws IOException {
-		String type = GithubContentAPI.getPathSegment(GithubContentAPI.TYPE, subjectUri);
-		String reponame = GithubContentAPI.getPathSegment(GithubContentAPI.REPONAME, subjectUri);
-		String userorg = GithubContentAPI.getPathSegment(GithubContentAPI.OWNER, subjectUri);
-		String path = GithubContentAPI.getPathSegment(GithubContentAPI.FILEPATH, subjectUri);
-		GitHub github = ((GithubContentAPI)api).getGitHubAPI();
-		GHPerson p = getUserOrOrg(type, userorg, github);
-		GHRepository repo = p.getRepository(reponame);
-		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
-		return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb, fs);
-	}
-	
 
 	public static String sanitize(GHContent c) {
 		try {
