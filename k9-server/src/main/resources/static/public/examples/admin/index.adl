@@ -34,7 +34,7 @@
      		<title>DOCS</title>
      	</container>
      	
-     	<container id="2" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     	<container id="https://github.com/kite9_org" class="panel invis" k9-ui="open">
      		<badge>H</badge>
      		<title>HUMANS</title>
      	</container>

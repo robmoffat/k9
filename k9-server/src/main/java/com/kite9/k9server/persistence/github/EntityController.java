@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.kite9.framework.common.Kite9ProcessingException;
+import org.kohsuke.github.GHContent;
 import org.kohsuke.github.GHOrganization;
 import org.kohsuke.github.GHPerson;
 import org.kohsuke.github.GHPersonSet;
@@ -49,7 +50,7 @@ import com.kite9.k9server.domain.User;
  * @author robmoffat
  *
  */
-@RestController()
+@RestController("/github")
 public class EntityController extends AbstractGithubController {
 	
 	@Autowired
@@ -313,7 +314,7 @@ public class EntityController extends AbstractGithubController {
 	
 					@Override
 					public String getIcon() {
-						return c.getHtmlUrl();
+						return sanitize(c);
 					}
 	
 					@Override
@@ -405,4 +406,16 @@ public class EntityController extends AbstractGithubController {
 		LinkBuilder lb = BasicLinkBuilder.linkToCurrentMapping();
 		return templateDirectoryPage(type, userorg, reponame, path, p, repo, lb, fs);
 	}
+	
+
+	public static String sanitize(GHContent c) {
+		try {
+			String url = c.getDownloadUrl();
+			url += "?sanitize=true";
+			return url;
+		} catch (IOException e) {
+			return "";
+		}
+	}
+
 }
