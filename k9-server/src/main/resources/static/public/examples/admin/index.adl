@@ -5,7 +5,7 @@
   </svg:defs>
   <diagram xmlns="http://www.kite9.org/schema/adl" style="kite9-layout: down; ">
 
-     <container id="t" class="title" k9-ui="auth">
+     <container id="/home" class="title" k9-ui="open">
         <container style="kite9-layout: right; " class="invis">
         	<logo style="kite9-type: svg; kite9-vertical-align: bottom; ">
         		<svg:text class="grand" stroke="none" >KITE9</svg:text>
@@ -24,12 +24,12 @@
      		</decal>  
         	</group> -->
         </container>
-     	<textarea class="subtitle">CLICK HERE TO BEGIN</textarea>
+     	<textarea class="subtitle">LOGIN WITH GITHUB</textarea>
      </container>
      
      <group style="kite9-layout: right; ">
      
-     	<container id="1" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     	<container id="https://github.com/kite9-org/docs/wiki" class="panel invis" k9-ui="open">
      		<badge>D</badge>
      		<title>DOCS</title>
      	</container>
@@ -39,7 +39,7 @@
      		<title>HUMANS</title>
      	</container>
      
-     	<container id="3" href="https://github.com/kite9_org" class="panel invis" k9-ui="open">
+     	<container id="/orgs/kite9-org/examples" class="panel invis" k9-ui="open">
      		<badge>E</badge>
      		<title>EXAMPLES</title>
      	</container>
