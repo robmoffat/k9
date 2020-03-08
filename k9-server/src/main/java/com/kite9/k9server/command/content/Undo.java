@@ -17,7 +17,7 @@ public class Undo extends AbstractContentCommand {
 	@Override
 	public ADL applyCommand() throws CommandException {
 		try {
-			InputStream is = api.undo();
+			InputStream is = apiFactory.createAPI(a, url.toString()).undo();
 			Format f = fs.getFormatFor(url.getPath()).orElseThrow();
 			ADL adl = f.handleRead(is, url, requestHeaders);
 			return adl;

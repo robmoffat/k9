@@ -1,9 +1,6 @@
 package com.kite9.k9server.command.content;
 
 import java.io.InputStream;
-import java.util.EnumSet;
-
-import com.kite9.k9server.adl.holder.ADL;
 
 /**
  * This is an API that controls updating/reading a single diagram with some kind of backing storage.
@@ -11,36 +8,13 @@ import com.kite9.k9server.adl.holder.ADL;
  * @author robmoffat
  *
  */
-public interface ContentAPI {
+public interface ContentAPI extends HasOperations, UndoableAPI<InputStream> {
 	
-	public enum Operation { REDO, UNDO, COMMIT };
-
-	public InputStream getCurrentRevisionContent();
-	
+	/**
+	 * Commits a new revision.  Returns a revision id if one is set.
+	 */
 	public void commitRevision(byte[] contents, String message);
 	
 	public void commitRevision(String contents, String message);
-	
-	/**
-	 * Returns input stream for previous version, or current version again if
-	 * undo can't be done
-	 */
-	public InputStream undo();
-	
-	/**
-	 * Returns input stream for previous version, or current version again if
-	 * redo can't be done
-	 */
-	public InputStream redo();
-	
-	public ContentAPI withPath(String ext);
-	
-	public EnumSet<Operation> getOperations();
-	
-	public default void addMeta(ADL adl) {
-		EnumSet<Operation> ops = getOperations();
-		adl.setMeta("undo", ""+ops.contains(Operation.UNDO));
-		adl.setMeta("redo", ""+ops.contains(Operation.REDO));
-	}
-	
+
 }

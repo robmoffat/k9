@@ -15,15 +15,15 @@ import com.kite9.k9server.adl.holder.ADL;
 
 public abstract class AbstractContentCommand implements ContentCommand {
 
-	protected transient ContentAPI api;
+	protected transient ContentAPIFactory<?> apiFactory;
 	protected transient HttpHeaders requestHeaders;
 	protected transient Authentication a;
 	protected transient FormatSupplier fs;
 	protected transient URI url;
 	
 	@Override
-	public void setContentApi(ContentAPI api, HttpHeaders requestHeaders, Authentication a, FormatSupplier fs, URI url) {
-		this.api = api;
+	public void setContentApi(ContentAPIFactory<?> apiFactory, HttpHeaders requestHeaders, Authentication a, FormatSupplier fs, URI url) {
+		this.apiFactory = apiFactory;
 		this.requestHeaders = requestHeaders;
 		this.a = a;
 		this.fs = fs;

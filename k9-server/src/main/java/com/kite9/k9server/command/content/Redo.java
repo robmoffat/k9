@@ -17,7 +17,7 @@ public class Redo extends AbstractContentCommand {
 	@Override
 	public ADL applyCommand() throws CommandException {
 		try {
-			InputStream is = api.redo();
+			InputStream is = apiFactory.createAPI(a, url.toString()).redo();
 			Format f = fs.getFormatFor(url.getPath()).orElseThrow();
 			ADL adl = f.handleRead(is, url, requestHeaders);
 			return adl;

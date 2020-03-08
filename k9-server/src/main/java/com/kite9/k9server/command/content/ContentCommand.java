@@ -17,6 +17,6 @@ import com.kite9.k9server.command.Command;
  */
 public interface ContentCommand extends Command {
 	
-	public void setContentApi(ContentAPI g, HttpHeaders h, Authentication a, FormatSupplier fs, URI url);
+	public void setContentApi(ContentAPIFactory<?> f, HttpHeaders h, Authentication a, FormatSupplier fs, URI url);
 
 }

@@ -28,7 +28,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.kite9.k9server.persistence.cache.VersionedContentAPI;
+import com.kite9.k9server.command.content.HasOperations;
+import com.kite9.k9server.persistence.cache.back.VersionedContentAPI;
 
 import reactor.core.publisher.Mono;
 
@@ -42,6 +43,7 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 	private String filepath;
 	private String branchName;
 	private String tagLast;
+	private GHRepository repo;
 
 	public GithubContentAPI(Authentication a, String path, String oauthToken) {
 		this.path = path;
@@ -52,6 +54,12 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 		this.filepath = getPathSegment(FILEPATH, path);
 		this.branchName = "master";
 		this.tagLast = this.filepath != null ? (this.filepath.replaceAll("[^a-zA-Z0-9]", "")+"_last") : null;
+		try {
+			this.repo = getGitHubAPI().getRepository(owner+"/"+reponame);
+		} catch (IOException e) {
+			throw new Kite9ProcessingException("Couldn't retrieve history for "+path, e);
+		}
+
 	}
 
 	public static String getOAuthToken(OAuth2AuthorizedClientRepository clientRepository, Authentication p) {
@@ -94,7 +102,6 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 
 	public String commitRevision(String message, Consumer<GHTreeBuilder> fn) {
 		try {
-			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			String treeSha;
 			String branchSha;
 			GHRef lastRef = getLastRef(repo);
@@ -130,26 +137,13 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 	}
 
 	@Override
-	public void commitRevision(byte[] contents, String message) {
-		commitRevision(message, tb -> tb.add(filepath, contents, false));
+	public String commitRevision(byte[] contents, String message) {
+		return commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 
 	@Override
-	public void commitRevision(String contents, String message) {
-		commitRevision(message, tb -> tb.add(filepath, contents, false));
-	}
-
-	/**
-	 * This has been optimised so that you don't need to build the Github api first
-	 */
-	@Override
-	public InputStream getCurrentRevisionContent() {
-		try {
-			GHContent content = getGHContent(null);
-			return content.read();
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't load document", e);
-		}
+	public String commitRevision(String contents, String message) {
+		return commitRevision(message, tb -> tb.add(filepath, contents, false));
 	}
 	
 	@Override
@@ -205,20 +199,15 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 
 
 	public List<String> getVersionHistory() {
-		try {
-			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
-			GHRef lastRef = getLastRef(repo);
-			List<String> versions;
-			if (lastRef != null) {
-				versions = getVersionsForGivenTag(repo, lastRef.getRef());
-			} else {
-				versions = getVersionsForGivenTag(repo, branchName);
-			}
-			
-			return versions; 
-		} catch (IOException e) {
-			throw new Kite9ProcessingException("Couldn't retrieve history for "+path, e);
+		GHRef lastRef = getLastRef(repo);
+		List<String> versions;
+		if (lastRef != null) {
+			versions = getVersionsForGivenTag(repo, lastRef.getRef());
+		} else {
+			versions = getVersionsForGivenTag(repo, branchName);
 		}
+		
+		return versions; 
 	}
 
 	private List<String> getVersionsForGivenTag(GHRepository repo, String tag) {
@@ -229,26 +218,9 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 		return versions;
 	}
 
-	@Override
-	public VersionedContentAPI<String> withPath(String ext) {
-		GithubContentAPI me = this;
-		return new GithubContentAPI(a, path + ext, oauthToken) {
-			
-			@Override
-			public GitHub getGitHubAPI() {
-				return me.getGitHubAPI();
-			}
-		};
-	}
-
-	public String getCurrentVersion() {
-		try {
-			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
-			GHRef lastRef = getHeadRef(repo);
-			return lastRef.getObject().getSha();
-		} catch (IOException e) {
-			throw new Kite9ProcessingException("Couldn't retrieve history for "+path, e);
-		}		
+	public String getCurrentRevisionID() {
+		GHRef lastRef = getHeadRef(repo);
+		return lastRef.getObject().getSha();
 	}
 
 	public String getOauthToken() {
@@ -256,9 +228,8 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 	}
 
 
-	public InputStream updateCurrentRevision(String revision) {
+	public void updateCurrentRevision(String revision) {
 		try {
-			GHRepository repo = getGitHubAPI().getRepository(owner+"/"+reponame);
 			GHRef branchHead = repo.getRef("heads/"+branchName);
 			
 			// we need to keep track of the latest revision
@@ -268,46 +239,25 @@ public abstract class GithubContentAPI implements VersionedContentAPI<String> {
 			}
 			
 			branchHead.updateTo(revision, true);	
-			return getCurrentRevisionContent();
 		} catch (IOException e) {
 			throw new Kite9ProcessingException("Couldn't commit change to: "+path, e);
 		}
 	}
-	
-	@Override
-	public InputStream undo() {
-		String current = getCurrentVersion();
-		List<String> versions = getVersionHistory();
-		int idx = versions.indexOf(current);
-		idx = Math.max(0, idx - 1);
-		current = versions.get(idx);
-		return updateCurrentRevision(current);
-	}
 
 	@Override
-	public InputStream redo() {
-		String current = getCurrentVersion();
-		List<String> versions = getVersionHistory();
-		int idx = versions.indexOf(current);
-		idx = Math.max(0, idx + 1);
-		current = versions.get(idx);
-		return updateCurrentRevision(current);
-	}
-
-	@Override
-	public EnumSet<Operation> getOperations() {
-		String v = getCurrentVersion();
+	public EnumSet<HasOperations.Operation> getOperations() {
+		String v = getCurrentRevisionID();
 		List<String> allVersions = getVersionHistory();
 		int idx = allVersions.indexOf(v);
-		EnumSet<Operation> out = EnumSet.noneOf(Operation.class);
+		EnumSet<HasOperations.Operation> out = EnumSet.noneOf(HasOperations.Operation.class);
 		boolean redo = idx > 0;
 		boolean undo = idx < allVersions.size() -1;
 		if (redo) {
-			out.add(Operation.REDO);
+			out.add(HasOperations.Operation.REDO);
 		}
 		
 		if (undo) {
-			out.add(Operation.UNDO);
+			out.add(HasOperations.Operation.UNDO);
 		}
 		
 		return out;

@@ -2,7 +2,7 @@ package com.kite9.k9server.command.content;
 
 import org.springframework.security.core.Authentication;
 
-public interface ContentAPIFactory {
+public interface ContentAPIFactory<K> {
 
 	/**
 	 * Returns the api for working with some content.

@@ -25,7 +25,7 @@ public class NewDocument extends AbstractContentCommand {
 			// work out filename, format
 			Format formatter = fs.getFormatFor(format).orElseThrow();
 			
-			ContentAPI apiForFile = api.withPath("/"+ title+"."+formatter.getExtension());
+			ContentAPI<?> apiForFile = api.withPath("/"+ title+"."+formatter.getExtension());
 			
 			AbstractContentCommand.persistContent(adlContent, formatter, apiForFile, "Created New Diagram in Kite9 named "+title);
 			return EntityController.templateDirectoryRedirect(url.toString(), api, fs);

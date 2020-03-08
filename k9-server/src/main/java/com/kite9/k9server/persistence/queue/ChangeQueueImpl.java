@@ -7,9 +7,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.kite9.framework.common.Kite9ProcessingException;
 
-public class ChangeQueueImpl implements ChangeQueue {
+public class ChangeQueueImpl<K> implements ChangeQueue<K> {
 	
-	private final BlockingQueue<Change> workQueue;
+	private final BlockingQueue<Change<K>> workQueue;
     private final ExecutorService service;
 
     public ChangeQueueImpl(int workQueueSize) {
@@ -24,7 +24,7 @@ public class ChangeQueueImpl implements ChangeQueue {
 	}
 
 	@Override
-	public void addItem(Change c) {
+	public void addItem(Change<K> c) {
 		try {
 			workQueue.put(c);
 	        service.submit(createWorker());
@@ -36,22 +36,8 @@ public class ChangeQueueImpl implements ChangeQueue {
 	public Runnable createWorker() {
 		return () -> {
 			while (workQueue.size() > 0) {
-				Change c = workQueue.poll();
-				switch (c.o) {
-				case UNDO:
-					c.on.undo();
-					break;
-				case REDO:
-					c.on.redo();
-					break;
-				case COMMIT:
-					if (c.payload instanceof String) {
-						c.on.commitRevision((String) c.payload, c.message);
-					} else {
-						c.on.commitRevision((byte[]) c.payload, c.message);
-					}
-					break;
-				}
+				Change<K> c = workQueue.poll();
+				c.perform();
 			}
 		};
 	}

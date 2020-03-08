@@ -27,7 +27,7 @@ public abstract class AbstractCommandController implements Logable {
 	
 
 	@Autowired
-	protected ContentAPIFactory apiFactory;
+	protected ContentAPIFactory<?> apiFactory;
 	
 	@Autowired
 	protected FormatSupplier fs;
@@ -71,7 +71,7 @@ public abstract class AbstractCommandController implements Logable {
 		Authentication a = SecurityContextHolder.getContext().getAuthentication();
 
 		if (command instanceof ContentCommand) {
-			((ContentCommand) command).setContentApi(apiFactory.createAPI(a, url.toString()), headers, a, fs, url);
+			((ContentCommand) command).setContentApi(apiFactory, headers, a, fs, url);
 		}
 	}
 
