@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN'
+          'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg contentScriptType="text/ecmascript" width="660.0px" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" height="676.0px" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0"
+>
+  <defs
+  >
+    <style type="text/css" xml:space="preserve"
+    > 
+       @import url("https://www.kite9.org/public/examples/basic/basic.css");
+       @import url("https://www.kite9.org/public/context/editor/editor.css");
+    </style
+    >
+    
+  <script xlink:actuate="onLoad" xlink:type="simple" id="adl:markup" xlink:show="other" type="text/adl-svg+xml;base64" xmlns:xlink="http://www.w3.org/1999/xlink"
+    >PD94bWwgdmVyc2lvbj0iMS4wIj8+Cjxzdmc6c3ZnIHhtbG5zOnN2Zz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPgogIDxzdmc6ZGVmcz4KICAgIDxzdmc6c3R5bGUgdHlwZT0idGV4dC9jc3MiPiAKICAgICAgIEBpbXBvcnQgdXJsKCJodHRwczovL3d3dy5raXRlOS5vcmcvcHVibGljL2V4YW1wbGVzL2Jhc2ljL2Jhc2ljLmNzcyIpOwogICAgICAgQGltcG9ydCB1cmwoImh0dHBzOi8vd3d3LmtpdGU5Lm9yZy9wdWJsaWMvY29udGV4dC9lZGl0b3IvZWRpdG9yLmNzcyIpOwogICAgPC9zdmc6c3R5bGU+CiAgICAKICA8L3N2ZzpkZWZzPgogIDxkaWFncmFtIHhtbG5zPSJodHRwOi8vd3d3LmtpdGU5Lm9yZy9zY2hlbWEvYWRsIiBpZD0iZGlhIj4KCiAgICAgPGcgaWQ9ImIxIiBjbGFzcz0iYm94Ij48dGV4dGFyZWEgaWQ9InQxIj5iMTwvdGV4dGFyZWE+PC9nPgogICAgIAogICAgIDxjb250YWluZXIgaWQ9ImJpZ2JveCIgbGF5b3V0PSJob3Jpem9udGFsIj4KICAgICAgIDxnIGlkPSJiMiIgY2xhc3M9ImJveCI+PHRleHRhcmVhIGlkPSJ0MiI+YjI8L3RleHRhcmVhPjwvZz4KICAgICAgIAogICAgICAgPGcgaWQ9ImIzIiBjbGFzcz0iYm94Ij48dGV4dGFyZWEgaWQ9InQzIj5iMzwvdGV4dGFyZWE+PC9nPgogICAgIDwvY29udGFpbmVyPgogICAgIAogICAgIDxsaW5rIGlkPSJsaW5rMSIgcj0iciI+CiAgICAgIDxmcm9tIGlkPSJsaW5rMS1mcm9tIiByZWZlcmVuY2U9ImIxIiBjbGFzcz0iYXJyb3ciPjwvZnJvbT4KICAgICAgPHRvIGlkPSJsaW5rMS10byIgY2xhc3M9ImFycm93IiByZWZlcmVuY2U9ImIzIj48L3RvPgogICAgIDwvbGluaz4KICAgICAKICAgICAKICAgICA8bGluayBpZD0ibGluazIiPgogICAgICA8ZnJvbSBpZD0ibGluazItZnJvbSIgcmVmZXJlbmNlPSJiMSIgY2xhc3M9ImhvdmVyYWJsZSBzZWxlY3RhYmxlIj48L2Zyb20+CiAgICAgIDx0byBpZD0ibGluazItdG8iIGNsYXNzPSJob3ZlcmFibGUgc2VsZWN0YWJsZSIgcmVmZXJlbmNlPSJiMiI+PC90bz4KICAgICA8L2xpbms+CgogIDwvZGlhZ3JhbT4KPC9zdmc6c3ZnPg==</script
+  ></defs
+  >
+  <g k9-ui="drop layout insert" k9-elem="diagram" id="dia" class=" kite9-diagram" k9-info="position: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: diagram; rect-pos: [0.0,0.0]; rect-size: [660.0,676.0]; "
+  >
+    <g k9-elem="back" style="kite9-usage: decal; kite9-type: svg; " class="back kite9-back" k9-info="" k9-indicator="pulse stroke"
+    >
+      <rect x="0" width="660.0" height="676.0" y="0"
+      />
+    </g
+      >
+    
+
+     <g transform="translate(200.0,200.0)" k9-palette="insert replace-connected" k9-info="position: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; rect-pos: [200.0,200.0]; rect-size: [120.0,100.0]; " class="box kite9-g" id="b1" k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-elem="g"
+      >
+    <g k9-elem="back" style="kite9-usage: decal; kite9-type: svg;  " class="back kite9-back" k9-info="" k9-indicator="pulse"
+        >
+      <rect rx="4pt" ry="4pt" x="0" width="120.0" height="100.0" y="0"
+          />
+    </g
+          >
+    <g font-size="50px" transform="translate(35.3,22.5)" fill="rgb(51,51,0)" font-family="'metropolis'" k9-info="position: none; horiz: CENTER; vert: CENTER; rectangular: connected; rect-pos: [239.0,225.0]; rect-size: [42.0,50.0]; " class=" kite9-textarea" id="t1" k9-ui="orphan edit" stroke="rgb(51,51,0)" k9-elem="textarea"
+          ><text x="0" xml:space="preserve" y="42.25" stroke="none"
+            ><tspan
+              >b</tspan
+              ><tspan
+              >1</tspan
+            ></text
+          ></g
+          >
+  </g
+          >
+     
+     <g transform="translate(200.0,328.0)" k9-palette="contain insert replace-connected" layout="horizontal" k9-info="position: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: HORIZONTAL; rectangular: connected; rect-pos: [200.0,328.0]; rect-size: [260.0,148.0]; " class=" kite9-container" id="bigbox" k9-ui="drag drop delete insert align connect layout copy label replace-connected" k9-elem="container"
+          >
+    <g k9-elem="back" style="kite9-usage: decal; kite9-type: svg; " class=" kite9-back" k9-info="" k9-indicator="pulse"
+            >
+      <rect rx="15px" ry="15px" x="0" width="260.0" height="148.0" y="0"
+              />
+    </g
+              >
+    <g k9-elem="indicator" style="kite9-usage: decal; kite9-type: svg; " class=" kite9-indicator" k9-info="" k9-indicator="stroke"
+              >
+      <image x="235" y="123" width="20" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/public/behaviours/containers/layout/horizontal.svg" xlink:type="simple" filter="url(#layout-filter)" xlink:actuate="onLoad" height="20" preserveAspectRatio="xMidYMid meet" xlink:show="embed"
+                />
+    </g
+                >
+    
+       <g transform="translate(20.0,28.0)" k9-palette="insert replace-connected" k9-info="position: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; rect-pos: [220.0,356.0]; rect-size: [100.0,100.0]; " class="box kite9-g" id="b2" k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-elem="g"
+                >
+    <g k9-elem="back" style="kite9-usage: decal; kite9-type: svg;  " class="back kite9-back" k9-info="" k9-indicator="pulse"
+                  >
+      <rect rx="4pt" ry="4pt" x="0" width="100.0" height="100.0" y="0"
+                    />
+    </g
+                    >
+    <g font-size="50px" transform="translate(19.3,22.5)" fill="rgb(51,51,0)" font-family="'metropolis'" k9-info="position: none; horiz: CENTER; vert: CENTER; rectangular: connected; rect-pos: [243.0,381.0]; rect-size: [54.0,50.0]; " class=" kite9-textarea" id="t2" k9-ui="orphan edit" stroke="rgb(51,51,0)" k9-elem="textarea"
+                    ><text x="0" xml:space="preserve" y="42.25" stroke="none"
+                      ><tspan
+                        >b</tspan
+                        ><tspan
+                        >2</tspan
+                      ></text
+                    ></g
+                    >
+  </g
+                    >
+       
+       <g transform="translate(140.0,28.0)" k9-palette="insert replace-connected" k9-info="position: none; horiz: CENTER; vert: CENTER; sizing: MINIMIZE; layout: null; rectangular: connected; rect-pos: [340.0,356.0]; rect-size: [100.0,100.0]; " class="box kite9-g" id="b3" k9-ui="drag drop delete align connect insert autoconnect copy replace-connected" k9-elem="g"
+                    >
+    <g k9-elem="back" style="kite9-usage: decal; kite9-type: svg;  " class="back kite9-back" k9-info="" k9-indicator="pulse"
+                      >
+      <rect rx="4pt" ry="4pt" x="0" width="100.0" height="100.0" y="0"
+                        />
+    </g
+                        >
+    <g font-size="50px" transform="translate(18.3,22.5)" fill="rgb(51,51,0)" font-family="'metropolis'" k9-info="position: none; horiz: CENTER; vert: CENTER; rectangular: connected; rect-pos: [362.0,381.0]; rect-size: [56.0,50.0]; " class=" kite9-textarea" id="t3" k9-ui="orphan edit" stroke="rgb(51,51,0)" k9-elem="textarea"
+                        ><text x="0" xml:space="preserve" y="42.25" stroke="none"
+                          ><tspan
+                            >b</tspan
+                            ><tspan
+                            >3</tspan
+                          ></text
+                        ></g
+                        >
+  </g
+                        >
+     
+  </g
+                        >
+     
+     <g k9-palette="link" k9-info="link: ['b1','b3']; direction: null; " r="r" class=" kite9-link" id="link1" k9-ui="delete link cascade drop" k9-elem="link"
+                        >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="grab outline"
+                          >
+      <path k9-animate="link" d="M320 250 L380 250 C385.5229 250 390 254.4772 390 260 L390 356"
+                            />
+    </g
+                            >
+    
+      <g transform="translate(312.0,242.0)" k9-palette="end" k9-info="position: none; terminates: link1; terminates-at: b1; end: from; rectangular: terminator; rect-pos: [312.0,242.0]; rect-size: [16.0,16.0]; " reference="b1" class="arrow kite9-from" id="link1-from" k9-ui="drag end invisible label" k9-elem="from"
+                            >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="fill grab"
+                              >
+      <ellipse rx="8" ry="8" cx="8" cy="8"
+                                />
+    </g
+                                >
+    
+  </g
+                                >
+      <g transform="translate(382.0,348.0)" k9-palette="end" k9-info="position: none; terminates: link1; terminates-at: b3; end: to; rectangular: terminator; rect-pos: [382.0,348.0]; rect-size: [16.0,16.0]; " class="arrow kite9-to" reference="b3" id="link1-to" k9-ui="drag end invisible label" k9-elem="to"
+                                >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="fill grab"
+                                  >
+      <ellipse rx="8" ry="8" cx="8" cy="8"
+                                    />
+    </g
+                                    >
+    
+  </g
+                                    >
+     
+    <g k9-elem="link-body" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-link-body" k9-info=""
+                                    >
+      <path style="marker-start: url(#-start-marker);                 marker-end: url(#-end-marker);" d="M320 250 L380 250 C385.5229 250 390 254.4772 390 260 L390 356" k9-animate="link"
+                                      />
+    </g
+                                      >
+  </g
+                                      >
+     
+     
+     <g k9-ui="delete link cascade drop" k9-elem="link" id="link2" k9-palette="link" class=" kite9-link" k9-info="link: ['b1','b2']; direction: null; "
+                                      >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="grab outline"
+                                        >
+      <path k9-animate="link" d="M270 300 L270 356"
+                                          />
+    </g
+                                          >
+    
+      <g transform="translate(262.0,292.0)" k9-palette="end" k9-info="position: none; terminates: link2; terminates-at: b1; end: from; rectangular: terminator; rect-pos: [262.0,292.0]; rect-size: [16.0,16.0]; " reference="b1" class="hoverable selectable kite9-from" id="link2-from" k9-ui="drag end invisible label" k9-elem="from"
+                                          >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="fill grab"
+                                            >
+      <ellipse rx="8" ry="8" cx="8" cy="8"
+                                              />
+    </g
+                                              >
+    
+  </g
+                                              >
+      <g transform="translate(262.0,348.0)" k9-palette="end" k9-info="position: none; terminates: link2; terminates-at: b2; end: to; rectangular: terminator; rect-pos: [262.0,348.0]; rect-size: [16.0,16.0]; " class="hoverable selectable kite9-to" reference="b2" id="link2-to" k9-ui="drag end invisible label" k9-elem="to"
+                                              >
+    <g k9-elem="grab" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-grab" k9-info="" k9-indicator="fill grab"
+                                                >
+      <ellipse rx="8" ry="8" cx="8" cy="8"
+                                                  />
+    </g
+                                                  >
+    
+  </g
+                                                  >
+     
+    <g k9-elem="link-body" style="kite9-type: svg; kite9-usage: decal;" class=" kite9-link-body" k9-info=""
+                                                  >
+      <path style="marker-start: url(#-start-marker);                 marker-end: url(#-end-marker);" d="M270 300 L270 356" k9-animate="link"
+                                                    />
+    </g
+                                                    >
+  </g
+                                                    >
+
+  
+  </g
+                                                    >
+<defs
+                                                    >
+    <filter xlink:actuate="onLoad" xlink:type="simple" id="layout-filter" xlink:show="other" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                      >
+       <feColorMatrix values="0 0 0 .72 0                 0 0 0 .75 0                 0 0 0 1 0                 0 0 0 1 0" type="matrix" in="SourceGraphic"
+                                                        />
+    </filter
+                                                        >
+  </defs
+                                                        ><defs
+                                                        /><defs
+                                                        /><defs
+                                                        >
+
+    <!-- Link Ends -->
+    
+    <marker id="-start-marker" preserveAspectRatio="xMidYMid meet"
+                                                          >
+    </marker
+                                                          >
+
+    <marker id="-end-marker" preserveAspectRatio="xMidYMid meet"
+                                                          >
+    </marker
+                                                          >
+
+    <marker refY="3" preserveAspectRatio="xMidYMid meet" markerHeight="6" id="circle-start-marker" markerWidth="6" refX="3"
+                                                          >
+      <circle r="2" class="circle-marker" cx="3" cy="3"
+                                                            />
+    </marker
+                                                            >
+
+    <marker refY="3" preserveAspectRatio="xMidYMid meet" markerHeight="6" id="circle-end-marker" markerWidth="6" refX="3"
+                                                            >
+      <circle r="2" class="circle-marker" cx="3" cy="3"
+                                                              />
+    </marker
+                                                              >
+
+    <marker refX="1" refY="3" orient="auto" id="diamond-start-marker" markerHeight="6" preserveAspectRatio="xMidYMid meet" markerWidth="8"
+                                                              >
+      <polygon class="diamond-marker" points="1,3 4,1 7,3 4,5"
+                                                                />
+    </marker
+                                                                >
+
+    <marker refX="7" refY="3" orient="auto" id="diamond-end-marker" markerHeight="6" preserveAspectRatio="xMidYMid meet" markerWidth="8"
+                                                                >
+      <polygon class="diamond-marker" points="1,3 4,1 7,3 4,5"
+                                                                  />
+    </marker
+                                                                  >
+
+    <marker refX="1" refY="3" orient="auto" id="open-diamond-start-marker" markerHeight="6" preserveAspectRatio="xMidYMid meet" markerWidth="8"
+                                                                  >
+      <polygon class="open-diamond-marker" points="1,3 4,1 7,3 4,5"
+                                                                    />
+    </marker
+                                                                    >
+
+    <marker refX="7" refY="3" orient="auto" id="open-diamond-end-marker" markerHeight="6" preserveAspectRatio="xMidYMid meet" markerWidth="8"
+                                                                    >
+      <polygon class="open-diamond-marker" points="1,3 4,1 7,3 4,5"
+                                                                      />
+    </marker
+                                                                      >
+
+    <marker refX="6" refY="4" orient="auto" id="barbed-arrow-end-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                      >
+      <path class="barbed-arrow-marker" d="M2,2 L6,4 L2,6"
+                                                                        />
+    </marker
+                                                                        >
+
+    <marker refX="2" refY="4" orient="auto" id="barbed-arrow-start-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                        >
+      <path class="barbed-arrow-marker" d="M6,2 L2,4 L6,6"
+                                                                          />
+    </marker
+                                                                          >
+
+    <marker refX="6" refY="4" orient="auto" id="open-arrow-end-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                          >
+      <polygon class="open-arrow-marker" points="6,4 2,2 2,6"
+                                                                            />
+    </marker
+                                                                            >
+
+    <marker refX="2" refY="4" orient="auto" id="open-arrow-start-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                            >
+      <polygon class="open-arrow-marker" points="2,4 6,2 6,6"
+                                                                              />
+    </marker
+                                                                              >
+
+    <marker refX="2" refY="4" orient="auto" id="arrow-start-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                              >
+      <polygon class="arrow-marker" points="2,4 6,2 6,6"
+                                                                                />
+    </marker
+                                                                                >
+
+    <marker refX="4" refY="4" orient="auto" id="arrow-end-marker" markerHeight="7" preserveAspectRatio="xMidYMid meet" markerWidth="7"
+                                                                                >
+      <polygon class="arrow-marker" points="6,4 2,2 2,6"
+                                                                                  />
+    </marker
+                                                                                  >
+
+  <script xlink:actuate="onLoad" xlink:type="simple" xlink:show="other" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                                  >document.params = { 'palettes' : ['https://www.kite9.org/public/examples/basic/shape-palette', 'insert replace-connected', 'https://www.kite9.org/public/behaviours/links/common-links', 'link end', 'https://www.kite9.org/public/behaviours/containers/common-containers', 'insert replace-connected contain', 'https://www.kite9.org/public/behaviours/grid/common-tables', 'replace-cell'] , 
+ 'cell-template-uri' : 'https://www.kite9.org/public/behaviours/grid/common-tables.xml#t1', 
+ 'align-template-uri' : 'https://www.kite9.org/public/behaviours/links/common-links.xml#align', 
+ 'label-template-uri' : 'https://www.kite9.org/public/behaviours/labels/common-labels.xml#label'
+ } 
+</script
+                                                                                  ><script xlink:actuate="onLoad" xlink:type="simple" xlink:show="other" type="module" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                                                  >
+import "https://www.kite9.org/public/context/editor/editor.js";
+</script
+                                                                                ></defs
+                                                                              ></svg
+                                                                            >
